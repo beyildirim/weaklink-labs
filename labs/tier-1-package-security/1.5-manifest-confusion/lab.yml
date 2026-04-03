@@ -1,0 +1,11 @@
+id: "1.5"
+title: "Manifest Confusion"
+tier: 1
+module: "package-security"
+prerequisites: ["1.1", "1.2", "1.3", "1.4"]
+difficulty: intermediate
+estimated_time: 35m
+tags: ["npm", "manifest-confusion", "registry", "darcy-clarke"]
+phase_understand: "Explore how npm packages are built, published, and how registry metadata relates to tarball contents"
+phase_break: "Install a package whose registry metadata hides a malicious dependency that silently executes"
+phase_defend: "Detect manifest mismatches by comparing registry metadata against actual tarball contents"

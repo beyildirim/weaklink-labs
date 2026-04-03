@@ -1,0 +1,11 @@
+id: "1.3"
+title: "Typosquatting"
+tier: 1
+module: "package-security"
+prerequisites: ["1.1"]
+difficulty: beginner
+estimated_time: 25m
+tags: ["typosquatting", "pypi", "pip", "package-naming"]
+phase_understand: "Explore a PyPI registry and see how easy it is to register similar package names"
+phase_break: "Install a typosquatted package that silently exfiltrates secrets"
+phase_defend: "Use hash pinning, allowlists, and auditing to prevent typosquatting attacks"

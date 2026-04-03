@@ -1,0 +1,11 @@
+id: "1.6"
+title: "Phantom Dependencies"
+tier: 1
+module: "package-security"
+prerequisites: ["1.1", "1.2", "1.3", "1.4"]
+difficulty: intermediate
+estimated_time: 30m
+tags: ["npm", "phantom-dependency", "node-modules", "hoisting", "depcheck"]
+phase_understand: "Discover how npm hoists transitive dependencies and why your code can import packages not in package.json"
+phase_break: "Watch an app break when a transitive dependency disappears, then see how an attacker exploits the gap"
+phase_defend: "Use depcheck to find phantom dependencies and add them explicitly with pinned versions"

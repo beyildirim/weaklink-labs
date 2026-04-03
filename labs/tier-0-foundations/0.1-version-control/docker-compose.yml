@@ -1,0 +1,72 @@
+services:
+  gitea:
+    image: gitea/gitea:1.22-rootless
+    environment:
+      - GITEA__security__INSTALL_LOCK=true
+      - GITEA__server__ROOT_URL=http://localhost:3000
+      - GITEA__server__HTTP_PORT=3000
+      - GITEA__database__DB_TYPE=sqlite3
+      - GITEA__service__DISABLE_REGISTRATION=true
+      - GITEA__admin__DEFAULT_EMAIL_NOTIFICATIONS=false
+    ports:
+      - "3000:3000"
+    volumes:
+      - gitea-data:/var/lib/gitea
+      - gitea-config:/etc/gitea
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:3000/api/v1/version"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  setup:
+    image: gitea/gitea:1.22-rootless
+    depends_on:
+      gitea:
+        condition: service_healthy
+    entrypoint: >
+      sh -c "
+        echo '[*] Creating admin user...' &&
+        GITEA_WORK_DIR=/var/lib/gitea gitea admin user create
+          --admin
+          --username labadmin
+          --password 'SupplyChainLab1!'
+          --email admin@lab.local
+          --must-change-password=false 2>/dev/null || true &&
+        echo '[+] Admin user ready.'
+      "
+    volumes:
+      - gitea-data:/var/lib/gitea
+      - gitea-config:/etc/gitea
+
+  workspace:
+    image: alpine/git:2.43.0
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+    entrypoint: >
+      sh -c "
+        apk add --no-cache curl bash jq &&
+        bash /lab/src/seed-repo.sh &&
+        echo '' &&
+        echo '========================================' &&
+        echo '  Lab 0.1 environment is ready!' &&
+        echo '  Gitea UI: http://localhost:3000' &&
+        echo '  Login: labadmin / SupplyChainLab1!' &&
+        echo '========================================' &&
+        echo '' &&
+        echo 'Starting interactive shell...' &&
+        git config --global user.email 'student@lab.local' &&
+        git config --global user.name 'Student' &&
+        tail -f /dev/null
+      "
+    volumes:
+      - ./src:/lab/src:ro
+      - workspace-data:/workspace
+    working_dir: /workspace
+
+volumes:
+  gitea-data:
+  gitea-config:
+  workspace-data:

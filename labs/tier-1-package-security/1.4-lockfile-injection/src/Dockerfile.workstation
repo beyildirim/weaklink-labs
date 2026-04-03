@@ -1,0 +1,44 @@
+FROM python:3.11-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    jq \
+    git \
+    ca-certificates \
+    gnupg \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js 20 for the lockfile comparison demo
+RUN mkdir -p /etc/apt/keyrings \
+    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" > /etc/apt/sources.list.d/nodesource.list \
+    && apt-get update \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install pip-tools (for pip-compile) and pip-audit
+RUN pip install pip-tools pip-audit
+
+WORKDIR /app
+
+# Copy project files
+COPY scripts/requirements.in /app/project/requirements.in
+COPY scripts/app.py /app/project/app.py
+COPY scripts/verify-lockfile.sh /app/project/verify-lockfile.sh
+
+# Copy Node.js demo
+COPY node-demo/ /app/node-demo/
+
+# Copy Gitea setup script
+COPY gitea/setup-gitea.sh /app/setup-gitea.sh
+RUN chmod +x /app/setup-gitea.sh /app/project/verify-lockfile.sh
+
+# Create directory for backdoor packages (will be populated from pypi container)
+RUN mkdir -p /app/packages/backdoor
+
+# Copy the backdoor package source so we can build it locally too
+COPY packages/flask-utils-backdoor /tmp/flask-utils-backdoor
+RUN cd /tmp/flask-utils-backdoor && pip wheel --no-deps -w /app/packages/backdoor . && rm -rf /tmp/flask-utils-backdoor
+
+# Keep the container running
+CMD ["sleep", "infinity"]

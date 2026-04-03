@@ -1,0 +1,9 @@
+{
+  "name": "safe-utils",
+  "version": "1.0.0",
+  "description": "A normal, safe utility package for comparison",
+  "main": "index.js",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
+}

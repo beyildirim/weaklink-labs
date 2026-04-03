@@ -1,0 +1,12 @@
+{
+  "name": "phantom-demo-app",
+  "version": "1.0.0",
+  "description": "An app that uses a phantom dependency (debug)",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "acme-framework": "^1.0.0"
+  }
+}

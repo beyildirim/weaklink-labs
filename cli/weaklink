@@ -1,0 +1,483 @@
+#!/usr/bin/env bash
+#
+# weaklink — WeakLink Labs CLI
+#
+# Usage:
+#   weaklink path              Show the learning roadmap and progress
+#   weaklink start <lab-id>    Start a lab environment
+#   weaklink stop              Stop the current lab environment
+#   weaklink reset <lab-id>    Reset a lab to its initial state
+#   weaklink verify <lab-id>   Check if you completed the lab
+#   weaklink hint <lab-id>     Get a progressive hint
+#   weaklink status            Show current lab status
+#   weaklink info <lab-id>     Show lab details
+
+set -euo pipefail
+
+LABS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/labs"
+PROGRESS_DIR="${HOME}/.weaklink"
+CURRENT_LAB_FILE="${PROGRESS_DIR}/current"
+
+mkdir -p "$PROGRESS_DIR"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+DIM='\033[2m'
+NC='\033[0m'
+
+#----------------------------------------------------------------------
+# Helpers
+#----------------------------------------------------------------------
+
+find_lab_dir() {
+    local lab_id="$1"
+    find "$LABS_ROOT" -maxdepth 2 -type d -name "${lab_id}-*" 2>/dev/null | head -1
+}
+
+read_lab_yml() {
+    local lab_dir="$1"
+    local field="$2"
+    grep "^${field}:" "${lab_dir}/lab.yml" 2>/dev/null | sed "s/^${field}: *//" | sed 's/^"//' | sed 's/"$//'
+}
+
+is_completed() {
+    local lab_id="$1"
+    [[ -f "${PROGRESS_DIR}/${lab_id}.completed" ]]
+}
+
+mark_completed() {
+    local lab_id="$1"
+    date -u +"%Y-%m-%dT%H:%M:%SZ" > "${PROGRESS_DIR}/${lab_id}.completed"
+}
+
+get_hint_count() {
+    local lab_id="$1"
+    cat "${PROGRESS_DIR}/${lab_id}.hints" 2>/dev/null || echo "0"
+}
+
+increment_hint() {
+    local lab_id="$1"
+    local current
+    current=$(get_hint_count "$lab_id")
+    echo $((current + 1)) > "${PROGRESS_DIR}/${lab_id}.hints"
+}
+
+check_prerequisites() {
+    local lab_dir="$1"
+    local prereqs
+    prereqs=$(read_lab_yml "$lab_dir" "prerequisites")
+
+    if [[ -z "$prereqs" || "$prereqs" == "none" || "$prereqs" == "[]" ]]; then
+        return 0
+    fi
+
+    # Parse YAML list: [1.1, 1.2] or - 1.1 format
+    local missing=()
+    for prereq in $(echo "$prereqs" | tr -d '[]"' | tr ',' '\n' | tr -d ' '); do
+        if [[ -n "$prereq" ]] && ! is_completed "$prereq"; then
+            missing+=("$prereq")
+        fi
+    done
+
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        echo -e "${YELLOW}⚠  Prerequisites not completed: ${missing[*]}${NC}"
+        echo -e "${DIM}   Complete them first, or run with --skip-prereqs to override.${NC}"
+        return 1
+    fi
+    return 0
+}
+
+#----------------------------------------------------------------------
+# Commands
+#----------------------------------------------------------------------
+
+cmd_path() {
+    echo ""
+    echo -e "${BOLD}  WEAKLINK LABS${NC}"
+    echo -e "  ══════════════"
+    echo ""
+
+    for tier_dir in "$LABS_ROOT"/tier-*/; do
+        [[ -d "$tier_dir" ]] || continue
+
+        local tier_name
+        tier_name=$(basename "$tier_dir" | sed 's/tier-[0-9]*-//' | tr '-' ' ' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1')
+        local tier_num
+        tier_num=$(basename "$tier_dir" | grep -o 'tier-[0-9]*' | grep -o '[0-9]*')
+
+        # Check if tier has any labs
+        local lab_count
+        lab_count=$(find "$tier_dir" -maxdepth 1 -name "*.yml" -path "*/lab.yml" 2>/dev/null | wc -l)
+        local dir_count
+        dir_count=$(find "$tier_dir" -maxdepth 1 -type d ! -name "$(basename "$tier_dir")" 2>/dev/null | wc -l)
+
+        echo -e "  ${BOLD}Tier ${tier_num}: ${tier_name}${NC}"
+
+        if [[ $dir_count -eq 0 ]]; then
+            echo -e "    ${DIM}🔒 Coming soon${NC}"
+            echo ""
+            continue
+        fi
+
+        for lab_dir in "$tier_dir"/*/; do
+            [[ -d "$lab_dir" ]] || continue
+            [[ -f "${lab_dir}/lab.yml" ]] || continue
+
+            local lab_id
+            lab_id=$(read_lab_yml "$lab_dir" "id")
+            local title
+            title=$(read_lab_yml "$lab_dir" "title")
+            local difficulty
+            difficulty=$(read_lab_yml "$lab_dir" "difficulty")
+
+            local icon
+            if is_completed "$lab_id"; then
+                icon="${GREEN}✅${NC}"
+            elif [[ -f "$CURRENT_LAB_FILE" ]] && [[ "$(cat "$CURRENT_LAB_FILE")" == "$lab_id" ]]; then
+                icon="${YELLOW}🔶${NC}"
+            else
+                # Check prerequisites
+                local prereqs
+                prereqs=$(read_lab_yml "$lab_dir" "prerequisites")
+                if [[ -n "$prereqs" && "$prereqs" != "none" && "$prereqs" != "[]" ]]; then
+                    local all_met=true
+                    for prereq in $(echo "$prereqs" | tr -d '[]"' | tr ',' '\n' | tr -d ' '); do
+                        if [[ -n "$prereq" ]] && ! is_completed "$prereq"; then
+                            all_met=false
+                            break
+                        fi
+                    done
+                    if $all_met; then
+                        icon="⬜"
+                    else
+                        icon="${DIM}🔒${NC}"
+                    fi
+                else
+                    icon="⬜"
+                fi
+            fi
+
+            local diff_badge=""
+            case "$difficulty" in
+                beginner)     diff_badge="${GREEN}●${NC}" ;;
+                intermediate) diff_badge="${YELLOW}●●${NC}" ;;
+                advanced)     diff_badge="${RED}●●●${NC}" ;;
+            esac
+
+            printf "    %b  %-4s %-45s %b\n" "$icon" "$lab_id" "$title" "$diff_badge"
+        done
+        echo ""
+    done
+
+    echo -e "  ${DIM}Legend: ✅ completed  🔶 in progress  ⬜ available  🔒 locked${NC}"
+    echo -e "  ${DIM}Difficulty: ${GREEN}●${NC}${DIM} beginner  ${YELLOW}●●${NC}${DIM} intermediate  ${RED}●●●${NC}${DIM} advanced${NC}"
+    echo ""
+}
+
+cmd_start() {
+    local lab_id="$1"
+    local skip_prereqs="${2:-}"
+    local lab_dir
+    lab_dir=$(find_lab_dir "$lab_id")
+
+    if [[ -z "$lab_dir" ]]; then
+        echo -e "${RED}Error: Lab ${lab_id} not found.${NC}"
+        echo "Run 'weaklink path' to see available labs."
+        exit 1
+    fi
+
+    if [[ ! -f "${lab_dir}/docker-compose.yml" ]]; then
+        echo -e "${RED}Error: Lab ${lab_id} has no docker-compose.yml — not yet implemented.${NC}"
+        exit 1
+    fi
+
+    # Check prerequisites
+    if [[ "$skip_prereqs" != "--skip-prereqs" ]]; then
+        check_prerequisites "$lab_dir" || exit 1
+    fi
+
+    # Stop any running lab
+    if [[ -f "$CURRENT_LAB_FILE" ]]; then
+        cmd_stop 2>/dev/null || true
+    fi
+
+    local title
+    title=$(read_lab_yml "$lab_dir" "title")
+    local estimated_time
+    estimated_time=$(read_lab_yml "$lab_dir" "estimated_time")
+
+    echo ""
+    echo -e "  ${BOLD}Starting lab: ${title}${NC}"
+    echo -e "  ══════════════════════════════════════"
+    echo -e "  ${DIM}Estimated time: ${estimated_time:-30m}${NC}"
+    echo ""
+
+    # Start the environment
+    echo -e "  ${CYAN}⠋${NC} Starting lab environment..."
+    (cd "$lab_dir" && docker compose up -d --build 2>&1 | sed 's/^/    /')
+
+    # Track current lab
+    echo "$lab_id" > "$CURRENT_LAB_FILE"
+    echo "$lab_dir" > "${PROGRESS_DIR}/current_dir"
+
+    echo ""
+    echo -e "  ${GREEN}✓${NC} Environment ready!"
+    echo ""
+    echo -e "  ${BOLD}📖 Lab guide:${NC} ${lab_dir}/README.md"
+    echo ""
+
+    # Show phases from lab.yml
+    local phase_understand phase_break phase_defend
+    phase_understand=$(read_lab_yml "$lab_dir" "phase_understand")
+    phase_break=$(read_lab_yml "$lab_dir" "phase_break")
+    phase_defend=$(read_lab_yml "$lab_dir" "phase_defend")
+
+    [[ -n "$phase_understand" ]] && echo -e "  ${BLUE}Phase 1: UNDERSTAND${NC} — ${phase_understand}"
+    [[ -n "$phase_break" ]]      && echo -e "  ${YELLOW}Phase 2: BREAK${NC}      — ${phase_break}"
+    [[ -n "$phase_defend" ]]     && echo -e "  ${GREEN}Phase 3: DEFEND${NC}     — ${phase_defend}"
+    echo ""
+    echo -e "  Run '${BOLD}weaklink verify ${lab_id}${NC}' when you think you've completed the lab."
+    echo -e "  Run '${BOLD}weaklink hint ${lab_id}${NC}' if you're stuck."
+    echo ""
+}
+
+cmd_stop() {
+    if [[ ! -f "$CURRENT_LAB_FILE" ]]; then
+        echo -e "${DIM}No lab is currently running.${NC}"
+        return 0
+    fi
+
+    local lab_id lab_dir
+    lab_id=$(cat "$CURRENT_LAB_FILE")
+    lab_dir=$(cat "${PROGRESS_DIR}/current_dir" 2>/dev/null)
+
+    if [[ -n "$lab_dir" && -f "${lab_dir}/docker-compose.yml" ]]; then
+        echo -e "  Stopping lab ${lab_id}..."
+        (cd "$lab_dir" && docker compose down -v 2>&1 | sed 's/^/    /')
+    fi
+
+    rm -f "$CURRENT_LAB_FILE" "${PROGRESS_DIR}/current_dir"
+    echo -e "  ${GREEN}✓${NC} Lab stopped."
+}
+
+cmd_reset() {
+    local lab_id="$1"
+    local lab_dir
+    lab_dir=$(find_lab_dir "$lab_id")
+
+    if [[ -z "$lab_dir" ]]; then
+        echo -e "${RED}Error: Lab ${lab_id} not found.${NC}"
+        exit 1
+    fi
+
+    echo -e "  Resetting lab ${lab_id}..."
+    (cd "$lab_dir" && docker compose down -v 2>/dev/null || true)
+    rm -f "${PROGRESS_DIR}/${lab_id}.completed" "${PROGRESS_DIR}/${lab_id}.hints"
+
+    echo -e "  ${GREEN}✓${NC} Lab reset. Run 'weaklink start ${lab_id}' to begin again."
+}
+
+cmd_verify() {
+    local lab_id="$1"
+    local lab_dir
+    lab_dir=$(find_lab_dir "$lab_id")
+
+    if [[ -z "$lab_dir" ]]; then
+        echo -e "${RED}Error: Lab ${lab_id} not found.${NC}"
+        exit 1
+    fi
+
+    if [[ ! -f "${lab_dir}/verify.sh" ]]; then
+        echo -e "${YELLOW}No verification script for lab ${lab_id}.${NC}"
+        exit 1
+    fi
+
+    echo -e "  ${CYAN}Verifying lab ${lab_id}...${NC}"
+    echo ""
+
+    if bash "${lab_dir}/verify.sh"; then
+        mark_completed "$lab_id"
+        echo ""
+        echo -e "  ${GREEN}${BOLD}✅ Lab ${lab_id} completed!${NC}"
+        echo ""
+
+        # Suggest next lab
+        local next_lab=""
+        local found_current=false
+        for dir in "$LABS_ROOT"/tier-*/*/; do
+            [[ -f "${dir}/lab.yml" ]] || continue
+            local lid
+            lid=$(read_lab_yml "$dir" "id")
+            if $found_current; then
+                next_lab="$lid"
+                break
+            fi
+            if [[ "$lid" == "$lab_id" ]]; then
+                found_current=true
+            fi
+        done
+
+        if [[ -n "$next_lab" ]]; then
+            echo -e "  Next lab: ${BOLD}weaklink start ${next_lab}${NC}"
+        fi
+    else
+        echo ""
+        echo -e "  ${RED}❌ Not quite — check the output above and try again.${NC}"
+        echo -e "  ${DIM}Run 'weaklink hint ${lab_id}' if you're stuck.${NC}"
+    fi
+}
+
+cmd_hint() {
+    local lab_id="$1"
+    local lab_dir
+    lab_dir=$(find_lab_dir "$lab_id")
+
+    if [[ -z "$lab_dir" ]]; then
+        echo -e "${RED}Error: Lab ${lab_id} not found.${NC}"
+        exit 1
+    fi
+
+    local hint_num
+    hint_num=$(get_hint_count "$lab_id")
+    hint_num=$((hint_num + 1))
+
+    local hint_file="${lab_dir}/hints/hint-${hint_num}.md"
+    if [[ ! -f "$hint_file" ]]; then
+        echo -e "${YELLOW}No more hints available for lab ${lab_id}.${NC}"
+        echo -e "${DIM}Check the solution/ directory if you're completely stuck.${NC}"
+        return
+    fi
+
+    increment_hint "$lab_id"
+
+    local total_hints
+    total_hints=$(find "${lab_dir}/hints" -name "hint-*.md" 2>/dev/null | wc -l | tr -d ' ')
+
+    echo ""
+    echo -e "  ${YELLOW}💡 Hint ${hint_num}/${total_hints} for lab ${lab_id}${NC}"
+    echo -e "  ────────────────────────────────"
+    cat "$hint_file" | sed 's/^/  /'
+    echo ""
+
+    if [[ $hint_num -lt $total_hints ]]; then
+        echo -e "  ${DIM}Run 'weaklink hint ${lab_id}' again for the next hint.${NC}"
+    else
+        echo -e "  ${DIM}That was the last hint. Check solution/ if still stuck.${NC}"
+    fi
+}
+
+cmd_info() {
+    local lab_id="$1"
+    local lab_dir
+    lab_dir=$(find_lab_dir "$lab_id")
+
+    if [[ -z "$lab_dir" ]]; then
+        echo -e "${RED}Error: Lab ${lab_id} not found.${NC}"
+        exit 1
+    fi
+
+    echo ""
+    echo -e "  ${BOLD}$(read_lab_yml "$lab_dir" "title")${NC}"
+    echo -e "  ──────────────────────────────────────"
+    echo -e "  ${DIM}ID:${NC}            $(read_lab_yml "$lab_dir" "id")"
+    echo -e "  ${DIM}Tier:${NC}          $(read_lab_yml "$lab_dir" "tier")"
+    echo -e "  ${DIM}Difficulty:${NC}    $(read_lab_yml "$lab_dir" "difficulty")"
+    echo -e "  ${DIM}Time:${NC}          $(read_lab_yml "$lab_dir" "estimated_time")"
+    echo -e "  ${DIM}Prerequisites:${NC} $(read_lab_yml "$lab_dir" "prerequisites")"
+    echo -e "  ${DIM}Tags:${NC}          $(read_lab_yml "$lab_dir" "tags")"
+    echo ""
+
+    local phase_understand phase_break phase_defend
+    phase_understand=$(read_lab_yml "$lab_dir" "phase_understand")
+    phase_break=$(read_lab_yml "$lab_dir" "phase_break")
+    phase_defend=$(read_lab_yml "$lab_dir" "phase_defend")
+
+    echo -e "  ${BOLD}Phases:${NC}"
+    [[ -n "$phase_understand" ]] && echo -e "    ${BLUE}1. UNDERSTAND${NC}  ${phase_understand}"
+    [[ -n "$phase_break" ]]      && echo -e "    ${YELLOW}2. BREAK${NC}       ${phase_break}"
+    [[ -n "$phase_defend" ]]     && echo -e "    ${GREEN}3. DEFEND${NC}      ${phase_defend}"
+    echo ""
+}
+
+cmd_status() {
+    if [[ ! -f "$CURRENT_LAB_FILE" ]]; then
+        echo -e "  ${DIM}No lab is currently running.${NC}"
+        echo -e "  Run '${BOLD}weaklink path${NC}' to see available labs."
+        return
+    fi
+
+    local lab_id lab_dir
+    lab_id=$(cat "$CURRENT_LAB_FILE")
+    lab_dir=$(cat "${PROGRESS_DIR}/current_dir" 2>/dev/null)
+
+    echo ""
+    echo -e "  ${BOLD}Current lab: ${lab_id}${NC} — $(read_lab_yml "$lab_dir" "title")"
+    echo ""
+
+    if [[ -n "$lab_dir" && -f "${lab_dir}/docker-compose.yml" ]]; then
+        echo -e "  ${DIM}Containers:${NC}"
+        (cd "$lab_dir" && docker compose ps 2>/dev/null | sed 's/^/    /')
+    fi
+    echo ""
+
+    local completed
+    completed=$(find "$PROGRESS_DIR" -name "*.completed" 2>/dev/null | wc -l | tr -d ' ')
+    echo -e "  ${DIM}Labs completed: ${completed}${NC}"
+    echo ""
+}
+
+#----------------------------------------------------------------------
+# Main
+#----------------------------------------------------------------------
+
+case "${1:-}" in
+    path)
+        cmd_path
+        ;;
+    start)
+        [[ -z "${2:-}" ]] && { echo "Usage: weaklink start <lab-id>"; exit 1; }
+        cmd_start "$2" "${3:-}"
+        ;;
+    stop)
+        cmd_stop
+        ;;
+    reset)
+        [[ -z "${2:-}" ]] && { echo "Usage: weaklink reset <lab-id>"; exit 1; }
+        cmd_reset "$2"
+        ;;
+    verify)
+        [[ -z "${2:-}" ]] && { echo "Usage: weaklink verify <lab-id>"; exit 1; }
+        cmd_verify "$2"
+        ;;
+    hint)
+        [[ -z "${2:-}" ]] && { echo "Usage: weaklink hint <lab-id>"; exit 1; }
+        cmd_hint "$2"
+        ;;
+    info)
+        [[ -z "${2:-}" ]] && { echo "Usage: weaklink info <lab-id>"; exit 1; }
+        cmd_info "$2"
+        ;;
+    status)
+        cmd_status
+        ;;
+    *)
+        echo ""
+        echo "  WeakLink Labs (weaklink)"
+        echo ""
+        echo "  Usage:"
+        echo "    weaklink path              Show the learning roadmap"
+        echo "    weaklink start <lab-id>    Start a lab environment"
+        echo "    weaklink stop              Stop the current lab"
+        echo "    weaklink reset <lab-id>    Reset a lab"
+        echo "    weaklink verify <lab-id>   Check completion"
+        echo "    weaklink hint <lab-id>     Get a hint"
+        echo "    weaklink info <lab-id>     Show lab details"
+        echo "    weaklink status            Current lab status"
+        echo ""
+        ;;
+esac

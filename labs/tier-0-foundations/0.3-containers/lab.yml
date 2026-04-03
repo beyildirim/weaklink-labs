@@ -1,0 +1,11 @@
+id: "0.3"
+title: "How Containers Work"
+tier: 0
+module: "foundations"
+prerequisites: ["0.2"]
+difficulty: beginner
+estimated_time: 30m
+tags: ["docker", "containers", "registry", "digest-pinning", "tag-mutability"]
+phase_understand: "Build a container image and inspect its layers"
+phase_break: "Exploit mutable tags to swap a safe image for a backdoored one"
+phase_defend: "Pin images by digest to guarantee immutable references"

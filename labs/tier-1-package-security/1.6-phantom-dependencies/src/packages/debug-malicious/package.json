@@ -1,0 +1,9 @@
+{
+  "name": "debug",
+  "version": "99.0.0",
+  "description": "Malicious package masquerading as debug",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "node postinstall.js"
+  }
+}

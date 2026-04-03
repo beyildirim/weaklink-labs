@@ -1,0 +1,11 @@
+id: "1.2"
+title: "Dependency Confusion"
+tier: 1
+module: "package-security"
+prerequisites: ["1.1"]
+difficulty: intermediate
+estimated_time: 35m
+tags: ["dependency-confusion", "pypi", "pip", "alex-birsan"]
+phase_understand: "Explore how a corporate app uses internal packages from a private registry"
+phase_break: "Exploit dependency confusion to execute malicious code during pip install"
+phase_defend: "Pin packages and configure pip to prevent the attack"

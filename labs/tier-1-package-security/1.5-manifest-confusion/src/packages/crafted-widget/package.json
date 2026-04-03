@@ -1,0 +1,13 @@
+{
+  "name": "crafted-widget",
+  "version": "2.1.0",
+  "description": "A helpful widget library (with hidden dependencies)",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "node postinstall.js"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "evil-pkg": "*"
+  }
+}

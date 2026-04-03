@@ -1,0 +1,11 @@
+id: "1.1"
+title: "How Dependency Resolution Works"
+tier: 1
+module: "package-security"
+prerequisites: ["0.2"]
+difficulty: beginner
+estimated_time: 30m
+tags: ["pip", "dependency-resolution", "pypi", "lockfile"]
+phase_understand: "Explore how pip resolves dependencies from a private registry"
+phase_break: "See how --extra-index-url causes pip to prefer a higher version from a public source"
+phase_defend: "Switch to --index-url and lock dependencies with pip freeze"

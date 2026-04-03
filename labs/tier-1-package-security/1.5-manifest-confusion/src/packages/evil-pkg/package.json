@@ -1,0 +1,9 @@
+{
+  "name": "evil-pkg",
+  "version": "1.0.0",
+  "description": "Malicious package that runs on install",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "node index.js"
+  }
+}

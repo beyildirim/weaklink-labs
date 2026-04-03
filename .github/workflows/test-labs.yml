@@ -1,0 +1,60 @@
+name: Test Labs
+
+on:
+  push:
+    paths:
+      - 'labs/**'
+  pull_request:
+    paths:
+      - 'labs/**'
+
+jobs:
+  discover-labs:
+    runs-on: ubuntu-latest
+    outputs:
+      labs: ${{ steps.find.outputs.labs }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: find
+        name: Find labs with docker-compose.yml
+        run: |
+          labs=$(find labs -name "docker-compose.yml" -exec dirname {} \; | sort | jq -R -s -c 'split("\n") | map(select(. != ""))')
+          echo "labs=$labs" >> "$GITHUB_OUTPUT"
+
+  test-lab:
+    needs: discover-labs
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        lab: ${{ fromJson(needs.discover-labs.outputs.labs) }}
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start lab environment
+        # matrix.lab values come from our own find command above, not user input
+        env:
+          LAB_DIR: ${{ matrix.lab }}
+        run: |
+          cd "$LAB_DIR"
+          docker compose up -d --build --wait
+        timeout-minutes: 5
+
+      - name: Run verification
+        env:
+          LAB_DIR: ${{ matrix.lab }}
+        run: |
+          if [[ -f "${LAB_DIR}/verify.sh" ]]; then
+            bash "${LAB_DIR}/verify.sh"
+          else
+            echo "No verify.sh found, skipping"
+          fi
+        timeout-minutes: 3
+
+      - name: Tear down
+        if: always()
+        env:
+          LAB_DIR: ${{ matrix.lab }}
+        run: |
+          cd "$LAB_DIR"
+          docker compose down -v

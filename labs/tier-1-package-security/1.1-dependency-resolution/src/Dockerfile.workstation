@@ -1,0 +1,26 @@
+FROM python:3.11-slim
+
+# Install system tools needed for the lab
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+
+# Install useful Python tools for the lab
+RUN pip install --no-cache-dir pipdeptree
+
+# Create working directory
+WORKDIR /app
+
+# Copy application code
+COPY app/ /app/
+
+# Copy pip configs (user switches between them during the lab)
+COPY pip.conf.extra-index /etc/pip-configs/pip.conf.extra-index
+COPY pip.conf.safe /etc/pip-configs/pip.conf.safe
+
+# Start with the DANGEROUS config (--extra-index-url)
+RUN cp /etc/pip-configs/pip.conf.extra-index /etc/pip.conf
+
+# Copy entrypoint
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+CMD ["sleep", "infinity"]

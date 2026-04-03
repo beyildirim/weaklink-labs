@@ -1,0 +1,56 @@
+services:
+  registry:
+    image: registry:2
+    ports:
+      - "5000:5000"
+    volumes:
+      - registry-data:/var/lib/registry
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5000/v2/"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+      start_period: 3s
+
+  workspace:
+    image: docker:24-dind
+    privileged: true
+    depends_on:
+      registry:
+        condition: service_healthy
+    environment:
+      - DOCKER_TLS_CERTDIR=
+    volumes:
+      - ./src:/lab/src:ro
+      - workspace-data:/workspace
+    entrypoint: >
+      sh -c "
+        dockerd-entrypoint.sh &
+        echo '[*] Waiting for Docker daemon...' &&
+        for i in $$(seq 1 30); do docker info > /dev/null 2>&1 && break || sleep 1; done &&
+        echo '[+] Docker daemon ready.' &&
+        apk add --no-cache curl bash jq > /dev/null 2>&1 &&
+
+        echo '[*] Building and pushing safe image to registry...' &&
+        cd /lab/src/app &&
+        docker build -q -t registry:5000/webapp:latest -t registry:5000/webapp:1.0.0 . &&
+        docker push registry:5000/webapp:latest &&
+        docker push registry:5000/webapp:1.0.0 &&
+
+        SAFE_DIGEST=$$(docker inspect --format='{{index .RepoDigests 0}}' registry:5000/webapp:latest | cut -d@ -f2) &&
+        echo \"$${SAFE_DIGEST}\" > /workspace/safe-digest.txt &&
+        echo \"[+] Safe image digest: $${SAFE_DIGEST}\" &&
+
+        echo '' &&
+        echo '========================================' &&
+        echo '  Lab 0.3 environment is ready!' &&
+        echo '  Local registry: localhost:5000' &&
+        echo '========================================' &&
+        echo '' &&
+        tail -f /dev/null
+      "
+    working_dir: /workspace
+
+volumes:
+  registry-data:
+  workspace-data:

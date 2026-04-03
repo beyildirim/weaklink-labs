@@ -1,0 +1,7 @@
+# Approved packages for this project
+# One package name per line (case-insensitive)
+requests
+pip
+setuptools
+wheel
+pip-audit

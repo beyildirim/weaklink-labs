@@ -1,0 +1,26 @@
+FROM python:3.11-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+RUN pip install pypiserver
+
+RUN mkdir -p /data/packages
+
+# Build BOTH versions of flask-utils as wheels
+# The legitimate version
+COPY packages/flask-utils /tmp/flask-utils
+WORKDIR /tmp/flask-utils
+RUN pip wheel --no-deps -w /data/packages .
+
+# Store the backdoor wheel separately (not served by default)
+COPY packages/flask-utils-backdoor /tmp/flask-utils-backdoor
+WORKDIR /tmp/flask-utils-backdoor
+RUN pip wheel --no-deps -w /tmp/backdoor-packages .
+
+# Only serve the legitimate version by default
+# The backdoor wheel is available at /tmp/backdoor-packages/ for the setup script
+RUN rm -rf /tmp/flask-utils /tmp/flask-utils-backdoor
+
+EXPOSE 8080
+
+# --disable-fallback prevents fetching from real PyPI (keeps lab self-contained)
+CMD ["pypi-server", "run", "-p", "8080", "--disable-fallback", "/data/packages"]

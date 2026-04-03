@@ -1,0 +1,11 @@
+id: "1.4"
+title: "Lockfile Injection"
+tier: 1
+module: "package-security"
+prerequisites: ["1.1"]
+difficulty: intermediate
+estimated_time: 35m
+tags: ["lockfile", "pip-compile", "npm", "code-review", "supply-chain"]
+phase_understand: "Learn how lockfiles ensure reproducible builds and why they matter"
+phase_break: "Exploit a malicious PR that tampers with lockfile hashes to inject a backdoored package"
+phase_defend: "Build a CI check that regenerates lockfiles and detects tampering"

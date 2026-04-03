@@ -1,0 +1,4 @@
+# Secure requirements file with exact version pins
+# Generated with: pip freeze after installing from trusted source
+# In production, also add --require-hashes for full integrity verification
+requests==2.31.0

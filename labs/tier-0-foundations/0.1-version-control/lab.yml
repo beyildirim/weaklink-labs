@@ -1,0 +1,11 @@
+id: "0.1"
+title: "How Version Control Works"
+tier: 0
+module: "foundations"
+prerequisites: []
+difficulty: beginner
+estimated_time: 25m
+tags: ["git", "version-control", "gitea", "branch-protection"]
+phase_understand: "Explore a Git repository — commits, branches, and diffs"
+phase_break: "Hide malicious code in a commit that modifies a build script"
+phase_defend: "Enable branch protection and require pull request reviews"

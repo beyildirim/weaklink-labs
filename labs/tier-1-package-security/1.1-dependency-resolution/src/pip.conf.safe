@@ -1,0 +1,3 @@
+[global]
+index-url = http://private-pypi:8080/simple/
+trusted-host = private-pypi

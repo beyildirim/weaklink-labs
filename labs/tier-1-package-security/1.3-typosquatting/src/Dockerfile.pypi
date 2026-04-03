@@ -1,0 +1,25 @@
+FROM python:3.11-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+RUN pip install pypiserver
+
+# Create package directory
+RUN mkdir -p /data/packages
+
+# Copy package source and build wheels
+COPY packages/requests-legit /tmp/requests-legit
+COPY packages/reqeusts-typo /tmp/reqeusts-typo
+
+WORKDIR /tmp/requests-legit
+RUN pip wheel --no-deps -w /data/packages .
+
+WORKDIR /tmp/reqeusts-typo
+RUN pip wheel --no-deps -w /data/packages .
+
+# Clean up source
+RUN rm -rf /tmp/requests-legit /tmp/reqeusts-typo
+
+EXPOSE 8080
+
+# --disable-fallback prevents fetching from real PyPI (keeps lab self-contained)
+CMD ["pypi-server", "run", "-p", "8080", "--disable-fallback", "/data/packages"]

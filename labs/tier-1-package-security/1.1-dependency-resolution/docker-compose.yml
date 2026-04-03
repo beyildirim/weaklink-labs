@@ -1,0 +1,55 @@
+services:
+  # Build packages first (init container pattern)
+  package-builder:
+    build:
+      context: ./src
+      dockerfile: Dockerfile.builder
+    volumes:
+      - private-packages:/packages/private
+      - public-packages:/packages/public
+
+  # Private PyPI server (simulates corporate internal registry)
+  private-pypi:
+    image: pypiserver/pypiserver:latest
+    command: run -p 8080 -a . -P . /data/packages
+    volumes:
+      - private-packages:/data/packages
+    depends_on:
+      package-builder:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/simple/')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Public PyPI server (simulates public PyPI)
+  public-pypi:
+    image: pypiserver/pypiserver:latest
+    command: run -p 8080 -a . -P . /data/packages
+    volumes:
+      - public-packages:/data/packages
+    depends_on:
+      package-builder:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/simple/')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Developer workstation
+  workstation:
+    build:
+      context: ./src
+      dockerfile: Dockerfile.workstation
+    depends_on:
+      private-pypi:
+        condition: service_healthy
+      public-pypi:
+        condition: service_healthy
+    entrypoint: ["/entrypoint.sh"]
+
+volumes:
+  private-packages:
+  public-packages:
