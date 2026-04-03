@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitea
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.componentLabels" (dict "context" . "component" "gitea") | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "gitea") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "gitea") | nindent 8 }}
+    spec:
+      containers:
+        - name: gitea
+          image: "{{ .Values.gitea.image }}:{{ .Values.gitea.tag }}"
+          ports:
+            - name: http
+              containerPort: {{ .Values.gitea.port }}
+              protocol: TCP
+            - name: ssh
+              containerPort: {{ .Values.gitea.sshPort }}
+              protocol: TCP
+          env:
+            - name: GITEA__security__INSTALL_LOCK
+              value: "true"
+            - name: GITEA__server__ROOT_URL
+              value: "http://gitea:{{ .Values.gitea.port }}"
+            - name: GITEA__server__HTTP_PORT
+              value: "{{ .Values.gitea.port }}"
+            - name: GITEA__server__SSH_PORT
+              value: "{{ .Values.gitea.sshPort }}"
+            - name: GITEA__server__DOMAIN
+              value: "gitea"
+            - name: GITEA__database__DB_TYPE
+              value: "sqlite3"
+            - name: GITEA__service__DISABLE_REGISTRATION
+              value: "false"
+            - name: GITEA__service__REQUIRE_SIGNIN_VIEW
+              value: "false"
+          readinessProbe:
+            httpGet:
+              path: /api/v1/version
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/v1/version
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            {{- toYaml .Values.gitea.resources | nindent 12 }}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: gitea-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gitea-data
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.componentLabels" (dict "context" . "component" "gitea") | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.gitea.persistence.size }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitea
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.componentLabels" (dict "context" . "component" "gitea") | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.gitea.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: {{ .Values.gitea.sshPort }}
+      targetPort: ssh
+      protocol: TCP
+      name: ssh
+  selector:
+    {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "gitea") | nindent 4 }}

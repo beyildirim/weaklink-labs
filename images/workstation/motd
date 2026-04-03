@@ -1,0 +1,12 @@
+
+Welcome to WeakLink Labs workstation!
+
+Lab registries:
+  PyPI (private): http://pypi-private:8080/simple/
+  PyPI (public):  http://pypi-public:8080/simple/
+  npm (Verdaccio): http://verdaccio:4873/
+  Git (Gitea):    http://gitea:3000
+  OCI Registry:   registry:5000
+
+Run 'weaklink-help' to see available commands.
+

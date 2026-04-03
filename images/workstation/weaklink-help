@@ -1,0 +1,40 @@
+#!/bin/bash
+cat << 'EOF'
+
+WeakLink Labs — Available Commands
+===================================
+
+Package Management:
+  pip install <pkg>            Install a Python package
+  pip-audit                    Audit installed packages for vulnerabilities
+  pipdeptree                   Show dependency tree
+  pip-compile                  Generate lockfile from requirements.in
+  npm install <pkg>            Install an npm package
+  depcheck                     Check for unused/missing dependencies
+
+Registry Inspection:
+  pip index versions <pkg>     Check available versions on configured indexes
+  npm view <pkg>               View package metadata from Verdaccio
+  npm pack <pkg>               Download and extract a package tarball
+  curl http://pypi-private:8080/simple/   Browse private PyPI
+  curl http://pypi-public:8080/simple/    Browse public PyPI
+
+Git (Gitea):
+  git clone http://gitea:3000/<user>/<repo>.git
+  curl http://gitea:3000/api/v1/version   Check Gitea API
+
+Container Registry:
+  curl http://registry:5000/v2/_catalog   List images
+  curl http://registry:5000/v2/<name>/tags/list   List tags
+
+Configuration:
+  cat ~/.config/pip/pip.conf   View pip configuration
+  cat ~/.npmrc                 View npm configuration
+
+Tips:
+  - Your pip config uses --extra-index-url (vulnerable by design)
+  - Fix it by using --index-url with only the private registry
+  - Use pip install --no-deps to skip transitive dependencies
+  - Use npm --registry=<url> to override the default registry
+
+EOF

@@ -14,30 +14,29 @@ This lab runs a **local Docker registry** (like a private Docker Hub) and a work
 
 | Service        | URL / Access           |
 |----------------|------------------------|
-| Local Registry | localhost:5000         |
+| Local Registry | registry:5000          |
 
 ## Starting the Lab
 
 ```bash
-cd labs/tier-0-foundations/0.3-containers
-docker compose up -d
+weaklink start 0.3
 ```
 
 Wait about 20-30 seconds for the Docker-in-Docker daemon to start and the safe image to be built. Check that everything is running:
 
 ```bash
-docker compose ps
+kubectl get pods -l lab=0.3
 ```
 
-You should see `registry` (healthy) and `workspace` running.
+You should see `registry` and `workstation` pods running.
 
-Open a shell inside the workspace container:
+Open a shell inside the workstation pod:
 
 ```bash
-docker compose exec workspace sh
+weaklink shell 0.3
 ```
 
-You are now inside the workspace container with its own Docker daemon. All commands below run here.
+You are now inside the workstation pod with its own Docker daemon. All commands below run here.
 
 ---
 

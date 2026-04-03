@@ -14,31 +14,30 @@ This lab runs a **local PyPI server** (a private package repository, like a mini
 
 | Service       | URL / Access                |
 |---------------|-----------------------------|
-| Local PyPI    | http://localhost:8080       |
-| PyPI browser  | http://localhost:8080/simple/ |
+| Local PyPI    | http://pypi-private:8080       |
+| PyPI browser  | http://pypi-private:8080/simple/ |
 
 ## Starting the Lab
 
 ```bash
-cd labs/tier-0-foundations/0.2-package-managers
-docker compose up -d
+weaklink start 0.2
 ```
 
 Wait about 10-15 seconds for the packages to build. Check that everything is running:
 
 ```bash
-docker compose ps
+kubectl get pods -l lab=0.2
 ```
 
-You should see `pypi` running (healthy) and `workspace` running. The `build-packages` container will have exited (normal -- it only runs once to prepare the packages).
+You should see the `pypi` and `workstation` pods running.
 
-Open a shell inside the workspace container:
+Open a shell inside the workstation pod:
 
 ```bash
-docker compose exec workspace bash
+weaklink shell 0.2
 ```
 
-You are now inside the workspace container. All commands below run here.
+You are now inside the workstation pod. All commands below run here.
 
 ---
 

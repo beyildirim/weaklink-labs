@@ -14,32 +14,31 @@ This lab runs a **Gitea** server (a lightweight Git hosting platform, similar to
 
 | Service     | URL / Access                        |
 |-------------|-------------------------------------|
-| Gitea UI    | http://localhost:3000               |
+| Gitea UI    | http://gitea:3000                   |
 | Login       | `labadmin` / `SupplyChainLab1!`     |
 | Repository  | `labadmin/web-app`                  |
 
 ## Starting the Lab
 
 ```bash
-cd labs/tier-0-foundations/0.1-version-control
-docker compose up -d
+weaklink start 0.1
 ```
 
 Wait about 15-20 seconds for setup to complete. Check that everything is running:
 
 ```bash
-docker compose ps
+kubectl get pods -l lab=0.1
 ```
 
-You should see `gitea` running (healthy) and `workspace` running. The `setup` container will have exited (that is normal -- it only runs once).
+You should see `gitea` and `workstation` pods running.
 
-Now open a shell inside the workspace container:
+Now open a shell inside the workstation pod:
 
 ```bash
-docker compose exec workspace sh
+weaklink shell 0.1
 ```
 
-You are now inside the workspace container. All Git commands below run here.
+You are now inside the workstation pod. All Git commands below run here.
 
 ---
 
@@ -219,7 +218,7 @@ EXFILTRATED: SECRET_API_KEY=sk-prod-abc123-very-secret
 
 ### Step 5: See how it looks in the Gitea UI
 
-Open http://localhost:3000/labadmin/web-app/commits/branch/main in your browser.
+Open http://gitea:3000/labadmin/web-app/commits/branch/main in your browser.
 
 Click on the latest commit. The malicious line is there in the diff -- but buried among legitimate code changes. In a real PR with 500 changed lines, would you have caught it?
 
@@ -241,7 +240,7 @@ git push origin main
 
 ### Step 2: Enable branch protection in Gitea
 
-Open the Gitea UI at http://localhost:3000.
+Open the Gitea UI at http://gitea:3000.
 
 1. Log in as `labadmin` / `SupplyChainLab1!`
 2. Go to the repository: click on **labadmin/web-app**

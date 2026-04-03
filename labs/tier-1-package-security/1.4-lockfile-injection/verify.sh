@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Verification script for Lab 1.4: Lockfile Injection
+# Runs INSIDE the workstation pod via kubectl exec.
 #
 
 set -uo pipefail
 
 PASS=0
 FAIL=0
-CONTAINER="lab-1.4-workstation"
 
 check() {
     local description="$1"
@@ -28,7 +28,7 @@ echo "  ======================================="
 echo ""
 
 # Check 1: /tmp/lockfile-pwned does NOT exist
-docker exec "$CONTAINER" test -f /tmp/lockfile-pwned 2>/dev/null
+test -f /tmp/lockfile-pwned 2>/dev/null
 if [[ $? -ne 0 ]]; then
     check "Compromise marker /tmp/lockfile-pwned does NOT exist" "0"
 else
@@ -36,15 +36,15 @@ else
 fi
 
 # Check 2: verify-lockfile.sh exists in the project
-docker exec "$CONTAINER" test -f /app/project/verify-lockfile.sh 2>/dev/null
+test -f /app/project/verify-lockfile.sh 2>/dev/null
 check "verify-lockfile.sh script exists" "$?"
 
 # Check 3: verify-lockfile.sh is executable
-docker exec "$CONTAINER" test -x /app/project/verify-lockfile.sh 2>/dev/null
+test -x /app/project/verify-lockfile.sh 2>/dev/null
 check "verify-lockfile.sh is executable" "$?"
 
 # Check 4: The lockfile matches a fresh pip-compile output
-docker exec "$CONTAINER" bash -c '
+bash -c '
 cd /app/project && \
 pip-compile --generate-hashes \
     --index-url http://pypi:8080/simple/ \

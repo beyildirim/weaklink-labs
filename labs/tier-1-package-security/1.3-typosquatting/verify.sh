@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Verification script for Lab 1.3: Typosquatting
+# Runs INSIDE the workstation pod via kubectl exec.
 #
 
 set -uo pipefail
 
 PASS=0
 FAIL=0
-CONTAINER="lab-1.3-workstation"
 
 check() {
     local description="$1"
@@ -28,7 +28,7 @@ echo "  ================================="
 echo ""
 
 # Check 1: reqeusts (typosquatted) is NOT installed
-docker exec "$CONTAINER" pip show reqeusts > /dev/null 2>&1
+pip show reqeusts > /dev/null 2>&1
 if [[ $? -ne 0 ]]; then
     check "Typosquatted 'reqeusts' package is NOT installed" "0"
 else
@@ -36,11 +36,11 @@ else
 fi
 
 # Check 2: requests (legitimate) IS installed
-docker exec "$CONTAINER" pip show requests > /dev/null 2>&1
+pip show requests > /dev/null 2>&1
 check "Legitimate 'requests' package IS installed" "$?"
 
 # Check 3: /tmp/typosquat-exfil does NOT exist
-docker exec "$CONTAINER" test -f /tmp/typosquat-exfil 2>/dev/null
+test -f /tmp/typosquat-exfil 2>/dev/null
 if [[ $? -ne 0 ]]; then
     check "Exfiltration file /tmp/typosquat-exfil does NOT exist" "0"
 else
@@ -48,10 +48,10 @@ else
 fi
 
 # Check 4: A requirements.txt with pinned versions exists in /app/
-docker exec "$CONTAINER" test -f /app/requirements.txt 2>/dev/null
+test -f /app/requirements.txt 2>/dev/null
 if [[ $? -eq 0 ]]; then
     # Check it contains exact version pins (== format)
-    docker exec "$CONTAINER" grep -q "==" /app/requirements.txt 2>/dev/null
+    grep -q "==" /app/requirements.txt 2>/dev/null
     check "requirements.txt exists with pinned versions (==)" "$?"
 else
     check "requirements.txt exists with pinned versions (==)" "1"

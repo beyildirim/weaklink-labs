@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Solution for Lab 1.3: Typosquatting
-# Run inside the workstation container: docker exec -it lab-1.3-workstation bash < solution/solve.sh
+# Run inside the workstation pod: weaklink shell 1.3 < solution/solve.sh
 #
 
 set -e

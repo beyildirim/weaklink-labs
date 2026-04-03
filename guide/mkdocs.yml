@@ -1,0 +1,68 @@
+site_name: WeakLink Labs
+site_description: Hands-on supply chain security training
+site_url: http://localhost:8000
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: deep orange
+    accent: red
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.tabs
+    - navigation.top
+    - navigation.instant
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+  icon:
+    logo: material/shield-lock
+    repo: material/git
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Tier 0 - Foundations:
+    - 0.1 How Version Control Works: labs/tier-0/0.1-version-control.md
+    - 0.2 How Package Managers Work: labs/tier-0/0.2-package-managers.md
+    - 0.3 How Containers Work: labs/tier-0/0.3-containers.md
+  - Tier 1 - Package Security:
+    - 1.1 Dependency Resolution: labs/tier-1/1.1-dependency-resolution.md
+    - 1.2 Dependency Confusion: labs/tier-1/1.2-dependency-confusion.md
+    - 1.3 Typosquatting: labs/tier-1/1.3-typosquatting.md
+    - 1.4 Lockfile Injection: labs/tier-1/1.4-lockfile-injection.md
+    - 1.5 Manifest Confusion: labs/tier-1/1.5-manifest-confusion.md
+    - 1.6 Phantom Dependencies: labs/tier-1/1.6-phantom-dependencies.md
+  - Tiers 2-8 (Coming Soon): coming-soon.md
+  - Roadmap: roadmap.md

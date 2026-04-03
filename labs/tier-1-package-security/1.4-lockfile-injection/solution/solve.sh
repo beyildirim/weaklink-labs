@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Solution for Lab 1.4: Lockfile Injection
-# Run inside the workstation container: docker exec -it lab-1.4-workstation bash < solution/solve.sh
+# Run inside the workstation pod: weaklink shell 1.4 < solution/solve.sh
 #
 
 set -e

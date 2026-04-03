@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pypi-public
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.componentLabels" (dict "context" . "component" "pypi-public") | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "pypi-public") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "pypi-public") | nindent 8 }}
+    spec:
+      containers:
+        - name: pypiserver
+          image: "{{ .Values.pypiPublic.image }}:{{ .Values.pypiPublic.tag }}"
+          args:
+            - run
+            - -p
+            - "{{ .Values.pypiPublic.port }}"
+            - -a
+            - "."
+            - -P
+            - "."
+            - /data/packages
+          ports:
+            - name: http
+              containerPort: {{ .Values.pypiPublic.port }}
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /simple/
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /simple/
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          volumeMounts:
+            - name: packages
+              mountPath: /data/packages
+          resources:
+            {{- toYaml .Values.pypiPublic.resources | nindent 12 }}
+      volumes:
+        - name: packages
+          persistentVolumeClaim:
+            claimName: pypi-public-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pypi-public-data
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.componentLabels" (dict "context" . "component" "pypi-public") | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.pypiPublic.persistence.size }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pypi-public
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.componentLabels" (dict "context" . "component" "pypi-public") | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.pypiPublic.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "pypi-public") | nindent 4 }}

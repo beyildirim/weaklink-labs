@@ -22,7 +22,7 @@ In this lab, you are a developer at ACME Corp. You will see the attack happen, t
 Connect to the workstation:
 
 ```bash
-docker compose exec workstation bash
+weaklink shell 1.2
 ```
 
 ## Phase 1: Understand

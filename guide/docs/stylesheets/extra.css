@@ -1,0 +1,328 @@
+/* ============================================================
+   WeakLink Labs -- Custom Styles
+   ============================================================ */
+
+/* --- Root variables ---------------------------------------- */
+:root {
+  --phase-understand: #42a5f5;
+  --phase-break: #ef5350;
+  --phase-defend: #66bb6a;
+  --tier-available: #ff7043;
+  --tier-locked: #546e7a;
+  --card-bg: #1e1e2e;
+  --card-border: #2a2a3e;
+  --card-hover: #2d2d42;
+}
+
+/* --- Hero section on the landing page ---------------------- */
+.hero {
+  text-align: center;
+  padding: 3rem 1rem 2rem;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+  background: linear-gradient(135deg, #ff7043, #ef5350);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero .tagline {
+  font-size: 1.35rem;
+  color: #b0bec5;
+  margin-bottom: 0.5rem;
+}
+
+.hero .subtitle {
+  font-size: 1rem;
+  color: #78909c;
+  margin-bottom: 2rem;
+}
+
+/* --- CTA button ------------------------------------------- */
+.cta-button {
+  display: inline-block;
+  padding: 0.85rem 2.5rem;
+  background: linear-gradient(135deg, #ff7043, #ef5350);
+  color: #fff !important;
+  font-weight: 700;
+  font-size: 1.05rem;
+  border-radius: 8px;
+  text-decoration: none !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 15px rgba(239, 83, 80, 0.3);
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 83, 80, 0.45);
+}
+
+/* --- Tier grid --------------------------------------------- */
+.tier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin: 2rem 0;
+}
+
+.tier-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.tier-card:hover {
+  transform: translateY(-3px);
+  border-color: #ff7043;
+}
+
+.tier-card.locked {
+  opacity: 0.5;
+}
+
+.tier-card.locked:hover {
+  transform: none;
+  border-color: var(--card-border);
+}
+
+.tier-card h3 {
+  margin-top: 0;
+  font-size: 1.1rem;
+}
+
+.tier-card .tier-number {
+  display: inline-block;
+  background: var(--tier-available);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.75rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.tier-card.locked .tier-number {
+  background: var(--tier-locked);
+}
+
+.tier-card p {
+  color: #b0bec5;
+  font-size: 0.9rem;
+  margin-bottom: 0;
+}
+
+.tier-card .lab-count {
+  font-size: 0.8rem;
+  color: #78909c;
+  margin-top: 0.75rem;
+}
+
+/* --- Phase badges ----------------------------------------- */
+.phase-badge {
+  display: inline-block;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.65rem;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+}
+
+.phase-badge.understand {
+  background: rgba(66, 165, 245, 0.15);
+  color: var(--phase-understand);
+  border: 1px solid rgba(66, 165, 245, 0.3);
+}
+
+.phase-badge.break {
+  background: rgba(239, 83, 80, 0.15);
+  color: var(--phase-break);
+  border: 1px solid rgba(239, 83, 80, 0.3);
+}
+
+.phase-badge.defend {
+  background: rgba(102, 187, 106, 0.15);
+  color: var(--phase-defend);
+  border: 1px solid rgba(102, 187, 106, 0.3);
+}
+
+/* --- Phase flow indicator --------------------------------- */
+.phase-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+}
+
+.phase-flow .phase-step {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.phase-flow .phase-step.understand {
+  background: rgba(66, 165, 245, 0.1);
+  color: var(--phase-understand);
+  border: 1px solid rgba(66, 165, 245, 0.25);
+}
+
+.phase-flow .phase-step.break {
+  background: rgba(239, 83, 80, 0.1);
+  color: var(--phase-break);
+  border: 1px solid rgba(239, 83, 80, 0.25);
+}
+
+.phase-flow .phase-step.defend {
+  background: rgba(102, 187, 106, 0.1);
+  color: var(--phase-defend);
+  border: 1px solid rgba(102, 187, 106, 0.25);
+}
+
+.phase-flow .arrow {
+  color: #546e7a;
+  font-size: 1.2rem;
+}
+
+/* --- Admonition overrides for phases ---------------------- */
+.md-typeset .admonition.phase-understand,
+.md-typeset details.phase-understand {
+  border-color: var(--phase-understand);
+}
+
+.md-typeset .phase-understand > .admonition-title,
+.md-typeset .phase-understand > summary {
+  background-color: rgba(66, 165, 245, 0.1);
+}
+
+.md-typeset .admonition.phase-break,
+.md-typeset details.phase-break {
+  border-color: var(--phase-break);
+}
+
+.md-typeset .phase-break > .admonition-title,
+.md-typeset .phase-break > summary {
+  background-color: rgba(239, 83, 80, 0.1);
+}
+
+.md-typeset .admonition.phase-defend,
+.md-typeset details.phase-defend {
+  border-color: var(--phase-defend);
+}
+
+.md-typeset .phase-defend > .admonition-title,
+.md-typeset .phase-defend > summary {
+  background-color: rgba(102, 187, 106, 0.1);
+}
+
+/* --- Lab metadata header ---------------------------------- */
+.lab-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--card-bg);
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  font-size: 0.85rem;
+  color: #b0bec5;
+}
+
+.lab-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* --- Roadmap timeline ------------------------------------- */
+.roadmap-tier {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  transition: border-color 0.15s ease;
+}
+
+.roadmap-tier:hover {
+  border-color: #ff7043;
+}
+
+.roadmap-tier.locked {
+  opacity: 0.55;
+}
+
+.roadmap-tier.locked:hover {
+  border-color: var(--card-border);
+}
+
+.roadmap-tier .tier-badge {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.roadmap-tier .tier-badge.available {
+  background: linear-gradient(135deg, #ff7043, #ef5350);
+}
+
+.roadmap-tier .tier-badge.coming {
+  background: var(--tier-locked);
+}
+
+.roadmap-tier .tier-info h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+}
+
+.roadmap-tier .tier-info p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #90a4ae;
+}
+
+.status-available {
+  color: var(--tier-available);
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.status-coming {
+  color: var(--tier-locked);
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+/* --- Misc ------------------------------------------------- */
+.md-typeset table:not([class]) {
+  font-size: 0.85rem;
+}
+
+.md-typeset .md-button--primary {
+  background: linear-gradient(135deg, #ff7043, #ef5350);
+  border: none;
+}

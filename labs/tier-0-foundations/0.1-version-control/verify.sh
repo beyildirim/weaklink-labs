@@ -1,12 +1,13 @@
 #!/bin/bash
 # Verification script for Lab 0.1: How Version Control Works
+# Runs INSIDE the workstation pod via kubectl exec.
 # Checks that the student has:
 #   1. Branch protection enabled on main
 #   2. A pull request exists (not a direct push)
 
 set -uo pipefail
 
-GITEA_URL="http://localhost:3000"
+GITEA_URL="http://gitea:3000"
 ADMIN_USER="labadmin"
 ADMIN_PASS="SupplyChainLab1!"
 REPO="labadmin/web-app"
@@ -35,7 +36,7 @@ echo "[*] Checking Gitea is accessible..."
 if curl -sf "${GITEA_URL}/api/v1/version" > /dev/null 2>&1; then
     check "Gitea server is running" 0
 else
-    echo "  FAIL: Gitea server is not running. Start the lab first: docker compose up -d"
+    echo "  FAIL: Gitea server is not reachable at ${GITEA_URL}. Start the lab first: weaklink start 0.1"
     exit 1
 fi
 
@@ -90,16 +91,11 @@ fi
 
 # Check 4: The malicious build.sh line has been reverted
 echo "[*] Checking that malicious code was reverted..."
-WORKSPACE_RUNNING=$(docker compose ps --format json 2>/dev/null | grep -c '"workspace"' || true)
-if [ "${WORKSPACE_RUNNING}" -gt 0 ]; then
-    MALICIOUS=$(docker compose exec -T workspace sh -c "cd /workspace/web-app && git pull -q 2>/dev/null; grep -c 'EXFILTRATED\|stolen-secrets' build.sh 2>/dev/null || echo 0")
-    if [ "${MALICIOUS}" -eq 0 ] 2>/dev/null; then
-        check "Malicious code has been reverted from build.sh" 0
-    else
-        check "Malicious code has been reverted from build.sh" 1
-    fi
+MALICIOUS=$(cd /workspace/web-app && git pull -q 2>/dev/null; grep -c 'EXFILTRATED\|stolen-secrets' build.sh 2>/dev/null || echo 0)
+if [ "${MALICIOUS}" -eq 0 ] 2>/dev/null; then
+    check "Malicious code has been reverted from build.sh" 0
 else
-    echo "  SKIP: Workspace container not running (cannot check build.sh)"
+    check "Malicious code has been reverted from build.sh" 1
 fi
 
 # Summary

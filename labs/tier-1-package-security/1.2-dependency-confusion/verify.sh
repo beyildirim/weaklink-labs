@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # Verification script for Lab 1.2: Dependency Confusion
+# Runs INSIDE the workstation pod via kubectl exec.
 # Checks that the user has defended against the dependency confusion attack.
 #
 
@@ -8,12 +9,11 @@ set -uo pipefail
 
 PASS=0
 FAIL=0
-CONTAINER="workstation"
 
 check() {
     local description="$1"
     local result
-    result=$(docker compose exec -T "$CONTAINER" bash -c "$2" 2>&1)
+    result=$(bash -c "$2" 2>&1)
     local exit_code=$?
 
     if [[ $exit_code -eq 0 ]]; then
@@ -25,8 +25,6 @@ check() {
         ((FAIL++))
     fi
 }
-
-cd "$(dirname "$0")"
 
 echo ""
 echo "  Verifying Lab 1.2: Dependency Confusion"

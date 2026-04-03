@@ -14,8 +14,8 @@ This lab teaches you what phantom (implicit) dependencies are, how they silently
 
 | Service | URL | Purpose |
 |---------|-----|---------|
-| **Verdaccio** | http://localhost:4873 | Local npm registry |
-| **workspace** | `docker compose exec workspace sh` | Your working shell with the app |
+| **Verdaccio** | http://verdaccio:4873 | Local npm registry |
+| **workspace** | `weaklink shell 1.6` | Your working shell with the app |
 
 The workspace contains:
 - An Express-like app (`app.js`) that uses `debug` -- but `debug` is NOT in `package.json`
@@ -25,9 +25,8 @@ The workspace contains:
 ## Start the Lab
 
 ```bash
-cd labs/tier-1-package-security/1.6-phantom-dependencies
-docker compose up -d
-docker compose exec workspace sh
+weaklink start 1.6
+weaklink shell 1.6
 ```
 
 ---

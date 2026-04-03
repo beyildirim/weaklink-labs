@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pypi-private
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.componentLabels" (dict "context" . "component" "pypi-private") | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "pypi-private") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "pypi-private") | nindent 8 }}
+    spec:
+      containers:
+        - name: pypiserver
+          image: "{{ .Values.pypiPrivate.image }}:{{ .Values.pypiPrivate.tag }}"
+          args:
+            - run
+            - -p
+            - "{{ .Values.pypiPrivate.port }}"
+            - -a
+            - "."
+            - -P
+            - "."
+            - /data/packages
+          ports:
+            - name: http
+              containerPort: {{ .Values.pypiPrivate.port }}
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /simple/
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /simple/
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          volumeMounts:
+            - name: packages
+              mountPath: /data/packages
+          resources:
+            {{- toYaml .Values.pypiPrivate.resources | nindent 12 }}
+      volumes:
+        - name: packages
+          persistentVolumeClaim:
+            claimName: pypi-private-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pypi-private-data
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.componentLabels" (dict "context" . "component" "pypi-private") | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.pypiPrivate.persistence.size }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pypi-private
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.componentLabels" (dict "context" . "component" "pypi-private") | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.pypiPrivate.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "pypi-private") | nindent 4 }}

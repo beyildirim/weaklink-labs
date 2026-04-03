@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: lab-setup
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.componentLabels" (dict "context" . "component" "lab-setup") | nindent 4 }}
+  annotations:
+    # Force recreation on each helm upgrade so labs get re-seeded
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "lab-setup") | nindent 8 }}
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: lab-setup
+          image: "{{ .Values.labSetup.image }}:{{ .Values.labSetup.tag }}"
+          imagePullPolicy: {{ .Values.labSetup.pullPolicy }}
+          resources:
+            {{- toYaml .Values.labSetup.resources | nindent 12 }}

@@ -24,10 +24,10 @@ weaklink start 1.4
 Connect to the workstation:
 
 ```bash
-docker exec -it lab-1.4-workstation bash
+weaklink shell 1.4
 ```
 
-Open Gitea in your browser: [http://localhost:3000](http://localhost:3000) (login: `developer` / `password123`)
+Open Gitea in your browser: [http://gitea:3000](http://gitea:3000) (login: `developer` / `password123`)
 
 ---
 
@@ -122,7 +122,7 @@ With lockfiles:
 
 ### Step 1: Look at the "routine" PR
 
-Open Gitea in your browser: [http://localhost:3000/developer/webapp/pulls/1](http://localhost:3000/developer/webapp/pulls/1)
+Open Gitea in your browser: [http://gitea:3000/developer/webapp/pulls/1](http://gitea:3000/developer/webapp/pulls/1)
 
 Or inspect it from the command line:
 

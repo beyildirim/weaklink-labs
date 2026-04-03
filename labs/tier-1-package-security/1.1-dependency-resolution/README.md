@@ -20,7 +20,7 @@ This lab gives you a private PyPI registry, a public PyPI registry, and a Python
 Connect to the workstation:
 
 ```bash
-docker compose exec workstation bash
+weaklink shell 1.1
 ```
 
 ## Phase 1: Understand

@@ -14,8 +14,8 @@ This lab teaches you how npm packages are published, how registry metadata can b
 
 | Service | URL | Purpose |
 |---------|-----|---------|
-| **Verdaccio** | http://localhost:4873 | Local npm registry with crafted packages |
-| **workspace** | `docker compose exec workspace sh` | Your working shell |
+| **Verdaccio** | http://verdaccio:4873 | Local npm registry with crafted packages |
+| **workspace** | `weaklink shell 1.5` | Your working shell |
 
 Packages pre-loaded on the registry:
 - `safe-utils@1.0.0` -- a normal, legitimate package
@@ -25,9 +25,8 @@ Packages pre-loaded on the registry:
 ## Start the Lab
 
 ```bash
-cd labs/tier-1-package-security/1.5-manifest-confusion
-docker compose up -d
-docker compose exec workspace sh
+weaklink start 1.5
+weaklink shell 1.5
 ```
 
 ---

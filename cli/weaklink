@@ -1,22 +1,23 @@
 #!/usr/bin/env bash
 #
-# weaklink — WeakLink Labs CLI
+# weaklink -- WeakLink Labs CLI
 #
 # Usage:
 #   weaklink path              Show the learning roadmap and progress
-#   weaklink start <lab-id>    Start a lab environment
-#   weaklink stop              Stop the current lab environment
-#   weaklink reset <lab-id>    Reset a lab to its initial state
+#   weaklink shell             Open a shell in the workstation pod
 #   weaklink verify <lab-id>   Check if you completed the lab
 #   weaklink hint <lab-id>     Get a progressive hint
-#   weaklink status            Show current lab status
 #   weaklink info <lab-id>     Show lab details
+#   weaklink status            Show pod status
+#   weaklink logs              Show setup job logs
+#   weaklink reset <lab-id>    Reset a lab to its initial state
 
 set -euo pipefail
 
-LABS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/labs"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LABS_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)/labs"
 PROGRESS_DIR="${HOME}/.weaklink"
-CURRENT_LAB_FILE="${PROGRESS_DIR}/current"
+NAMESPACE="weaklink"
 
 mkdir -p "$PROGRESS_DIR"
 
@@ -67,34 +68,37 @@ increment_hint() {
     echo $((current + 1)) > "${PROGRESS_DIR}/${lab_id}.hints"
 }
 
-check_prerequisites() {
-    local lab_dir="$1"
-    local prereqs
-    prereqs=$(read_lab_yml "$lab_dir" "prerequisites")
+get_workstation_pod() {
+    kubectl get pods -n "$NAMESPACE" -l app.kubernetes.io/name=workstation \
+        -o jsonpath='{.items[0].metadata.name}' 2>/dev/null
+}
 
-    if [[ -z "$prereqs" || "$prereqs" == "none" || "$prereqs" == "[]" ]]; then
-        return 0
+check_cluster() {
+    if ! kubectl get namespace "$NAMESPACE" &>/dev/null; then
+        echo -e "${RED}Error: WeakLink Labs is not running.${NC}"
+        echo -e "Run '${BOLD}./start.sh${NC}' to start the platform."
+        exit 1
     fi
-
-    # Parse YAML list: [1.1, 1.2] or - 1.1 format
-    local missing=()
-    for prereq in $(echo "$prereqs" | tr -d '[]"' | tr ',' '\n' | tr -d ' '); do
-        if [[ -n "$prereq" ]] && ! is_completed "$prereq"; then
-            missing+=("$prereq")
-        fi
-    done
-
-    if [[ ${#missing[@]} -gt 0 ]]; then
-        echo -e "${YELLOW}⚠  Prerequisites not completed: ${missing[*]}${NC}"
-        echo -e "${DIM}   Complete them first, or run with --skip-prereqs to override.${NC}"
-        return 1
-    fi
-    return 0
 }
 
 #----------------------------------------------------------------------
 # Commands
 #----------------------------------------------------------------------
+
+cmd_shell() {
+    check_cluster
+    local pod
+    pod=$(get_workstation_pod)
+
+    if [[ -z "$pod" ]]; then
+        echo -e "${RED}Error: Workstation pod not found.${NC}"
+        echo "Check status with: weaklink status"
+        exit 1
+    fi
+
+    echo -e "${DIM}Connecting to workstation pod: ${pod}${NC}"
+    kubectl exec -it -n "$NAMESPACE" "$pod" -- /bin/bash -l
+}
 
 cmd_path() {
     echo ""
@@ -111,15 +115,13 @@ cmd_path() {
         tier_num=$(basename "$tier_dir" | grep -o 'tier-[0-9]*' | grep -o '[0-9]*')
 
         # Check if tier has any labs
-        local lab_count
-        lab_count=$(find "$tier_dir" -maxdepth 1 -name "*.yml" -path "*/lab.yml" 2>/dev/null | wc -l)
         local dir_count
         dir_count=$(find "$tier_dir" -maxdepth 1 -type d ! -name "$(basename "$tier_dir")" 2>/dev/null | wc -l)
 
         echo -e "  ${BOLD}Tier ${tier_num}: ${tier_name}${NC}"
 
         if [[ $dir_count -eq 0 ]]; then
-            echo -e "    ${DIM}🔒 Coming soon${NC}"
+            echo -e "    ${DIM}-- Coming soon${NC}"
             echo ""
             continue
         fi
@@ -137,9 +139,7 @@ cmd_path() {
 
             local icon
             if is_completed "$lab_id"; then
-                icon="${GREEN}✅${NC}"
-            elif [[ -f "$CURRENT_LAB_FILE" ]] && [[ "$(cat "$CURRENT_LAB_FILE")" == "$lab_id" ]]; then
-                icon="${YELLOW}🔶${NC}"
+                icon="${GREEN}[done]${NC}"
             else
                 # Check prerequisites
                 local prereqs
@@ -153,20 +153,20 @@ cmd_path() {
                         fi
                     done
                     if $all_met; then
-                        icon="⬜"
+                        icon="[    ]"
                     else
-                        icon="${DIM}🔒${NC}"
+                        icon="${DIM}[lock]${NC}"
                     fi
                 else
-                    icon="⬜"
+                    icon="[    ]"
                 fi
             fi
 
             local diff_badge=""
             case "$difficulty" in
-                beginner)     diff_badge="${GREEN}●${NC}" ;;
-                intermediate) diff_badge="${YELLOW}●●${NC}" ;;
-                advanced)     diff_badge="${RED}●●●${NC}" ;;
+                beginner)     diff_badge="${GREEN}*${NC}" ;;
+                intermediate) diff_badge="${YELLOW}**${NC}" ;;
+                advanced)     diff_badge="${RED}***${NC}" ;;
             esac
 
             printf "    %b  %-4s %-45s %b\n" "$icon" "$lab_id" "$title" "$diff_badge"
@@ -174,14 +174,16 @@ cmd_path() {
         echo ""
     done
 
-    echo -e "  ${DIM}Legend: ✅ completed  🔶 in progress  ⬜ available  🔒 locked${NC}"
-    echo -e "  ${DIM}Difficulty: ${GREEN}●${NC}${DIM} beginner  ${YELLOW}●●${NC}${DIM} intermediate  ${RED}●●●${NC}${DIM} advanced${NC}"
+    echo -e "  ${DIM}Legend: [done] completed  [    ] available  [lock] locked${NC}"
+    echo -e "  ${DIM}Difficulty: ${GREEN}*${NC}${DIM} beginner  ${YELLOW}**${NC}${DIM} intermediate  ${RED}***${NC}${DIM} advanced${NC}"
     echo ""
 }
 
-cmd_start() {
+cmd_verify() {
     local lab_id="$1"
-    local skip_prereqs="${2:-}"
+
+    check_cluster
+
     local lab_dir
     lab_dir=$(find_lab_dir "$lab_id")
 
@@ -191,119 +193,27 @@ cmd_start() {
         exit 1
     fi
 
-    if [[ ! -f "${lab_dir}/docker-compose.yml" ]]; then
-        echo -e "${RED}Error: Lab ${lab_id} has no docker-compose.yml — not yet implemented.${NC}"
-        exit 1
-    fi
-
-    # Check prerequisites
-    if [[ "$skip_prereqs" != "--skip-prereqs" ]]; then
-        check_prerequisites "$lab_dir" || exit 1
-    fi
-
-    # Stop any running lab
-    if [[ -f "$CURRENT_LAB_FILE" ]]; then
-        cmd_stop 2>/dev/null || true
-    fi
-
-    local title
-    title=$(read_lab_yml "$lab_dir" "title")
-    local estimated_time
-    estimated_time=$(read_lab_yml "$lab_dir" "estimated_time")
-
-    echo ""
-    echo -e "  ${BOLD}Starting lab: ${title}${NC}"
-    echo -e "  ══════════════════════════════════════"
-    echo -e "  ${DIM}Estimated time: ${estimated_time:-30m}${NC}"
-    echo ""
-
-    # Start the environment
-    echo -e "  ${CYAN}⠋${NC} Starting lab environment..."
-    (cd "$lab_dir" && docker compose up -d --build 2>&1 | sed 's/^/    /')
-
-    # Track current lab
-    echo "$lab_id" > "$CURRENT_LAB_FILE"
-    echo "$lab_dir" > "${PROGRESS_DIR}/current_dir"
-
-    echo ""
-    echo -e "  ${GREEN}✓${NC} Environment ready!"
-    echo ""
-    echo -e "  ${BOLD}📖 Lab guide:${NC} ${lab_dir}/README.md"
-    echo ""
-
-    # Show phases from lab.yml
-    local phase_understand phase_break phase_defend
-    phase_understand=$(read_lab_yml "$lab_dir" "phase_understand")
-    phase_break=$(read_lab_yml "$lab_dir" "phase_break")
-    phase_defend=$(read_lab_yml "$lab_dir" "phase_defend")
-
-    [[ -n "$phase_understand" ]] && echo -e "  ${BLUE}Phase 1: UNDERSTAND${NC} — ${phase_understand}"
-    [[ -n "$phase_break" ]]      && echo -e "  ${YELLOW}Phase 2: BREAK${NC}      — ${phase_break}"
-    [[ -n "$phase_defend" ]]     && echo -e "  ${GREEN}Phase 3: DEFEND${NC}     — ${phase_defend}"
-    echo ""
-    echo -e "  Run '${BOLD}weaklink verify ${lab_id}${NC}' when you think you've completed the lab."
-    echo -e "  Run '${BOLD}weaklink hint ${lab_id}${NC}' if you're stuck."
-    echo ""
-}
-
-cmd_stop() {
-    if [[ ! -f "$CURRENT_LAB_FILE" ]]; then
-        echo -e "${DIM}No lab is currently running.${NC}"
-        return 0
-    fi
-
-    local lab_id lab_dir
-    lab_id=$(cat "$CURRENT_LAB_FILE")
-    lab_dir=$(cat "${PROGRESS_DIR}/current_dir" 2>/dev/null)
-
-    if [[ -n "$lab_dir" && -f "${lab_dir}/docker-compose.yml" ]]; then
-        echo -e "  Stopping lab ${lab_id}..."
-        (cd "$lab_dir" && docker compose down -v 2>&1 | sed 's/^/    /')
-    fi
-
-    rm -f "$CURRENT_LAB_FILE" "${PROGRESS_DIR}/current_dir"
-    echo -e "  ${GREEN}✓${NC} Lab stopped."
-}
-
-cmd_reset() {
-    local lab_id="$1"
-    local lab_dir
-    lab_dir=$(find_lab_dir "$lab_id")
-
-    if [[ -z "$lab_dir" ]]; then
-        echo -e "${RED}Error: Lab ${lab_id} not found.${NC}"
-        exit 1
-    fi
-
-    echo -e "  Resetting lab ${lab_id}..."
-    (cd "$lab_dir" && docker compose down -v 2>/dev/null || true)
-    rm -f "${PROGRESS_DIR}/${lab_id}.completed" "${PROGRESS_DIR}/${lab_id}.hints"
-
-    echo -e "  ${GREEN}✓${NC} Lab reset. Run 'weaklink start ${lab_id}' to begin again."
-}
-
-cmd_verify() {
-    local lab_id="$1"
-    local lab_dir
-    lab_dir=$(find_lab_dir "$lab_id")
-
-    if [[ -z "$lab_dir" ]]; then
-        echo -e "${RED}Error: Lab ${lab_id} not found.${NC}"
-        exit 1
-    fi
-
     if [[ ! -f "${lab_dir}/verify.sh" ]]; then
         echo -e "${YELLOW}No verification script for lab ${lab_id}.${NC}"
+        exit 1
+    fi
+
+    local pod
+    pod=$(get_workstation_pod)
+    if [[ -z "$pod" ]]; then
+        echo -e "${RED}Error: Workstation pod not found.${NC}"
         exit 1
     fi
 
     echo -e "  ${CYAN}Verifying lab ${lab_id}...${NC}"
     echo ""
 
-    if bash "${lab_dir}/verify.sh"; then
+    # Copy verify script to the workstation pod and run it
+    kubectl cp "${lab_dir}/verify.sh" "${NAMESPACE}/${pod}:/tmp/verify-${lab_id}.sh" 2>/dev/null
+    if kubectl exec -n "$NAMESPACE" "$pod" -- bash "/tmp/verify-${lab_id}.sh"; then
         mark_completed "$lab_id"
         echo ""
-        echo -e "  ${GREEN}${BOLD}✅ Lab ${lab_id} completed!${NC}"
+        echo -e "  ${GREEN}${BOLD}Lab ${lab_id} completed!${NC}"
         echo ""
 
         # Suggest next lab
@@ -323,11 +233,11 @@ cmd_verify() {
         done
 
         if [[ -n "$next_lab" ]]; then
-            echo -e "  Next lab: ${BOLD}weaklink start ${next_lab}${NC}"
+            echo -e "  Next lab: ${BOLD}weaklink info ${next_lab}${NC}"
         fi
     else
         echo ""
-        echo -e "  ${RED}❌ Not quite — check the output above and try again.${NC}"
+        echo -e "  ${RED}Not quite -- check the output above and try again.${NC}"
         echo -e "  ${DIM}Run 'weaklink hint ${lab_id}' if you're stuck.${NC}"
     fi
 }
@@ -359,7 +269,7 @@ cmd_hint() {
     total_hints=$(find "${lab_dir}/hints" -name "hint-*.md" 2>/dev/null | wc -l | tr -d ' ')
 
     echo ""
-    echo -e "  ${YELLOW}💡 Hint ${hint_num}/${total_hints} for lab ${lab_id}${NC}"
+    echo -e "  ${YELLOW}Hint ${hint_num}/${total_hints} for lab ${lab_id}${NC}"
     echo -e "  ────────────────────────────────"
     cat "$hint_file" | sed 's/^/  /'
     echo ""
@@ -405,30 +315,52 @@ cmd_info() {
 }
 
 cmd_status() {
-    if [[ ! -f "$CURRENT_LAB_FILE" ]]; then
-        echo -e "  ${DIM}No lab is currently running.${NC}"
-        echo -e "  Run '${BOLD}weaklink path${NC}' to see available labs."
-        return
-    fi
-
-    local lab_id lab_dir
-    lab_id=$(cat "$CURRENT_LAB_FILE")
-    lab_dir=$(cat "${PROGRESS_DIR}/current_dir" 2>/dev/null)
+    check_cluster
 
     echo ""
-    echo -e "  ${BOLD}Current lab: ${lab_id}${NC} — $(read_lab_yml "$lab_dir" "title")"
+    echo -e "  ${BOLD}WeakLink Labs -- Pod Status${NC}"
+    echo -e "  ══════════════════════════════"
     echo ""
 
-    if [[ -n "$lab_dir" && -f "${lab_dir}/docker-compose.yml" ]]; then
-        echo -e "  ${DIM}Containers:${NC}"
-        (cd "$lab_dir" && docker compose ps 2>/dev/null | sed 's/^/    /')
-    fi
+    kubectl get pods -n "$NAMESPACE" -o wide 2>/dev/null | sed 's/^/  /'
     echo ""
 
+    # Check for setup job
+    local job_status
+    job_status=$(kubectl get job lab-setup -n "$NAMESPACE" -o jsonpath='{.status.conditions[0].type}' 2>/dev/null || echo "Unknown")
+    echo -e "  ${DIM}Setup job: ${job_status}${NC}"
+
+    # Show completed labs count
     local completed
     completed=$(find "$PROGRESS_DIR" -name "*.completed" 2>/dev/null | wc -l | tr -d ' ')
     echo -e "  ${DIM}Labs completed: ${completed}${NC}"
     echo ""
+}
+
+cmd_logs() {
+    check_cluster
+
+    echo -e "  ${BOLD}Lab Setup Logs${NC}"
+    echo -e "  ──────────────"
+    echo ""
+
+    kubectl logs -n "$NAMESPACE" job/lab-setup 2>/dev/null \
+        || echo -e "  ${YELLOW}No logs found. The setup job may not have started yet.${NC}"
+}
+
+cmd_reset() {
+    local lab_id="$1"
+    local lab_dir
+    lab_dir=$(find_lab_dir "$lab_id")
+
+    if [[ -z "$lab_dir" ]]; then
+        echo -e "${RED}Error: Lab ${lab_id} not found.${NC}"
+        exit 1
+    fi
+
+    echo -e "  Resetting progress for lab ${lab_id}..."
+    rm -f "${PROGRESS_DIR}/${lab_id}.completed" "${PROGRESS_DIR}/${lab_id}.hints"
+    echo -e "  ${GREEN}Done.${NC} Progress reset for ${lab_id}."
 }
 
 #----------------------------------------------------------------------
@@ -436,19 +368,11 @@ cmd_status() {
 #----------------------------------------------------------------------
 
 case "${1:-}" in
+    shell)
+        cmd_shell
+        ;;
     path)
         cmd_path
-        ;;
-    start)
-        [[ -z "${2:-}" ]] && { echo "Usage: weaklink start <lab-id>"; exit 1; }
-        cmd_start "$2" "${3:-}"
-        ;;
-    stop)
-        cmd_stop
-        ;;
-    reset)
-        [[ -z "${2:-}" ]] && { echo "Usage: weaklink reset <lab-id>"; exit 1; }
-        cmd_reset "$2"
         ;;
     verify)
         [[ -z "${2:-}" ]] && { echo "Usage: weaklink verify <lab-id>"; exit 1; }
@@ -465,19 +389,26 @@ case "${1:-}" in
     status)
         cmd_status
         ;;
+    logs)
+        cmd_logs
+        ;;
+    reset)
+        [[ -z "${2:-}" ]] && { echo "Usage: weaklink reset <lab-id>"; exit 1; }
+        cmd_reset "$2"
+        ;;
     *)
         echo ""
         echo "  WeakLink Labs (weaklink)"
         echo ""
         echo "  Usage:"
+        echo "    weaklink shell             Open workstation shell"
         echo "    weaklink path              Show the learning roadmap"
-        echo "    weaklink start <lab-id>    Start a lab environment"
-        echo "    weaklink stop              Stop the current lab"
-        echo "    weaklink reset <lab-id>    Reset a lab"
-        echo "    weaklink verify <lab-id>   Check completion"
+        echo "    weaklink verify <lab-id>   Check lab completion"
         echo "    weaklink hint <lab-id>     Get a hint"
         echo "    weaklink info <lab-id>     Show lab details"
-        echo "    weaklink status            Current lab status"
+        echo "    weaklink status            Pod status overview"
+        echo "    weaklink logs              View setup job logs"
+        echo "    weaklink reset <lab-id>    Reset lab progress"
         echo ""
         ;;
 esac

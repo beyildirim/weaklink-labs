@@ -1,0 +1,112 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: verdaccio-config
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.componentLabels" (dict "context" . "component" "verdaccio") | nindent 4 }}
+data:
+  config.yaml: |
+    storage: /verdaccio/storage
+    auth:
+      htpasswd:
+        file: /verdaccio/storage/htpasswd
+        max_users: 100
+    uplinks: {}
+    packages:
+      '**':
+        access: $anonymous
+        publish: $anonymous
+        unpublish: $anonymous
+    server:
+      keepAliveTimeout: 60
+    middlewares:
+      audit:
+        enabled: true
+    log:
+      type: stdout
+      format: pretty
+      level: warn
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: verdaccio
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.componentLabels" (dict "context" . "component" "verdaccio") | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "verdaccio") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "verdaccio") | nindent 8 }}
+    spec:
+      containers:
+        - name: verdaccio
+          image: "{{ .Values.verdaccio.image }}:{{ .Values.verdaccio.tag }}"
+          ports:
+            - name: http
+              containerPort: {{ .Values.verdaccio.port }}
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /-/ping
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /-/ping
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          volumeMounts:
+            - name: config
+              mountPath: /verdaccio/conf/config.yaml
+              subPath: config.yaml
+            - name: storage
+              mountPath: /verdaccio/storage
+          resources:
+            {{- toYaml .Values.verdaccio.resources | nindent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: verdaccio-config
+        - name: storage
+          persistentVolumeClaim:
+            claimName: verdaccio-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: verdaccio-data
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.componentLabels" (dict "context" . "component" "verdaccio") | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.verdaccio.persistence.size }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: verdaccio
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.componentLabels" (dict "context" . "component" "verdaccio") | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.verdaccio.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "verdaccio") | nindent 4 }}

@@ -19,10 +19,18 @@ build/
 
 # Node
 node_modules/
-package-lock.json
 
 # Docker
 *.log
 
-# Lab runtime artifacts
+# Kubernetes / Helm
+*.tgz
+
+# Lab runtime
 .weaklink/
+
+# MkDocs build
+guide/site/
+
+# Ruff cache
+.ruff_cache/

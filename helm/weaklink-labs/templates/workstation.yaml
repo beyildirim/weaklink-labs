@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workstation
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.componentLabels" (dict "context" . "component" "workstation") | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "workstation") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "workstation") | nindent 8 }}
+    spec:
+      containers:
+        - name: workstation
+          image: "{{ .Values.workstation.image }}:{{ .Values.workstation.tag }}"
+          imagePullPolicy: {{ .Values.workstation.pullPolicy }}
+          command: ["sleep", "infinity"]
+          env:
+            - name: PYPI_PRIVATE
+              value: "http://pypi-private:{{ .Values.pypiPrivate.port }}/simple/"
+            - name: PYPI_PUBLIC
+              value: "http://pypi-public:{{ .Values.pypiPublic.port }}/simple/"
+            - name: VERDACCIO
+              value: "http://verdaccio:{{ .Values.verdaccio.port }}/"
+            - name: GITEA
+              value: "http://gitea:{{ .Values.gitea.port }}"
+            - name: REGISTRY
+              value: "registry:{{ .Values.registry.port }}"
+          volumeMounts:
+            - name: pip-config
+              mountPath: /home/hacker/.config/pip/pip.conf
+              subPath: pip.conf
+            - name: npm-config
+              mountPath: /home/hacker/.npmrc
+              subPath: .npmrc
+          resources:
+            {{- toYaml .Values.workstation.resources | nindent 12 }}
+      volumes:
+        - name: pip-config
+          configMap:
+            name: workstation-config
+        - name: npm-config
+          configMap:
+            name: workstation-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: workstation-config
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.componentLabels" (dict "context" . "component" "workstation") | nindent 4 }}
+data:
+  pip.conf: |
+    [global]
+    index-url = http://pypi-private:{{ .Values.pypiPrivate.port }}/simple/
+    extra-index-url = http://pypi-public:{{ .Values.pypiPublic.port }}/simple/
+    trusted-host = pypi-private pypi-public
+  .npmrc: |
+    registry=http://verdaccio:{{ .Values.verdaccio.port }}/
+    //verdaccio:{{ .Values.verdaccio.port }}/:always-auth=false

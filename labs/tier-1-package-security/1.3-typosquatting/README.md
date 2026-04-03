@@ -23,7 +23,7 @@ weaklink start 1.3
 Connect to the workstation:
 
 ```bash
-docker exec -it lab-1.3-workstation bash
+weaklink shell 1.3
 ```
 
 ---

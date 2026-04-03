@@ -4,57 +4,152 @@ on:
   push:
     paths:
       - 'labs/**'
+      - 'helm/**'
+      - 'images/**'
+      - 'guide/**'
   pull_request:
     paths:
       - 'labs/**'
+      - 'helm/**'
+      - 'images/**'
+      - 'guide/**'
+
+env:
+  NAMESPACE: weaklink
 
 jobs:
-  discover-labs:
+  test-labs:
     runs-on: ubuntu-latest
-    outputs:
-      labs: ${{ steps.find.outputs.labs }}
-    steps:
-      - uses: actions/checkout@v4
-      - id: find
-        name: Find labs with docker-compose.yml
-        run: |
-          labs=$(find labs -name "docker-compose.yml" -exec dirname {} \; | sort | jq -R -s -c 'split("\n") | map(select(. != ""))')
-          echo "labs=$labs" >> "$GITHUB_OUTPUT"
-
-  test-lab:
-    needs: discover-labs
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        lab: ${{ fromJson(needs.discover-labs.outputs.labs) }}
-      fail-fast: false
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
-      - name: Start lab environment
-        # matrix.lab values come from our own find command above, not user input
-        env:
-          LAB_DIR: ${{ matrix.lab }}
-        run: |
-          cd "$LAB_DIR"
-          docker compose up -d --build --wait
-        timeout-minutes: 5
+      - name: Set up minikube
+        uses: medyagh/setup-minikube@latest
+        with:
+          driver: docker
+          cpus: 2
+          memory: 4096
 
-      - name: Run verification
-        env:
-          LAB_DIR: ${{ matrix.lab }}
+      - name: Build local Docker images
         run: |
-          if [[ -f "${LAB_DIR}/verify.sh" ]]; then
-            bash "${LAB_DIR}/verify.sh"
+          eval $(minikube docker-env)
+
+          echo "--- Building guide image ---"
+          docker build -f images/guide/Dockerfile -t weaklink-labs/guide:latest .
+
+          echo "--- Building workstation image ---"
+          docker build -f images/workstation/Dockerfile -t weaklink-labs/workstation:latest images/workstation/
+
+          echo "--- Building lab-setup image ---"
+          docker build -f images/lab-setup/Dockerfile -t weaklink-labs/lab-setup:latest .
+
+      - name: Deploy Helm chart
+        run: |
+          helm install weaklink-labs helm/weaklink-labs \
+            --namespace "$NAMESPACE" \
+            --create-namespace \
+            --set tiers.tier0.enabled=true \
+            --set tiers.tier1.enabled=true \
+            --wait \
+            --timeout 5m
+
+      - name: Wait for all pods to be ready
+        run: |
+          echo "--- Waiting for deployments ---"
+          kubectl rollout status deployment --all \
+            --namespace "$NAMESPACE" \
+            --timeout=120s
+
+          echo "--- Waiting for lab-setup job to complete ---"
+          # The lab-setup job is a Helm post-install hook; wait for it
+          kubectl wait job \
+            --all \
+            --for=condition=complete \
+            --namespace "$NAMESPACE" \
+            --timeout=300s
+
+          echo "--- Pod status ---"
+          kubectl get pods --namespace "$NAMESPACE"
+
+      - name: Run lab verifications
+        run: |
+          WORKSTATION_POD=$(kubectl get pod \
+            --namespace "$NAMESPACE" \
+            -l app.kubernetes.io/component=workstation \
+            -o jsonpath='{.items[0].metadata.name}')
+
+          echo "Using workstation pod: ${WORKSTATION_POD}"
+
+          # Discover all verify.sh scripts and run them inside the workstation pod
+          FAILED=0
+          for verify_script in $(find labs -name "verify.sh" -type f | sort); do
+            LAB_DIR=$(dirname "$verify_script")
+            LAB_NAME=$(basename "$LAB_DIR")
+
+            echo ""
+            echo "========================================"
+            echo "  Verifying: ${LAB_NAME}"
+            echo "========================================"
+
+            # Copy the verify script into the workstation pod
+            kubectl cp "$verify_script" \
+              "${NAMESPACE}/${WORKSTATION_POD}:/tmp/verify.sh"
+
+            # Run the verify script inside the workstation pod
+            if kubectl exec "$WORKSTATION_POD" \
+              --namespace "$NAMESPACE" \
+              -- bash /tmp/verify.sh; then
+              echo "  >>> ${LAB_NAME}: PASSED"
+            else
+              echo "  >>> ${LAB_NAME}: FAILED"
+              FAILED=$((FAILED + 1))
+            fi
+          done
+
+          echo ""
+          echo "========================================"
+          echo "  Verification Summary"
+          echo "========================================"
+          if [ "$FAILED" -gt 0 ]; then
+            echo "  ${FAILED} lab(s) failed verification."
+            exit 1
           else
-            echo "No verify.sh found, skipping"
+            echo "  All labs passed verification."
           fi
-        timeout-minutes: 3
+
+      - name: Debug info on failure
+        if: failure()
+        run: |
+          echo "=== Pod Status ==="
+          kubectl get pods --namespace "$NAMESPACE" -o wide
+
+          echo ""
+          echo "=== Pod Descriptions ==="
+          kubectl describe pods --namespace "$NAMESPACE"
+
+          echo ""
+          echo "=== Events ==="
+          kubectl get events --namespace "$NAMESPACE" --sort-by='.lastTimestamp'
+
+          echo ""
+          echo "=== Pod Logs ==="
+          for pod in $(kubectl get pods --namespace "$NAMESPACE" -o jsonpath='{.items[*].metadata.name}'); do
+            echo ""
+            echo "--- Logs: ${pod} ---"
+            kubectl logs "$pod" --namespace "$NAMESPACE" --all-containers --tail=50 2>&1 || true
+          done
+
+          echo ""
+          echo "=== Job Logs ==="
+          for job in $(kubectl get jobs --namespace "$NAMESPACE" -o jsonpath='{.items[*].metadata.name}'); do
+            echo ""
+            echo "--- Job Logs: ${job} ---"
+            kubectl logs "job/${job}" --namespace "$NAMESPACE" --all-containers --tail=100 2>&1 || true
+          done
 
       - name: Tear down
         if: always()
-        env:
-          LAB_DIR: ${{ matrix.lab }}
         run: |
-          cd "$LAB_DIR"
-          docker compose down -v
+          helm uninstall weaklink-labs --namespace "$NAMESPACE" 2>/dev/null || true
+          kubectl delete namespace "$NAMESPACE" --timeout=60s 2>/dev/null || true

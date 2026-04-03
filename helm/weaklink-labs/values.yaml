@@ -1,0 +1,136 @@
+namespace: weaklink
+
+# Tier feature flags — enable/disable lab tiers
+tiers:
+  tier0:
+    enabled: true
+  tier1:
+    enabled: true
+  tier2:
+    enabled: false
+  tier3:
+    enabled: false
+  tier4:
+    enabled: false
+  tier5:
+    enabled: false
+  tier6:
+    enabled: false
+  tier7:
+    enabled: false
+  tier8:
+    enabled: false
+
+# --- Component images and config ---
+
+guide:
+  image: weaklink-labs/guide
+  tag: latest
+  pullPolicy: Never  # Built locally for minikube
+  port: 8000
+  nodePort: 30080
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "100m"
+    limits:
+      memory: "128Mi"
+      cpu: "200m"
+
+workstation:
+  image: weaklink-labs/workstation
+  tag: latest
+  pullPolicy: Never
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+pypiPrivate:
+  image: pypiserver/pypiserver
+  tag: latest
+  port: 8080
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+  persistence:
+    size: 256Mi
+
+pypiPublic:
+  image: pypiserver/pypiserver
+  tag: latest
+  port: 8080
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+  persistence:
+    size: 256Mi
+
+verdaccio:
+  image: verdaccio/verdaccio
+  tag: "5"
+  port: 4873
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  persistence:
+    size: 256Mi
+
+gitea:
+  image: gitea/gitea
+  tag: "1.22"
+  port: 3000
+  sshPort: 2222
+  adminUser: weaklink
+  adminPassword: weaklink
+  adminEmail: admin@weaklink.local
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "400m"
+  persistence:
+    size: 512Mi
+
+registry:
+  image: registry
+  tag: "2"
+  port: 5000
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  persistence:
+    size: 512Mi
+
+labSetup:
+  image: weaklink-labs/lab-setup
+  tag: latest
+  pullPolicy: Never
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
