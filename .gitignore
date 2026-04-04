@@ -28,6 +28,7 @@ node_modules/
 
 # Lab runtime
 .weaklink/
+.weaklink-pf.pid
 
 # MkDocs build
 guide/site/

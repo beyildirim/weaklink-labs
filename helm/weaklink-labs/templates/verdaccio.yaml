@@ -48,6 +48,9 @@ spec:
       containers:
         - name: verdaccio
           image: "{{ .Values.verdaccio.image }}:{{ .Values.verdaccio.tag }}"
+          env:
+            - name: VERDACCIO_PORT
+              value: "{{ .Values.verdaccio.port }}"
           ports:
             - name: http
               containerPort: {{ .Values.verdaccio.port }}

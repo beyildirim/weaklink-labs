@@ -22,6 +22,14 @@ echo ""
 echo -e "${BOLD}WeakLink Labs -- Teardown${NC}"
 echo ""
 
+# Kill port-forward if running
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "${SCRIPT_DIR}/.weaklink-pf.pid" ]]; then
+    PF_PID=$(cat "${SCRIPT_DIR}/.weaklink-pf.pid")
+    kill "$PF_PID" 2>/dev/null && ok "Port-forward stopped." || true
+    rm -f "${SCRIPT_DIR}/.weaklink-pf.pid"
+fi
+
 # Uninstall Helm release
 log "Uninstalling Helm release..."
 if helm list -n weaklink 2>/dev/null | grep -q weaklink-labs; then

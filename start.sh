@@ -42,7 +42,11 @@ if [[ ${#MISSING[@]} -gt 0 ]]; then
     echo ""
     err "Missing prerequisites: ${MISSING[*]}"
     echo -e "  Install them before running this script."
-    echo -e "  ${DIM}brew install ${MISSING[*]}${NC}"
+    case "$(uname -s)" in
+        Darwin*)  echo -e "  ${DIM}brew install ${MISSING[*]}${NC}" ;;
+        Linux*)   echo -e "  ${DIM}See: https://minikube.sigs.k8s.io/docs/start/${NC}" ;;
+        MINGW*|MSYS*|CYGWIN*) echo -e "  ${DIM}Use WSL2 or install via chocolatey/winget${NC}" ;;
+    esac
     exit 1
 fi
 
@@ -147,18 +151,24 @@ else
 fi
 
 # ============================================================
-# Step 7: Print access information
+# Step 7: Start port-forward and print access information
 # ============================================================
 
-MINIKUBE_IP=$(minikube ip 2>/dev/null || echo "localhost")
+# On macOS with Docker driver, NodePort isn't directly reachable.
+# Port-forward is the reliable cross-platform approach.
+log "Starting port-forward for guide (localhost:8000)..."
+kubectl port-forward -n weaklink svc/guide 8000:8000 &>/dev/null &
+GUIDE_PF_PID=$!
+echo "$GUIDE_PF_PID" > "${SCRIPT_DIR}/.weaklink-pf.pid"
+ok "Guide port-forward started (PID: $GUIDE_PF_PID)."
 
 echo ""
 echo -e "${BOLD}========================================${NC}"
 echo -e "${GREEN}${BOLD}  WeakLink Labs is ready!${NC}"
 echo -e "${BOLD}========================================${NC}"
 echo ""
-echo -e "  Guide:       ${CYAN}http://${MINIKUBE_IP}:30080${NC}"
-echo -e "  Workstation: ${CYAN}./weaklink shell${NC}"
+echo -e "  Guide:       ${CYAN}http://localhost:8000${NC}"
+echo -e "  Workstation: ${CYAN}./cli/weaklink shell${NC}"
 echo ""
 echo -e "  ${DIM}Useful commands:${NC}"
 echo -e "    ${BOLD}./cli/weaklink shell${NC}     Open a shell in the workstation"
