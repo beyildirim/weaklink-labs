@@ -1,0 +1,62 @@
+{
+  "_comment": "VULNERABLE: CodeBuild service role with excessive permissions",
+  "_description": "This IAM policy is attached to the CodeBuild project's service role. It grants far more access than needed for building and pushing container images.",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "OverlyBroadAccess",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:GetParameter",
+        "ssm:GetParameters",
+        "ssm:GetParametersByPath"
+      ],
+      "Resource": "*",
+      "_vulnerability": "Can read ANY SSM parameter including production secrets, database passwords, API keys"
+    },
+    {
+      "Sid": "FullS3Access",
+      "Effect": "Allow",
+      "Action": "s3:*",
+      "Resource": "*",
+      "_vulnerability": "Can read/write/delete any S3 bucket including backups, customer data, terraform state"
+    },
+    {
+      "Sid": "FullECRAccess",
+      "Effect": "Allow",
+      "Action": "ecr:*",
+      "Resource": "*",
+      "_vulnerability": "Can push to ANY ECR repository, including production images"
+    },
+    {
+      "Sid": "IAMEscalation",
+      "Effect": "Allow",
+      "Action": [
+        "iam:PassRole",
+        "sts:AssumeRole"
+      ],
+      "Resource": "*",
+      "_vulnerability": "Can assume ANY role in the account, including admin roles. Build can escalate to full account admin."
+    },
+    {
+      "Sid": "CloudWatchLogs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "KMSDecrypt",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*",
+      "_vulnerability": "Can decrypt any KMS-encrypted secret in the account"
+    }
+  ]
+}

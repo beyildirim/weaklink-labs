@@ -1,0 +1,69 @@
+# =============================================================================
+# AWS CodeBuild buildspec.yml -- VULNERABLE VERSION
+# =============================================================================
+# This buildspec demonstrates three vulnerabilities:
+#   1. Fetches production secrets via SSM Parameter Store during build
+#   2. Echoes secrets to build logs (visible in CloudWatch)
+#   3. No input validation on build parameters
+# =============================================================================
+
+version: 0.2
+
+env:
+  parameter-store:
+    # VULNERABILITY: Build role has ssm:GetParameter on /prod/*
+    # A malicious PR can modify this file to reference ANY production secret
+    DB_PASSWORD: /prod/database/master-password
+    API_MASTER_KEY: /prod/api/master-key
+    STRIPE_SECRET: /prod/payments/stripe-secret-key
+    # These secrets are now available as environment variables during the build
+
+  variables:
+    # These are fine -- not sensitive
+    APP_ENV: "staging"
+    NODE_ENV: "production"
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      - echo "Installing dependencies..."
+      - npm ci
+
+  pre_build:
+    commands:
+      # VULNERABILITY: Secrets logged to CloudWatch in plaintext
+      - echo "Configuring environment for $APP_ENV..."
+      - echo "Using database password starting with ${DB_PASSWORD:0:4}..."
+      - echo "API key configured: ${API_MASTER_KEY:0:8}..."
+
+      # VULNERABILITY: No validation on user-supplied branch/tag
+      - echo "Building from ref: $CODEBUILD_RESOLVED_SOURCE_VERSION"
+
+  build:
+    commands:
+      - echo "Building application..."
+      - npm run build
+
+      # VULNERABILITY: Secrets passed as build args to Docker
+      - docker build \
+          --build-arg DB_PASSWORD="$DB_PASSWORD" \
+          --build-arg API_KEY="$API_MASTER_KEY" \
+          -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/my-app:$CODEBUILD_RESOLVED_SOURCE_VERSION \
+          .
+
+  post_build:
+    commands:
+      - echo "Pushing image..."
+      - aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/my-app:$CODEBUILD_RESOLVED_SOURCE_VERSION
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: build
+
+cache:
+  paths:
+    - 'node_modules/**/*'

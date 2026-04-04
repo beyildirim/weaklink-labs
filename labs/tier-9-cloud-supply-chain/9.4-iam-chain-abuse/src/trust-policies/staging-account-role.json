@@ -1,0 +1,63 @@
+{
+  "_account": "333333333333 (Staging Account)",
+  "_role": "staging-deploy",
+  "_description": "Role for deploying to staging environment and promoting to production",
+
+  "AssumeRolePolicyDocument": {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Principal": {
+          "AWS": "arn:aws:iam::222222222222:root"
+        },
+        "Action": "sts:AssumeRole",
+        "_vulnerability": "Trusts the entire CI Account -- any role/user in 222222222222 can assume this"
+      }
+    ]
+  },
+
+  "PermissionPolicy": {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "StagingDeploy",
+        "Effect": "Allow",
+        "Action": [
+          "ecs:UpdateService",
+          "ecs:DescribeServices",
+          "ecs:RegisterTaskDefinition"
+        ],
+        "Resource": "*",
+        "Condition": {
+          "StringEquals": {
+            "aws:ResourceTag/Environment": "staging"
+          }
+        }
+      },
+      {
+        "Sid": "StagingImages",
+        "Effect": "Allow",
+        "Action": [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchGetImage",
+          "ecr:GetDownloadUrlForLayer"
+        ],
+        "Resource": "arn:aws:ecr:us-east-1:333333333333:repository/staging-images"
+      },
+      {
+        "Sid": "StagingConfig",
+        "Effect": "Allow",
+        "Action": "s3:GetObject",
+        "Resource": "arn:aws:s3:::staging-config-333333333333/*"
+      },
+      {
+        "Sid": "PromoteToProduction",
+        "Effect": "Allow",
+        "Action": "sts:AssumeRole",
+        "Resource": "arn:aws:iam::444444444444:role/prod-deploy",
+        "_vulnerability": "No ExternalId, no source IP condition, no time restriction. Exists for blue-green deployment promotion."
+      }
+    ]
+  }
+}

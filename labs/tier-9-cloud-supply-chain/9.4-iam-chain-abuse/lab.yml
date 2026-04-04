@@ -1,0 +1,13 @@
+id: "9.4"
+title: "IAM Chain Abuse"
+tier: 9
+module: "cloud-supply-chain"
+prerequisites: ["2.4"]
+difficulty: advanced
+estimated_time: 45m
+tags: ["iam", "cross-account", "assume-role", "trust-chain", "privilege-escalation", "oidc", "zero-trust"]
+mitre: ["T1078.004", "T1550.001", "T1195.002"]
+phase_understand: "Explore cloud IAM as a supply chain: cross-account trust (AssumeRole, service account impersonation), service-linked roles, and how trust chains form from dev to CI to staging to production"
+phase_break: "Compromise a dev account via a supply chain attack on a dev dependency, then traverse the trust chain through CI, staging, and production accounts -- four trust boundaries, none individually misconfigured"
+phase_defend: "Break trust chains with external ID conditions, source IP restrictions, OIDC federation, cross-account access logging, and zero-trust principles for service accounts"
+phase_detect: "Analyze CloudTrail cross-account AssumeRole patterns, detect unusual source accounts, time-of-day anomalies for role assumptions, and impossible travel for service accounts"

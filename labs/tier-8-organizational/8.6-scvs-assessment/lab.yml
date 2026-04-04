@@ -1,0 +1,12 @@
+id: "8.6"
+title: "OWASP SCVS Framework Assessment"
+tier: 8
+module: "organizational"
+prerequisites: ["8.1", "8.2"]
+difficulty: intermediate
+estimated_time: 40m
+tags: ["scvs", "owasp", "governance", "compliance", "sbom", "provenance", "framework", "maturity"]
+phase_understand: "Learn the OWASP Software Component Verification Standard: its 6 verification categories, 3 maturity levels, and how it differs from SLSA, SSDF, and NIST CSF"
+phase_assess: "Evaluate the WeakLink sample application against all 6 SCVS categories using the assessment worksheet and map gaps to specific WeakLink Labs"
+phase_plan: "Create a remediation roadmap based on SCVS gaps, prioritized by risk and effort, with a framework overlap analysis against SLSA and SSDF"
+phase_document: "Produce a SCVS compliance report with an overlap matrix and actionable checklists per category"

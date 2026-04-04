@@ -1,0 +1,134 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2021-12-09T00:00:00Z",
+    "component": {
+      "type": "application",
+      "name": "acme-webapp",
+      "version": "3.2.1",
+      "group": "com.acme",
+      "description": "ACME Web Application -- SBOM generated BEFORE Log4Shell disclosure"
+    },
+    "tools": [
+      {
+        "vendor": "CycloneDX",
+        "name": "cyclonedx-maven-plugin",
+        "version": "2.7.1"
+      }
+    ]
+  },
+  "components": [
+    {
+      "type": "framework",
+      "group": "org.springframework.boot",
+      "name": "spring-boot-starter-web",
+      "version": "2.6.1",
+      "scope": "required",
+      "description": "Starter for building web applications using Spring MVC"
+    },
+    {
+      "type": "library",
+      "group": "org.springframework.boot",
+      "name": "spring-boot-starter",
+      "version": "2.6.1",
+      "scope": "required",
+      "description": "Core starter, pulled in by spring-boot-starter-web"
+    },
+    {
+      "type": "library",
+      "group": "org.springframework.boot",
+      "name": "spring-boot-starter-logging",
+      "version": "2.6.1",
+      "scope": "required",
+      "description": "Logging starter -- this is where Log4j enters the dependency tree"
+    },
+    {
+      "type": "library",
+      "group": "org.apache.logging.log4j",
+      "name": "log4j-to-slf4j",
+      "version": "2.14.1",
+      "scope": "required",
+      "description": "Log4j to SLF4J bridge -- brings in log4j-api as transitive dependency"
+    },
+    {
+      "type": "library",
+      "group": "org.apache.logging.log4j",
+      "name": "log4j-api",
+      "version": "2.14.1",
+      "scope": "required",
+      "description": "VULNERABLE: Log4j API -- CVE-2021-44228 affects versions < 2.17.0"
+    },
+    {
+      "type": "library",
+      "group": "org.apache.logging.log4j",
+      "name": "log4j-core",
+      "version": "2.14.1",
+      "scope": "required",
+      "description": "VULNERABLE: Log4j Core -- contains the JNDI lookup code that enables CVE-2021-44228"
+    },
+    {
+      "type": "library",
+      "group": "ch.qos.logback",
+      "name": "logback-classic",
+      "version": "1.2.7",
+      "scope": "required"
+    },
+    {
+      "type": "library",
+      "group": "org.springframework.boot",
+      "name": "spring-boot-starter-data-jpa",
+      "version": "2.6.1",
+      "scope": "required"
+    },
+    {
+      "type": "library",
+      "group": "org.postgresql",
+      "name": "postgresql",
+      "version": "42.3.1",
+      "scope": "optional"
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "com.acme:acme-webapp:3.2.1",
+      "dependsOn": [
+        "org.springframework.boot:spring-boot-starter-web:2.6.1",
+        "org.springframework.boot:spring-boot-starter-data-jpa:2.6.1",
+        "org.postgresql:postgresql:42.3.1"
+      ]
+    },
+    {
+      "ref": "org.springframework.boot:spring-boot-starter-web:2.6.1",
+      "dependsOn": [
+        "org.springframework.boot:spring-boot-starter:2.6.1"
+      ]
+    },
+    {
+      "ref": "org.springframework.boot:spring-boot-starter:2.6.1",
+      "dependsOn": [
+        "org.springframework.boot:spring-boot-starter-logging:2.6.1"
+      ]
+    },
+    {
+      "ref": "org.springframework.boot:spring-boot-starter-logging:2.6.1",
+      "dependsOn": [
+        "ch.qos.logback:logback-classic:1.2.7",
+        "org.apache.logging.log4j:log4j-to-slf4j:2.14.1"
+      ]
+    },
+    {
+      "ref": "org.apache.logging.log4j:log4j-to-slf4j:2.14.1",
+      "dependsOn": [
+        "org.apache.logging.log4j:log4j-api:2.14.1"
+      ]
+    },
+    {
+      "ref": "org.apache.logging.log4j:log4j-api:2.14.1",
+      "dependsOn": [
+        "org.apache.logging.log4j:log4j-core:2.14.1"
+      ]
+    }
+  ]
+}

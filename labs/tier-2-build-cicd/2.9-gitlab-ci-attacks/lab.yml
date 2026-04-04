@@ -1,0 +1,12 @@
+id: "2.9"
+title: "GitLab CI Pipeline Attacks"
+tier: 2
+module: "build-cicd"
+prerequisites: ["2.1"]
+difficulty: intermediate
+estimated_time: 35m
+tags: ["gitlab-ci", "include-remote", "ci-variables", "cross-project-pipeline", "secrets-leak", "cicd"]
+mitre: ["T1195.002", "T1059", "T1552.001"]
+phase_understand: "GitLab CI syntax (.gitlab-ci.yml), stages, jobs, runners, variables, protected variables, includes, extends, triggers"
+phase_break: "Three GitLab-specific attack vectors: include:remote template injection, unprotected CI variable leakage, cross-project trigger abuse"
+phase_defend: "Protected branches + variables, include: allowlisting, merge request pipeline restrictions, variable masking"

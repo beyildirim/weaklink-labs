@@ -1,6 +1,6 @@
 # WeakLink Labs
 
-**Hands-on labs that teach security teams how software supply chains work -- and how they break.**
+**Hands-on supply chain security training for SOC analysts, security engineers, DevSecOps, and DevOps teams.**
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/beyildirim/weaklink-labs?quickstart=1)
 
@@ -40,15 +40,16 @@ Every lab follows the same three-phase structure:
 
 | Tier | Topic | Labs | Prerequisites |
 |------|-------|------|---------------|
-| **0** | **Foundations** -- Version control, package managers, containers, CI/CD | 5 | None |
-| **1** | **Package Security** -- Dependency confusion, typosquatting, lockfile attacks | 6 | Tier 0 |
-| **2** | **Build & CI/CD** -- Pipeline poisoning, secret exfiltration, runner attacks | 8 | Tier 1 |
-| **3** | **Container Security** -- Image tampering, registry confusion, layer attacks | 6 | Tier 0 |
-| **4** | **Artifact Integrity** -- SBOMs, signing, attestations, and how to bypass them | 7 | Tier 2 |
-| **5** | **IaC Supply Chain** -- Helm, Terraform, and infrastructure-as-code attacks | 5 | Tier 3 |
-| **6** | **Advanced & Emerging** -- AI/ML supply chain, case studies, chained attacks | 8 | Tier 4 |
-| **7** | **Detection & Response** -- Building detection, incident response, threat modeling | 5 | Tier 5 |
-| **8** | **Organizational** -- SLSA, SSDF, compliance, building a security program | 5 | Tier 7 |
+| **0** | **Foundations** | Version control, package managers, containers, CI/CD | 5 | None |
+| **1** | **Package Security** | Dependency confusion, typosquatting, lockfile attacks | 6 | Tier 0 |
+| **2** | **Build & CI/CD** | Pipeline poisoning, secret exfiltration, runner attacks, GitLab CI | 9 | Tier 1 |
+| **3** | **Container Security** | Image tampering, registry confusion, layer attacks | 6 | Tier 0 |
+| **4** | **Artifact Integrity** | SBOMs, signing, attestations, and how to bypass them | 7 | Tier 2 |
+| **5** | **IaC Supply Chain** | Helm, Terraform, Ansible, admission controllers | 5 | Tier 3 |
+| **6** | **Advanced & Emerging** | AI/ML, case studies (xz, SolarWinds, Log4Shell, Equifax) | 10 | Tier 4 |
+| **7** | **Detection & Response** | SIEM rules, incident triage, IR playbooks, threat modeling | 5 | Tier 5 |
+| **8** | **Organizational** | SLSA, SSDF, SCVS, EO 14028, building a program | 6 | Tier 7 |
+| **9** | **Cloud Supply Chain** | Marketplace poisoning, serverless, cloud CI/CD, IAM chains | 4 | Tier 2 |
 
 ## Web UI
 

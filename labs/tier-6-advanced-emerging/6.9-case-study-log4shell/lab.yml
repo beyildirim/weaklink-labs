@@ -1,0 +1,12 @@
+id: "6.9"
+title: "Case Study: Log4Shell (CVE-2021-44228)"
+tier: 6
+module: "advanced-emerging"
+prerequisites: ["1.1"]
+difficulty: advanced
+estimated_time: 40m
+tags: ["log4shell", "log4j", "cve-2021-44228", "jndi", "java", "transitive-dependency", "sbom", "rce"]
+mitre: ["T1195.002", "T1190", "T1059.007"]
+phase_understand: "Timeline from disclosure to mass exploitation, what Log4j is, why JNDI lookups in a logging library became an RCE vector"
+phase_break: "The attack mechanism: JNDI lookup in any logged string, attacker-controlled LDAP returning malicious class, transitive dependency hiding"
+phase_defend: "SBOM generation, transitive dependency visibility, patching strategy, the multi-CVE response chaos"

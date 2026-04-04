@@ -1,0 +1,85 @@
+{
+  "_comment": "HARDENED: CodeBuild service role with least-privilege permissions",
+  "_description": "This IAM policy grants only the permissions needed to build the application, push to a specific ECR repository, and read build-scoped parameters.",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "BuildParametersOnly",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:GetParameter"
+      ],
+      "Resource": [
+        "arn:aws:ssm:us-east-1:123456789012:parameter/build/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Environment": "build"
+        }
+      }
+    },
+    {
+      "Sid": "BuildArtifactBucketOnly",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-app-build-artifacts",
+        "arn:aws:s3:::my-app-build-artifacts/*"
+      ]
+    },
+    {
+      "Sid": "SpecificECRRepository",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:GetAuthorizationToken"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ECRPushToAppRepo",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:PutImage",
+        "ecr:InitiateLayerUpload",
+        "ecr:UploadLayerPart",
+        "ecr:CompleteLayerUpload"
+      ],
+      "Resource": "arn:aws:ecr:us-east-1:123456789012:repository/my-app"
+    },
+    {
+      "Sid": "BuildLogs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:us-east-1:123456789012:log-group:/aws/codebuild/my-app-*"
+    },
+    {
+      "Sid": "BuildSpecificKMSKey",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/build-key-id-here"
+    },
+    {
+      "Sid": "ExplicitDenyDangerous",
+      "Effect": "Deny",
+      "Action": [
+        "iam:*",
+        "sts:AssumeRole",
+        "organizations:*",
+        "cloudtrail:StopLogging",
+        "cloudtrail:DeleteTrail"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+# HARDENED .gitlab-ci.yml -- Production-ready defenses applied.
+# All three attack vectors from the vulnerable version are mitigated.
+
+# Defense 1: Replace include:remote with include:project.
+# Templates are pulled only from a trusted internal repository on a specific ref.
+# No external URLs, no attacker-controlled content.
+include:
+  - project: 'security/ci-templates'
+    file: '/templates/build.yml'
+    ref: 'v2.1.0'  # Pin to a specific tag, not a branch
+  - project: 'security/ci-templates'
+    file: '/templates/security-scan.yml'
+    ref: 'v2.1.0'
+
+stages:
+  - build
+  - test
+  - deploy
+  - trigger-downstream
+
+# Defense 2: No global variables block referencing secrets.
+# All sensitive variables are:
+#   - Set in GitLab UI as "Protected" (only available on protected branches)
+#   - Set as "Masked" (hidden from job logs)
+#   - Referenced only in the specific jobs that need them
+# Non-sensitive variables can still be defined here.
+variables:
+  NODE_ENV: "production"
+  ARTIFACT_COMPRESSION_LEVEL: "fast"
+
+build:
+  stage: build
+  script:
+    - echo "Building application..."
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 hour
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+test:
+  stage: test
+  script:
+    - npm run test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  # SONAR_TOKEN is a Protected Variable in GitLab UI.
+  # It is NOT available in merge request pipelines.
+  # The sonar step only runs on the default branch.
+
+sonar-scan:
+  stage: test
+  script:
+    - sonar-scanner -Dsonar.login=$SONAR_TOKEN
+  rules:
+    # Only run on protected branches -- MR pipelines cannot access SONAR_TOKEN
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  variables:
+    SONAR_TOKEN: $SONAR_TOKEN  # Protected variable, only injected on protected branches
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploying..."
+    - aws s3 sync dist/ s3://production-bucket/ --delete
+  environment:
+    name: production
+  rules:
+    # Deploy ONLY from the default branch, never from MR pipelines
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+  variables:
+    # Protected variables -- only available on protected branches
+    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+    DEPLOY_TOKEN: $DEPLOY_TOKEN
+
+# Defense 3: Cross-project trigger restricted to default branch only.
+# MR pipelines cannot trigger downstream infrastructure projects.
+# The trigger token is a Protected Variable.
+trigger-infra:
+  stage: trigger-downstream
+  trigger:
+    project: ops/deploy-infra
+    branch: main
+    strategy: depend
+  rules:
+    # Only trigger from the default branch, not from MR pipelines
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  variables:
+    TRIGGER_TOKEN: $CI_JOB_TOKEN  # Scoped to this job, not a static secret

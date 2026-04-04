@@ -1,0 +1,128 @@
+# =============================================================================
+# SAM Template -- Serverless Deployment Configuration
+# =============================================================================
+# This template defines both the VULNERABLE and HARDENED function configurations.
+# Compare the two to understand the defense-in-depth approach.
+# =============================================================================
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Order Processing Serverless Application
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 256
+    Runtime: python3.12
+
+Resources:
+
+  # =========================================================================
+  # VULNERABLE CONFIGURATION
+  # =========================================================================
+  VulnerableOrderProcessor:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: order-processor-vulnerable
+      Handler: handler.handler
+      CodeUri: ./
+      Description: "Process incoming orders -- VULNERABLE VERSION"
+
+      # PROBLEM 1: Layer referenced by name without version pin
+      # Anyone with lambda:PublishLayerVersion can update this layer
+      Layers:
+        - arn:aws:lambda:us-east-1:999888777666:layer:shared-utils
+
+      # PROBLEM 2: Overprivileged IAM role
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - "dynamodb:*"          # Too broad -- allows DeleteTable
+                - "s3:*"               # Too broad -- allows reading any bucket
+                - "sns:*"              # Too broad -- allows creating topics
+                - "ssm:GetParameter"   # Can read ANY parameter
+                - "kms:Decrypt"        # Can decrypt ANY key
+              Resource: "*"            # No resource scoping at all
+
+      # PROBLEM 3: No VPC isolation -- function can reach the internet
+      # A compromised function can exfiltrate data freely
+
+      # PROBLEM 4: Environment variables contain secrets in plaintext
+      Environment:
+        Variables:
+          DB_TABLE: orders
+          API_KEY: sk-live-4eC39HqLyjWDarjtT1zdp7dc  # Hardcoded secret!
+          NOTIFICATION_TOPIC: arn:aws:sns:us-east-1:123456789:order-notifications
+
+  # =========================================================================
+  # HARDENED CONFIGURATION
+  # =========================================================================
+  HardenedOrderProcessor:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: order-processor-hardened
+      Handler: handler.handler
+      CodeUri: ./
+      Description: "Process incoming orders -- HARDENED VERSION"
+
+      # FIX 1: Layer pinned to specific immutable version
+      Layers:
+        - arn:aws:lambda:us-east-1:123456789012:layer:shared-utils:7
+
+      # FIX 2: Least-privilege IAM role
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - "dynamodb:GetItem"
+                - "dynamodb:Query"
+              Resource: "arn:aws:dynamodb:us-east-1:123456789012:table/orders"
+            - Effect: Allow
+              Action:
+                - "sns:Publish"
+              Resource: "arn:aws:sns:us-east-1:123456789012:order-notifications"
+            - Effect: Allow
+              Action:
+                - "ssm:GetParameter"
+              Resource: "arn:aws:ssm:us-east-1:123456789012:parameter/app/order-processor/*"
+              Condition:
+                StringEquals:
+                  "ssm:ResourceTag/Environment": "production"
+            - Effect: Allow
+              Action:
+                - "logs:CreateLogGroup"
+                - "logs:CreateLogStream"
+                - "logs:PutLogEvents"
+              Resource: "arn:aws:logs:us-east-1:123456789012:*"
+
+      # FIX 3: VPC isolation -- function runs in private subnet
+      VpcConfig:
+        SecurityGroupIds:
+          - sg-0123456789abcdef0
+        SubnetIds:
+          - subnet-private-1a
+          - subnet-private-1b
+
+      # FIX 4: Secrets from Parameter Store, not environment variables
+      Environment:
+        Variables:
+          DB_TABLE: orders
+          NOTIFICATION_TOPIC: arn:aws:sns:us-east-1:123456789012:order-notifications
+          # API_KEY loaded from SSM at runtime, not stored in env vars
+
+      # FIX 5: Reserved concurrency to limit blast radius
+      ReservedConcurrentExecutions: 50
+
+      # FIX 6: Dead letter queue for failed invocations
+      DeadLetterQueue:
+        Type: SQS
+        TargetArn: !GetAtt OrderProcessorDLQ.Arn
+
+  OrderProcessorDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: order-processor-dlq
+      MessageRetentionPeriod: 1209600  # 14 days

@@ -1,0 +1,13 @@
+id: "9.2"
+title: "Serverless Supply Chain"
+tier: 9
+module: "cloud-supply-chain"
+prerequisites: ["1.2"]
+difficulty: advanced
+estimated_time: 40m
+tags: ["serverless", "lambda", "cloud-functions", "layers", "dependency-confusion", "exfiltration"]
+mitre: ["T1195.002", "T1583.007", "T1059"]
+phase_understand: "Explore the serverless attack surface: function code, bundled dependencies, shared Lambda Layers, and the runtime environment -- each is a supply chain link"
+phase_break: "Deploy a malicious Lambda Layer that intercepts function invocations to exfiltrate event data, and simulate a dependency confusion attack in a serverless deployment pipeline"
+phase_defend: "Pin layer versions by ARN, build layers internally, scan function packages, use minimal runtimes, and apply least-privilege IAM to functions"
+phase_detect: "Monitor CloudWatch for function duration spikes and unexpected network calls, track Lambda layer version changes, and audit IAM policies for overprivileged functions"

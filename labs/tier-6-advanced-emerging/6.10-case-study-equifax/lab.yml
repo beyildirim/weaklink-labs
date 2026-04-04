@@ -1,0 +1,12 @@
+id: "6.10"
+title: "Case Study: Equifax Breach (CVE-2017-5638)"
+tier: 6
+module: "advanced-emerging"
+prerequisites: ["1.1"]
+difficulty: intermediate
+estimated_time: 35m
+tags: ["equifax", "cve-2017-5638", "apache-struts", "patching", "vulnerability-management", "rce", "data-breach"]
+mitre: ["T1190", "T1195.002"]
+phase_understand: "Timeline from Apache Struts patch availability to breach discovery to $700M settlement"
+phase_break: "CVE-2017-5638 RCE via Content-Type header parsing in Apache Struts, 78 days undetected"
+phase_defend: "Dependency patching SLAs, SBOM plus remediation workflow, patch compliance dashboards"

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.acme</groupId>
+    <artifactId>acme-webapp</artifactId>
+    <version>3.2.1</version>
+    <packaging>jar</packaging>
+
+    <name>ACME Web Application</name>
+    <description>
+        This application uses Spring Boot 2.6.1, which transitively depends on
+        Log4j 2.14.1 -- the version vulnerable to CVE-2021-44228 (Log4Shell).
+
+        The developer never explicitly added Log4j as a dependency.
+        It arrives through: spring-boot-starter-web -> spring-boot-starter-logging
+        -> log4j-to-slf4j -> log4j-api/log4j-core 2.14.1
+
+        Without an SBOM or dependency tree analysis, the developer has no idea
+        Log4j is in their application.
+    </description>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <!-- Spring Boot 2.6.1 uses Log4j 2.14.1 (VULNERABLE) -->
+        <version>2.6.1</version>
+        <relativePath/>
+    </parent>
+
+    <properties>
+        <java.version>11</java.version>
+    </properties>
+
+    <dependencies>
+        <!-- Direct dependency: Spring Boot Web Starter -->
+        <!-- The developer only asked for a web framework -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Direct dependency: Spring Data JPA -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- Direct dependency: PostgreSQL driver -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!--
+            TRANSITIVE DEPENDENCY CHAIN (not visible here):
+            spring-boot-starter-web
+              └── spring-boot-starter
+                    └── spring-boot-starter-logging
+                          ├── logback-classic 1.2.7
+                          ├── log4j-to-slf4j 2.14.1
+                          │     └── log4j-api 2.14.1     ← VULNERABLE
+                          └── jul-to-slf4j 1.7.32
+
+            The actual log4j-core 2.14.1 comes in through the Spring Boot BOM.
+            Running `mvn dependency:tree` reveals the full chain.
+        -->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

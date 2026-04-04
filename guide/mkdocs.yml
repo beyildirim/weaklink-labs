@@ -65,7 +65,33 @@ nav:
     - 1.4 Lockfile Injection: labs/tier-1/1.4-lockfile-injection.md
     - 1.5 Manifest Confusion: labs/tier-1/1.5-manifest-confusion.md
     - 1.6 Phantom Dependencies: labs/tier-1/1.6-phantom-dependencies.md
-  - Tiers 2-8 (Coming Soon): coming-soon.md
+  - Tier 2 - Build & CI/CD:
+    - 2.1 CI/CD Fundamentals: labs/tier-2/2.1-cicd-fundamentals.md
+    - 2.2 Direct PPE: labs/tier-2/2.2-direct-ppe.md
+    - 2.3 Indirect PPE: labs/tier-2/2.3-indirect-ppe.md
+    - 2.4 Secret Exfiltration: labs/tier-2/2.4-secret-exfiltration.md
+    - 2.5 Self-Hosted Runners: labs/tier-2/2.5-self-hosted-runners.md
+    - 2.6 Actions Injection: labs/tier-2/2.6-actions-injection.md
+    - 2.7 Build Cache Poisoning: labs/tier-2/2.7-build-cache-poisoning.md
+    - 2.8 Workflow Run Attacks: labs/tier-2/2.8-workflow-run-attacks.md
+    - 2.9 GitLab CI Attacks: labs/tier-2/2.9-gitlab-ci-attacks.md
+  - Tier 6 - Advanced & Emerging:
+    - 6.1 ML Model Supply Chain: labs/tier-6/6.1-ml-model-supply-chain.md
+    - 6.2 Dataset Poisoning: labs/tier-6/6.2-dataset-poisoning.md
+    - 6.3 Firmware Supply Chain: labs/tier-6/6.3-firmware-supply-chain.md
+    - 6.4 Multi-Vector Attack: labs/tier-6/6.4-multi-vector-attack.md
+    - "6.5 Case Study - xz-utils": labs/tier-6/6.5-case-study-xz-utils.md
+    - "6.6 Case Study - SolarWinds": labs/tier-6/6.6-case-study-solarwinds.md
+    - "6.7 Case Study - Codecov": labs/tier-6/6.7-case-study-codecov.md
+    - "6.8 Case Study - event-stream": labs/tier-6/6.8-case-study-event-stream.md
+    - "6.9 Case Study - Log4Shell": labs/tier-6/6.9-case-study-log4shell.md
+    - "6.10 Case Study - Equifax": labs/tier-6/6.10-case-study-equifax.md
+  - Tier 9 - Cloud Supply Chain:
+    - 9.1 Cloud Marketplace Poisoning: labs/tier-9/9.1-cloud-marketplace-poisoning.md
+    - 9.2 Serverless Supply Chain: labs/tier-9/9.2-serverless-supply-chain.md
+    - 9.3 Cloud CI/CD Attacks: labs/tier-9/9.3-cloud-cicd-attacks.md
+    - 9.4 IAM Chain Abuse: labs/tier-9/9.4-iam-chain-abuse.md
+  - Tiers 3-5, 7-8 (Coming Soon): coming-soon.md
   - Achievements: achievements.md
   - Facilitator Guide: facilitator-guide.md
   - Roadmap: roadmap.md
