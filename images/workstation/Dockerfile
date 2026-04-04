@@ -42,6 +42,10 @@ RUN pip install --no-cache-dir \
 # npm tools
 RUN npm install -g depcheck
 
+# ttyd (web terminal)
+RUN curl -fsSL -o /usr/local/bin/ttyd https://github.com/tsl0922/ttyd/releases/download/1.7.7/ttyd.x86_64 \
+    && chmod +x /usr/local/bin/ttyd
+
 # Create non-root user
 RUN useradd -m -s /bin/bash hacker
 
@@ -78,4 +82,5 @@ RUN chown -R hacker:hacker /home/hacker
 
 USER hacker
 
-CMD ["sleep", "infinity"]
+# Start ttyd on port 7681 in background, then sleep to keep container alive
+CMD bash -c "ttyd -W -p 7681 bash &>/dev/null & sleep infinity"

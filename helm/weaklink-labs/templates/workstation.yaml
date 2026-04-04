@@ -19,7 +19,6 @@ spec:
         - name: workstation
           image: "{{ .Values.workstation.image }}:{{ .Values.workstation.tag }}"
           imagePullPolicy: {{ .Values.workstation.pullPolicy }}
-          command: ["sleep", "infinity"]
           env:
             - name: PYPI_PRIVATE
               value: "http://pypi-private:{{ .Values.pypiPrivate.port }}/simple/"
@@ -38,16 +37,12 @@ spec:
             - name: npm-config
               mountPath: /home/hacker/.npmrc
               subPath: .npmrc
-          resources:
-            {{- toYaml .Values.workstation.resources | nindent 12 }}
-        - name: ttyd
-          image: "{{ .Values.workstation.ttyd.image }}:{{ .Values.workstation.ttyd.tag }}"
-          args: ["-W", "bash"]
           ports:
             - name: ttyd
               containerPort: 7681
+              protocol: TCP
           resources:
-            {{- toYaml .Values.workstation.ttyd.resources | nindent 12 }}
+            {{- toYaml .Values.workstation.resources | nindent 12 }}
       volumes:
         - name: pip-config
           configMap:
