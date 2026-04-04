@@ -1,0 +1,11 @@
+id: "5.5"
+title: "Kubernetes Admission Controller Bypass"
+tier: 5
+module: "iac-supply-chain"
+prerequisites: ["5.2"]
+difficulty: advanced
+estimated_time: 40m
+tags: ["kubernetes", "admission-controllers", "opa", "gatekeeper", "kyverno", "policy-bypass"]
+phase_understand: "Explore admission controllers (OPA Gatekeeper, Kyverno) and how they enforce policies on K8s resources"
+phase_break: "Bypass admission controllers using exempt namespaces, post-admission mutations, and uncovered CRDs"
+phase_defend: "Audit admission controller coverage, test policies with conftest, monitor for policy drift"

@@ -1,0 +1,13 @@
+id: "7.2"
+title: "Supply Chain Incident Triage"
+tier: 7
+module: "detection-response"
+prerequisites: ["1.2", "7.1"]
+difficulty: advanced
+estimated_time: 40m
+tags: ["incident-response", "triage", "soc", "dependency-confusion", "blast-radius"]
+mitre: ["T1195.002"]
+phase_understand: "Review the alert: 'internal-utils@99.0.0 installed in CI pipeline 3 hours ago.' You are the on-call analyst."
+phase_investigate: "Determine scope: which pipelines pulled this version, what secrets were exposed, what the malicious package did, and how long the window of compromise was"
+phase_detect: "Classify severity using a standardized framework, identify the full blast radius across pipelines and environments, and document forensic findings"
+phase_respond: "Write the incident summary for management, recommend immediate containment actions including secret rotation and build quarantine, and draft a communications plan"

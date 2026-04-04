@@ -11,6 +11,14 @@ All labs run inside a Kubernetes cluster on your machine. To start working:
 
 You are now inside the lab workstation. All registries, Git servers, and tools are pre-configured and reachable by DNS name. You do not need to install anything else.
 
+### Workstation Terminal
+
+The terminal below connects directly to your workstation. You can run all lab commands here without leaving the browser.
+
+<div class="terminal-embed">
+  <iframe src="http://localhost:7681" title="WeakLink Workstation Terminal"></iframe>
+</div>
+
 ### Available Services
 
 From inside the workstation, these services are reachable:

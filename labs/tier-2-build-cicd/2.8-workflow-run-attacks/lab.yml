@@ -1,0 +1,12 @@
+id: "2.8"
+title: "Workflow Run & Cross-Workflow Attacks"
+tier: 2
+module: "build-cicd"
+prerequisites: ["2.2", "2.6"]
+difficulty: advanced
+estimated_time: 40m
+tags: ["workflow-run", "cross-workflow", "artifacts", "privilege-escalation", "cicd"]
+mitre: ["T1195.002", "T1574"]
+phase_understand: "workflow_run triggers one workflow after another -- the triggered workflow runs on main with write permissions"
+phase_break: "Upload a malicious artifact in a PR workflow; the triggered workflow downloads and executes it with elevated permissions"
+phase_defend: "Validate artifact provenance, never trust PR artifacts, use OIDC tokens instead of static secrets"

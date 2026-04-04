@@ -1,0 +1,65 @@
+[
+  {
+    "runner_id": "ci-runner-01",
+    "runner_ip": "10.100.0.11",
+    "environment_variables": [
+      {"name": "AWS_ACCESS_KEY_ID", "value": "AKIAIOSFODNN7EXAMPLE", "scope": "org-level"},
+      {"name": "AWS_SECRET_ACCESS_KEY", "value": "***REDACTED***", "scope": "org-level"},
+      {"name": "NPM_TOKEN", "value": "npm_***REDACTED***", "scope": "org-level"},
+      {"name": "DOCKER_PASSWORD", "value": "***REDACTED***", "scope": "org-level"},
+      {"name": "DOCKER_USERNAME", "value": "acme-ci", "scope": "org-level"},
+      {"name": "GITHUB_TOKEN", "value": "ghp_***REDACTED***", "scope": "repo-level", "permissions": "read-write"},
+      {"name": "SONAR_TOKEN", "value": "sqp_***REDACTED***", "scope": "org-level"},
+      {"name": "SENTRY_DSN", "value": "https://***@sentry.acme.corp/2", "scope": "repo-level"}
+    ],
+    "compromised_pipelines": ["api-build-3291"]
+  },
+  {
+    "runner_id": "ci-runner-03",
+    "runner_ip": "10.100.0.15",
+    "environment_variables": [
+      {"name": "AWS_ACCESS_KEY_ID", "value": "AKIAIOSFODNN7EXAMPLE", "scope": "org-level"},
+      {"name": "AWS_SECRET_ACCESS_KEY", "value": "***REDACTED***", "scope": "org-level"},
+      {"name": "NPM_TOKEN", "value": "npm_***REDACTED***", "scope": "org-level"},
+      {"name": "DOCKER_PASSWORD", "value": "***REDACTED***", "scope": "org-level"},
+      {"name": "DOCKER_USERNAME", "value": "acme-ci", "scope": "org-level"},
+      {"name": "GITHUB_TOKEN", "value": "ghp_***REDACTED***", "scope": "repo-level", "permissions": "read-write"},
+      {"name": "PYPI_TOKEN", "value": "pypi-***REDACTED***", "scope": "repo-level"},
+      {"name": "CLOUDFLARE_API_KEY", "value": "***REDACTED***", "scope": "repo-level"}
+    ],
+    "compromised_pipelines": ["frontend-deploy-1847"]
+  },
+  {
+    "runner_id": "ci-runner-gpu-01",
+    "runner_ip": "10.100.1.5",
+    "environment_variables": [
+      {"name": "AWS_ACCESS_KEY_ID", "value": "AKIAI44QH8DHBEXAMPLE", "scope": "repo-level"},
+      {"name": "AWS_SECRET_ACCESS_KEY", "value": "***REDACTED***", "scope": "repo-level"},
+      {"name": "S3_BUCKET", "value": "acme-ml-models-prod", "scope": "repo-level"},
+      {"name": "WANDB_API_KEY", "value": "***REDACTED***", "scope": "repo-level"},
+      {"name": "GITHUB_TOKEN", "value": "ghp_***REDACTED***", "scope": "repo-level", "permissions": "read-only"}
+    ],
+    "compromised_pipelines": ["ml-training-0822"]
+  },
+  {
+    "runner_id": "ci-runner-04",
+    "runner_ip": "10.100.0.16",
+    "environment_variables": [
+      {"name": "NPM_TOKEN", "value": "npm_***REDACTED***", "scope": "org-level"},
+      {"name": "GITHUB_TOKEN", "value": "ghp_***REDACTED***", "scope": "repo-level", "permissions": "read-only"},
+      {"name": "FIREBASE_TOKEN", "value": "***REDACTED***", "scope": "repo-level"}
+    ],
+    "compromised_pipelines": ["mobile-api-2103"]
+  },
+  {
+    "runner_id": "ci-runner-02",
+    "runner_ip": "10.100.0.12",
+    "environment_variables": [
+      {"name": "AWS_ACCESS_KEY_ID", "value": "AKIAIOSFODNN7EXAMPLE", "scope": "org-level"},
+      {"name": "AWS_SECRET_ACCESS_KEY", "value": "***REDACTED***", "scope": "org-level"},
+      {"name": "GITHUB_TOKEN", "value": "ghp_***REDACTED***", "scope": "repo-level", "permissions": "read-write"}
+    ],
+    "compromised_pipelines": [],
+    "_comment": "NOT COMPROMISED: ci-runner-02 did not run any pipeline that installed internal-utils"
+  }
+]

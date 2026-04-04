@@ -1,0 +1,12 @@
+id: "2.7"
+title: "Build Cache Poisoning"
+tier: 2
+module: "build-cicd"
+prerequisites: ["2.1"]
+difficulty: advanced
+estimated_time: 35m
+tags: ["cache", "poisoning", "pip", "npm", "cicd", "supply-chain"]
+mitre: ["T1195.002", "T1574"]
+phase_understand: "CI caches (pip, npm, Docker layers) reuse previous results to speed up builds"
+phase_break: "Poison the cache with a modified dependency so the next build uses the malicious version"
+phase_defend: "Use lockfile-hash cache keys, verify cache integrity, and isolate PR caches from main"

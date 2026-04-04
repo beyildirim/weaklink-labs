@@ -1,0 +1,12 @@
+id: "3.4"
+title: "Registry Confusion"
+tier: 3
+module: "container-security"
+prerequisites: ["3.1"]
+difficulty: intermediate
+estimated_time: 30m
+tags: ["docker", "registry", "pull", "namespace", "mirror", "admission-controller"]
+mitre: ["T1195.002", "T1036.005"]
+phase_understand: "Learn how docker pull resolves short names by prepending docker.io/library/ and how registry mirrors and search order work"
+phase_break: "An attacker publishes myapp:latest to a public registry that takes priority over your private registry -- your deploy pulls the attacker's image"
+phase_defend: "Always fully qualify image names. Use registry allowlists. Block pulls from unapproved registries via admission controllers"

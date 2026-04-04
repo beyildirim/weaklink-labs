@@ -1,0 +1,13 @@
+id: "7.3"
+title: "Incident Response Playbook"
+tier: 7
+module: "detection-response"
+prerequisites: ["7.2"]
+difficulty: advanced
+estimated_time: 45m
+tags: ["incident-response", "nist-800-61", "playbook", "runbook", "post-incident-review"]
+mitre: ["T1195.001", "T1195.002", "T1059.006", "T1020"]
+phase_understand: "Learn the NIST SP 800-61 IR framework (Preparation, Detection, Containment, Eradication, Recovery, Lessons Learned) applied specifically to supply chain compromises"
+phase_investigate: "Build a step-by-step IR playbook for 'compromised dependency detected in CI' with decision trees, role assignments, and escalation criteria"
+phase_detect: "Walk through the playbook against the Lab 7.2 incident scenario and validate that every phase is covered with concrete actions"
+phase_respond: "Generate a post-incident report template and conduct a tabletop exercise to stress-test the playbook against edge cases"

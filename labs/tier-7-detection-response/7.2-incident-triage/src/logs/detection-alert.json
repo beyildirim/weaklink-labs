@@ -1,0 +1,28 @@
+{
+  "alert_id": "SIEM-2026-04-04-0847",
+  "alert_name": "Internal package name resolved from public PyPI",
+  "severity": "critical",
+  "source": "proxy-log-correlation",
+  "fired_at": "2026-04-04T17:02:00Z",
+  "description": "Package 'internal-utils' (matching internal namespace pattern 'internal-*') was downloaded from pypi.org by CI runner ci-runner-03 (10.100.0.15). The public registry version is 99.0.0, which is significantly higher than the known internal version 1.0.0. This matches the dependency confusion attack pattern.",
+  "matched_events": [
+    {
+      "timestamp": "2026-04-04T14:02:21Z",
+      "src_ip": "10.100.0.15",
+      "dest_host": "pypi.org",
+      "uri_path": "/simple/internal-utils/",
+      "package_name": "internal-utils",
+      "version_detected": "99.0.0"
+    }
+  ],
+  "detection_rule": "supply-chain-dependency-confusion-v2",
+  "mitre_technique": "T1195.002",
+  "recommended_actions": [
+    "Identify all CI pipelines that installed internal-utils in the last 24 hours",
+    "Check installed version -- if 99.0.0, the pipeline is compromised",
+    "Rotate all secrets accessible from compromised runners",
+    "Block internal-utils on public PyPI at proxy level",
+    "Escalate to incident response team"
+  ],
+  "_analyst_note": "This alert fired 3 hours after the first compromised install. The gap is the detection latency -- your proxy log correlation rule runs every 60 minutes, and it took two correlation cycles plus analyst queue time to reach you."
+}

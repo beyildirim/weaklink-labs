@@ -1,0 +1,12 @@
+id: "6.4"
+title: "Multi-Vector Chained Attack"
+tier: 6
+module: "advanced-emerging"
+prerequisites: ["1.3", "2.2", "3.3"]
+difficulty: advanced
+estimated_time: 45m
+tags: ["kill-chain", "typosquatting", "ci-poisoning", "image-tampering", "defense-in-depth", "slsa"]
+mitre: ["T1195.002"]
+phase_understand: "Explore how real supply chain attacks combine multiple techniques into a single kill chain"
+phase_break: "Execute a three-stage attack: typosquatted package installs CI config modifier, which pushes a backdoored container image"
+phase_defend: "Implement layered defenses where each control catches what others miss, and map to SLSA levels"

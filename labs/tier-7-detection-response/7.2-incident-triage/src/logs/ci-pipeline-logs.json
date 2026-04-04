@@ -1,0 +1,93 @@
+[
+  {
+    "pipeline_id": "frontend-deploy-1847",
+    "repo": "acme-corp/web-frontend",
+    "trigger": "push",
+    "branch": "main",
+    "runner_id": "ci-runner-03",
+    "runner_ip": "10.100.0.15",
+    "started_at": "2026-04-04T14:02:18Z",
+    "finished_at": "2026-04-04T14:07:44Z",
+    "status": "success",
+    "steps": [
+      {"name": "checkout", "status": "success", "duration_s": 3},
+      {"name": "pip install -r requirements.txt", "status": "success", "duration_s": 28, "packages_installed": ["flask==3.0.0", "internal-utils==99.0.0", "requests==2.31.0"]},
+      {"name": "pytest tests/", "status": "success", "duration_s": 12},
+      {"name": "docker build", "status": "success", "duration_s": 45},
+      {"name": "docker push", "status": "success", "duration_s": 18, "image": "registry.acme.corp/web-frontend:v2.14.3"}
+    ],
+    "_comment": "COMPROMISED: internal-utils@99.0.0 installed (should be 1.0.0). Docker image v2.14.3 may contain backdoor."
+  },
+  {
+    "pipeline_id": "api-build-3291",
+    "repo": "acme-corp/api-service",
+    "trigger": "push",
+    "branch": "main",
+    "runner_id": "ci-runner-01",
+    "runner_ip": "10.100.0.11",
+    "started_at": "2026-04-04T14:14:05Z",
+    "finished_at": "2026-04-04T14:19:22Z",
+    "status": "success",
+    "steps": [
+      {"name": "checkout", "status": "success", "duration_s": 2},
+      {"name": "pip install -r requirements.txt", "status": "success", "duration_s": 31, "packages_installed": ["django==5.0.1", "internal-utils==99.0.0", "celery==5.3.6"]},
+      {"name": "pytest tests/", "status": "success", "duration_s": 45},
+      {"name": "docker build", "status": "success", "duration_s": 62},
+      {"name": "docker push", "status": "success", "duration_s": 21, "image": "registry.acme.corp/api-service:v4.8.1"}
+    ],
+    "_comment": "COMPROMISED: internal-utils@99.0.0 installed. Docker image v4.8.1 may contain backdoor."
+  },
+  {
+    "pipeline_id": "ml-training-0822",
+    "repo": "acme-corp/ml-pipeline",
+    "trigger": "schedule",
+    "branch": "main",
+    "runner_id": "ci-runner-gpu-01",
+    "runner_ip": "10.100.1.5",
+    "started_at": "2026-04-04T15:00:00Z",
+    "finished_at": "2026-04-04T15:42:18Z",
+    "status": "success",
+    "steps": [
+      {"name": "checkout", "status": "success", "duration_s": 4},
+      {"name": "pip install -r requirements.txt", "status": "success", "duration_s": 120, "packages_installed": ["torch==2.2.0", "internal-utils==99.0.0", "pandas==2.2.0", "scikit-learn==1.4.0"]},
+      {"name": "python train.py", "status": "success", "duration_s": 2400},
+      {"name": "upload model to S3", "status": "success", "duration_s": 35}
+    ],
+    "_comment": "COMPROMISED: internal-utils@99.0.0 installed. ML model uploaded to S3 may have been trained with tampered utils. GPU runner had AWS credentials with S3 write access."
+  },
+  {
+    "pipeline_id": "docs-build-0194",
+    "repo": "acme-corp/documentation",
+    "trigger": "push",
+    "branch": "main",
+    "runner_id": "ci-runner-02",
+    "runner_ip": "10.100.0.12",
+    "started_at": "2026-04-04T14:30:00Z",
+    "finished_at": "2026-04-04T14:32:15Z",
+    "status": "success",
+    "steps": [
+      {"name": "checkout", "status": "success", "duration_s": 2},
+      {"name": "pip install mkdocs mkdocs-material", "status": "success", "duration_s": 15, "packages_installed": ["mkdocs==1.5.3", "mkdocs-material==9.5.3"]},
+      {"name": "mkdocs build", "status": "success", "duration_s": 8},
+      {"name": "deploy to S3", "status": "success", "duration_s": 12}
+    ],
+    "_comment": "NOT COMPROMISED: this pipeline does not use internal-utils"
+  },
+  {
+    "pipeline_id": "mobile-api-2103",
+    "repo": "acme-corp/mobile-backend",
+    "trigger": "pull_request",
+    "branch": "feature/push-notifications",
+    "runner_id": "ci-runner-04",
+    "runner_ip": "10.100.0.16",
+    "started_at": "2026-04-04T16:45:00Z",
+    "finished_at": "2026-04-04T16:51:33Z",
+    "status": "success",
+    "steps": [
+      {"name": "checkout", "status": "success", "duration_s": 3},
+      {"name": "pip install -r requirements.txt", "status": "success", "duration_s": 22, "packages_installed": ["fastapi==0.109.0", "internal-utils==99.0.0", "uvicorn==0.27.0"]},
+      {"name": "pytest tests/", "status": "success", "duration_s": 18}
+    ],
+    "_comment": "COMPROMISED: internal-utils@99.0.0 installed on a PR build. PR builds have read-only GITHUB_TOKEN but still have NPM_TOKEN."
+  }
+]

@@ -1,0 +1,19 @@
+name: ACME Webapp CI (Self-Hosted)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: |
+          echo "Building on self-hosted runner..."
+          echo "Runner hostname: $(hostname)"
+          echo "Runner workspace: $(pwd)"
+          python app.py

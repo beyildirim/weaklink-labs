@@ -1,0 +1,31 @@
+name: ACME Webapp CI (Ephemeral Runners)
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    container:
+      image: python:3.12-slim
+      # Each job runs in a fresh container -- no state persistence
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify clean state
+        run: |
+          # Ensure no leftover files from previous builds
+          if [ -f /tmp/runner-compromised ]; then
+            echo "ERROR: Runner state is dirty!"
+            exit 1
+          fi
+          # Verify no unexpected dotfiles in workspace
+          UNEXPECTED=$(find . -name ".*" ! -name ".git" ! -name ".gitea" ! -name "." | head -5)
+          if [ -n "$UNEXPECTED" ]; then
+            echo "ERROR: Unexpected hidden files in workspace: $UNEXPECTED"
+            exit 1
+          fi
+      - name: Build
+        run: |
+          echo "Building in ephemeral container..."
+          python app.py

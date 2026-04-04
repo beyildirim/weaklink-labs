@@ -53,6 +53,7 @@ plugins:
 nav:
   - Home: index.md
   - Getting Started: getting-started.md
+  - Placement Test: placement-test.md
   - Tier 0 - Foundations:
     - 0.1 How Version Control Works: labs/tier-0/0.1-version-control.md
     - 0.2 How Package Managers Work: labs/tier-0/0.2-package-managers.md
@@ -65,4 +66,6 @@ nav:
     - 1.5 Manifest Confusion: labs/tier-1/1.5-manifest-confusion.md
     - 1.6 Phantom Dependencies: labs/tier-1/1.6-phantom-dependencies.md
   - Tiers 2-8 (Coming Soon): coming-soon.md
+  - Achievements: achievements.md
+  - Facilitator Guide: facilitator-guide.md
   - Roadmap: roadmap.md

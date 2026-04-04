@@ -1,0 +1,11 @@
+id: "5.4"
+title: "Ansible Galaxy and Collection Attacks"
+tier: 5
+module: "iac-supply-chain"
+prerequisites: []
+difficulty: intermediate
+estimated_time: 30m
+tags: ["ansible", "galaxy", "collections", "roles", "ssh-backdoor", "supply-chain"]
+phase_understand: "Explore Ansible Galaxy collections and roles -- how ansible-galaxy install downloads third-party automation"
+phase_break: "Find a Galaxy role that claims to configure NTP but secretly plants an SSH key in authorized_keys"
+phase_defend: "Pin collection versions with checksums, review roles before installing, use private Galaxy servers"

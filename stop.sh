@@ -22,12 +22,17 @@ echo ""
 echo -e "${BOLD}WeakLink Labs -- Teardown${NC}"
 echo ""
 
-# Kill port-forward if running
+# Kill port-forwards if running
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [[ -f "${SCRIPT_DIR}/.weaklink-pf.pid" ]]; then
     PF_PID=$(cat "${SCRIPT_DIR}/.weaklink-pf.pid")
-    kill "$PF_PID" 2>/dev/null && ok "Port-forward stopped." || true
+    kill "$PF_PID" 2>/dev/null && ok "Guide port-forward stopped." || true
     rm -f "${SCRIPT_DIR}/.weaklink-pf.pid"
+fi
+if [[ -f "${SCRIPT_DIR}/.weaklink-pf-ttyd.pid" ]]; then
+    TTYD_PID=$(cat "${SCRIPT_DIR}/.weaklink-pf-ttyd.pid")
+    kill "$TTYD_PID" 2>/dev/null && ok "Web terminal port-forward stopped." || true
+    rm -f "${SCRIPT_DIR}/.weaklink-pf-ttyd.pid"
 fi
 
 # Uninstall Helm release

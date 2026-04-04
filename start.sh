@@ -162,12 +162,19 @@ GUIDE_PF_PID=$!
 echo "$GUIDE_PF_PID" > "${SCRIPT_DIR}/.weaklink-pf.pid"
 ok "Guide port-forward started (PID: $GUIDE_PF_PID)."
 
+log "Starting port-forward for web terminal (localhost:7681)..."
+kubectl port-forward -n weaklink svc/workstation 7681:7681 &>/dev/null &
+TTYD_PF_PID=$!
+echo "$TTYD_PF_PID" > "${SCRIPT_DIR}/.weaklink-pf-ttyd.pid"
+ok "Web terminal port-forward started (PID: $TTYD_PF_PID)."
+
 echo ""
 echo -e "${BOLD}========================================${NC}"
 echo -e "${GREEN}${BOLD}  WeakLink Labs is ready!${NC}"
 echo -e "${BOLD}========================================${NC}"
 echo ""
 echo -e "  Guide:       ${CYAN}http://localhost:8000${NC}"
+echo -e "  Terminal:    ${CYAN}http://localhost:7681${NC}"
 echo -e "  Workstation: ${CYAN}./cli/weaklink shell${NC}"
 echo ""
 echo -e "  ${DIM}Useful commands:${NC}"

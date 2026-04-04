@@ -1,0 +1,21 @@
+Run multiple SBOM generators on the target container image:
+
+```
+# Using syft
+syft weaklink-app:latest -o cyclonedx-json > /app/sbom-syft.json
+
+# Using trivy
+trivy image --format cyclonedx weaklink-app:latest > /app/sbom-trivy.json
+
+# Using cdxgen (if available)
+cdxgen -o /app/sbom-cdxgen.json weaklink-app:latest
+```
+
+Compare the component counts:
+
+```
+echo "syft: $(cat /app/sbom-syft.json | jq '.components | length') components"
+echo "trivy: $(cat /app/sbom-trivy.json | jq '.components | length') components"
+```
+
+They will likely differ -- that's the point.

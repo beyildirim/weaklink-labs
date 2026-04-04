@@ -1,0 +1,12 @@
+id: "3.6"
+title: "Multi-Stage Build Leaks"
+tier: 3
+module: "container-security"
+prerequisites: ["3.1"]
+difficulty: intermediate
+estimated_time: 30m
+tags: ["docker", "multi-stage", "buildkit", "secrets", "env", "arg", "dockerignore"]
+mitre: ["T1552.001", "T1525"]
+phase_understand: "See how multi-stage builds use intermediate stages for compilation and copy only the artifact to the final stage -- secrets should stay in build stages"
+phase_break: "A multi-stage Dockerfile leaks an API key into the final image via layer history, copied file metadata, and baked-in environment variables"
+phase_defend: "Use BuildKit secrets (--mount=type=secret). Never use ENV/ARG for secrets. Use .dockerignore to prevent build context leaks"

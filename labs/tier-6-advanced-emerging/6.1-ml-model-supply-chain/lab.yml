@@ -1,0 +1,12 @@
+id: "6.1"
+title: "AI/ML Model Supply Chain"
+tier: 6
+module: "advanced-emerging"
+prerequisites: ["1.2"]
+difficulty: advanced
+estimated_time: 35m
+tags: ["ml", "pytorch", "pickle", "safetensors", "huggingface", "model-registry", "deserialization"]
+mitre: ["T1195.002", "T1059.006"]
+phase_understand: "Explore how ML models are distributed and loaded, and why pickle-based formats allow arbitrary code execution"
+phase_break: "Load a malicious pickled PyTorch model that executes embedded Python code on torch.load()"
+phase_defend: "Switch to safetensors format, scan models before loading, and verify model provenance"

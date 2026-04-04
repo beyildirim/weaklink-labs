@@ -1,0 +1,11 @@
+id: "4.3"
+title: "Signing Fundamentals"
+tier: 4
+module: "artifact-integrity"
+prerequisites: ["0.3"]
+difficulty: beginner
+estimated_time: 30m
+tags: ["cosign", "sigstore", "gpg", "signing", "verification", "chain-of-trust"]
+phase_understand: "Learn what artifact signing means: GPG, cosign, and the chain of trust"
+phase_break: "Deploy an unsigned container image with zero warnings or enforcement"
+phase_defend: "Sign images with cosign and enforce signature verification before deployment"

@@ -1,0 +1,12 @@
+id: "6.2"
+title: "Dataset Poisoning"
+tier: 6
+module: "advanced-emerging"
+prerequisites: ["6.1"]
+difficulty: advanced
+estimated_time: 40m
+tags: ["ml", "dataset", "poisoning", "backdoor", "data-integrity", "huggingface", "kaggle"]
+mitre: ["T1565.001", "T1195.002"]
+phase_understand: "Explore how ML training datasets are sourced externally and why data integrity affects model behavior"
+phase_break: "Inject poisoned samples into a training dataset that teach the model a backdoor trigger pattern"
+phase_defend: "Implement data provenance tracking, statistical outlier detection, and dataset signing"

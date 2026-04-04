@@ -1,0 +1,20 @@
+name: PR Validation (No Secrets)
+
+on:
+  pull_request:
+    branches: [main]
+
+# This workflow runs on PRs with ZERO secrets.
+# It validates code quality only -- no deployment, no secret access.
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint
+        run: echo "Linting..."
+      - name: Run tests
+        run: python test_app.py
+      - name: Security scan
+        run: echo "Running security scan (no secrets needed)..."

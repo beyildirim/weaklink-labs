@@ -1,0 +1,66 @@
+name: Deploy (Secured)
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types: [completed]
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Only deploy if the triggering workflow ran on main (not a PR)
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main'
+    environment: production
+    steps:
+      - name: Validate triggering workflow
+        run: |
+          echo "Triggered by: ${{ github.event.workflow_run.name }}"
+          echo "Branch: ${{ github.event.workflow_run.head_branch }}"
+          echo "Event: ${{ github.event.workflow_run.event }}"
+
+          # Reject if triggered by a PR
+          if [ "${{ github.event.workflow_run.event }}" = "pull_request" ]; then
+            echo "ERROR: Refusing to deploy artifact from PR workflow"
+            exit 1
+          fi
+
+          # Reject if not from main branch
+          if [ "${{ github.event.workflow_run.head_branch }}" != "main" ]; then
+            echo "ERROR: Refusing to deploy artifact from non-main branch"
+            exit 1
+          fi
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Verify artifact integrity
+        run: |
+          tar xzf webapp.tar.gz
+          # Verify expected files exist and nothing unexpected is present
+          EXPECTED="dist/app.py dist/deploy.sh"
+          for f in $EXPECTED; do
+            if [ ! -f "$f" ]; then
+              echo "ERROR: Missing expected file: $f"
+              exit 1
+            fi
+          done
+          # Check for unexpected executable files
+          UNEXPECTED=$(find dist/ -type f -executable ! -name "deploy.sh" | head -5)
+          if [ -n "$UNEXPECTED" ]; then
+            echo "ERROR: Unexpected executable files: $UNEXPECTED"
+            exit 1
+          fi
+
+      - name: Deploy
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+        run: |
+          echo "Deploying verified artifact..."
+          echo "Deploy complete with token ${DEPLOY_TOKEN:0:4}****"
+          # NOTE: we do NOT execute dist/deploy.sh -- we use our own deploy logic

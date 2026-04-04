@@ -1,0 +1,11 @@
+id: "4.6"
+title: "Attestation Forgery"
+tier: 4
+module: "artifact-integrity"
+prerequisites: ["4.4"]
+difficulty: advanced
+estimated_time: 40m
+tags: ["attestation", "forgery", "in-toto", "sigstore", "keyless", "oidc", "transparency-log"]
+phase_understand: "Attestations are signed claims -- if you control the key, you control the claim"
+phase_break: "Forge an in-toto attestation for a malicious artifact that passes signature verification"
+phase_defend: "Use keyless signing with Sigstore OIDC and verify builder identity via transparency logs"

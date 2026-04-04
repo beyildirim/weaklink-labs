@@ -1,0 +1,11 @@
+id: "5.1"
+title: "How Helm Charts Resolve Dependencies"
+tier: 5
+module: "iac-supply-chain"
+prerequisites: ["0.3"]
+difficulty: intermediate
+estimated_time: 35m
+tags: ["helm", "chart-dependencies", "oci-registry", "kubernetes", "supply-chain"]
+phase_understand: "Explore Chart.yaml dependencies, OCI-based Helm registries, and how Helm resolves chart versions"
+phase_break: "Exploit Helm dependency resolution by publishing a higher-version chart with malicious templates"
+phase_defend: "Pin chart versions with digests, use private Helm repos, and verify charts before deployment"

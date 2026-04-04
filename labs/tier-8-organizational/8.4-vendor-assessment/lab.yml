@@ -1,0 +1,12 @@
+id: "8.4"
+title: "Vendor Supply Chain Assessment"
+tier: 8
+module: "organizational"
+prerequisites: ["8.1"]
+difficulty: intermediate
+estimated_time: 35m
+tags: ["vendor-risk", "third-party", "assessment", "questionnaire", "governance", "supply-chain"]
+phase_understand: "Learn how to evaluate third-party vendor supply chain security posture, key questions, and red flags"
+phase_assess: "Apply a vendor assessment questionnaire against the WeakLink sample application as a vendor product"
+phase_evaluate: "Score the vendor on SBOM availability, build provenance, vulnerability response time, and dependency management"
+phase_document: "Produce a vendor risk assessment report with findings, scores, and recommendations"

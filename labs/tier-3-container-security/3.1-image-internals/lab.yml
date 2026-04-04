@@ -1,0 +1,12 @@
+id: "3.1"
+title: "Container Image Internals"
+tier: 3
+module: "container-security"
+prerequisites: ["0.3"]
+difficulty: beginner
+estimated_time: 30m
+tags: ["docker", "oci", "layers", "manifest", "digest", "crane"]
+mitre: ["T1525", "T1036"]
+phase_understand: "Explore how container images are built from layers, manifests, and configs -- inspect with docker inspect, docker history, and crane"
+phase_break: "Show that two images with identical docker inspect output can have different layers with hidden content buried in image history"
+phase_defend: "Use docker history --no-trunc, scan all layers individually, and adopt minimal base images (distroless/chainguard)"

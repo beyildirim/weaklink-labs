@@ -1,0 +1,11 @@
+id: "5.2"
+title: "Helm Chart Poisoning"
+tier: 5
+module: "iac-supply-chain"
+prerequisites: ["5.1"]
+difficulty: intermediate
+estimated_time: 35m
+tags: ["helm", "chart-poisoning", "hooks", "crds", "kubernetes", "persistence"]
+phase_understand: "Explore Helm chart templates, hooks, and CRDs -- how post-install hooks run as K8s jobs"
+phase_break: "Discover a poisoned chart whose post-install hook grants cluster-admin to the default service account"
+phase_defend: "Review hooks with helm template, enforce OPA/Kyverno policies for hook validation"

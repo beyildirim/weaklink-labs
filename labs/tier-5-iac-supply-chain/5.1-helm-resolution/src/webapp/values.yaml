@@ -1,0 +1,25 @@
+replicaCount: 2
+
+image:
+  repository: internal-registry/webapp
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+redis:
+  architecture: standalone
+  auth:
+    enabled: true
+    password: "changeme"
+
+postgresql:
+  auth:
+    postgresPassword: "changeme"
+    database: webapp
+
+nginx:
+  service:
+    type: ClusterIP

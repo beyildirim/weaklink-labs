@@ -1,0 +1,12 @@
+id: "6.5"
+title: "Case Study: xz-utils (CVE-2024-3094)"
+tier: 6
+module: "advanced-emerging"
+prerequisites: ["2.3"]
+difficulty: advanced
+estimated_time: 35m
+tags: ["xz-utils", "cve-2024-3094", "backdoor", "social-engineering", "build-system", "openssh", "liblzma"]
+mitre: ["T1195.002", "T1556"]
+phase_understand: "Study the timeline of the xz-utils attack: social engineering over 2 years, maintainer burnout exploitation"
+phase_break: "Walk through the actual attack mechanism: obfuscated build script injecting a backdoor into the SSH authentication path"
+phase_defend: "Apply lessons learned: maintainer support, build reproducibility, binary transparency"

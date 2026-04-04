@@ -1,0 +1,12 @@
+id: "6.7"
+title: "Case Study: Codecov Bash Uploader"
+tier: 6
+module: "advanced-emerging"
+prerequisites: ["2.4"]
+difficulty: intermediate
+estimated_time: 30m
+tags: ["codecov", "bash-uploader", "curl-bash", "ci-secrets", "exfiltration", "script-pinning"]
+mitre: ["T1195.002", "T1059.004"]
+phase_understand: "Study the Codecov bash uploader compromise and how piping external scripts into bash creates a supply chain risk"
+phase_break: "Walk through how the modified uploader script exfiltrated CI environment variables including secrets and AWS keys"
+phase_defend: "Pin scripts by hash, eliminate curl|bash patterns, and use verified actions instead of external scripts"

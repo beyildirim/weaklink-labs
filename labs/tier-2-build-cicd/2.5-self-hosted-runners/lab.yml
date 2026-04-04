@@ -1,0 +1,12 @@
+id: "2.5"
+title: "Self-Hosted Runner Attacks"
+tier: 2
+module: "build-cicd"
+prerequisites: ["2.1"]
+difficulty: advanced
+estimated_time: 40m
+tags: ["runners", "self-hosted", "persistence", "cicd", "backdoor"]
+mitre: ["T1195.002", "T1053"]
+phase_understand: "Self-hosted runners persist state between builds unlike ephemeral cloud runners"
+phase_break: "Drop a backdoor script that survives and executes on the next build -- persistence across jobs"
+phase_defend: "Use ephemeral runners, container isolation, and clean state verification between jobs"

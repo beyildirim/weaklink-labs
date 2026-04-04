@@ -1,0 +1,46 @@
+name: ACME Webapp CI (Indirect PPE Hardened)
+
+on:
+  push:
+    branches: [main]
+
+# PR builds handled by separate no-secrets workflow
+
+jobs:
+  verify-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify CI-referenced file integrity
+        run: |
+          echo "Verifying checksums of CI-referenced files..."
+          sha256sum -c .ci-checksums
+          echo "All file checksums verified."
+
+  test:
+    runs-on: ubuntu-latest
+    needs: verify-integrity
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run tests
+        run: make test
+      - name: Run test script
+        run: bash scripts/run-tests.sh
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: make build
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment: production
+    steps:
+      - name: Deploy
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+        run: echo "Deploying..."

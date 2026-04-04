@@ -40,6 +40,14 @@ spec:
               subPath: .npmrc
           resources:
             {{- toYaml .Values.workstation.resources | nindent 12 }}
+        - name: ttyd
+          image: "{{ .Values.workstation.ttyd.image }}:{{ .Values.workstation.ttyd.tag }}"
+          args: ["-W", "bash"]
+          ports:
+            - name: ttyd
+              containerPort: 7681
+          resources:
+            {{- toYaml .Values.workstation.ttyd.resources | nindent 12 }}
       volumes:
         - name: pip-config
           configMap:
@@ -64,3 +72,19 @@ data:
   .npmrc: |
     registry=http://verdaccio:{{ .Values.verdaccio.port }}/
     //verdaccio:{{ .Values.verdaccio.port }}/:always-auth=false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: workstation
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.componentLabels" (dict "context" . "component" "workstation") | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: ttyd
+      port: 7681
+      targetPort: 7681
+  selector:
+    {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "workstation") | nindent 4 }}

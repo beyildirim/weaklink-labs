@@ -1,0 +1,12 @@
+id: "3.3"
+title: "Base Image Poisoning"
+tier: 3
+module: "container-security"
+prerequisites: ["3.1"]
+difficulty: intermediate
+estimated_time: 35m
+tags: ["docker", "base-image", "dockerfile", "from", "digest-pinning", "cosign"]
+mitre: ["T1195.002", "T1525"]
+phase_understand: "See how Dockerfiles inherit everything from the base image via FROM -- and why you implicitly trust the base image maintainer"
+phase_break: "Push a backdoored base image to the registry. Build an app using that base. The app inherits the backdoor with zero changes to its own Dockerfile"
+phase_defend: "Pin base images by digest. Verify base image signatures. Scan base images independently before building on top of them"

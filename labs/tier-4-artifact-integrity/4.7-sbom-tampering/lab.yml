@@ -1,0 +1,11 @@
+id: "4.7"
+title: "SBOM Tampering"
+tier: 4
+module: "artifact-integrity"
+prerequisites: ["4.1", "4.3"]
+difficulty: intermediate
+estimated_time: 30m
+tags: ["sbom", "tampering", "integrity", "signing", "compliance", "cyclonedx"]
+phase_understand: "SBOMs are just JSON/XML files -- without signing, they can be silently modified"
+phase_break: "Remove a vulnerable component from an SBOM and pass a compliance check"
+phase_defend: "Sign SBOMs, verify integrity before consuming, and generate SBOMs in CI with attestations"

@@ -1,0 +1,34 @@
+name: Issue Handler
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log issue details
+        run: |
+          echo "New issue opened:"
+          echo "  Title: ${{ github.event.issue.title }}"
+          echo "  Author: ${{ github.event.issue.user.login }}"
+          echo "  Body: ${{ github.event.issue.body }}"
+
+      - name: Label by keyword
+        run: |
+          TITLE="${{ github.event.issue.title }}"
+          if echo "$TITLE" | grep -qi "bug"; then
+            echo "Labeling as bug..."
+          elif echo "$TITLE" | grep -qi "feature"; then
+            echo "Labeling as enhancement..."
+          fi
+
+      - name: Notify team
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        run: |
+          curl -sf -X POST "$SLACK_WEBHOOK" \
+            -d "{\"text\": \"New issue: ${{ github.event.issue.title }}\"}" || true

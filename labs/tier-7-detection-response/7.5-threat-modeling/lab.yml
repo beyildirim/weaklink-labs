@@ -1,0 +1,12 @@
+id: "7.5"
+title: "Threat Modeling for Software Supply Chains"
+tier: 7
+module: "detection-response"
+prerequisites: ["7.1"]
+difficulty: advanced
+estimated_time: 45m
+tags: ["threat-modeling", "stride", "pasta", "trust-boundaries", "risk-assessment", "supply-chain"]
+phase_understand: "Learn STRIDE and PASTA threat modeling frameworks applied to software supply chains, and identify trust boundaries across the development lifecycle"
+phase_investigate: "Map the complete supply chain for a sample application from source code through build, artifact storage, and deployment, marking every trust boundary crossing"
+phase_detect: "Apply STRIDE to each trust boundary: identify what can be spoofed, tampered, repudiated, disclosed, denied, or escalated at each point"
+phase_respond: "Rank threats by likelihood and impact, map them to existing controls from earlier labs, identify residual gaps, and produce a prioritized remediation roadmap"

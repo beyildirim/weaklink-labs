@@ -1,0 +1,45 @@
+name: ACME Webapp CI (Cache-Hardened)
+
+on:
+  push:
+    branches: [main]
+
+# PR builds use separate workflow with isolated cache
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore pip cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          # SECURE: cache key tied to lockfile content
+          key: pip-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            pip-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          # Verify installed packages match expected hashes
+          pip install pip-audit
+          pip-audit --strict
+
+      - name: Verify dependency integrity
+        run: |
+          # Check that installed packages match the lockfile
+          pip freeze > /tmp/installed.txt
+          echo "Installed packages:"
+          cat /tmp/installed.txt
+
+      - name: Run tests
+        run: python test_app.py
+
+      - name: Build
+        run: |
+          mkdir -p dist
+          cp app.py dist/
+          tar czf webapp.tar.gz dist/

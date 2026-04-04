@@ -1,0 +1,32 @@
+name: ACME Webapp CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore pip cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          # VULNERABLE: static cache key shared across all branches
+          key: pip-cache-v1
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: python test_app.py
+
+      - name: Build
+        run: |
+          mkdir -p dist
+          cp app.py dist/
+          tar czf webapp.tar.gz dist/

@@ -1,0 +1,11 @@
+id: "4.1"
+title: "What SBOMs Actually Contain"
+tier: 4
+module: "artifact-integrity"
+prerequisites: ["1.1"]
+difficulty: beginner
+estimated_time: 30m
+tags: ["sbom", "spdx", "cyclonedx", "syft", "cdxgen", "transparency"]
+phase_understand: "Generate SBOMs in SPDX and CycloneDX formats and inspect their contents"
+phase_break: "Discover what SBOMs miss: build tools, vendored code, dynamic dependencies"
+phase_defend: "Use multiple generators and manual enrichment to close SBOM coverage gaps"

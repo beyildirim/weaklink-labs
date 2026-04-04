@@ -1,0 +1,12 @@
+id: "2.6"
+title: "GitHub Actions Injection"
+tier: 2
+module: "build-cicd"
+prerequisites: ["2.2"]
+difficulty: intermediate
+estimated_time: 30m
+tags: ["actions", "injection", "expression", "github", "cicd"]
+mitre: ["T1059", "T1190"]
+phase_understand: "Actions expressions ${{ }} interpolate user-controlled inputs into shell commands"
+phase_break: "Create an issue with a crafted title that gets interpolated into a run: step -- achieving code execution"
+phase_defend: "Use intermediate environment variables instead of direct interpolation in run: blocks"

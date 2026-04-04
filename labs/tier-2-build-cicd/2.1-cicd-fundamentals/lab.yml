@@ -1,0 +1,12 @@
+id: "2.1"
+title: "CI/CD Fundamentals"
+tier: 2
+module: "build-cicd"
+prerequisites: ["0.1"]
+difficulty: beginner
+estimated_time: 30m
+tags: ["cicd", "pipeline", "gitea", "secrets", "runners"]
+mitre: ["T1195.002", "T1078.004"]
+phase_understand: "Explore a Gitea repo with a CI pipeline -- triggers, jobs, steps, runners, and artifacts"
+phase_break: "Show that CI runs with elevated permissions and exfiltrate secrets via a modified pipeline config"
+phase_defend: "Apply least-privilege secrets, scoped tokens, and environment protection rules"

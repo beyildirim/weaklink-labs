@@ -1,0 +1,11 @@
+id: "5.3"
+title: "Terraform Module and Provider Attacks"
+tier: 5
+module: "iac-supply-chain"
+prerequisites: []
+difficulty: intermediate
+estimated_time: 35m
+tags: ["terraform", "modules", "providers", "local-exec", "supply-chain", "credential-theft"]
+phase_understand: "Explore Terraform modules and providers from public registries -- third-party code that runs during apply"
+phase_break: "Find a Terraform module that hides a local-exec provisioner to exfiltrate AWS credentials"
+phase_defend: "Pin module versions, review module source, use provider signing verification and private registries"

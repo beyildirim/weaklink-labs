@@ -1,0 +1,2 @@
+# CI pipeline configs require admin review
+.gitea/workflows/ @admin

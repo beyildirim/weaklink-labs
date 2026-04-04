@@ -1,0 +1,30 @@
+name: Deploy (Triggered)
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types: [completed]
+
+# VULNERABLE: this runs on main with write permissions and secrets,
+# but downloads artifacts from ANY triggering workflow -- including PRs.
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    env:
+      DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    steps:
+      - name: Download artifact from triggering workflow
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Extract and deploy
+        run: |
+          tar xzf webapp.tar.gz
+          # DANGEROUS: executing a script from an artifact uploaded by ANY workflow
+          bash dist/deploy.sh
+          echo "Deployed with token ${DEPLOY_TOKEN:0:4}****"

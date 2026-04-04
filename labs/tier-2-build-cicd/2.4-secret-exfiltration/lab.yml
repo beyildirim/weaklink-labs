@@ -1,0 +1,12 @@
+id: "2.4"
+title: "Secret Exfiltration from CI"
+tier: 2
+module: "build-cicd"
+prerequisites: ["2.1"]
+difficulty: intermediate
+estimated_time: 30m
+tags: ["secrets", "exfiltration", "cicd", "build-logs", "dns-exfil"]
+mitre: ["T1020", "T1552.001"]
+phase_understand: "CI secrets are environment variables during build -- logs, artifacts, and caches can leak them"
+phase_break: "Exfiltrate secrets three ways: build log echo, artifact write, and base64 DNS query"
+phase_defend: "Apply secret masking, restrict secrets from PR builds, and enforce network egress controls"

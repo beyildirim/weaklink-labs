@@ -1,0 +1,11 @@
+id: "4.5"
+title: "Signature Bypass Attacks"
+tier: 4
+module: "artifact-integrity"
+prerequisites: ["4.3"]
+difficulty: advanced
+estimated_time: 35m
+tags: ["cosign", "signature-bypass", "key-confusion", "rollback", "enforcement"]
+phase_understand: "Learn that signing without enforcement is security theater"
+phase_break: "Three bypass techniques: no enforcement, untrusted key, signature rollback"
+phase_defend: "Enforce verification, pin trusted identities, and include timestamps"

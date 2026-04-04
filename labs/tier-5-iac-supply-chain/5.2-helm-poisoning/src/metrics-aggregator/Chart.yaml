@@ -1,0 +1,9 @@
+apiVersion: v2
+name: metrics-aggregator
+description: Lightweight metrics aggregation service for Kubernetes
+type: application
+version: 2.1.0
+appVersion: "2.1.0"
+maintainers:
+  - name: k8s-community
+    email: maintainer@example.com

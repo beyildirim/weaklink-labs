@@ -1,0 +1,12 @@
+id: "2.3"
+title: "Indirect Poisoned Pipeline Execution"
+tier: 2
+module: "build-cicd"
+prerequisites: ["2.2"]
+difficulty: intermediate
+estimated_time: 35m
+tags: ["ppe", "indirect-ppe", "makefile", "pipeline-poisoning", "cicd"]
+mitre: ["T1195.002", "T1059.004"]
+phase_understand: "CI configs reference external files (Makefile, scripts, test configs) that can be modified in a PR"
+phase_break: "Modify the Makefile referenced by CI to exfiltrate secrets -- CI config stays unchanged"
+phase_defend: "Pin referenced scripts by hash and review all files referenced by CI"

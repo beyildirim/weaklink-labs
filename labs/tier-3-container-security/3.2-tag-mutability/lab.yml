@@ -1,0 +1,12 @@
+id: "3.2"
+title: "Tag Mutability Attacks"
+tier: 3
+module: "container-security"
+prerequisites: ["0.3"]
+difficulty: intermediate
+estimated_time: 30m
+tags: ["docker", "oci", "tags", "digest", "registry", "kyverno"]
+mitre: ["T1525", "T1610"]
+phase_understand: "Understand that tags are mutable pointers -- webapp:1.0.0 today can point to a completely different image tomorrow"
+phase_break: "Push a safe image as webapp:1.0.0, deploy it, then overwrite the tag with a backdoored image -- redeploy pulls the backdoor"
+phase_defend: "Reference images by digest. Use admission controllers (Kyverno/OPA) to reject tag-only references in Kubernetes"

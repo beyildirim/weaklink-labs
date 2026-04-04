@@ -1,0 +1,12 @@
+id: "3.5"
+title: "Layer Injection"
+tier: 3
+module: "container-security"
+prerequisites: ["3.1"]
+difficulty: advanced
+estimated_time: 35m
+tags: ["docker", "oci", "layers", "tarball", "manifest", "cosign", "notation"]
+mitre: ["T1525", "T1059"]
+phase_understand: "Understand that container images are stacks of layer tarballs listed in a manifest -- each layer adds or modifies filesystem content"
+phase_break: "Craft an image with an injected extra layer containing a reverse shell. Push to the registry. The added layer is invisible to casual inspection"
+phase_defend: "Scan all layers individually. Compare layer counts against expected baselines. Use cosign/notation to sign and verify images"

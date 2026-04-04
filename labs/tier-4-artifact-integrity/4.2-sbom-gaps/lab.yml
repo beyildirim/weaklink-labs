@@ -1,0 +1,11 @@
+id: "4.2"
+title: "SBOM Gaps in Practice"
+tier: 4
+module: "artifact-integrity"
+prerequisites: ["4.1"]
+difficulty: intermediate
+estimated_time: 35m
+tags: ["sbom", "vulnerability-scanning", "trivy", "grype", "coverage-gaps"]
+phase_understand: "Run multiple SBOM generators on the same image and compare results"
+phase_break: "A vendored C library with a known CVE is invisible to all three SBOM tools"
+phase_defend: "Complement SBOMs with vulnerability scanning and never rely on SBOM alone"

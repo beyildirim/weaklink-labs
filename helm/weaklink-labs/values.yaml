@@ -48,6 +48,16 @@ workstation:
     limits:
       memory: "512Mi"
       cpu: "500m"
+  ttyd:
+    image: tsl0922/ttyd
+    tag: latest
+    resources:
+      requests:
+        memory: "32Mi"
+        cpu: "50m"
+      limits:
+        memory: "64Mi"
+        cpu: "100m"
 
 pypiPrivate:
   image: pypiserver/pypiserver

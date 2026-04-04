@@ -1,0 +1,12 @@
+id: "2.2"
+title: "Direct Poisoned Pipeline Execution (PPE)"
+tier: 2
+module: "build-cicd"
+prerequisites: ["2.1"]
+difficulty: intermediate
+estimated_time: 35m
+tags: ["ppe", "pipeline-poisoning", "cicd", "pr-attack", "gitea"]
+mitre: ["T1195.002", "T1059"]
+phase_understand: "CI configs live in the repo and define what the pipeline executes"
+phase_break: "Submit a PR that modifies the CI config to exfiltrate secrets during pipeline execution"
+phase_defend: "Protect CI config on a protected branch and use read-only secrets for PR builds"

@@ -1,0 +1,11 @@
+id: "4.4"
+title: "Attestation & Provenance (SLSA)"
+tier: 4
+module: "artifact-integrity"
+prerequisites: ["4.3"]
+difficulty: intermediate
+estimated_time: 35m
+tags: ["slsa", "provenance", "in-toto", "attestation", "cosign-attest", "build-provenance"]
+phase_understand: "Learn what build provenance proves and how SLSA levels work"
+phase_break: "Without provenance, a locally-built artifact is indistinguishable from a CI-built one"
+phase_defend: "Generate SLSA provenance in CI and verify provenance before deployment"

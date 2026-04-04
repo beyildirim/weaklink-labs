@@ -1,0 +1,49 @@
+name: ACME Webapp CI (Secret-Hardened)
+
+on:
+  push:
+    branches: [main]
+
+# NO secrets at global level
+# PR builds use separate no-secrets workflow
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run tests
+        run: python test_app.py
+        # No secrets needed for testing
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: |
+          mkdir -p dist
+          cp app.py dist/
+          tar czf webapp.tar.gz dist/
+          # No debug logging, no secrets in artifacts
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: webapp.tar.gz
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment: production
+    steps:
+      - name: Deploy
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+        run: |
+          # Secret masking: never echo raw secret values
+          echo "Deploying with token: [MASKED]"
+          # Use secret only for the API call, never log it
+          curl -sf -H "Authorization: Bearer ${DEPLOY_TOKEN}" \
+            https://deploy.internal/api/deploy || true

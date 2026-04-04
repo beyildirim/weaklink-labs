@@ -1,0 +1,12 @@
+id: "6.6"
+title: "Case Study: SolarWinds (SUNBURST)"
+tier: 6
+module: "advanced-emerging"
+prerequisites: ["2.2"]
+difficulty: advanced
+estimated_time: 35m
+tags: ["solarwinds", "sunburst", "build-compromise", "nation-state", "orion", "dll-injection"]
+mitre: ["T1195.002", "T1195.003"]
+phase_understand: "Study the Sunburst attack: how attackers compromised the SolarWinds Orion build system"
+phase_break: "Walk through how the build process was modified to inject a backdoor into compiled DLLs that source review would not catch"
+phase_defend: "Implement build verification, reproducible builds, build system isolation, and code signing with verified provenance"

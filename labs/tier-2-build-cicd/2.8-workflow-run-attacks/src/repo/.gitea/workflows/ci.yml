@@ -1,0 +1,26 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: |
+          mkdir -p dist
+          cp app.py dist/
+          echo "#!/bin/bash" > dist/deploy.sh
+          echo "echo 'Deploying version $(git rev-parse --short HEAD)...'" >> dist/deploy.sh
+          chmod +x dist/deploy.sh
+          tar czf webapp.tar.gz dist/
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: webapp.tar.gz
