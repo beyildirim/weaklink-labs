@@ -345,9 +345,9 @@ WeakLink Labs requires minikube with at least 4GB of RAM allocated. If someone's
 | Lab | Time | Difficulty | Attack Technique | Key Takeaway |
 |-----|------|------------|-----------------|--------------|
 | 0.1 | ~25 min | Beginner | Malicious commit injection | Branch protection rules matter |
-| 0.2 | ~25 min | Beginner | -- | Package managers are implicit trust machines |
+| 0.2 | ~25 min | Beginner |. | Package managers are implicit trust machines |
 | 0.3 | ~30 min | Beginner | Mutable tag swap | Pin container images by digest, not tag |
-| 1.1 | ~30 min | Intermediate | -- | Resolution order determines what gets installed |
+| 1.1 | ~30 min | Intermediate |. | Resolution order determines what gets installed |
 | 1.2 | ~30 min | Intermediate | Dependency confusion | Higher version from public registry wins |
 | 1.3 | ~25 min | Intermediate | Typosquatting | One character typo = full compromise |
 | 1.4 | ~30 min | Intermediate | Lockfile hash swap | Nobody reads lockfile diffs |

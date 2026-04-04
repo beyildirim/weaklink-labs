@@ -325,11 +325,63 @@
   border-radius: 8px;
   margin: 1em 0;
   overflow: hidden;
+  background: #1a1a2e;
+  position: relative;
 }
 .terminal-embed iframe {
   width: 100%;
   height: 100%;
   border: none;
+  background: #1a1a2e;
+}
+/* Fallback message when terminal is not available */
+.terminal-embed::after {
+  content: "Connecting to workstation terminal... If this doesn't load, run ./cli/weaklink shell in your terminal.";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #546e7a;
+  font-size: 0.85rem;
+  text-align: center;
+  pointer-events: none;
+  z-index: 0;
+}
+.terminal-embed iframe {
+  position: relative;
+  z-index: 1;
+}
+
+/* --- Tier accent colors ---------------------------------- */
+body.tier-0 .md-typeset h1 { border-bottom: 3px solid #4ecdc4; padding-bottom: 0.5rem; }
+body.tier-1 .md-typeset h1 { border-bottom: 3px solid #ff6b6b; padding-bottom: 0.5rem; }
+body.tier-2 .md-typeset h1 { border-bottom: 3px solid #ffa502; padding-bottom: 0.5rem; }
+body.tier-3 .md-typeset h1 { border-bottom: 3px solid #3498db; padding-bottom: 0.5rem; }
+body.tier-4 .md-typeset h1 { border-bottom: 3px solid #2ecc71; padding-bottom: 0.5rem; }
+body.tier-5 .md-typeset h1 { border-bottom: 3px solid #9b59b6; padding-bottom: 0.5rem; }
+body.tier-6 .md-typeset h1 { border-bottom: 3px solid #e74c3c; padding-bottom: 0.5rem; }
+body.tier-7 .md-typeset h1 { border-bottom: 3px solid #e67e22; padding-bottom: 0.5rem; }
+body.tier-8 .md-typeset h1 { border-bottom: 3px solid #1abc9c; padding-bottom: 0.5rem; }
+body.tier-9 .md-typeset h1 { border-bottom: 3px solid #f39c12; padding-bottom: 0.5rem; }
+
+/* --- Difficulty dots in lab-meta ------------------------- */
+.lab-meta .difficulty::before {
+  content: "";
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  margin-right: 0.3rem;
+  background: #78909c;
+}
+.lab-meta .difficulty.beginner::before {
+  background: #66bb6a;
+}
+.lab-meta .difficulty.intermediate::before {
+  background: #ffa726;
+}
+.lab-meta .difficulty.advanced::before {
+  background: #ef5350;
 }
 
 /* --- Misc ------------------------------------------------- */
