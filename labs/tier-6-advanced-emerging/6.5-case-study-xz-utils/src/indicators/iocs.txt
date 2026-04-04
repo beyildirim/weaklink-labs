@@ -1,0 +1,13 @@
+# Indicators of Compromise for xz-utils CVE-2024-3094
+# Affected versions: 5.6.0, 5.6.1
+
+# File hashes (malicious liblzma)
+sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  # example
+
+# Detection: check if your system's liblzma is backdoored
+# xz --version  (if 5.6.0 or 5.6.1, investigate)
+# ldd $(which sshd) | grep liblzma  (check if sshd links against liblzma)
+
+# Build artifact check
+# The backdoor modifies the build process via m4 macros in test files
+# Look for: bad-3-corrupt_lzma2.xz, good-large_compressed.lzma in test/files/

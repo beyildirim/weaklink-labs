@@ -20,7 +20,7 @@ env:
 jobs:
   test-labs:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
@@ -28,8 +28,8 @@ jobs:
         uses: medyagh/setup-minikube@latest
         with:
           driver: docker
-          cpus: 2
-          memory: 4096
+          cpus: 4
+          memory: 8192
 
       - name: Build local Docker images
         run: |
@@ -51,8 +51,16 @@ jobs:
             --create-namespace \
             --set tiers.tier0.enabled=true \
             --set tiers.tier1.enabled=true \
+            --set tiers.tier2.enabled=true \
+            --set tiers.tier3.enabled=true \
+            --set tiers.tier4.enabled=true \
+            --set tiers.tier5.enabled=true \
+            --set tiers.tier6.enabled=true \
+            --set tiers.tier7.enabled=true \
+            --set tiers.tier8.enabled=true \
+            --set tiers.tier9.enabled=true \
             --wait \
-            --timeout 5m
+            --timeout 10m
 
       - name: Wait for all pods to be ready
         run: |

@@ -1,0 +1,22 @@
+{
+  "_type": "https://in-toto.io/Statement/v0.1",
+  "predicateType": "https://slsa.dev/provenance/v0.2",
+  "subject": [
+    {"name": "webapp", "digest": {"sha256": "abc123def456..."}}
+  ],
+  "predicate": {
+    "builder": {"id": "https://github.com/weaklink-labs/builder"},
+    "buildType": "https://github.com/weaklink-labs/build-type/v1",
+    "invocation": {
+      "configSource": {
+        "uri": "git+https://github.com/weaklink-labs/webapp@refs/heads/main",
+        "digest": {"sha1": "abc123"},
+        "entryPoint": ".github/workflows/build.yml"
+      }
+    },
+    "materials": [
+      {"uri": "pkg:pypi/flask@3.0.0", "digest": {"sha256": "..."}},
+      {"uri": "pkg:docker/python@3.11-slim", "digest": {"sha256": "..."}}
+    ]
+  }
+}

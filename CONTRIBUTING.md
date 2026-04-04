@@ -185,4 +185,4 @@ If your lab's services should only deploy when the tier is enabled, use the appr
     - What the lab teaches
     - Which tier/module it belongs to
     - Any new services or dependencies added
-5. Ensure the lab is self-contained -- no manual setup steps outside of what the Helm chart and setup job handle
+5. Ensure the lab is self-contained. No manual setup steps outside of what the Helm chart and setup job handle

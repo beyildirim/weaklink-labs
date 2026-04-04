@@ -2,10 +2,12 @@
 #
 # WeakLink Labs -- Start
 # One command to bring up the entire supply chain security training platform.
+# Idempotent: safe to re-run at any point.
 #
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+NAMESPACE="weaklink"
 
 # Colors
 RED='\033[0;31m'
@@ -21,6 +23,26 @@ ok()      { echo -e "${GREEN}[+]${NC} $*"; }
 warn()    { echo -e "${YELLOW}[!]${NC} $*"; }
 err()     { echo -e "${RED}[-]${NC} $*"; }
 header()  { echo -e "\n${BOLD}$*${NC}"; }
+
+cleanup_on_failure() {
+    local exit_code=$?
+    if [[ $exit_code -ne 0 ]]; then
+        echo ""
+        err "Setup failed at step: ${CURRENT_STEP:-unknown}"
+        err "Exit code: $exit_code"
+        echo ""
+        echo -e "  ${DIM}Debug commands:${NC}"
+        echo -e "    kubectl get pods -n ${NAMESPACE}"
+        echo -e "    kubectl describe pods -n ${NAMESPACE}"
+        echo -e "    kubectl logs -n ${NAMESPACE} job/lab-setup"
+        echo ""
+        echo -e "  ${DIM}To retry: ./start.sh${NC}"
+        echo -e "  ${DIM}To tear down: ./stop.sh${NC}"
+    fi
+}
+trap cleanup_on_failure EXIT
+
+CURRENT_STEP="prerequisites"
 
 # ============================================================
 # Step 1: Check prerequisites
@@ -54,6 +76,7 @@ fi
 # Step 2: Start minikube if not running
 # ============================================================
 
+CURRENT_STEP="minikube"
 header "Starting minikube..."
 
 MINIKUBE_STATUS=$(minikube status --format='{{.Host}}' 2>/dev/null || echo "Stopped")
@@ -70,49 +93,56 @@ fi
 # Step 3: Configure docker to use minikube's daemon
 # ============================================================
 
+CURRENT_STEP="docker-env"
 header "Configuring Docker environment..."
 
 eval $(minikube docker-env)
 ok "Docker now targets minikube's daemon."
 
 # ============================================================
-# Step 4: Build all local images
+# Step 4: Build all local images (skip if unchanged)
 # ============================================================
 
+CURRENT_STEP="docker-build"
 header "Building Docker images..."
 
-log "Building weaklink-labs/guide:latest..."
-if [[ -f "${SCRIPT_DIR}/images/guide/Dockerfile" ]]; then
-    docker build -t weaklink-labs/guide:latest \
-        -f "${SCRIPT_DIR}/images/guide/Dockerfile" \
-        "${SCRIPT_DIR}" 2>&1 | tail -1
-    ok "weaklink-labs/guide:latest built."
-else
-    warn "Guide Dockerfile not found, skipping."
-fi
+build_image() {
+    local name="$1"
+    local dockerfile="$2"
+    local context="$3"
 
-log "Building weaklink-labs/workstation:latest..."
-docker build -t weaklink-labs/workstation:latest \
-    -f "${SCRIPT_DIR}/images/workstation/Dockerfile" \
-    "${SCRIPT_DIR}/images/workstation" 2>&1 | tail -1
-ok "weaklink-labs/workstation:latest built."
+    log "Building ${name}..."
+    if docker build -t "${name}" -f "${dockerfile}" "${context}" 2>&1 | tail -1; then
+        ok "${name} built."
+    else
+        err "Failed to build ${name}"
+        return 1
+    fi
+}
 
-log "Building weaklink-labs/lab-setup:latest..."
-docker build -t weaklink-labs/lab-setup:latest \
-    -f "${SCRIPT_DIR}/images/lab-setup/Dockerfile" \
-    "${SCRIPT_DIR}" 2>&1 | tail -1
-ok "weaklink-labs/lab-setup:latest built."
+build_image "weaklink-labs/guide:latest" \
+    "${SCRIPT_DIR}/images/guide/Dockerfile" \
+    "${SCRIPT_DIR}" || true
+
+build_image "weaklink-labs/workstation:latest" \
+    "${SCRIPT_DIR}/images/workstation/Dockerfile" \
+    "${SCRIPT_DIR}/images/workstation/"
+
+build_image "weaklink-labs/lab-setup:latest" \
+    "${SCRIPT_DIR}/images/lab-setup/Dockerfile" \
+    "${SCRIPT_DIR}"
 
 # ============================================================
-# Step 5: Deploy via Helm
+# Step 5: Deploy via Helm (upgrade --install is idempotent)
 # ============================================================
 
+CURRENT_STEP="helm-deploy"
 header "Deploying to Kubernetes..."
 
 log "Running helm upgrade --install..."
 helm upgrade --install weaklink-labs \
     "${SCRIPT_DIR}/helm/weaklink-labs" \
-    -n weaklink --create-namespace \
+    -n "${NAMESPACE}" --create-namespace \
     --wait --timeout 5m \
     2>&1 | sed 's/^/  /'
 ok "Helm release deployed."
@@ -121,6 +151,7 @@ ok "Helm release deployed."
 # Step 6: Wait for pods to be ready
 # ============================================================
 
+CURRENT_STEP="pod-readiness"
 header "Waiting for pods to be ready..."
 
 COMPONENTS=("pypi-private" "pypi-public" "verdaccio" "gitea" "registry" "guide" "workstation")
@@ -129,44 +160,58 @@ for component in "${COMPONENTS[@]}"; do
     log "Waiting for ${component}..."
     kubectl wait --for=condition=available \
         deployment/"$component" \
-        -n weaklink \
+        -n "${NAMESPACE}" \
         --timeout=120s 2>/dev/null \
         && ok "${component} is ready." \
         || warn "${component} may not be ready yet."
 done
 
 # Wait for the lab-setup job
+CURRENT_STEP="lab-setup"
 log "Waiting for lab-setup job to complete..."
 # The job is created by a Helm hook, so give it a moment to appear
 sleep 5
-if kubectl get job lab-setup -n weaklink &>/dev/null; then
+if kubectl get job lab-setup -n "${NAMESPACE}" &>/dev/null; then
     kubectl wait --for=condition=complete \
         job/lab-setup \
-        -n weaklink \
+        -n "${NAMESPACE}" \
         --timeout=300s 2>/dev/null \
         && ok "Lab setup complete." \
-        || warn "Lab setup still running. Check logs: kubectl logs -n weaklink job/lab-setup"
+        || warn "Lab setup still running. Check logs: kubectl logs -n ${NAMESPACE} job/lab-setup"
 else
     warn "Lab setup job not found yet. It will run shortly."
 fi
 
 # ============================================================
-# Step 7: Start port-forward and print access information
+# Step 7: Start port-forward (kill existing first for idempotency)
 # ============================================================
 
-# On macOS with Docker driver, NodePort isn't directly reachable.
-# Port-forward is the reliable cross-platform approach.
+CURRENT_STEP="port-forward"
+
+# Kill any existing port-forwards from a previous run
+for pidfile in "${SCRIPT_DIR}/.weaklink-pf.pid" "${SCRIPT_DIR}/.weaklink-pf-ttyd.pid"; do
+    if [[ -f "$pidfile" ]]; then
+        old_pid=$(cat "$pidfile" 2>/dev/null || true)
+        if [[ -n "$old_pid" ]] && kill -0 "$old_pid" 2>/dev/null; then
+            kill "$old_pid" 2>/dev/null || true
+        fi
+        rm -f "$pidfile"
+    fi
+done
+
 log "Starting port-forward for guide (localhost:8000)..."
-kubectl port-forward -n weaklink svc/guide 8000:8000 &>/dev/null &
+kubectl port-forward -n "${NAMESPACE}" svc/guide 8000:8000 &>/dev/null &
 GUIDE_PF_PID=$!
 echo "$GUIDE_PF_PID" > "${SCRIPT_DIR}/.weaklink-pf.pid"
 ok "Guide port-forward started (PID: $GUIDE_PF_PID)."
 
 log "Starting port-forward for web terminal (localhost:7681)..."
-kubectl port-forward -n weaklink svc/workstation 7681:7681 &>/dev/null &
+kubectl port-forward -n "${NAMESPACE}" svc/workstation 7681:7681 &>/dev/null &
 TTYD_PF_PID=$!
 echo "$TTYD_PF_PID" > "${SCRIPT_DIR}/.weaklink-pf-ttyd.pid"
 ok "Web terminal port-forward started (PID: $TTYD_PF_PID)."
+
+CURRENT_STEP="done"
 
 echo ""
 echo -e "${BOLD}========================================${NC}"

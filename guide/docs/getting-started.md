@@ -19,6 +19,20 @@ The terminal below connects directly to your workstation. You can run all lab co
   <iframe src="http://localhost:7681" title="WeakLink Workstation Terminal"></iframe>
 </div>
 
+### Alternative: Docker Compose
+
+If your team does not have Kubernetes experience or resources to run Minikube, you can run the entire platform via Docker Compose:
+
+```bash
+# Start the platform
+make compose-up
+
+# Tear it down
+make compose-down
+```
+
+With Docker Compose, the Workstation is available via the embedded terminal at `http://localhost:7681`, and the Guide is at `http://localhost:8000`.
+
 ### Available Services
 
 From inside the workstation, these services are reachable:
@@ -70,7 +84,7 @@ Learn how the technology works under normal conditions. Explore configuration fi
 
 Execute a real supply chain attack in the lab environment. You will compromise systems using the same techniques used in real-world incidents like SolarWinds, event-stream, and Codecov.
 
-**This is not a simulation.** The attacks are real -- they just run against local, isolated infrastructure.
+**This is not a simulation.** The attacks are real. They just run against local, isolated infrastructure.
 
 ### Phase 3: Defend
 
@@ -86,9 +100,9 @@ Build the defenses that stop the attack you just performed. Configure branch pro
 
 If you are new to supply chain security, follow the tiers in order:
 
-1. **Tier 0 -- Foundations:** Understand Git, package managers, and containers before attacking them
-2. **Tier 1 -- Package Security:** The most common real-world attack surface
-3. **Tier 2+ -- Advanced:** Build pipelines, container supply chains, code signing (coming soon)
+1. **Tier 0: Foundations.** Understand Git, package managers, and containers before attacking them
+2. **Tier 1: Package Security.** The most common real-world attack surface
+3. **Tier 2+: Advanced.** Build pipelines, container supply chains, artifact integrity, and much more
 
 If you already have experience, jump directly to the tier that matches your interest. Each lab lists its prerequisites at the top.
 

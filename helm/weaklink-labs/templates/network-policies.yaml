@@ -1,0 +1,300 @@
+{{- if .Values.networkPolicies.enabled }}
+# ──────────────────────────────────────────────
+# Default Deny — No traffic unless explicitly allowed
+# ──────────────────────────────────────────────
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.labels" . | nindent 4 }}
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+# ──────────────────────────────────────────────
+# Workstation — Can reach all lab services
+# ──────────────────────────────────────────────
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: workstation-egress
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: workstation
+  policyTypes:
+    - Egress
+    - Ingress
+  egress:
+    # Reach PyPI registries
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: pypi-private
+      ports:
+        - port: {{ .Values.pypiPrivate.port }}
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: pypi-public
+      ports:
+        - port: {{ .Values.pypiPublic.port }}
+    # Reach Verdaccio
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: verdaccio
+      ports:
+        - port: {{ .Values.verdaccio.port }}
+    # Reach Gitea
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: gitea
+      ports:
+        - port: {{ .Values.gitea.port }}
+        - port: {{ .Values.gitea.sshPort }}
+    # Reach OCI Registry
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: registry
+      ports:
+        - port: {{ .Values.registry.port }}
+    # DNS resolution
+    - to: []
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+  ingress:
+    # ttyd web terminal access
+    - ports:
+        - port: 7681
+---
+# ──────────────────────────────────────────────
+# Guide — Ingress only (serves docs, no egress needed)
+# ──────────────────────────────────────────────
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: guide-access
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: guide
+  policyTypes:
+    - Ingress
+  ingress:
+    - ports:
+        - port: {{ .Values.guide.port }}
+---
+# ──────────────────────────────────────────────
+# PyPI Private — Accept traffic from workstation and lab-setup only
+# ──────────────────────────────────────────────
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: pypi-private-access
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: pypi-private
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: workstation
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: lab-setup
+      ports:
+        - port: {{ .Values.pypiPrivate.port }}
+---
+# ──────────────────────────────────────────────
+# PyPI Public — Accept traffic from workstation and lab-setup only
+# ──────────────────────────────────────────────
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: pypi-public-access
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: pypi-public
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: workstation
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: lab-setup
+      ports:
+        - port: {{ .Values.pypiPublic.port }}
+---
+# ──────────────────────────────────────────────
+# Verdaccio — Accept traffic from workstation and lab-setup only
+# ──────────────────────────────────────────────
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: verdaccio-access
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: verdaccio
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: workstation
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: lab-setup
+      ports:
+        - port: {{ .Values.verdaccio.port }}
+---
+# ──────────────────────────────────────────────
+# Gitea — Accept traffic from workstation and lab-setup only
+# ──────────────────────────────────────────────
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: gitea-access
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: gitea
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: workstation
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: lab-setup
+      ports:
+        - port: {{ .Values.gitea.port }}
+        - port: {{ .Values.gitea.sshPort }}
+  egress:
+    # Gitea needs DNS
+    - to: []
+      ports:
+        - port: 53
+          protocol: UDP
+---
+# ──────────────────────────────────────────────
+# OCI Registry — Accept traffic from workstation and lab-setup only
+# ──────────────────────────────────────────────
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: registry-access
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: registry
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: workstation
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: lab-setup
+      ports:
+        - port: {{ .Values.registry.port }}
+---
+# ──────────────────────────────────────────────
+# Lab-Setup Job — Egress to all registries (seeding)
+# ──────────────────────────────────────────────
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: lab-setup-egress
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: lab-setup
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: pypi-private
+      ports:
+        - port: {{ .Values.pypiPrivate.port }}
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: pypi-public
+      ports:
+        - port: {{ .Values.pypiPublic.port }}
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: verdaccio
+      ports:
+        - port: {{ .Values.verdaccio.port }}
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: gitea
+      ports:
+        - port: {{ .Values.gitea.port }}
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: registry
+      ports:
+        - port: {{ .Values.registry.port }}
+    # DNS resolution
+    - to: []
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+{{- end }}

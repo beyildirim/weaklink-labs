@@ -1,0 +1,12 @@
+id: "0.5"
+title: "Artifacts & Registries"
+tier: 0
+module: "foundations"
+prerequisites: ["0.2"]
+difficulty: beginner
+estimated_time: 30m
+tags: ["registry", "pypi", "npm", "oci", "publishing", "integrity", "checksums"]
+mitre: ["T1195.002", "T1195.001"]
+phase_understand: "Publish a package to a private registry, download it, and verify its integrity via checksum"
+phase_break: "Replace a published package with a modified version — the checksum changes but the version doesn't"
+phase_defend: "Use lockfiles with integrity hashes and verify checksums before installing"

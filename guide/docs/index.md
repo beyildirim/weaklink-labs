@@ -13,7 +13,7 @@
 
 ## What is WeakLink Labs?
 
-WeakLink Labs is a self-contained training environment for learning **software supply chain security** by doing. Every lab follows a three-phase structure:
+WeakLink Labs is a self-contained training environment for learning **software supply chain security** by doing. Every lab follows four phases:
 
 <div class="phase-flow" markdown>
   <span class="phase-step understand">1. Understand</span>
@@ -21,20 +21,23 @@ WeakLink Labs is a self-contained training environment for learning **software s
   <span class="phase-step break">2. Break</span>
   <span class="arrow">&rarr;</span>
   <span class="phase-step defend">3. Defend</span>
+  <span class="arrow">&rarr;</span>
+  <span class="phase-step defend">4. Detect</span>
 </div>
 
-You don't learn security by reading about it. You learn by **exploiting real vulnerabilities** in a safe environment, then building the defenses that stop them.
+You don't learn security by reading about it. You learn by **exploiting real vulnerabilities** in a safe environment, building the defenses that stop them, and writing the detection rules that catch them.
 
 ### Who is this for?
 
-- **Developers** who want to understand the attacks targeting their dependency chains
+- **SOC analysts** who triage alerts but have never seen the attacks behind them
 - **Security engineers** looking for hands-on training materials
-- **DevOps/Platform teams** responsible for securing CI/CD pipelines
-- **Students** studying software security or preparing for security certifications
+- **DevSecOps / DevOps teams** responsible for securing CI/CD pipelines
+- **Developers** who want to understand what's targeting their dependency chains
+- **Pentesters** who want to add supply chain techniques to their toolkit
 
 ### What's inside?
 
-All labs run inside a Kubernetes cluster on your machine. Every registry, Git server, and build tool is local -- nothing touches the internet. You get a full workstation with all the tools pre-installed.
+63 labs across 10 tiers. All labs run inside a Kubernetes cluster on your machine. Every registry, Git server, and build tool is local. Nothing touches the internet. You get a full workstation with all the tools pre-installed.
 
 ---
 
@@ -47,9 +50,9 @@ All labs run inside a Kubernetes cluster on your machine. Every registry, Git se
 
 ### Foundations
 
-Learn how the building blocks of the software supply chain actually work: version control, package managers, and containers.
+Version control, package managers, and containers. How the building blocks work, and where the cracks are.
 
-<div class="lab-count">3 labs &middot; ~80 minutes</div>
+<div class="lab-count">5 labs &middot; ~2 hours</div>
 </div>
 
 <div class="tier-card" markdown>
@@ -57,49 +60,89 @@ Learn how the building blocks of the software supply chain actually work: versio
 
 ### Package Security
 
-Attack and defend package registries. Dependency confusion, typosquatting, lockfile injection, manifest confusion, and phantom dependencies.
+Dependency confusion, typosquatting, lockfile injection, manifest confusion, and phantom dependencies.
 
 <div class="lab-count">6 labs &middot; ~3 hours</div>
 </div>
 
-<div class="tier-card locked" markdown>
+<div class="tier-card" markdown>
 <span class="tier-number">TIER 2</span>
 
-### Build Pipeline Security
+### Build & CI/CD
 
-Compromise and harden CI/CD pipelines. Poisoned builds, secrets exfiltration, and build provenance.
+Poisoned Pipeline Execution, secret exfiltration, GitHub Actions injection, runner attacks, and build cache poisoning.
 
-<div class="lab-count">Coming soon</div>
+<div class="lab-count">9 labs</div>
 </div>
 
-<div class="tier-card locked" markdown>
+<div class="tier-card" markdown>
 <span class="tier-number">TIER 3</span>
 
-### Container Supply Chain
+### Container Security
 
-Registry attacks, image tampering, base image poisoning, and SBOM verification.
+Tag mutability, base image poisoning, registry confusion, layer injection, and multi-stage build leaks.
 
-<div class="lab-count">Coming soon</div>
+<div class="lab-count">6 labs</div>
 </div>
 
-<div class="tier-card locked" markdown>
+<div class="tier-card" markdown>
 <span class="tier-number">TIER 4</span>
 
-### Code Signing & Provenance
+### Artifact Integrity
 
-Sigstore, in-toto, SLSA, and end-to-end software attestation.
+SBOMs, signing with Sigstore and GPG, SLSA provenance, attestation forgery, and SBOM tampering.
 
-<div class="lab-count">Coming soon</div>
+<div class="lab-count">7 labs</div>
 </div>
 
-<div class="tier-card locked" markdown>
-<span class="tier-number">TIERS 5-8</span>
+<div class="tier-card" markdown>
+<span class="tier-number">TIER 5</span>
 
-### Advanced Topics
+### IaC Supply Chain
 
-Runtime security, policy enforcement, incident response, and red team exercises.
+Helm poisoning, Terraform module attacks, Ansible Galaxy, and admission controller bypass.
 
-<div class="lab-count">Coming soon</div>
+<div class="lab-count">5 labs</div>
+</div>
+
+<div class="tier-card" markdown>
+<span class="tier-number">TIER 6</span>
+
+### Advanced & Emerging
+
+AI/ML supply chain, firmware attacks, and case studies: xz-utils, SolarWinds, Log4Shell, and more.
+
+<div class="lab-count">10 labs</div>
+</div>
+
+<div class="tier-card" markdown>
+<span class="tier-number">TIER 7</span>
+
+### Detection & Response
+
+Detection engineering, incident triage, IR playbooks, tool evaluation, and threat modeling.
+
+<div class="lab-count">5 labs</div>
+</div>
+
+<div class="tier-card" markdown>
+<span class="tier-number">TIER 8</span>
+
+### Organizational
+
+SLSA, SSDF, EO 14028, vendor assessment, and building a supply chain security program.
+
+<div class="lab-count">6 labs</div>
+</div>
+
+<div class="tier-card" markdown>
+<span class="tier-number">TIER 9</span>
+
+### Cloud Supply Chain
+
+Marketplace poisoning, serverless attacks, cloud CI/CD exploitation, and IAM chain abuse.
+
+<div class="lab-count">4 labs</div>
 </div>
 
 </div>

@@ -14,9 +14,9 @@ cd weaklink-labs
 ./start.sh
 ```
 
-Open **http://\<minikube-ip\>:30080** in your browser. The web UI guides you through every lab.
+Once started, open **http://localhost:8000** in your browser. The web UI guides you through every lab.
 
-> `minikube ip` prints the address. On macOS/Codespaces, use `minikube service guide -n weaklink --url` instead.
+> The start script sets up port-forwarding automatically. For direct NodePort access: `http://<minikube-ip>:30080`.
 
 ## What You Get
 
@@ -26,20 +26,20 @@ A full Kubernetes training environment running on minikube:
 - **Workstation pod** with pre-installed tools (git, pip, npm, docker CLI)
 - **Private registries** (PyPI, npm/Verdaccio, OCI) to simulate real supply chains
 - **Gitea** instance for version control labs
-- All isolated in a `weaklink` namespace -- nothing touches your host
+- All isolated in a `weaklink` namespace (nothing touches your host)
 
 ## How It Works
 
 Every lab follows the same three-phase structure:
 
-1. **UNDERSTAND** -- See the system working normally. Explore it. Know what it does.
-2. **BREAK** -- Exploit a real vulnerability. See the impact firsthand.
-3. **DEFEND** -- Apply the fix. Re-run the attack. It fails. You know why.
+1. **UNDERSTAND:** See the system working normally. Explore it. Know what it does.
+2. **BREAK:** Exploit a real vulnerability. See the impact firsthand.
+3. **DEFEND:** Apply the fix. Re-run the attack. It fails. You know why.
 
 ## Learning Path
 
-| Tier | Topic | Labs | Prerequisites |
-|------|-------|------|---------------|
+| Tier | Topic | Focus Areas | Labs | Prerequisites |
+|------|-------|-------------|------|---------------|
 | **0** | **Foundations** | Version control, package managers, containers, CI/CD | 5 | None |
 | **1** | **Package Security** | Dependency confusion, typosquatting, lockfile attacks | 6 | Tier 0 |
 | **2** | **Build & CI/CD** | Pipeline poisoning, secret exfiltration, runner attacks, GitLab CI | 9 | Tier 1 |
@@ -53,16 +53,15 @@ Every lab follows the same three-phase structure:
 
 ## Web UI
 
-<!-- TODO: Replace with actual screenshot -->
-![WeakLink Labs Web UI](docs/screenshot-placeholder.png)
+<!-- TODO: Add screenshot once UI is finalized -->
 
 ## CLI Reference
 
 Drop into the workstation pod to interact with labs:
 
 ```bash
-./weaklink shell          # Open a shell in the workstation pod
-./weaklink status         # Show what's running in the cluster
+./cli/weaklink shell      # Open a shell in the workstation pod
+./cli/weaklink status     # Show what's running in the cluster
 ```
 
 Inside the workstation, the `weaklink` CLI is available:

@@ -341,3 +341,41 @@
   background: linear-gradient(135deg, #ff7043, #ef5350);
   border: none;
 }
+
+/* --- UX Evaluation Upgrades ------------------------------- */
+
+/* 1. Sidebar Hierarchy Distinction */
+.md-nav__item--nested > .md-nav__link {
+  font-weight: 700;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+}
+.md-nav__item--nested:first-child > .md-nav__link {
+  border-top: none;
+}
+
+/* 2. Enhanced Phase Block Backgrounds */
+.md-typeset .admonition.phase-understand,
+.md-typeset details.phase-understand {
+  background-color: rgba(66, 165, 245, 0.03);
+}
+
+.md-typeset .admonition.phase-break,
+.md-typeset details.phase-break {
+  background-color: rgba(239, 83, 80, 0.03);
+}
+
+.md-typeset .admonition.phase-defend,
+.md-typeset details.phase-defend {
+  background-color: rgba(102, 187, 106, 0.03);
+}
+
+/* 3. Improved Code Comment Contrast for Dark Theme */
+.md-typeset code .c, 
+.md-typeset code .c1, 
+.md-typeset code .cm,
+.md-typeset code .cp {
+  color: #a4b0be !important;
+  font-style: italic;
+}

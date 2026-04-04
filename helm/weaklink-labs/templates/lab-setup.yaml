@@ -23,5 +23,26 @@ spec:
         - name: lab-setup
           image: "{{ .Values.labSetup.image }}:{{ .Values.labSetup.tag }}"
           imagePullPolicy: {{ .Values.labSetup.pullPolicy }}
+          env:
+            - name: TIER0_ENABLED
+              value: {{ .Values.tiers.tier0.enabled | quote }}
+            - name: TIER1_ENABLED
+              value: {{ .Values.tiers.tier1.enabled | quote }}
+            - name: TIER2_ENABLED
+              value: {{ .Values.tiers.tier2.enabled | quote }}
+            - name: TIER3_ENABLED
+              value: {{ .Values.tiers.tier3.enabled | quote }}
+            - name: TIER4_ENABLED
+              value: {{ .Values.tiers.tier4.enabled | quote }}
+            - name: TIER5_ENABLED
+              value: {{ .Values.tiers.tier5.enabled | quote }}
+            - name: TIER6_ENABLED
+              value: {{ .Values.tiers.tier6.enabled | quote }}
+            - name: TIER7_ENABLED
+              value: {{ .Values.tiers.tier7.enabled | quote }}
+            - name: TIER8_ENABLED
+              value: {{ .Values.tiers.tier8.enabled | quote }}
+            - name: TIER9_ENABLED
+              value: {{ .Values.tiers.tier9.enabled | quote }}
           resources:
             {{- toYaml .Values.labSetup.resources | nindent 12 }}

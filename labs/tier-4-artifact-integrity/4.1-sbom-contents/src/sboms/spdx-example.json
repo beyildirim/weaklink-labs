@@ -1,0 +1,9 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "name": "webapp-sbom",
+  "packages": [
+    {"name": "flask", "versionInfo": "3.0.0", "downloadLocation": "https://pypi.org/project/flask/3.0.0/"},
+    {"name": "requests", "versionInfo": "2.31.0", "downloadLocation": "https://pypi.org/project/requests/2.31.0/"},
+    {"name": "cryptography", "versionInfo": "41.0.0", "downloadLocation": "https://pypi.org/project/cryptography/41.0.0/"}
+  ]
+}

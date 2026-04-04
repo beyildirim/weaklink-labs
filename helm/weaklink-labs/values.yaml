@@ -7,20 +7,25 @@ tiers:
   tier1:
     enabled: true
   tier2:
-    enabled: false
+    enabled: true
   tier3:
-    enabled: false
+    enabled: true
   tier4:
-    enabled: false
+    enabled: true
   tier5:
-    enabled: false
+    enabled: true
   tier6:
-    enabled: false
+    enabled: true
   tier7:
-    enabled: false
+    enabled: true
   tier8:
-    enabled: false
+    enabled: true
+  tier9:
+    enabled: true
 
+# Network policy — opt-in zero-trust networking
+networkPolicies:
+  enabled: false
 # --- Component images and config ---
 
 guide:

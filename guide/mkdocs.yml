@@ -13,14 +13,14 @@ theme:
     code: JetBrains Mono
   features:
     - navigation.sections
-    - navigation.expand
-    - navigation.tabs
     - navigation.top
     - navigation.instant
+    - navigation.indexes
     - search.suggest
     - search.highlight
     - content.code.copy
     - content.code.annotate
+    - toc.integrate
   icon:
     logo: material/shield-lock
     repo: material/git
@@ -31,7 +31,11 @@ extra_css:
 markdown_extensions:
   - admonition
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_mermaid_format
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
@@ -46,52 +50,91 @@ markdown_extensions:
   - tables
   - toc:
       permalink: true
+      toc_depth: 2
 
 plugins:
   - search
 
 nav:
-  - Home: index.md
-  - Getting Started: getting-started.md
-  - Placement Test: placement-test.md
-  - Tier 0 - Foundations:
-    - 0.1 How Version Control Works: labs/tier-0/0.1-version-control.md
-    - 0.2 How Package Managers Work: labs/tier-0/0.2-package-managers.md
-    - 0.3 How Containers Work: labs/tier-0/0.3-containers.md
-  - Tier 1 - Package Security:
-    - 1.1 Dependency Resolution: labs/tier-1/1.1-dependency-resolution.md
-    - 1.2 Dependency Confusion: labs/tier-1/1.2-dependency-confusion.md
-    - 1.3 Typosquatting: labs/tier-1/1.3-typosquatting.md
-    - 1.4 Lockfile Injection: labs/tier-1/1.4-lockfile-injection.md
-    - 1.5 Manifest Confusion: labs/tier-1/1.5-manifest-confusion.md
-    - 1.6 Phantom Dependencies: labs/tier-1/1.6-phantom-dependencies.md
-  - Tier 2 - Build & CI/CD:
-    - 2.1 CI/CD Fundamentals: labs/tier-2/2.1-cicd-fundamentals.md
-    - 2.2 Direct PPE: labs/tier-2/2.2-direct-ppe.md
-    - 2.3 Indirect PPE: labs/tier-2/2.3-indirect-ppe.md
-    - 2.4 Secret Exfiltration: labs/tier-2/2.4-secret-exfiltration.md
-    - 2.5 Self-Hosted Runners: labs/tier-2/2.5-self-hosted-runners.md
-    - 2.6 Actions Injection: labs/tier-2/2.6-actions-injection.md
-    - 2.7 Build Cache Poisoning: labs/tier-2/2.7-build-cache-poisoning.md
-    - 2.8 Workflow Run Attacks: labs/tier-2/2.8-workflow-run-attacks.md
-    - 2.9 GitLab CI Attacks: labs/tier-2/2.9-gitlab-ci-attacks.md
-  - Tier 6 - Advanced & Emerging:
-    - 6.1 ML Model Supply Chain: labs/tier-6/6.1-ml-model-supply-chain.md
-    - 6.2 Dataset Poisoning: labs/tier-6/6.2-dataset-poisoning.md
-    - 6.3 Firmware Supply Chain: labs/tier-6/6.3-firmware-supply-chain.md
-    - 6.4 Multi-Vector Attack: labs/tier-6/6.4-multi-vector-attack.md
-    - "6.5 Case Study - xz-utils": labs/tier-6/6.5-case-study-xz-utils.md
-    - "6.6 Case Study - SolarWinds": labs/tier-6/6.6-case-study-solarwinds.md
-    - "6.7 Case Study - Codecov": labs/tier-6/6.7-case-study-codecov.md
-    - "6.8 Case Study - event-stream": labs/tier-6/6.8-case-study-event-stream.md
-    - "6.9 Case Study - Log4Shell": labs/tier-6/6.9-case-study-log4shell.md
-    - "6.10 Case Study - Equifax": labs/tier-6/6.10-case-study-equifax.md
-  - Tier 9 - Cloud Supply Chain:
-    - 9.1 Cloud Marketplace Poisoning: labs/tier-9/9.1-cloud-marketplace-poisoning.md
-    - 9.2 Serverless Supply Chain: labs/tier-9/9.2-serverless-supply-chain.md
-    - 9.3 Cloud CI/CD Attacks: labs/tier-9/9.3-cloud-cicd-attacks.md
-    - 9.4 IAM Chain Abuse: labs/tier-9/9.4-iam-chain-abuse.md
-  - Tiers 3-5, 7-8 (Coming Soon): coming-soon.md
-  - Achievements: achievements.md
-  - Facilitator Guide: facilitator-guide.md
-  - Roadmap: roadmap.md
+  - Home:
+    - index.md
+    - Getting Started: getting-started.md
+    - Placement Test: placement-test.md
+  - Labs:
+    - Tier 0 Foundations:
+      - 0.1 Version Control: labs/tier-0/0.1-version-control.md
+      - 0.2 Package Managers: labs/tier-0/0.2-package-managers.md
+      - 0.3 Containers: labs/tier-0/0.3-containers.md
+      - 0.4 How CI/CD Works: labs/tier-0/0.4-how-cicd-works.md
+      - 0.5 Artifacts & Registries: labs/tier-0/0.5-artifacts-registries.md
+    - Tier 1 Package Security:
+      - 1.1 Dependency Resolution: labs/tier-1/1.1-dependency-resolution.md
+      - 1.2 Dependency Confusion: labs/tier-1/1.2-dependency-confusion.md
+      - 1.3 Typosquatting: labs/tier-1/1.3-typosquatting.md
+      - 1.4 Lockfile Injection: labs/tier-1/1.4-lockfile-injection.md
+      - 1.5 Manifest Confusion: labs/tier-1/1.5-manifest-confusion.md
+      - 1.6 Phantom Dependencies: labs/tier-1/1.6-phantom-dependencies.md
+    - Tier 2 Build & CI/CD:
+      - 2.1 CI/CD Fundamentals: labs/tier-2/2.1-cicd-fundamentals.md
+      - 2.2 Direct PPE: labs/tier-2/2.2-direct-ppe.md
+      - 2.3 Indirect PPE: labs/tier-2/2.3-indirect-ppe.md
+      - 2.4 Secret Exfiltration: labs/tier-2/2.4-secret-exfiltration.md
+      - 2.5 Self-Hosted Runners: labs/tier-2/2.5-self-hosted-runners.md
+      - 2.6 Actions Injection: labs/tier-2/2.6-actions-injection.md
+      - 2.7 Build Cache Poisoning: labs/tier-2/2.7-build-cache-poisoning.md
+      - 2.8 Workflow Run Attacks: labs/tier-2/2.8-workflow-run-attacks.md
+      - 2.9 GitLab CI Attacks: labs/tier-2/2.9-gitlab-ci-attacks.md
+    - Tier 3 Container Security:
+      - 3.1 Image Internals: labs/tier-3/3.1-image-internals.md
+      - 3.2 Tag Mutability: labs/tier-3/3.2-tag-mutability.md
+      - 3.3 Base Image Poisoning: labs/tier-3/3.3-base-image-poisoning.md
+      - 3.4 Registry Confusion: labs/tier-3/3.4-registry-confusion.md
+      - 3.5 Layer Injection: labs/tier-3/3.5-layer-injection.md
+      - 3.6 Multi-Stage Leaks: labs/tier-3/3.6-multistage-leaks.md
+    - Tier 4 Artifact Integrity:
+      - 4.1 SBOM Contents: labs/tier-4/4.1-sbom-contents.md
+      - 4.2 SBOM Gaps: labs/tier-4/4.2-sbom-gaps.md
+      - 4.3 Signing Fundamentals: labs/tier-4/4.3-signing-fundamentals.md
+      - 4.4 Attestation & SLSA: labs/tier-4/4.4-attestation-slsa.md
+      - 4.5 Signature Bypass: labs/tier-4/4.5-signature-bypass.md
+      - 4.6 Attestation Forgery: labs/tier-4/4.6-attestation-forgery.md
+      - 4.7 SBOM Tampering: labs/tier-4/4.7-sbom-tampering.md
+    - Tier 5 IaC Supply Chain:
+      - 5.1 Helm Resolution: labs/tier-5/5.1-helm-resolution.md
+      - 5.2 Helm Poisoning: labs/tier-5/5.2-helm-poisoning.md
+      - 5.3 Terraform Modules: labs/tier-5/5.3-terraform-module-attacks.md
+      - 5.4 Ansible Galaxy: labs/tier-5/5.4-ansible-galaxy.md
+      - 5.5 Admission Bypass: labs/tier-5/5.5-admission-controller-bypass.md
+    - Tier 6 Advanced & Emerging:
+      - 6.1 ML Model Supply Chain: labs/tier-6/6.1-ml-model-supply-chain.md
+      - 6.2 Dataset Poisoning: labs/tier-6/6.2-dataset-poisoning.md
+      - 6.3 Firmware Supply Chain: labs/tier-6/6.3-firmware-supply-chain.md
+      - 6.4 Multi-Vector Attack: labs/tier-6/6.4-multi-vector-attack.md
+      - 6.5 xz-utils (CVE-2024-3094): labs/tier-6/6.5-case-study-xz-utils.md
+      - 6.6 SolarWinds (SUNBURST): labs/tier-6/6.6-case-study-solarwinds.md
+      - 6.7 Codecov: labs/tier-6/6.7-case-study-codecov.md
+      - 6.8 event-stream: labs/tier-6/6.8-case-study-event-stream.md
+      - 6.9 Log4Shell (CVE-2021-44228): labs/tier-6/6.9-case-study-log4shell.md
+      - 6.10 Equifax (CVE-2017-5638): labs/tier-6/6.10-case-study-equifax.md
+    - Tier 7 Detection & Response:
+      - 7.1 Detection Rules: labs/tier-7/7.1-detection-rules.md
+      - 7.2 Incident Triage: labs/tier-7/7.2-incident-triage.md
+      - 7.3 IR Playbook: labs/tier-7/7.3-ir-playbook.md
+      - 7.4 Tool Evaluation: labs/tier-7/7.4-tool-evaluation.md
+      - 7.5 Threat Modeling: labs/tier-7/7.5-threat-modeling.md
+    - Tier 8 Organizational:
+      - 8.1 SLSA Deep Dive: labs/tier-8/8.1-slsa-deep-dive.md
+      - 8.2 SSDF / NIST: labs/tier-8/8.2-ssdf-nist.md
+      - 8.3 EO 14028: labs/tier-8/8.3-eo-14028.md
+      - 8.4 Vendor Assessment: labs/tier-8/8.4-vendor-assessment.md
+      - 8.5 Building a Program: labs/tier-8/8.5-building-a-program.md
+      - 8.6 SCVS Assessment: labs/tier-8/8.6-scvs-assessment.md
+    - Tier 9 Cloud Supply Chain:
+      - 9.1 Marketplace Poisoning: labs/tier-9/9.1-cloud-marketplace-poisoning.md
+      - 9.2 Serverless Supply Chain: labs/tier-9/9.2-serverless-supply-chain.md
+      - 9.3 Cloud CI/CD Attacks: labs/tier-9/9.3-cloud-cicd-attacks.md
+      - 9.4 IAM Chain Abuse: labs/tier-9/9.4-iam-chain-abuse.md
+  - Resources:
+    - Achievements: achievements.md
+    - Facilitator Guide: facilitator-guide.md
+    - Roadmap: roadmap.md

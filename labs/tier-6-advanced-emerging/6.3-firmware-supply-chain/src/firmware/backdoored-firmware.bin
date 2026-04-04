@@ -1,0 +1,9 @@
+FIRMWARE_HEADER_V1
+vendor=WeakLink
+version=1.0.0
+checksum=sha256:def456_MODIFIED
+PAYLOAD_START
+... (binary firmware payload with injected backdoor) ...
+BACKDOOR: reverse shell on boot
+PAYLOAD_END
+SIGNATURE=forged_signature_here

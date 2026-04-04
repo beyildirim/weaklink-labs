@@ -1,0 +1,6 @@
+{
+  "name": "flatmap-stream",
+  "version": "0.1.1",
+  "description": "Malicious package added as a dependency to event-stream",
+  "_weaklink_note": "This is a recreation for educational purposes. The actual malicious code targeted the Copay Bitcoin wallet and stole cryptocurrency."
+}

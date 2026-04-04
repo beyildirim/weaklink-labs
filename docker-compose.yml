@@ -1,0 +1,117 @@
+version: '3.8'
+
+# WeakLink Labs — Docker Compose
+# Alternative for teams without Kubernetes or minikube.
+
+services:
+  guide:
+    build:
+      context: .
+      dockerfile: images/guide/Dockerfile
+    image: weaklink-labs/guide:latest
+    ports:
+      - "8000:8000"
+    networks:
+      - weaklink
+    restart: unless-stopped
+
+  workstation:
+    build:
+      context: images/workstation/
+      dockerfile: Dockerfile
+    image: weaklink-labs/workstation:latest
+    ports:
+      - "7681:7681"
+    networks:
+      - weaklink
+    restart: unless-stopped
+    # Ensure workstation doesn't exit since it has no main process by default (it uses ttyd internally via entrypoint or bash).
+    # Based on the workstation Dockerfile, it likely runs ttyd on 7681 as its CMD/ENTRYPOINT.
+
+  pypi-private:
+    image: pypiserver/pypiserver:latest
+    volumes:
+      - pypi-private-data:/data/packages
+    networks:
+      - weaklink
+    restart: unless-stopped
+
+  pypi-public:
+    image: pypiserver/pypiserver:latest
+    volumes:
+      - pypi-public-data:/data/packages
+    networks:
+      - weaklink
+    restart: unless-stopped
+
+  verdaccio:
+    image: verdaccio/verdaccio:5
+    volumes:
+      - verdaccio-data:/verdaccio/storage
+    networks:
+      - weaklink
+    restart: unless-stopped
+
+  gitea:
+    image: gitea/gitea:1.22
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    volumes:
+      - gitea-data:/data
+    networks:
+      - weaklink
+    restart: unless-stopped
+
+  registry:
+    image: registry:2
+    environment:
+      - REGISTRY_STORAGE_DELETE_ENABLED=true
+    volumes:
+      - registry-data:/var/lib/registry
+    networks:
+      - weaklink
+    restart: unless-stopped
+
+  lab-setup:
+    build:
+      context: .
+      dockerfile: images/lab-setup/Dockerfile
+    image: weaklink-labs/lab-setup:latest
+    environment:
+      # Enable all tiers for content seeding
+      - TIER0_ENABLED=true
+      - TIER1_ENABLED=true
+      - TIER2_ENABLED=true
+      - TIER3_ENABLED=true
+      - TIER4_ENABLED=true
+      - TIER5_ENABLED=true
+      - TIER6_ENABLED=true
+      - TIER7_ENABLED=true
+      - TIER8_ENABLED=true
+      - TIER9_ENABLED=true
+    networks:
+      - weaklink
+    # Lab setup runs once and exits. We depend on the infrastructure services being up.
+    depends_on:
+      pypi-private:
+        condition: service_started
+      pypi-public:
+        condition: service_started
+      verdaccio:
+        condition: service_started
+      gitea:
+        condition: service_started
+      registry:
+        condition: service_started
+
+volumes:
+  pypi-private-data:
+  pypi-public-data:
+  verdaccio-data:
+  gitea-data:
+  registry-data:
+
+networks:
+  weaklink:
+    driver: bridge

@@ -1,6 +1,6 @@
 # Achievements & Badges
 
-WeakLink Labs includes a local achievement system that tracks your progress and generates shareable badges. All badge generation happens offline -- no data leaves your machine.
+WeakLink Labs includes a local achievement system that tracks your progress and generates shareable badges. All badge generation happens offline. No data leaves your machine.
 
 ## All Achievements
 

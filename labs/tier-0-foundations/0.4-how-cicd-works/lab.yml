@@ -1,0 +1,12 @@
+id: "0.4"
+title: "How CI/CD Works"
+tier: 0
+module: "foundations"
+prerequisites: ["0.1"]
+difficulty: beginner
+estimated_time: 30m
+tags: ["cicd", "pipeline", "github-actions", "gitea", "secrets", "triggers"]
+mitre: ["T1195.002", "T1059"]
+phase_understand: "Examine a CI/CD workflow — triggers, jobs, steps, and how secrets are accessed"
+phase_break: "Submit a PR that modifies the pipeline to exfiltrate secrets during build"
+phase_defend: "Restrict pipeline modifications to protected branches and use OIDC instead of long-lived secrets"

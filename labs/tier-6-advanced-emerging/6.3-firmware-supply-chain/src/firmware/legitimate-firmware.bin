@@ -1,0 +1,8 @@
+FIRMWARE_HEADER_V1
+vendor=WeakLink
+version=1.0.0
+checksum=sha256:abc123
+PAYLOAD_START
+... (binary firmware payload would go here) ...
+PAYLOAD_END
+SIGNATURE=valid_rsa_signature_here

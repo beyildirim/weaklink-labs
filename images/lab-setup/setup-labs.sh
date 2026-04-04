@@ -61,6 +61,27 @@ build_and_upload_pypi_package() {
 }
 
 # ============================================================
+# Tier flags (from Helm values via env vars)
+# Default to "true" if not set (backward-compatible)
+# ============================================================
+
+TIER0="${TIER0_ENABLED:-true}"
+TIER1="${TIER1_ENABLED:-true}"
+TIER2="${TIER2_ENABLED:-true}"
+TIER3="${TIER3_ENABLED:-true}"
+TIER4="${TIER4_ENABLED:-true}"
+TIER5="${TIER5_ENABLED:-true}"
+TIER6="${TIER6_ENABLED:-true}"
+TIER7="${TIER7_ENABLED:-true}"
+TIER8="${TIER8_ENABLED:-true}"
+TIER9="${TIER9_ENABLED:-true}"
+
+tier_enabled() {
+    local tier_var="TIER${1}"
+    [[ "${!tier_var}" == "true" ]]
+}
+
+# ============================================================
 # PHASE 1: Wait for all services
 # ============================================================
 
@@ -68,6 +89,9 @@ echo ""
 echo -e "${BOLD}========================================${NC}"
 echo -e "${BOLD}  WeakLink Labs — Setup${NC}"
 echo -e "${BOLD}========================================${NC}"
+echo ""
+
+echo -e "  Enabled tiers: $(for t in 0 1 2 3 4 5 6 7 8 9; do tier_enabled $t && printf "$t "; done)"
 echo ""
 
 wait_for_service "PyPI Private" "http://pypi-private:8080/simple/"
@@ -154,15 +178,16 @@ VERDACCIO_URL="http://verdaccio:4873"
 
 # Create auth token for publishing
 log "Authenticating with Verdaccio..."
-TOKEN=$(curl -sf -X PUT "${VERDACCIO_URL}/-/user/org.couchdb.user:labuser" \
+UNIQUE_USER="labuser-$(date +%s)"
+TOKEN=$(curl -sf -X PUT "${VERDACCIO_URL}/-/user/org.couchdb.user:${UNIQUE_USER}" \
     -H "Content-Type: application/json" \
-    -d '{"name":"labuser","password":"labpass123"}' | jq -r '.token // empty')
+    -d "{\"name\":\"${UNIQUE_USER}\",\"password\":\"labpass123\"}" | jq -r '.token // empty')
 
 if [[ -z "$TOKEN" ]]; then
     # Retry — verdaccio sometimes needs the user to exist first
-    TOKEN=$(curl -sf -X PUT "${VERDACCIO_URL}/-/user/org.couchdb.user:labuser" \
+    TOKEN=$(curl -sf -X PUT "${VERDACCIO_URL}/-/user/org.couchdb.user:${UNIQUE_USER}" \
         -H "Content-Type: application/json" \
-        -d '{"name":"labuser","password":"labpass123"}' | jq -r '.token // empty')
+        -d "{\"name\":\"${UNIQUE_USER}\",\"password\":\"labpass123\"}" | jq -r '.token // empty')
 fi
 
 if [[ -z "$TOKEN" ]]; then
@@ -551,8 +576,8 @@ git checkout -q main
 
 # Push both branches
 git remote add origin "${GITEA_URL}/${GITEA_USER}/web-app.git"
-git push -q -u "${AUTH_URL}/${GITEA_USER}/web-app.git" main 2>/dev/null
-git push -q "${AUTH_URL}/${GITEA_USER}/web-app.git" feature/add-logging 2>/dev/null
+git push -q -u "${AUTH_URL}/${GITEA_USER}/web-app.git" main 2>/dev/null || true
+git push -q "${AUTH_URL}/${GITEA_USER}/web-app.git" feature/add-logging 2>/dev/null || true
 
 ok "web-app repository created (4 commits on main + feature branch)."
 
@@ -653,7 +678,7 @@ git commit -q -m "Initial commit: secure-app with flask-utils dependency"
 
 # Push main
 git remote add origin "${GITEA_URL}/${GITEA_USER}/secure-app.git"
-git push -q -u "${AUTH_URL}/${GITEA_USER}/secure-app.git" main 2>/dev/null
+git push -q -u "${AUTH_URL}/${GITEA_USER}/secure-app.git" main 2>/dev/null || true
 
 # Create malicious PR branch
 git checkout -q -b update-deps
@@ -687,7 +712,7 @@ git commit -q -m "chore: update flask-utils to latest version
 
 Routine dependency update. Ran pip-compile to refresh the lockfile."
 
-git push -q "${AUTH_URL}/${GITEA_USER}/secure-app.git" update-deps 2>/dev/null
+git push -q "${AUTH_URL}/${GITEA_USER}/secure-app.git" update-deps 2>/dev/null || true
 
 # Create PR
 curl -sf -X POST "${GITEA_URL}/api/v1/repos/${GITEA_USER}/secure-app/pulls" \

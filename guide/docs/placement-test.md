@@ -21,10 +21,10 @@ You will be asked **10 multiple-choice questions** covering the three Tier 0 top
 ## Scoring
 
 !!! success "Pass: 8/10 or higher"
-    Labs **0.1**, **0.2**, and **0.3** are automatically marked as completed. You skip directly to **Tier 1 -- Package Security**.
+    Labs **0.1**, **0.2**, and **0.3** are automatically marked as completed. You skip directly to **Tier 1: Package Security**.
 
 !!! warning "Below 8/10"
-    You will see which topic areas to review. No progress is changed -- you can start the Tier 0 labs normally.
+    You will see which topic areas to review. No progress is changed. You can start the Tier 0 labs normally.
 
 ## What to Expect
 

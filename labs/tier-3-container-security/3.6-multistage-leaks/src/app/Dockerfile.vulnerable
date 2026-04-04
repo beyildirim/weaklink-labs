@@ -1,0 +1,14 @@
+# VULNERABLE: Multi-stage build that leaks secrets
+FROM python:3.11-slim AS builder
+WORKDIR /build
+# Install private packages using credentials
+COPY .netrc /root/.netrc
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+# Remove credentials (but they're already in the layer!)
+RUN rm /root/.netrc
+COPY app.py .
+# Final stage - BUT we reference the wrong stage
+FROM builder
+WORKDIR /app
+CMD ["python", "app.py"]
