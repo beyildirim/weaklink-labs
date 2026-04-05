@@ -409,7 +409,7 @@
   background: #0d1117;
 }
 .terminal-panel-body::after {
-  content: "Connecting to terminal...";
+  content: "Terminal not connected. Click Open, then run ./start.sh if the environment is not running.";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -519,5 +519,27 @@ body.tier-9 .md-typeset h1 { border-bottom: 3px solid #f39c12; padding-bottom: 0
 .md-typeset code .cp {
   color: #a4b0be !important;
   font-style: italic;
+}
+
+/* --- Mobile: terminal panel responsive layout --------------- */
+@media (max-width: 768px) {
+  .terminal-panel.pos-right {
+    width: 100vw;
+    top: auto;
+    bottom: 0;
+    height: 35vh;
+    border-left: none;
+    border-top: 2px solid #ff7043;
+  }
+  .terminal-panel.pos-bottom {
+    height: 30vh;
+  }
+  body.terminal-bottom .md-content {
+    padding-bottom: 32vh;
+  }
+  body.terminal-right .md-container,
+  body.terminal-right .md-header__inner {
+    max-width: 100%;
+  }
 }
 
