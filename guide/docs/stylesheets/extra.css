@@ -317,39 +317,102 @@
   font-size: 0.8rem;
 }
 
-/* --- Embedded terminal ----------------------------------- */
+/* --- Inline terminal embed (hidden, replaced by bottom panel) --- */
 .terminal-embed {
-  width: 100%;
-  height: 400px;
-  border: 1px solid #333;
-  border-radius: 8px;
-  margin: 1em 0;
-  overflow: hidden;
-  background: #1a1a2e;
+  display: none;
+}
+
+/* --- Persistent bottom terminal panel (TryHackMe style) --- */
+.terminal-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40vh;
+  background: #0d1117;
+  border-top: 2px solid #ff7043;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  transition: height 0.2s ease, transform 0.2s ease;
+}
+.terminal-panel.collapsed {
+  transform: translateY(calc(100% - 36px));
+}
+.terminal-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  height: 36px;
+  min-height: 36px;
+  background: #161b22;
+  border-bottom: 1px solid #30363d;
+  cursor: pointer;
+  user-select: none;
+}
+.terminal-panel-header:hover {
+  background: #1c2128;
+}
+.terminal-panel-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #ff7043;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.terminal-panel-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.terminal-panel-btn {
+  background: none;
+  border: 1px solid #30363d;
+  color: #8b949e;
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+}
+.terminal-panel-btn:hover {
+  color: #f0f6fc;
+  border-color: #8b949e;
+}
+.terminal-panel-body {
+  flex: 1;
   position: relative;
 }
-.terminal-embed iframe {
+.terminal-panel-body iframe {
   width: 100%;
   height: 100%;
   border: none;
-  background: #1a1a2e;
+  background: #0d1117;
 }
-/* Fallback message when terminal is not available */
-.terminal-embed::after {
-  content: "Connecting to workstation terminal... If this doesn't load, run ./cli/weaklink shell in your terminal.";
+.terminal-panel-body::after {
+  content: "Connecting to terminal...";
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #546e7a;
+  color: #484f58;
   font-size: 0.85rem;
-  text-align: center;
   pointer-events: none;
   z-index: 0;
 }
-.terminal-embed iframe {
+.terminal-panel-body iframe {
   position: relative;
   z-index: 1;
+}
+
+/* Shrink main content when terminal is open */
+body.terminal-open .md-content {
+  padding-bottom: 42vh;
+}
+body.terminal-open .md-footer {
+  margin-bottom: 40vh;
 }
 
 /* --- Tier accent colors ---------------------------------- */
