@@ -522,6 +522,57 @@ body.tier-9 .md-typeset h1 { border-bottom: 3px solid #f39c12; padding-bottom: 0
 }
 
 /* --- Mobile: terminal panel responsive layout --------------- */
+/* --- Sidebar pin/unpin toggle ----------------------------- */
+.sidebar-toggle-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: 1px solid #30363d;
+  color: #8b949e;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 10;
+  font-family: 'JetBrains Mono', monospace;
+}
+.sidebar-toggle-btn:hover {
+  color: #f0f6fc;
+  border-color: #8b949e;
+}
+
+body.sidebar-hidden .md-sidebar--primary {
+  display: none;
+}
+body.sidebar-hidden .md-content {
+  margin-left: 0;
+}
+
+/* Floating restore button when sidebar is hidden */
+.sidebar-restore-btn {
+  position: fixed;
+  top: 60px;
+  left: 8px;
+  background: #161b22;
+  border: 1px solid #30363d;
+  color: #8b949e;
+  font-size: 0.7rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 998;
+  font-family: 'JetBrains Mono', monospace;
+  display: none;
+}
+body.sidebar-hidden .sidebar-restore-btn {
+  display: block;
+}
+.sidebar-restore-btn:hover {
+  color: #f0f6fc;
+  border-color: #8b949e;
+}
+
 @media (max-width: 768px) {
   .terminal-panel.pos-right {
     width: 100vw;
