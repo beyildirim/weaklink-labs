@@ -31,6 +31,7 @@ extra_css:
 
 extra_javascript:
   - javascripts/tier-colors.js
+  - javascripts/terminal-panel.js
 
 markdown_extensions:
   - admonition
