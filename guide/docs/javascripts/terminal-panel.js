@@ -1,13 +1,16 @@
-// Persistent bottom terminal panel for lab pages
+// Persistent terminal panel for lab pages (bottom or side)
 (function() {
   'use strict';
 
-  // Only show on lab pages
   if (!window.location.pathname.includes('/labs/')) return;
 
-  // Build panel via safe DOM methods
+  // State
+  var position = localStorage.getItem('wl-terminal-pos') || 'bottom';
+  var isOpen = false;
+
+  // Build panel
   var panel = document.createElement('div');
-  panel.className = 'terminal-panel collapsed';
+  panel.className = 'terminal-panel collapsed pos-' + position;
 
   var header = document.createElement('div');
   header.className = 'terminal-panel-header';
@@ -21,16 +24,14 @@
 
   var toggleBtn = document.createElement('button');
   toggleBtn.className = 'terminal-panel-btn';
-  toggleBtn.dataset.action = 'toggle';
   toggleBtn.textContent = 'Open';
 
-  var resizeBtn = document.createElement('button');
-  resizeBtn.className = 'terminal-panel-btn';
-  resizeBtn.dataset.action = 'resize';
-  resizeBtn.textContent = 'Resize';
+  var dockBtn = document.createElement('button');
+  dockBtn.className = 'terminal-panel-btn';
+  dockBtn.textContent = position === 'bottom' ? 'Dock Right' : 'Dock Bottom';
 
   controls.appendChild(toggleBtn);
-  controls.appendChild(resizeBtn);
+  controls.appendChild(dockBtn);
   header.appendChild(title);
   header.appendChild(controls);
 
@@ -47,18 +48,31 @@
   panel.appendChild(body);
   document.body.appendChild(panel);
 
-  var sizes = ['40vh', '55vh', '25vh'];
-  var sizeIndex = 0;
-
   function toggle() {
-    panel.classList.toggle('collapsed');
-    var isOpen = !panel.classList.contains('collapsed');
+    isOpen = !isOpen;
+    panel.classList.toggle('collapsed', !isOpen);
     document.body.classList.toggle('terminal-open', isOpen);
+    document.body.classList.toggle('terminal-' + position, isOpen);
     toggleBtn.textContent = isOpen ? 'Collapse' : 'Open';
   }
 
+  function switchPosition() {
+    var wasOpen = isOpen;
+    if (wasOpen) {
+      document.body.classList.remove('terminal-open', 'terminal-' + position);
+    }
+    position = position === 'bottom' ? 'right' : 'bottom';
+    panel.classList.remove('pos-bottom', 'pos-right');
+    panel.classList.add('pos-' + position);
+    dockBtn.textContent = position === 'bottom' ? 'Dock Right' : 'Dock Bottom';
+    localStorage.setItem('wl-terminal-pos', position);
+    if (wasOpen) {
+      document.body.classList.add('terminal-open', 'terminal-' + position);
+    }
+  }
+
   header.addEventListener('click', function(e) {
-    if (e.target.dataset.action === 'resize') return;
+    if (e.target === dockBtn) return;
     toggle();
   });
 
@@ -67,9 +81,8 @@
     toggle();
   });
 
-  resizeBtn.addEventListener('click', function(e) {
+  dockBtn.addEventListener('click', function(e) {
     e.stopPropagation();
-    sizeIndex = (sizeIndex + 1) % sizes.length;
-    panel.style.height = sizes[sizeIndex];
+    switchPosition();
   });
 })();
