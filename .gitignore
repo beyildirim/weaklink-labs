@@ -36,3 +36,6 @@ guide/site/
 
 # Ruff cache
 .ruff_cache/
+
+# Claude agents
+.agents/
