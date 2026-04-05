@@ -167,7 +167,6 @@ Infrastructure and quality improvements driven by professional feedback from SOC
 
 ### Detection Engineering
 
-- ~[ ] **Log pipeline** — Loki + Grafana in the cluster so learners can query real attack-generated logs and test detection rules against live data~ (WONTFIX: Removed to avoid scope creep)
 - [x] **Sample alert JSON** — Raw log events that each detection rule would match, so learners can see exactly what triggers an alert
 - [x] **False positive analysis** — Known false positives and tuning guidance for every detection rule
 
@@ -176,18 +175,13 @@ Infrastructure and quality improvements driven by professional feedback from SOC
 - [x] **Idempotent start.sh** — Graceful failure handling, port-forward cleanup, and safe re-runs
 - [x] **Makefile** — Structured lifecycle targets: `build`, `deploy`, `teardown`, `logs`, `shell`, `test`
 - [x] **Docker Compose mode** — Alternative for teams without Kubernetes experience or resources
-- [ ] **Minimal mode** — `./start.sh --minimal` for laptops that can't spare 4GB for minikube
 
 ### Content Quality
 
 - [x] **Tier 3-4 src content** — Container Security and Artifact Integrity tiers have guide docs and verify scripts but need attack/defend source packages built out
 - [x] **Tier 6 src content** — Most Advanced & Emerging labs need source packages (only Log4Shell and Equifax have them)
-- [ ] **First Responder Checklists** — Per-lab checklist: what to do in the first 15 minutes if you see this attack in production
-- [ ] **Pre-commit hooks** — Ready-to-use `.pre-commit-config.yaml` as a takeaway from each lab
-- [ ] ~**Tool comparison sections** — How would Snyk / Trivy / Dependabot detect each attack?(WONTFIX: Too much scope creep)
 
 ### Platform Integrity
 
-- [x] **Platform SBOM** — Ship our own software bill of materials (practice what we preach)
 - [x] **Image signing** — Sign lab Docker images with Cosign as a meta-example
 - [x] **NetworkPolicy templates** — Add Kubernetes NetworkPolicies to the Helm chart
