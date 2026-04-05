@@ -346,18 +346,15 @@
 
 /* Right position */
 .terminal-panel.pos-right {
-  top: 0;
+  top: 48px; /* below MkDocs header */
   right: 0;
   bottom: 0;
-  width: 45vw;
+  width: 50vw;
   flex-direction: column;
   border-left: 2px solid #ff7043;
 }
 .terminal-panel.pos-right.collapsed {
   transform: translateX(calc(100% - 36px));
-}
-.terminal-panel.pos-right .terminal-panel-header {
-  writing-mode: horizontal-tb;
 }
 .terminal-panel-header {
   display: flex;
@@ -434,11 +431,14 @@ body.terminal-bottom .md-content {
 body.terminal-bottom .md-footer {
   margin-bottom: 40vh;
 }
-body.terminal-right .md-content {
-  margin-right: 45vw;
+body.terminal-right .md-container {
+  max-width: 50vw;
 }
-body.terminal-right .md-header {
-  right: 45vw;
+body.terminal-right .md-header__inner {
+  max-width: 50vw;
+}
+body.terminal-right .md-sidebar--secondary {
+  display: none;
 }
 
 /* --- Tier accent colors ---------------------------------- */
