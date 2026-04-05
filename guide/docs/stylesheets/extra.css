@@ -322,22 +322,42 @@
   display: none;
 }
 
-/* --- Persistent bottom terminal panel (TryHackMe style) --- */
+/* --- Persistent terminal panel (bottom or right) --- */
 .terminal-panel {
   position: fixed;
+  background: #0d1117;
+  z-index: 999;
+  display: flex;
+  transition: transform 0.2s ease;
+}
+
+/* Bottom position (default) */
+.terminal-panel.pos-bottom {
   bottom: 0;
   left: 0;
   right: 0;
   height: 40vh;
-  background: #0d1117;
-  border-top: 2px solid #ff7043;
-  z-index: 999;
-  display: flex;
   flex-direction: column;
-  transition: height 0.2s ease, transform 0.2s ease;
+  border-top: 2px solid #ff7043;
 }
-.terminal-panel.collapsed {
+.terminal-panel.pos-bottom.collapsed {
   transform: translateY(calc(100% - 36px));
+}
+
+/* Right position */
+.terminal-panel.pos-right {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 45vw;
+  flex-direction: column;
+  border-left: 2px solid #ff7043;
+}
+.terminal-panel.pos-right.collapsed {
+  transform: translateX(calc(100% - 36px));
+}
+.terminal-panel.pos-right .terminal-panel-header {
+  writing-mode: horizontal-tb;
 }
 .terminal-panel-header {
   display: flex;
@@ -408,11 +428,17 @@
 }
 
 /* Shrink main content when terminal is open */
-body.terminal-open .md-content {
+body.terminal-bottom .md-content {
   padding-bottom: 42vh;
 }
-body.terminal-open .md-footer {
+body.terminal-bottom .md-footer {
   margin-bottom: 40vh;
+}
+body.terminal-right .md-content {
+  margin-right: 45vw;
+}
+body.terminal-right .md-header {
+  right: 45vw;
 }
 
 /* --- Tier accent colors ---------------------------------- */
