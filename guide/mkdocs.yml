@@ -55,7 +55,7 @@ markdown_extensions:
   - tables
   - toc:
       permalink: true
-      toc_depth: 1
+      toc_depth: 2
 
 plugins:
   - search
@@ -96,7 +96,7 @@ nav:
       - 3.4 Registry Confusion: labs/tier-3/3.4-registry-confusion.md
       - 3.5 Layer Injection: labs/tier-3/3.5-layer-injection.md
       - 3.6 Multi-Stage Leaks: labs/tier-3/3.6-multistage-leaks.md
-    - Tier 4 Artifact Integrity:
+    - Tier 4 SBOM & Signing:
       - 4.1 SBOM Contents: labs/tier-4/4.1-sbom-contents.md
       - 4.2 SBOM Gaps: labs/tier-4/4.2-sbom-gaps.md
       - 4.3 Signing Fundamentals: labs/tier-4/4.3-signing-fundamentals.md
@@ -110,7 +110,7 @@ nav:
       - 5.3 Terraform Modules: labs/tier-5/5.3-terraform-module-attacks.md
       - 5.4 Ansible Galaxy: labs/tier-5/5.4-ansible-galaxy.md
       - 5.5 Admission Bypass: labs/tier-5/5.5-admission-controller-bypass.md
-    - Tier 6 Advanced & Emerging:
+    - Tier 6 Case Studies & Frontier Attacks:
       - 6.1 ML Model Supply Chain: labs/tier-6/6.1-ml-model-supply-chain.md
       - 6.2 Dataset Poisoning: labs/tier-6/6.2-dataset-poisoning.md
       - 6.3 Firmware Supply Chain: labs/tier-6/6.3-firmware-supply-chain.md
@@ -127,7 +127,7 @@ nav:
       - 7.3 IR Playbook: labs/tier-7/7.3-ir-playbook.md
       - 7.4 Tool Evaluation: labs/tier-7/7.4-tool-evaluation.md
       - 7.5 Threat Modeling: labs/tier-7/7.5-threat-modeling.md
-    - Tier 8 Organizational:
+    - Tier 8 Policy & Program Building:
       - 8.1 SLSA Deep Dive: labs/tier-8/8.1-slsa-deep-dive.md
       - 8.2 SSDF / NIST: labs/tier-8/8.2-ssdf-nist.md
       - 8.3 EO 14028: labs/tier-8/8.3-eo-14028.md

@@ -48,7 +48,7 @@ You don't learn security by reading about it. You learn by **exploiting real vul
 <div class="tier-card" markdown>
 <span class="tier-number">TIER 0</span>
 
-### Foundations
+### [Foundations](labs/tier-0/0.1-version-control.md)
 
 Version control, package managers, and containers. How the building blocks work, and where the cracks are.
 
@@ -58,7 +58,7 @@ Version control, package managers, and containers. How the building blocks work,
 <div class="tier-card" markdown>
 <span class="tier-number">TIER 1</span>
 
-### Package Security
+### [Package Security](labs/tier-1/1.1-dependency-resolution.md)
 
 Dependency confusion, typosquatting, lockfile injection, manifest confusion, and phantom dependencies.
 
@@ -68,7 +68,7 @@ Dependency confusion, typosquatting, lockfile injection, manifest confusion, and
 <div class="tier-card" markdown>
 <span class="tier-number">TIER 2</span>
 
-### Build & CI/CD
+### [Build & CI/CD](labs/tier-2/2.1-cicd-fundamentals.md)
 
 Poisoned Pipeline Execution, secret exfiltration, GitHub Actions injection, runner attacks, and build cache poisoning.
 
@@ -78,7 +78,7 @@ Poisoned Pipeline Execution, secret exfiltration, GitHub Actions injection, runn
 <div class="tier-card" markdown>
 <span class="tier-number">TIER 3</span>
 
-### Container Security
+### [Container Security](labs/tier-3/3.1-image-internals.md)
 
 Tag mutability, base image poisoning, registry confusion, layer injection, and multi-stage build leaks.
 
@@ -88,7 +88,7 @@ Tag mutability, base image poisoning, registry confusion, layer injection, and m
 <div class="tier-card" markdown>
 <span class="tier-number">TIER 4</span>
 
-### Artifact Integrity
+### [SBOM & Signing](labs/tier-4/4.1-sbom-contents.md)
 
 SBOMs, signing with Sigstore and GPG, SLSA provenance, attestation forgery, and SBOM tampering.
 
@@ -98,7 +98,7 @@ SBOMs, signing with Sigstore and GPG, SLSA provenance, attestation forgery, and 
 <div class="tier-card" markdown>
 <span class="tier-number">TIER 5</span>
 
-### IaC Supply Chain
+### [IaC Supply Chain](labs/tier-5/5.1-helm-resolution.md)
 
 Helm poisoning, Terraform module attacks, Ansible Galaxy, and admission controller bypass.
 
@@ -108,7 +108,7 @@ Helm poisoning, Terraform module attacks, Ansible Galaxy, and admission controll
 <div class="tier-card" markdown>
 <span class="tier-number">TIER 6</span>
 
-### Advanced & Emerging
+### [Case Studies & Frontier Attacks](labs/tier-6/6.1-ml-model-supply-chain.md)
 
 AI/ML supply chain, firmware attacks, and case studies: xz-utils, SolarWinds, Log4Shell, and more.
 
@@ -118,7 +118,7 @@ AI/ML supply chain, firmware attacks, and case studies: xz-utils, SolarWinds, Lo
 <div class="tier-card" markdown>
 <span class="tier-number">TIER 7</span>
 
-### Detection & Response
+### [Detection & Response](labs/tier-7/7.1-detection-rules.md)
 
 Detection engineering, incident triage, IR playbooks, tool evaluation, and threat modeling.
 
@@ -128,7 +128,7 @@ Detection engineering, incident triage, IR playbooks, tool evaluation, and threa
 <div class="tier-card" markdown>
 <span class="tier-number">TIER 8</span>
 
-### Organizational
+### [Policy & Program Building](labs/tier-8/8.1-slsa-deep-dive.md)
 
 SLSA, SSDF, EO 14028, vendor assessment, and building a supply chain security program.
 
@@ -138,7 +138,7 @@ SLSA, SSDF, EO 14028, vendor assessment, and building a supply chain security pr
 <div class="tier-card" markdown>
 <span class="tier-number">TIER 9</span>
 
-### Cloud Supply Chain
+### [Cloud Supply Chain](labs/tier-9/9.1-cloud-marketplace-poisoning.md)
 
 Marketplace poisoning, serverless attacks, cloud CI/CD exploitation, and IAM chain abuse.
 

@@ -1,12 +1,28 @@
 # WeakLink Labs
 
-**Hands-on supply chain security training for SOC analysts, security engineers, DevSecOps, and DevOps teams.**
+**Learn supply chain security by breaking and fixing real pipelines.**
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/beyildirim/weaklink-labs?quickstart=1)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Labs: 63](https://img.shields.io/badge/Labs-63-orange.svg)](#what-youll-learn)
 
----
+## The Problem
+
+Supply chain attacks have increased 742% since 2019. Most security training covers the theory but never lets you touch a poisoned package, hijack a CI pipeline, or forge an attestation. WeakLink Labs gives you 63 hands-on labs where you exploit real attack techniques in a safe, isolated environment, then learn exactly how to stop them.
 
 ## Quick Start
+
+### Docker Compose (recommended)
+
+```bash
+git clone https://github.com/beyildirim/weaklink-labs.git
+cd weaklink-labs
+make compose-up
+```
+
+Open **http://localhost:8000** in your browser. Done.
+
+### Kubernetes (full experience)
 
 ```bash
 git clone https://github.com/beyildirim/weaklink-labs.git
@@ -14,77 +30,81 @@ cd weaklink-labs
 ./start.sh
 ```
 
-Once started, open **http://localhost:8000** in your browser. The web UI guides you through every lab.
+Requires Docker, minikube, kubectl, and Helm. See [Prerequisites](#prerequisites).
 
-> The start script sets up port-forwarding automatically. For direct NodePort access: `http://<minikube-ip>:30080`.
+### GitHub Codespaces (zero install)
 
-## What You Get
+Click the **Open in GitHub Codespaces** badge above. Everything is pre-installed.
 
-A full Kubernetes training environment running on minikube:
+## Screenshot
 
-- **Web UI** (MkDocs Material) with step-by-step lab instructions
-- **Workstation pod** with pre-installed tools (git, pip, npm, docker CLI)
-- **Private registries** (PyPI, npm/Verdaccio, OCI) to simulate real supply chains
-- **Gitea** instance for version control labs
-- All isolated in a `weaklink` namespace (nothing touches your host)
+<!-- TODO: Add screenshot/GIF of the web UI with a lab open -->
 
-## How It Works
+## What You'll Learn
 
-Every lab follows the same three-phase structure:
+| Tier | Topic | Labs |
+|------|-------|:----:|
+| **0** | **Foundations** — Version control, package managers, containers, CI/CD | 5 |
+| **1** | **Package Security** — Dependency confusion, typosquatting, lockfile injection | 6 |
+| **2** | **Build & CI/CD** — Pipeline poisoning, secret exfiltration, runner attacks | 9 |
+| **3** | **Container Security** — Image tampering, registry confusion, layer attacks | 6 |
+| **4** | **SBOM & Signing** — SBOMs, signing, attestations, and how to bypass them | 7 |
+| **5** | **IaC Supply Chain** — Helm, Terraform, Ansible, admission controllers | 5 |
+| **6** | **Case Studies & Frontier Attacks** — xz-utils, SolarWinds, Log4Shell, AI/ML supply chain | 10 |
+| **7** | **Detection & Response** — SIEM rules, incident triage, IR playbooks, threat modeling | 5 |
+| **8** | **Policy & Program Building** — SLSA, SSDF, SCVS, EO 14028, building a program | 6 |
+| **9** | **Cloud Supply Chain** — Marketplace poisoning, serverless, cloud CI/CD, IAM chains | 4 |
 
-1. **UNDERSTAND:** See the system working normally. Explore it. Know what it does.
-2. **BREAK:** Exploit a real vulnerability. See the impact firsthand.
-3. **DEFEND:** Apply the fix. Re-run the attack. It fails. You know why.
+## Who Is This For?
 
-## Learning Path
+| You are a... | Start here | Focus on |
+|--------------|-----------|----------|
+| **SOC Analyst** | Tier 0 | Detect phases and Tier 7 (Detection & Response) |
+| **Security Engineer** | Take the [placement test](#cli-reference), likely Tier 1 | Full path through Tiers 1-6 |
+| **DevSecOps** | Tier 2 | CI integration sections, Tiers 4-5 |
+| **DevOps Engineer** | Tier 0 | Defend phases, Tiers 2-3 and 5 |
+| **Team Lead / Manager** | Read the [Facilitator Guide](guide/docs/resources/facilitator-guide.md) | Tier 8 (Policy & Program Building) |
 
-| Tier | Topic | Focus Areas | Labs | Prerequisites |
-|------|-------|-------------|------|---------------|
-| **0** | **Foundations** | Version control, package managers, containers, CI/CD | 5 | None |
-| **1** | **Package Security** | Dependency confusion, typosquatting, lockfile attacks | 6 | Tier 0 |
-| **2** | **Build & CI/CD** | Pipeline poisoning, secret exfiltration, runner attacks, GitLab CI | 9 | Tier 1 |
-| **3** | **Container Security** | Image tampering, registry confusion, layer attacks | 6 | Tier 0 |
-| **4** | **Artifact Integrity** | SBOMs, signing, attestations, and how to bypass them | 7 | Tier 2 |
-| **5** | **IaC Supply Chain** | Helm, Terraform, Ansible, admission controllers | 5 | Tier 3 |
-| **6** | **Advanced & Emerging** | AI/ML, case studies (xz, SolarWinds, Log4Shell, Equifax) | 10 | Tier 4 |
-| **7** | **Detection & Response** | SIEM rules, incident triage, IR playbooks, threat modeling | 5 | Tier 5 |
-| **8** | **Organizational** | SLSA, SSDF, SCVS, EO 14028, building a program | 6 | Tier 7 |
-| **9** | **Cloud Supply Chain** | Marketplace poisoning, serverless, cloud CI/CD, IAM chains | 4 | Tier 2 |
+## How Every Lab Works
 
-## Web UI
+Each lab follows four phases:
 
-<!-- TODO: Add screenshot once UI is finalized -->
+**1. Understand** — See the system working normally. In Lab 0.2, you install a package from a private registry and inspect how dependency resolution works. In Lab 3.1, you pull apart container image layers to see what is actually inside.
+
+**2. Break** — Exploit a real vulnerability. In Lab 1.2, you publish a malicious package to a public registry and watch the build system pull it instead of the private one. In Lab 2.4, you inject a step into a CI pipeline that exfiltrates secrets to an external endpoint.
+
+**3. Defend** — Apply the fix, re-run the attack, watch it fail. In Lab 1.2, you configure scoped registries and pin hashes. In Lab 4.3, you sign an artifact with Cosign and set up verification that rejects unsigned images.
+
+**4. Detect** — Write detection logic and map to MITRE ATT&CK. In Lab 1.3, you identify typosquatting indicators in package metadata. In Lab 2.2, you trace pipeline modification events to detect poisoned pipelines before they execute.
+
+## Highlights
+
+- **6 real-world case studies** dissecting SolarWinds, Log4Shell, xz-utils, Codecov, event-stream, and Equifax
+- **Detection content with MITRE ATT&CK mapping** in every lab
+- **Achievement system** with shareable SVG badges and LinkedIn-ready proof
+- **Placement test** to skip what you already know
+- **Facilitator guide** for team rollout with suggested schedules and discussion prompts
+- **Full isolation** with private registries (PyPI, npm, OCI), Gitea, and a pre-configured workstation
 
 ## CLI Reference
 
-Drop into the workstation pod to interact with labs:
+Inside the workstation, the `weaklink` CLI manages your entire workflow:
 
 ```bash
-./cli/weaklink shell      # Open a shell in the workstation pod
-./cli/weaklink status     # Show what's running in the cluster
-```
-
-Inside the workstation, the `weaklink` CLI is available:
-
-```bash
-weaklink path             # Show the learning roadmap and your progress
-weaklink start <lab-id>   # Start a lab (e.g., weaklink start 1.2)
-weaklink stop             # Stop the current lab
-weaklink verify <lab-id>  # Check if you completed the lab
-weaklink hint <lab-id>    # Get a progressive hint
-weaklink reset <lab-id>   # Reset a lab to try again
-weaklink info <lab-id>    # Show lab details and phases
-weaklink status           # Show what's currently running
-```
-
-## Lifecycle
-
-```bash
-./start.sh                # Start minikube, build images, deploy Helm chart
-./stop.sh                 # Tear down the Helm release and stop minikube
+weaklink start <lab-id>    # Start a lab (e.g., weaklink start 1.2)
+weaklink verify <lab-id>   # Check if you completed the lab
+weaklink hint <lab-id>     # Get a progressive hint
+weaklink path              # Show the learning roadmap and your progress
+weaklink assess            # Take the placement test
+weaklink achieve           # View your achievements and generate badges
+weaklink report            # Progress report (supports --json, --csv, --team)
 ```
 
 ## Prerequisites
+
+**Docker Compose path:** Only Docker is required.
+
+**Kubernetes path:**
 
 | Tool | Minimum version | Install |
 |------|----------------|---------|
@@ -92,8 +112,6 @@ weaklink status           # Show what's currently running
 | [minikube](https://minikube.sigs.k8s.io/) | 1.30+ | `brew install minikube` |
 | [kubectl](https://kubernetes.io/docs/tasks/tools/) | 1.27+ | `brew install kubectl` |
 | [Helm](https://helm.sh/) | 3.12+ | `brew install helm` |
-
-On GitHub Codespaces, all prerequisites are pre-installed.
 
 ## Contributing
 
