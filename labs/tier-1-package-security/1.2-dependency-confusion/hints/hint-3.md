@@ -8,11 +8,11 @@ rm -f /tmp/dependency-confusion-pwned
 cp /etc/pip-configs/pip.conf.safe /etc/pip.conf
 
 # 3. Reinstall the correct version
-pip uninstall -y acme-auth
-pip install acme-auth==1.0.0
+pip uninstall -y wl-auth
+pip install wl-auth==1.0.0
 
 # 4. Verify
-pip show acme-auth   # Should show 1.0.0
+pip show wl-auth   # Should show 1.0.0
 python app.py        # Should show no compromise
 cat /etc/pip.conf    # Should NOT contain extra-index-url
 ```

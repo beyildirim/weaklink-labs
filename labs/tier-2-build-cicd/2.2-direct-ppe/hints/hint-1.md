@@ -2,12 +2,12 @@ The CI config is in the repository itself. When a PR is created, the
 pipeline runs the CI config FROM THE PR BRANCH, not from main.
 
 This means a PR author can modify `.gitea/workflows/ci.yml` to do
-anything -- including exfiltrating secrets.
+anything, including exfiltrating secrets.
 
 Look at the current CI config:
 
 ```bash
-cd /repos/acme-webapp
+cd /repos/wl-webapp
 cat .gitea/workflows/ci.yml
 ```
 

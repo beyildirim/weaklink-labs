@@ -30,7 +30,7 @@ echo "  Verifying Lab 2.9: GitLab CI Pipeline Attacks"
 echo "  ==============================================="
 echo ""
 
-REPO="/repos/acme-webapp"
+REPO="/repos/wl-webapp"
 CI_FILE="${REPO}/.gitlab-ci.yml"
 
 # Check 1: Hardened CI file exists

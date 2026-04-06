@@ -1,10 +1,10 @@
 The CI config runs `make test` and `make build`. These commands execute
-whatever is in the Makefile -- and the Makefile is NOT protected.
+whatever is in the Makefile, and the Makefile is NOT protected.
 
 Look at what CI executes:
 
 ```bash
-cd /repos/acme-webapp
+cd /repos/wl-webapp
 cat .gitea/workflows/ci.yml
 cat Makefile
 ```

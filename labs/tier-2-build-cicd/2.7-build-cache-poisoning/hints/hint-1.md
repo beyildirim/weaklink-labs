@@ -7,7 +7,7 @@ branch build restores the poisoned cache and uses the malicious package.
 Look at the cache configuration:
 
 ```bash
-cat /repos/acme-webapp/.gitea/workflows/ci.yml
+cat /repos/wl-webapp/.gitea/workflows/ci.yml
 ```
 
 Notice the cache key is just a static string, not tied to the lockfile.

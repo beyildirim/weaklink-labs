@@ -1,4 +1,4 @@
-name: ACME Webapp CI
+name: WeakLink Webapp CI
 
 on:
   push:
@@ -31,12 +31,12 @@ jobs:
           mkdir -p dist
           cp app.py dist/
           cp requirements.txt dist/
-          tar czf acme-webapp.tar.gz dist/
+          tar czf wl-webapp.tar.gz dist/
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: webapp-build
-          path: acme-webapp.tar.gz
+          path: wl-webapp.tar.gz
 
   deploy:
     runs-on: ubuntu-latest

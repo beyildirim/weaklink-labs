@@ -30,7 +30,7 @@ echo "  Verifying Lab 2.8: Workflow Run & Cross-Workflow Attacks"
 echo "  ======================================================="
 echo ""
 
-REPO="/repos/acme-webapp"
+REPO="/repos/wl-webapp"
 DEPLOY="${REPO}/.gitea/workflows/deploy.yml"
 
 # Check 1: Deploy workflow exists

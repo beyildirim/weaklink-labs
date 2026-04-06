@@ -1,6 +1,6 @@
 // THM-style right-side split terminal panel for lab pages.
 // States: split (active), collapsed (hidden + Show Split View btn), popped-out (same as collapsed).
-// Handles both initial load and MkDocs Material instant navigation.
+// Auto-initializes the correct lab when navigating between lab pages.
 (function() {
   'use strict';
 
@@ -9,6 +9,20 @@
   var iframeLoaded = false;
   var splitBtn = null;
   var isOpen = localStorage.getItem('wl-terminal-open') === 'true';
+  var currentLabId = null;
+
+  function getLabId() {
+    var match = window.location.pathname.match(/\/labs\/tier-\d+\/(\d+\.\d+)/);
+    return match ? match[1] : null;
+  }
+
+  function buildTerminalUrl(labId) {
+    if (labId) {
+      return 'http://localhost:7681/?arg=-c&arg=' +
+        encodeURIComponent('lab-init ' + labId + '; exec bash -l');
+    }
+    return 'http://localhost:7681';
+  }
 
   function createPanel() {
     if (panel) return;
@@ -26,7 +40,7 @@
     var controls = document.createElement('div');
     controls.className = 'terminal-panel-controls';
 
-    controls.appendChild(makeBtn('\u21BB', 'Reconnect', reconnect));
+    controls.appendChild(makeBtn('\u21BA', 'Reset Lab', resetLab));
     controls.appendChild(makeBtn('\u2197', 'Open in new tab', popout));
     controls.appendChild(makeBtn('\u2212', 'Collapse', collapse));
 
@@ -73,9 +87,15 @@
     if (panel) panel.classList.add('active');
     document.body.classList.add('terminal-split');
     if (splitBtn) splitBtn.style.display = 'none';
+
+    var labId = getLabId();
     if (!iframeLoaded && iframe) {
-      iframe.src = 'http://localhost:7681';
+      currentLabId = labId;
+      iframe.src = buildTerminalUrl(labId);
       iframeLoaded = true;
+    } else if (labId && labId !== currentLabId && iframe) {
+      currentLabId = labId;
+      iframe.src = buildTerminalUrl(labId);
     }
   }
 
@@ -88,16 +108,19 @@
   }
 
   function popout() {
-    window.open('http://localhost:7681', '_blank');
+    var labId = getLabId();
+    window.open(buildTerminalUrl(labId), '_blank');
     collapse();
   }
 
-  function reconnect() {
+  function resetLab() {
     if (!iframe) return;
+    var labId = getLabId();
+    currentLabId = labId;
     iframeLoaded = false;
     iframe.src = '';
     setTimeout(function() {
-      iframe.src = 'http://localhost:7681';
+      iframe.src = buildTerminalUrl(labId);
       iframeLoaded = true;
     }, 200);
   }
@@ -118,6 +141,13 @@
 
     if (showTerminal && !panel) {
       createPanel();
+    } else if (showTerminal && panel && isOpen) {
+      // Lab changed during navigation, reload with new lab-init
+      var labId = getLabId();
+      if (labId && labId !== currentLabId && iframe) {
+        currentLabId = labId;
+        iframe.src = buildTerminalUrl(labId);
+      }
     } else if (!showTerminal && panel) {
       destroyPanel();
     }

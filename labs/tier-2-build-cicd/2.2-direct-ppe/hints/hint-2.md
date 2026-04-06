@@ -13,5 +13,5 @@ Apply the protected CI config:
 
 ```bash
 cp /lab/src/repo/.gitea/workflows/ci-protected.yml \
-   /repos/acme-webapp/.gitea/workflows/ci.yml
+   /repos/wl-webapp/.gitea/workflows/ci.yml
 ```

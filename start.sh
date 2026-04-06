@@ -126,7 +126,7 @@ build_image "weaklink-labs/guide:latest" \
 
 build_image "weaklink-labs/workstation:latest" \
     "${SCRIPT_DIR}/images/workstation/Dockerfile" \
-    "${SCRIPT_DIR}/images/workstation/"
+    "${SCRIPT_DIR}"
 
 build_image "weaklink-labs/lab-setup:latest" \
     "${SCRIPT_DIR}/images/lab-setup/Dockerfile" \

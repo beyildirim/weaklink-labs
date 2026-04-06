@@ -3,7 +3,7 @@
 set -euo pipefail
 
 GITEA_URL="http://gitea:3000"
-REPO_NAME="acme-webapp"
+REPO_NAME="wl-webapp"
 REPO_DIR="/repos/${REPO_NAME}"
 
 echo "[setup] Creating Gitea repo: ${REPO_NAME}"

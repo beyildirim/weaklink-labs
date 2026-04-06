@@ -19,19 +19,25 @@ The terminal below connects directly to your workstation. You can run all lab co
   <iframe src="http://localhost:7681" title="WeakLink Workstation Terminal"></iframe>
 </div>
 
-### Alternative: Docker Compose
+## Architecture
 
-If your team does not have Kubernetes experience or resources to run Minikube, you can run the entire platform via Docker Compose:
-
-```bash
-# Start the platform
-make compose-up
-
-# Tear it down
-make compose-down
+```mermaid
+graph TB
+    subgraph browser["Your Browser"]
+        guide["Guide :8000"]
+        terminal["Terminal :7681"]
+    end
+    subgraph cluster["minikube cluster"]
+        ws["Workstation<br/>Python + Node + tools"]
+        pp["pypi-private:8080<br/>Internal packages"]
+        pu["pypi-public:8080<br/>Attacker packages"]
+        v["verdaccio:4873<br/>npm registry"]
+        gi["gitea:3000<br/>Git server"]
+        r["registry:5000<br/>OCI registry"]
+    end
+    terminal --> ws
+    ws --> pp & v & gi & r & pu
 ```
-
-With Docker Compose, the Workstation is available via the embedded terminal at `http://localhost:7681`, and the Guide is at `http://localhost:8000`.
 
 ### Available Services
 

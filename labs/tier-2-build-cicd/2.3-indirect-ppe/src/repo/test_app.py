@@ -1,4 +1,4 @@
-"""Tests for ACME webapp."""
+"""Tests for WeakLink webapp."""
 import subprocess, sys
 
 def test_app():
