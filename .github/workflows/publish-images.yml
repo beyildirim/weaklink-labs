@@ -8,6 +8,8 @@ on:
 permissions:
   contents: read
   packages: write
+  id-token: write  # cosign keyless signing via OIDC
+  attestations: write  # GitHub artifact attestations
 
 env:
   REGISTRY: ghcr.io
@@ -18,6 +20,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write
+      attestations: write
     strategy:
       matrix:
         image:
@@ -43,20 +47,64 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
-        env:
-          IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/weaklink-labs/${{ matrix.image.name }}
-        run: |
-          TAG="${GITHUB_REF_NAME#v}"
-          SHA="${GITHUB_SHA::7}"
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/weaklink-labs/${{ matrix.image.name }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix=
+            type=raw,value=latest,enable={{is_default_branch}}
 
-          docker buildx build \
-            --platform linux/amd64,linux/arm64 \
-            --file "${{ matrix.image.dockerfile }}" \
-            --tag "${IMAGE_NAME}:${TAG}" \
-            --tag "${IMAGE_NAME}:${SHA}" \
-            --tag "${IMAGE_NAME}:latest" \
-            --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
-            --label "org.opencontainers.image.revision=${GITHUB_SHA}" \
-            --push \
-            "${{ matrix.image.context }}"
+      - name: Build and push
+        id: build
+        uses: docker/build-push-action@14487ce63c7a62a4a324b0bfb37086795e31c6c1 # v6.16.0
+        with:
+          context: ${{ matrix.image.context }}
+          file: ${{ matrix.image.dockerfile }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          sbom: true
+          provenance: true
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@3454372f43399081ed03b604cb2d021f6b1bda55 # v3.8.2
+
+      - name: Sign image with cosign (keyless)
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+          IMAGE: ghcr.io/${{ github.repository_owner }}/weaklink-labs/${{ matrix.image.name }}
+        run: |
+          cosign sign --yes "${IMAGE}@${DIGEST}"
+
+      - name: Generate SBOM with syft
+        uses: anchore/sbom-action@e11c554f704a0b820cbf8c51673c5028e1243e31 # v0.18.0
+        with:
+          image: ghcr.io/${{ github.repository_owner }}/weaklink-labs/${{ matrix.image.name }}@${{ steps.build.outputs.digest }}
+          format: cyclonedx-json
+          output-file: sbom-${{ matrix.image.name }}.cdx.json
+
+      - name: Attest SBOM to image
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+          IMAGE: ghcr.io/${{ github.repository_owner }}/weaklink-labs/${{ matrix.image.name }}
+        run: |
+          cosign attest --yes \
+            --predicate sbom-${{ matrix.image.name }}.cdx.json \
+            --type cyclonedx \
+            "${IMAGE}@${DIGEST}"
+
+      - name: Upload SBOM as release asset
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ github.ref_name }}" \
+            "sbom-${{ matrix.image.name }}.cdx.json" \
+            --clobber
