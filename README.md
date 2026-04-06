@@ -2,9 +2,12 @@
 
 **Learn supply chain security by breaking and fixing real pipelines.**
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/beyildirim/weaklink-labs?quickstart=1)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Labs: 62](https://img.shields.io/badge/Labs-62-orange.svg)](#what-youll-learn)
+[![Open in Codespaces](https://img.shields.io/badge/Open_in-Codespaces-blue?logo=github)](https://codespaces.new/beyildirim/weaklink-labs?quickstart=1)
+[![Labs](https://img.shields.io/badge/Labs-62-orange)](https://github.com/beyildirim/weaklink-labs/wiki)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://slsa.dev)
+[![Signed with Cosign](https://img.shields.io/badge/Signed_with-Cosign-blueviolet?logo=sigstore)](https://github.com/beyildirim/weaklink-labs/releases)
+[![SBOM](https://img.shields.io/badge/SBOM-CycloneDX-lightgrey?logo=owasp)](https://github.com/beyildirim/weaklink-labs/releases)
 
 ## The Problem
 
