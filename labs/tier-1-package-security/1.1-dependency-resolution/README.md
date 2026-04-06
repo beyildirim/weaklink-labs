@@ -14,8 +14,8 @@ This lab gives you a private PyPI registry, a public PyPI registry, and a Python
 | Service | Description |
 |---------|-------------|
 | `workstation` | Your developer machine with Python 3.11 and pip |
-| `private-pypi` | Corporate internal PyPI server with legitimate packages |
-| `public-pypi` | Simulated public PyPI (starts with a higher-version fake package) |
+| `pypi-private` | Corporate internal PyPI server with legitimate packages |
+| `pypi-public` | Simulated public PyPI (starts with a higher-version fake package) |
 
 Connect to the workstation:
 
@@ -120,10 +120,10 @@ Now you understand normal resolution. Let's see where it goes wrong.
 
 ```bash
 # What's on the private registry?
-curl -s http://private-pypi:8080/simple/ | grep -o 'href="[^"]*"'
+curl -s http://pypi-private:8080/simple/ | grep -o 'href="[^"]*"'
 
 # What's on the public registry?
-curl -s http://public-pypi:8080/simple/ | grep -o 'href="[^"]*"'
+curl -s http://pypi-public:8080/simple/ | grep -o 'href="[^"]*"'
 ```
 
 The public registry has `internal-utils` version 99.0.0 -- a fake higher version.

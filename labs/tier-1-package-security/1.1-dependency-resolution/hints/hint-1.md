@@ -11,6 +11,6 @@ finds across all sources.
 Compare what is available on each registry:
 
 ```
-pip index versions internal-utils -i http://private-pypi:8080/simple/ --trusted-host private-pypi
-pip index versions internal-utils -i http://public-pypi:8080/simple/ --trusted-host public-pypi
+pip index versions internal-utils -i http://pypi-private:8080/simple/ --trusted-host pypi-private
+pip index versions internal-utils -i http://pypi-public:8080/simple/ --trusted-host pypi-public
 ```

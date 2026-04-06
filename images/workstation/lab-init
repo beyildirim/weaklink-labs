@@ -1,7 +1,7 @@
 #!/bin/bash
 # Prepare the workstation for a specific lab.
 # Copies golden files from /opt/labs/<id> to /home/labs/<id>,
-# then runs per-lab init if present.
+# creates standard symlinks, then runs per-lab init if present.
 LAB_ID="${1:-}"
 [ -z "$LAB_ID" ] && { echo "Usage: lab-init <lab-id>"; exit 1; }
 
@@ -13,7 +13,18 @@ LAB_WORK="/home/labs/${LAB_ID}"
 rm -rf "$LAB_WORK" 2>/dev/null
 cp -a "$GOLDEN" "$LAB_WORK"
 
-# Run per-lab init if present (sets up /app, /etc/pip.conf, etc.)
+# Standard symlinks (directories pre-created in Dockerfile with hacker ownership)
+# /lab/src -> lab working directory (guide pages reference /lab/src/app/, /lab/src/repo/)
+rm -f /lab/src 2>/dev/null
+ln -sfn "$LAB_WORK" /lab/src
+
+# /app contents -> lab's app/ subdirectory (guide pages reference /app/requirements.txt)
+if [ -d "${LAB_WORK}/app" ]; then
+    rm -rf /app/* 2>/dev/null
+    ln -sf "${LAB_WORK}/app"/* /app/ 2>/dev/null || true
+fi
+
+# Run per-lab init if present (custom setup: /etc/pip.conf, git clones, etc.)
 if [ -x "${LAB_WORK}/lab-init.sh" ]; then
     source "${LAB_WORK}/lab-init.sh"
 fi
@@ -22,3 +33,4 @@ fi
 echo "$LAB_ID" > /tmp/.weaklink-current-lab
 
 echo "Lab ${LAB_ID} initialized. Working directory: ${LAB_WORK}"
+cd "$LAB_WORK"
