@@ -16,25 +16,20 @@ LAB_WORK="/home/labs/${LAB_ID}"
 rm -rf "$LAB_WORK" 2>/dev/null
 cp -a "$GOLDEN" "$LAB_WORK"
 
-# Clean previous symlinks
-rm -rf /app/* /lab/src 2>/dev/null
+# Clean previous state
+rm -rf /app/* /lab/src /repos/* 2>/dev/null
 ln -sfn "$LAB_WORK" /lab/src
 
-# Create standard symlinks based on what the lab has
-WORKDIR="$LAB_WORK"
+# Copy everything to /app/ (the universal student working directory)
+cp -a "${LAB_WORK}"/* /app/ 2>/dev/null || true
 
-# Labs with app/ -> symlink contents to /app/ (student works in /app)
-if [ -d "${LAB_WORK}/app" ]; then
-    cp -a "${LAB_WORK}/app"/* /app/ 2>/dev/null || true
-    [ -d "${LAB_WORK}/scripts" ] && ln -sfn "${LAB_WORK}/scripts" /app/scripts
-    WORKDIR="/app"
+# If lab had an app/ subfolder, flatten it (move contents up, remove wrapper)
+if [ -d /app/app ]; then
+    cp -a /app/app/* /app/ 2>/dev/null || true
+    rm -rf /app/app
 fi
 
-# Labs with repo/ -> symlink to /repos/ (Tier 2 CI/CD labs, student works in /repos/)
-if [ -d "${LAB_WORK}/repo" ]; then
-    rm -rf /repos/* 2>/dev/null
-    cp -a "${LAB_WORK}/repo"/* /repos/ 2>/dev/null || true
-fi
+WORKDIR="/app"
 
 # Run per-lab init if present (custom setup: /etc/pip.conf, git clones, etc.)
 if [ -x "${LAB_WORK}/lab-init.sh" ]; then
@@ -46,10 +41,8 @@ if [ -f /tmp/.weaklink-env ]; then
     source /tmp/.weaklink-env
 fi
 
-# Hide build infrastructure files the student doesn't need
-for f in Dockerfile.* build-packages.sh entrypoint.sh lab-init.sh packages; do
-    [ -e "${LAB_WORK}/$f" ] && mv "${LAB_WORK}/$f" "${LAB_WORK}/.${f}" 2>/dev/null
-done
+# Remove build infrastructure files the student doesn't need from /app/
+rm -rf /app/Dockerfile.* /app/build-packages.sh /app/entrypoint.sh /app/lab-init.sh /app/packages 2>/dev/null
 
 # Track current lab and working directory
 echo "$LAB_ID" > /tmp/.weaklink-current-lab
