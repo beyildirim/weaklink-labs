@@ -223,30 +223,140 @@ nav:
         - Defend: labs/tier-3/3.6-multistage-leaks/defend.md
         - Detect: labs/tier-3/3.6-multistage-leaks/detect.md
     - Tier 4 SBOM & Signing:
-      - 4.1 SBOM Contents: labs/tier-4/4.1-sbom-contents.md
-      - 4.2 SBOM Gaps: labs/tier-4/4.2-sbom-gaps.md
-      - 4.3 Signing Fundamentals: labs/tier-4/4.3-signing-fundamentals.md
-      - 4.4 Attestation & SLSA: labs/tier-4/4.4-attestation-slsa.md
-      - 4.5 Signature Bypass: labs/tier-4/4.5-signature-bypass.md
-      - 4.6 Attestation Forgery: labs/tier-4/4.6-attestation-forgery.md
-      - 4.7 SBOM Tampering: labs/tier-4/4.7-sbom-tampering.md
+      - 4.1 SBOM Contents:
+        - labs/tier-4/4.1-sbom-contents/index.md
+        - Understand: labs/tier-4/4.1-sbom-contents/understand.md
+        - Break: labs/tier-4/4.1-sbom-contents/break.md
+        - Defend: labs/tier-4/4.1-sbom-contents/defend.md
+        - Detect: labs/tier-4/4.1-sbom-contents/detect.md
+      - 4.2 SBOM Gaps:
+        - labs/tier-4/4.2-sbom-gaps/index.md
+        - Understand: labs/tier-4/4.2-sbom-gaps/understand.md
+        - Break: labs/tier-4/4.2-sbom-gaps/break.md
+        - Defend: labs/tier-4/4.2-sbom-gaps/defend.md
+        - Detect: labs/tier-4/4.2-sbom-gaps/detect.md
+      - 4.3 Signing Fundamentals:
+        - labs/tier-4/4.3-signing-fundamentals/index.md
+        - Understand: labs/tier-4/4.3-signing-fundamentals/understand.md
+        - Break: labs/tier-4/4.3-signing-fundamentals/break.md
+        - Defend: labs/tier-4/4.3-signing-fundamentals/defend.md
+        - Detect: labs/tier-4/4.3-signing-fundamentals/detect.md
+      - 4.4 Attestation & SLSA:
+        - labs/tier-4/4.4-attestation-slsa/index.md
+        - Understand: labs/tier-4/4.4-attestation-slsa/understand.md
+        - Break: labs/tier-4/4.4-attestation-slsa/break.md
+        - Defend: labs/tier-4/4.4-attestation-slsa/defend.md
+        - Detect: labs/tier-4/4.4-attestation-slsa/detect.md
+      - 4.5 Signature Bypass:
+        - labs/tier-4/4.5-signature-bypass/index.md
+        - Understand: labs/tier-4/4.5-signature-bypass/understand.md
+        - Break: labs/tier-4/4.5-signature-bypass/break.md
+        - Defend: labs/tier-4/4.5-signature-bypass/defend.md
+        - Detect: labs/tier-4/4.5-signature-bypass/detect.md
+      - 4.6 Attestation Forgery:
+        - labs/tier-4/4.6-attestation-forgery/index.md
+        - Understand: labs/tier-4/4.6-attestation-forgery/understand.md
+        - Break: labs/tier-4/4.6-attestation-forgery/break.md
+        - Defend: labs/tier-4/4.6-attestation-forgery/defend.md
+        - Detect: labs/tier-4/4.6-attestation-forgery/detect.md
+      - 4.7 SBOM Tampering:
+        - labs/tier-4/4.7-sbom-tampering/index.md
+        - Understand: labs/tier-4/4.7-sbom-tampering/understand.md
+        - Break: labs/tier-4/4.7-sbom-tampering/break.md
+        - Defend: labs/tier-4/4.7-sbom-tampering/defend.md
+        - Detect: labs/tier-4/4.7-sbom-tampering/detect.md
     - Tier 5 IaC Supply Chain:
-      - 5.1 Helm Resolution: labs/tier-5/5.1-helm-resolution.md
-      - 5.2 Helm Poisoning: labs/tier-5/5.2-helm-poisoning.md
-      - 5.3 Terraform Modules: labs/tier-5/5.3-terraform-module-attacks.md
-      - 5.4 Ansible Galaxy: labs/tier-5/5.4-ansible-galaxy.md
-      - 5.5 Admission Bypass: labs/tier-5/5.5-admission-controller-bypass.md
+      - 5.1 Helm Resolution:
+        - labs/tier-5/5.1-helm-resolution/index.md
+        - Understand: labs/tier-5/5.1-helm-resolution/understand.md
+        - Break: labs/tier-5/5.1-helm-resolution/break.md
+        - Defend: labs/tier-5/5.1-helm-resolution/defend.md
+        - Detect: labs/tier-5/5.1-helm-resolution/detect.md
+      - 5.2 Helm Poisoning:
+        - labs/tier-5/5.2-helm-poisoning/index.md
+        - Understand: labs/tier-5/5.2-helm-poisoning/understand.md
+        - Break: labs/tier-5/5.2-helm-poisoning/break.md
+        - Defend: labs/tier-5/5.2-helm-poisoning/defend.md
+        - Detect: labs/tier-5/5.2-helm-poisoning/detect.md
+      - 5.3 Terraform Modules:
+        - labs/tier-5/5.3-terraform-module-attacks/index.md
+        - Understand: labs/tier-5/5.3-terraform-module-attacks/understand.md
+        - Break: labs/tier-5/5.3-terraform-module-attacks/break.md
+        - Defend: labs/tier-5/5.3-terraform-module-attacks/defend.md
+        - Detect: labs/tier-5/5.3-terraform-module-attacks/detect.md
+      - 5.4 Ansible Galaxy:
+        - labs/tier-5/5.4-ansible-galaxy/index.md
+        - Understand: labs/tier-5/5.4-ansible-galaxy/understand.md
+        - Break: labs/tier-5/5.4-ansible-galaxy/break.md
+        - Defend: labs/tier-5/5.4-ansible-galaxy/defend.md
+        - Detect: labs/tier-5/5.4-ansible-galaxy/detect.md
+      - 5.5 Admission Bypass:
+        - labs/tier-5/5.5-admission-controller-bypass/index.md
+        - Understand: labs/tier-5/5.5-admission-controller-bypass/understand.md
+        - Break: labs/tier-5/5.5-admission-controller-bypass/break.md
+        - Defend: labs/tier-5/5.5-admission-controller-bypass/defend.md
+        - Detect: labs/tier-5/5.5-admission-controller-bypass/detect.md
     - Tier 6 Case Studies & Frontier Attacks:
-      - 6.1 ML Model Supply Chain: labs/tier-6/6.1-ml-model-supply-chain.md
-      - 6.2 Dataset Poisoning: labs/tier-6/6.2-dataset-poisoning.md
-      - 6.3 Firmware Supply Chain: labs/tier-6/6.3-firmware-supply-chain.md
-      - 6.4 Multi-Vector Attack: labs/tier-6/6.4-multi-vector-attack.md
-      - 6.5 xz-utils (CVE-2024-3094): labs/tier-6/6.5-case-study-xz-utils.md
-      - 6.6 SolarWinds (SUNBURST): labs/tier-6/6.6-case-study-solarwinds.md
-      - 6.7 Codecov: labs/tier-6/6.7-case-study-codecov.md
-      - 6.8 event-stream: labs/tier-6/6.8-case-study-event-stream.md
-      - 6.9 Log4Shell (CVE-2021-44228): labs/tier-6/6.9-case-study-log4shell.md
-      - 6.10 Equifax (CVE-2017-5638): labs/tier-6/6.10-case-study-equifax.md
+      - 6.1 ML Model Supply Chain:
+        - labs/tier-6/6.1-ml-model-supply-chain/index.md
+        - Understand: labs/tier-6/6.1-ml-model-supply-chain/understand.md
+        - Break: labs/tier-6/6.1-ml-model-supply-chain/break.md
+        - Defend: labs/tier-6/6.1-ml-model-supply-chain/defend.md
+        - Detect: labs/tier-6/6.1-ml-model-supply-chain/detect.md
+      - 6.2 Dataset Poisoning:
+        - labs/tier-6/6.2-dataset-poisoning/index.md
+        - Understand: labs/tier-6/6.2-dataset-poisoning/understand.md
+        - Break: labs/tier-6/6.2-dataset-poisoning/break.md
+        - Defend: labs/tier-6/6.2-dataset-poisoning/defend.md
+        - Detect: labs/tier-6/6.2-dataset-poisoning/detect.md
+      - 6.3 Firmware Supply Chain:
+        - labs/tier-6/6.3-firmware-supply-chain/index.md
+        - Understand: labs/tier-6/6.3-firmware-supply-chain/understand.md
+        - Break: labs/tier-6/6.3-firmware-supply-chain/break.md
+        - Defend: labs/tier-6/6.3-firmware-supply-chain/defend.md
+        - Detect: labs/tier-6/6.3-firmware-supply-chain/detect.md
+      - 6.4 Multi-Vector Attack:
+        - labs/tier-6/6.4-multi-vector-attack/index.md
+        - Understand: labs/tier-6/6.4-multi-vector-attack/understand.md
+        - Break: labs/tier-6/6.4-multi-vector-attack/break.md
+        - Defend: labs/tier-6/6.4-multi-vector-attack/defend.md
+        - Detect: labs/tier-6/6.4-multi-vector-attack/detect.md
+      - 6.5 xz-utils:
+        - labs/tier-6/6.5-case-study-xz-utils/index.md
+        - Understand: labs/tier-6/6.5-case-study-xz-utils/understand.md
+        - Analyze: labs/tier-6/6.5-case-study-xz-utils/analyze.md
+        - Lessons: labs/tier-6/6.5-case-study-xz-utils/lessons.md
+        - Detect: labs/tier-6/6.5-case-study-xz-utils/detect.md
+      - 6.6 SolarWinds:
+        - labs/tier-6/6.6-case-study-solarwinds/index.md
+        - Understand: labs/tier-6/6.6-case-study-solarwinds/understand.md
+        - Analyze: labs/tier-6/6.6-case-study-solarwinds/analyze.md
+        - Lessons: labs/tier-6/6.6-case-study-solarwinds/lessons.md
+        - Detect: labs/tier-6/6.6-case-study-solarwinds/detect.md
+      - 6.7 Codecov:
+        - labs/tier-6/6.7-case-study-codecov/index.md
+        - Understand: labs/tier-6/6.7-case-study-codecov/understand.md
+        - Analyze: labs/tier-6/6.7-case-study-codecov/analyze.md
+        - Lessons: labs/tier-6/6.7-case-study-codecov/lessons.md
+        - Detect: labs/tier-6/6.7-case-study-codecov/detect.md
+      - 6.8 event-stream:
+        - labs/tier-6/6.8-case-study-event-stream/index.md
+        - Understand: labs/tier-6/6.8-case-study-event-stream/understand.md
+        - Analyze: labs/tier-6/6.8-case-study-event-stream/analyze.md
+        - Lessons: labs/tier-6/6.8-case-study-event-stream/lessons.md
+        - Detect: labs/tier-6/6.8-case-study-event-stream/detect.md
+      - 6.9 Log4Shell:
+        - labs/tier-6/6.9-case-study-log4shell/index.md
+        - Understand: labs/tier-6/6.9-case-study-log4shell/understand.md
+        - Analyze: labs/tier-6/6.9-case-study-log4shell/analyze.md
+        - Lessons: labs/tier-6/6.9-case-study-log4shell/lessons.md
+        - Detect: labs/tier-6/6.9-case-study-log4shell/detect.md
+      - 6.10 Equifax:
+        - labs/tier-6/6.10-case-study-equifax/index.md
+        - Understand: labs/tier-6/6.10-case-study-equifax/understand.md
+        - Analyze: labs/tier-6/6.10-case-study-equifax/analyze.md
+        - Lessons: labs/tier-6/6.10-case-study-equifax/lessons.md
+        - Detect: labs/tier-6/6.10-case-study-equifax/detect.md
     - Tier 7 Detection & Response:
       - 7.1 Detection Rules:
         - labs/tier-7/7.1-detection-rules/index.md

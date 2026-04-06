@@ -108,11 +108,11 @@ RUN chmod +x /usr/local/bin/lab-init /usr/local/bin/lab-reset /usr/local/bin/ver
 RUN echo 'source /etc/bash_completion 2>/dev/null' >> /home/hacker/.bashrc \
     && echo 'export PS1="\[\033[1;32m\]hacker@weaklink\[\033[0m\]:\[\033[1;34m\]\w\[\033[0m\]\$ "' >> /home/hacker/.bashrc \
     && printf '%s\n' \
-       '# Auto-cd to current lab directory' \
-       'if [ -f /tmp/.weaklink-current-lab ]; then' \
-       '  _wl_lab=$(cat /tmp/.weaklink-current-lab)' \
-       '  [ -d "/home/labs/$_wl_lab" ] && cd "/home/labs/$_wl_lab"' \
-       '  unset _wl_lab' \
+       '# Auto-cd to current lab working directory' \
+       'if [ -f /tmp/.weaklink-workdir ]; then' \
+       '  _wl_dir=$(cat /tmp/.weaklink-workdir)' \
+       '  [ -d "$_wl_dir" ] && cd "$_wl_dir"' \
+       '  unset _wl_dir' \
        'fi' >> /home/hacker/.bashrc
 
 # Git defaults

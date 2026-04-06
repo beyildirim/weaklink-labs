@@ -16,15 +16,24 @@ LAB_WORK="/home/labs/${LAB_ID}"
 rm -rf "$LAB_WORK" 2>/dev/null
 cp -a "$GOLDEN" "$LAB_WORK"
 
-# Standard symlinks (directories pre-created in Dockerfile with hacker ownership)
-# /lab/src -> lab working directory (guide pages reference /lab/src/app/, /lab/src/repo/)
-rm -f /lab/src 2>/dev/null
+# Clean previous symlinks
+rm -rf /app/* /lab/src 2>/dev/null
 ln -sfn "$LAB_WORK" /lab/src
 
-# /app contents -> lab's app/ subdirectory (guide pages reference /app/requirements.txt)
+# Create standard symlinks based on what the lab has
+WORKDIR="$LAB_WORK"
+
+# Labs with app/ -> symlink contents to /app/ (student works in /app)
 if [ -d "${LAB_WORK}/app" ]; then
-    rm -rf /app/* 2>/dev/null
-    ln -sf "${LAB_WORK}/app"/* /app/ 2>/dev/null || true
+    cp -a "${LAB_WORK}/app"/* /app/ 2>/dev/null || true
+    [ -d "${LAB_WORK}/scripts" ] && ln -sfn "${LAB_WORK}/scripts" /app/scripts
+    WORKDIR="/app"
+fi
+
+# Labs with repo/ -> symlink to /repos/ (Tier 2 CI/CD labs, student works in /repos/)
+if [ -d "${LAB_WORK}/repo" ]; then
+    rm -rf /repos/* 2>/dev/null
+    cp -a "${LAB_WORK}/repo"/* /repos/ 2>/dev/null || true
 fi
 
 # Run per-lab init if present (custom setup: /etc/pip.conf, git clones, etc.)
@@ -37,8 +46,13 @@ if [ -f /tmp/.weaklink-env ]; then
     source /tmp/.weaklink-env
 fi
 
-# Track current lab
-echo "$LAB_ID" > /tmp/.weaklink-current-lab
+# Hide build infrastructure files the student doesn't need
+for f in Dockerfile.* build-packages.sh entrypoint.sh lab-init.sh packages; do
+    [ -e "${LAB_WORK}/$f" ] && mv "${LAB_WORK}/$f" "${LAB_WORK}/.${f}" 2>/dev/null
+done
 
-echo "Lab ${LAB_ID} initialized. Working directory: ${LAB_WORK}"
-cd "$LAB_WORK"
+# Track current lab and working directory
+echo "$LAB_ID" > /tmp/.weaklink-current-lab
+echo "$WORKDIR" > /tmp/.weaklink-workdir
+
+echo "Lab ${LAB_ID} initialized."
