@@ -1,0 +1,67 @@
+services:
+  workstation:
+    image: ghcr.io/beyildirim/weaklink-labs/workstation:latest
+    ports:
+      - "7681:7681"
+      - "7682:7682"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      lab-setup:
+        condition: service_completed_successfully
+
+  guide:
+    image: ghcr.io/beyildirim/weaklink-labs/guide:latest
+    ports:
+      - "8000:8000"
+
+  pypi-private:
+    image: pypiserver/pypiserver:latest
+    command: run -P . -a . --server wsgiref
+    volumes:
+      - pypi-private-data:/data/packages
+
+  pypi-public:
+    image: pypiserver/pypiserver:latest
+    command: run -P . -a . --server wsgiref
+    volumes:
+      - pypi-public-data:/data/packages
+
+  verdaccio:
+    image: verdaccio/verdaccio:5
+    environment:
+      VERDACCIO_PORT: "4873"
+    volumes:
+      - verdaccio-data:/verdaccio/storage
+
+  gitea:
+    image: gitea/gitea:1.22
+    environment:
+      - GITEA__security__INSTALL_LOCK=true
+      - GITEA__database__DB_TYPE=sqlite3
+      - GITEA__service__DISABLE_REGISTRATION=false
+      - GITEA__service__REQUIRE_SIGNIN_VIEW=false
+      - GITEA__actions__ENABLED=true
+    volumes:
+      - gitea-data:/data
+
+  registry:
+    image: registry:2
+    volumes:
+      - registry-data:/var/lib/registry
+
+  lab-setup:
+    image: ghcr.io/beyildirim/weaklink-labs/lab-setup:latest
+    depends_on:
+      - pypi-private
+      - pypi-public
+      - verdaccio
+      - gitea
+      - registry
+
+volumes:
+  pypi-private-data:
+  pypi-public-data:
+  verdaccio-data:
+  gitea-data:
+  registry-data:
