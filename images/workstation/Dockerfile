@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.14-slim
 
 LABEL maintainer="WeakLink Labs"
 LABEL description="WeakLink Labs workstation — where users do all lab work"
