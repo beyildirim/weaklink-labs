@@ -95,7 +95,6 @@ nav:
       - 2.6 Actions Injection: labs/tier-2/2.6-actions-injection.md
       - 2.7 Build Cache Poisoning: labs/tier-2/2.7-build-cache-poisoning.md
       - 2.8 Workflow Run Attacks: labs/tier-2/2.8-workflow-run-attacks.md
-      - 2.9 GitLab CI Attacks: labs/tier-2/2.9-gitlab-ci-attacks.md
     - Tier 3 Container Security:
       - 3.1 Image Internals: labs/tier-3/3.1-image-internals.md
       - 3.2 Tag Mutability: labs/tier-3/3.2-tag-mutability.md

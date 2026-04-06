@@ -52,7 +52,6 @@ Detection is not a separate skill you learn later — it is built into every lab
 - [x] **2.6 GitHub Actions Injection** — Injecting commands through untrusted input in workflows
 - [x] **2.7 Build Cache Poisoning** — Manipulating cached artifacts to inject malicious code
 - [x] **2.8 workflow_run Attacks** — Abusing privileged workflow triggers for elevated access
-- [x] **2.9 GitLab CI Attacks** — Exploiting GitLab CI/CD pipeline configurations and security gaps
 
 ## Tier 3 — Container Security
 
