@@ -1,6 +1,6 @@
 # WeakLink Labs Content Audit
 
-Audited: 2026-04-05. All 63 labs across 10 tiers.
+Audited: 2026-04-05. All 62 labs across 10 tiers.
 
 ## Critical Issues
 

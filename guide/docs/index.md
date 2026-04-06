@@ -22,7 +22,7 @@ WeakLink Labs is a self-contained training environment for learning **software s
   <span class="arrow">&rarr;</span>
   <span class="phase-step defend">3. Defend</span>
   <span class="arrow">&rarr;</span>
-  <span class="phase-step defend">4. Detect</span>
+  <span class="phase-step detect">4. Detect</span>
 </div>
 
 You don't learn security by reading about it. You learn by **exploiting real vulnerabilities** in a safe environment, building the defenses that stop them, and writing the detection rules that catch them.
@@ -37,7 +37,7 @@ You don't learn security by reading about it. You learn by **exploiting real vul
 
 ### What's inside?
 
-63 labs across 10 tiers. All labs run inside a Kubernetes cluster on your machine. Every registry, Git server, and build tool is local. Nothing touches the internet. You get a full workstation with all the tools pre-installed.
+62 labs across 10 tiers. All labs run inside a Kubernetes cluster on your machine. Every registry, Git server, and build tool is local. Nothing touches the internet. You get a full workstation with all the tools pre-installed.
 
 ---
 
@@ -72,7 +72,7 @@ Dependency confusion, typosquatting, lockfile injection, manifest confusion, and
 
 Poisoned Pipeline Execution, secret exfiltration, GitHub Actions injection, runner attacks, and build cache poisoning.
 
-<div class="lab-count">9 labs</div>
+<div class="lab-count">8 labs</div>
 </div>
 
 <div class="tier-card" markdown>

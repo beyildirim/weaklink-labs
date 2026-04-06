@@ -146,5 +146,4 @@ nav:
       - 9.3 Cloud CI/CD Attacks: labs/tier-9/9.3-cloud-cicd-attacks.md
       - 9.4 IAM Chain Abuse: labs/tier-9/9.4-iam-chain-abuse.md
   - Resources:
-    - Facilitator Guide: facilitator-guide.md
     - Roadmap: roadmap.md

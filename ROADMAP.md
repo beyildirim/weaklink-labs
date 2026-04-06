@@ -1,6 +1,6 @@
 # WeakLink Labs Roadmap
 
-**Hands-on supply chain security training — 63 labs across 10 tiers.**
+**Hands-on supply chain security training — 62 labs across 10 tiers.**
 
 All labs run locally on minikube. No cloud accounts required.
 
@@ -52,7 +52,6 @@ Detection is not a separate skill you learn later — it is built into every lab
 - [x] **2.6 GitHub Actions Injection** — Injecting commands through untrusted input in workflows
 - [x] **2.7 Build Cache Poisoning** — Manipulating cached artifacts to inject malicious code
 - [x] **2.8 workflow_run Attacks** — Abusing privileged workflow triggers for elevated access
-- [x] **2.9 GitLab CI Attacks** — Exploiting GitLab CI/CD pipeline configurations and security gaps
 
 ## Tier 3 — Container Security
 
@@ -65,7 +64,7 @@ Detection is not a separate skill you learn later — it is built into every lab
 - [x] **3.5 Layer Injection** — Inserting malicious layers into existing images
 - [x] **3.6 Multi-Stage Build Leaks** — Extracting secrets left behind in intermediate stages
 
-## Tier 4 — Artifact Integrity
+## Tier 4 — SBOM & Signing
 
 *Signatures, attestations, and the gaps between them.*
 
@@ -87,7 +86,7 @@ Detection is not a separate skill you learn later — it is built into every lab
 - [x] **5.4 Ansible Galaxy** — Attacking role and collection distribution channels
 - [x] **5.5 K8s Admission Bypass** — Circumventing admission controllers and policy enforcement
 
-## Tier 6 — Advanced & Emerging
+## Tier 6 — Case Studies & Frontier Attacks
 
 *Frontier attacks and real-world case studies.*
 
@@ -112,7 +111,7 @@ Detection is not a separate skill you learn later — it is built into every lab
 - [x] **7.4 Tool Evaluation** — Assessing SCA, SAST, and supply chain security tools
 - [x] **7.5 Threat Modeling** — Mapping supply chain threats with structured methodologies
 
-## Tier 8 — Organizational
+## Tier 8 — Policy & Program Building
 
 *Policy, compliance, and program building.*
 
@@ -134,24 +133,24 @@ Detection is not a separate skill you learn later — it is built into every lab
 
 ---
 
-**63 / 63 labs complete** — Deployment status below.
+**62 labs across 10 tiers** — Deployment status below.
 
 | Tier | Topic | Labs | Content | Helm Enabled | CI Tested |
 |------|-------|------|---------|-------------|----------|
 | 0 | Foundations | 5 | ✅ Complete | ✅ Enabled | ✅ |
 | 1 | Package Security | 6 | ✅ Complete | ✅ Enabled | ✅ |
-| 2 | Build & CI/CD | 9 | ✅ Complete | ✅ Enabled | ✅ |
+| 2 | Build & CI/CD | 8 | ✅ Complete | ✅ Enabled | ✅ |
 | 3 | Container Security | 6 | ✅ Complete | ✅ Enabled | ✅ |
-| 4 | Artifact Integrity | 7 | ✅ Complete | ✅ Enabled | ✅ |
+| 4 | SBOM & Signing | 7 | ✅ Complete | ✅ Enabled | ✅ |
 | 5 | IaC Supply Chain | 5 | ✅ Complete | ✅ Enabled | ✅ |
-| 6 | Advanced & Emerging | 10 | ✅ Complete | ✅ Enabled | ✅ |
+| 6 | Case Studies & Frontier Attacks | 10 | ✅ Complete | ✅ Enabled | ✅ |
 | 7 | Detection & Response | 5 | ✅ Complete | ✅ Enabled | ✅ |
-| 8 | Organizational | 6 | ✅ Complete | ✅ Enabled | ✅ |
+| 8 | Policy & Program Building | 6 | ✅ Complete | ✅ Enabled | ✅ |
 | 9 | Cloud Supply Chain | 4 | ✅ Complete | ✅ Enabled | ✅ |
 
 ### What "Deployed" Means
 
-All 63 labs have full content: guide documentation, `lab.yml`, `verify.sh`, and progressive hints. **Deployed** means the tier's infrastructure is wired into the Helm chart, the `setup-labs.sh` seeder populates its registries, and the CI pipeline tests it end-to-end.
+Each lab has guide documentation, `lab.yml`, `verify.sh`, and progressive hints. **Deployed** means the tier's infrastructure is wired into the Helm chart, the `setup-labs.sh` seeder populates its registries, and the CI pipeline tests it end-to-end.
 
 ---
 

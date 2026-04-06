@@ -1,23 +1,24 @@
 # WeakLink Labs
 
-Supply chain security training platform. 63 labs, 10 tiers, runs on minikube.
+Supply chain security training platform. 62 labs, 10 tiers, runs on minikube.
 
 ## Architecture
 
-- **Runtime:** K8s only (minikube). No Docker Compose for labs.
+- **Runtime:** K8s only (minikube). No Docker Compose for labs. Workstation pod mounts the Docker socket for container labs.
 - **Guide:** MkDocs Material, served as a pod, accessed via port-forward at localhost:8000
 - **Terminal:** ttyd baked into workstation image, port 7681
 - **Registries:** pypi-private, pypi-public, verdaccio, gitea, OCI registry (all K8s services)
-- **CLI:** `cli/weaklink` (bash). Commands: shell, verify, hint, path, status, logs, report, assess, achieve
+- **Verify API:** verify-server.py on port 7682, called by verify-button.js in the guide UI
+- **CLI:** `cli/weaklink` (bash). Commands: shell, verify, hint, info, path, status, logs, report, assess, reset
 
 ## Key Directories
 
 ```
 helm/weaklink-labs/          Helm chart (all K8s resources)
 guide/docs/                  MkDocs site content
-guide/docs/labs/tier-N/      Lab guide pages (63 total)
+guide/docs/labs/tier-N/      Lab guide pages (62 total)
 guide/docs/stylesheets/      CSS
-guide/docs/javascripts/      JS (tier-colors.js)
+guide/docs/javascripts/      JS (tier-colors.js, verify-button.js)
 guide/mkdocs.yml             MkDocs config
 images/workstation/          Workstation Dockerfile (Python+Node+ttyd)
 images/lab-setup/            Lab seeder (setup-labs.sh)
@@ -44,6 +45,8 @@ Every guide page at `guide/docs/labs/tier-N/*.md` follows this structure:
 12. `## What You Learned`
 13. `## Further Reading`
 
+Lab 1.2 uses a phase-per-page structure (directory with index.md, understand.md, break.md, defend.md, detect.md) as the prototype for splitting large labs into separate pages.
+
 Case study labs (6.5-6.10) use: UNDERSTAND/ANALYZE/LESSONS/DETECT
 Tier 7 labs use: UNDERSTAND/INVESTIGATE/VALIDATE/IMPROVE
 Tier 8 labs use: UNDERSTAND/ASSESS/PLAN/DOCUMENT
@@ -63,7 +66,7 @@ Tier 8 labs use: UNDERSTAND/ASSESS/PLAN/DOCUMENT
 ## Helm Chart
 
 - Namespace: `weaklink`
-- Services: guide (NodePort 30080), pypi-private (8080), pypi-public (8080), verdaccio (4873), gitea (3000), registry (5000), workstation (7681 for ttyd)
+- Services: guide (NodePort 30080), pypi-private (8080), pypi-public (8080), verdaccio (4873), gitea (3000), registry (5000), workstation (7681 for ttyd, 7682 for verify API)
 - Lab-setup is a Helm post-install hook Job
 - Verdaccio needs explicit `VERDACCIO_PORT` env var (K8s service env collision)
 - Workstation has no `command:` override in Helm (Dockerfile CMD runs ttyd + sleep)
@@ -74,7 +77,7 @@ Tier 8 labs use: UNDERSTAND/ASSESS/PLAN/DOCUMENT
 
 - `weaklink report` (pretty/--json/--csv/--team)
 - `weaklink assess` (10-question placement test, skip Tier 0 at 8/10)
-- `weaklink achieve` (12 achievements, --generate for SVG badges, --share for LinkedIn, --proof for JSON attestation)
+- `weaklink achieve` (planned, not yet implemented)
 - Progress stored in `~/.weaklink/`
 
 ## What NOT to Do

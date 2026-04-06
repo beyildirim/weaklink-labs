@@ -1,5 +1,16 @@
 # Getting Started
 
+## Prerequisites
+
+Before you begin, make sure the following tools are installed:
+
+| Tool | Minimum version | Install |
+|------|----------------|---------|
+| [Docker](https://docs.docker.com/get-docker/) | 20.10+ | `brew install --cask docker` |
+| [minikube](https://minikube.sigs.k8s.io/) | 1.30+ | `brew install minikube` |
+| [kubectl](https://kubernetes.io/docs/tasks/tools/) | 1.27+ | `brew install kubectl` |
+| [Helm](https://helm.sh/) | 3.12+ | `brew install helm` |
+
 ## Quick Start
 
 ```bash
@@ -13,7 +24,7 @@ This starts minikube, builds all images, and deploys the platform. When it finis
 All labs run inside a Kubernetes cluster on your machine. You can connect in two ways:
 
 1. **Browser (recommended):** Open any lab in the guide. The embedded terminal initializes the lab automatically.
-2. **CLI:** Run `./weaklink shell` to open a terminal, then run `lab-init <lab-id>` to set up the environment for a specific lab.
+2. **CLI:** Run `./cli/weaklink shell` to open a terminal, then run `lab-init <lab-id>` to set up the environment for a specific lab.
 
 ### Workstation Terminal
 
@@ -27,14 +38,14 @@ The terminal below connects directly to your workstation. You can run all lab co
 
 ```mermaid
 graph TB
-    subgraph browser["Your Browser"]
+    subgraph browser["Student Browser"]
         guide["Guide :8000"]
         terminal["Terminal :7681"]
     end
     subgraph cluster["minikube cluster"]
-        ws["Workstation<br/>Python + Node + tools"]
+        ws["Developer Laptop<br/>(workstation pod)<br/>Python + Node + tools"]
         pp["pypi-private:8080<br/>Internal packages"]
-        pu["pypi-public:8080<br/>Attacker packages"]
+        pu["Attacker Infrastructure<br/>(pypi-public:8080)<br/>Malicious packages"]
         v["verdaccio:4873<br/>npm registry"]
         gi["gitea:3000<br/>Git server"]
         r["registry:5000<br/>OCI registry"]
@@ -68,7 +79,7 @@ For example: `weaklink verify 1.2` to verify the Dependency Confusion lab.
 
 ---
 
-## The Three-Phase Structure
+## The Four-Phase Structure
 
 Every lab follows the same progression:
 
@@ -78,6 +89,8 @@ Every lab follows the same progression:
   <span class="phase-step break">2. Break</span>
   <span class="arrow">&rarr;</span>
   <span class="phase-step defend">3. Defend</span>
+  <span class="arrow">&rarr;</span>
+  <span class="phase-step detect">4. Detect</span>
 </div>
 
 ### Phase 1: Understand
@@ -103,6 +116,14 @@ Execute a real supply chain attack in the lab environment. You will compromise s
 Build the defenses that stop the attack you just performed. Configure branch protection, enable hash verification, pin digests, set up lockfile integrity checks.
 
 **Every defense is directly mapped to the attack.** You know exactly what it stops because you did the attack yourself.
+
+### Phase 4: Detect
+
+<span class="phase-badge detect">DETECT</span>
+
+Learn what this attack looks like in logs, SIEM alerts, and CI output. Map the technique to MITRE ATT&CK and write detection rules you can use at work tomorrow.
+
+**Detection is not a separate skill.** It is built into every lab so you learn to find attacks as you learn to execute them.
 
 ---
 

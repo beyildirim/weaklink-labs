@@ -4,11 +4,11 @@
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/beyildirim/weaklink-labs?quickstart=1)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Labs: 63](https://img.shields.io/badge/Labs-63-orange.svg)](#what-youll-learn)
+[![Labs: 62](https://img.shields.io/badge/Labs-62-orange.svg)](#what-youll-learn)
 
 ## The Problem
 
-Supply chain attacks have increased 742% since 2019. Most security training covers the theory but never lets you touch a poisoned package, hijack a CI pipeline, or forge an attestation. WeakLink Labs gives you 63 hands-on labs where you exploit real attack techniques in a safe, isolated environment, then learn exactly how to stop them.
+Supply chain attacks have increased 742% since 2019. Most security training covers the theory but never lets you touch a poisoned package, hijack a CI pipeline, or forge an attestation. WeakLink Labs gives you 62 hands-on labs where you exploit real attack techniques in a safe, isolated environment, then learn exactly how to stop them.
 
 ## Quick Start
 
@@ -46,7 +46,7 @@ Click the **Open in GitHub Codespaces** badge above. Everything is pre-installed
 |------|-------|:----:|
 | **0** | **Foundations** — Version control, package managers, containers, CI/CD | 5 |
 | **1** | **Package Security** — Dependency confusion, typosquatting, lockfile injection | 6 |
-| **2** | **Build & CI/CD** — Pipeline poisoning, secret exfiltration, runner attacks | 9 |
+| **2** | **Build & CI/CD** — Pipeline poisoning, secret exfiltration, runner attacks | 8 |
 | **3** | **Container Security** — Image tampering, registry confusion, layer attacks | 6 |
 | **4** | **SBOM & Signing** — SBOMs, signing, attestations, and how to bypass them | 7 |
 | **5** | **IaC Supply Chain** — Helm, Terraform, Ansible, admission controllers | 5 |
@@ -63,7 +63,7 @@ Click the **Open in GitHub Codespaces** badge above. Everything is pre-installed
 | **Security Engineer** | Take the [placement test](#cli-reference), likely Tier 1 | Full path through Tiers 1-6 |
 | **DevSecOps** | Tier 2 | CI integration sections, Tiers 4-5 |
 | **DevOps Engineer** | Tier 0 | Defend phases, Tiers 2-3 and 5 |
-| **Team Lead / Manager** | Read the [Facilitator Guide](guide/docs/resources/facilitator-guide.md) | Tier 8 (Policy & Program Building) |
+| **Team Lead / Manager** | Tier 0, then Tier 8 | Tier 8 (Policy & Program Building) |
 
 ## How Every Lab Works
 
@@ -81,9 +81,7 @@ Each lab follows four phases:
 
 - **6 real-world case studies** dissecting SolarWinds, Log4Shell, xz-utils, Codecov, event-stream, and Equifax
 - **Detection content with MITRE ATT&CK mapping** in every lab
-- **Achievement system** with shareable SVG badges and LinkedIn-ready proof
 - **Placement test** to skip what you already know
-- **Facilitator guide** for team rollout with suggested schedules and discussion prompts
 - **Full isolation** with private registries (PyPI, npm, OCI), Gitea, and a pre-configured workstation
 
 ## CLI Reference
@@ -94,10 +92,12 @@ Inside the workstation, the `weaklink` CLI manages your entire workflow:
 weaklink start <lab-id>    # Start a lab (e.g., weaklink start 1.2)
 weaklink verify <lab-id>   # Check if you completed the lab
 weaklink hint <lab-id>     # Get a progressive hint
+weaklink info <lab-id>     # Show lab metadata (time, difficulty, prerequisites)
 weaklink path              # Show the learning roadmap and your progress
 weaklink assess            # Take the placement test
-weaklink achieve           # View your achievements and generate badges
+weaklink reset <lab-id>    # Reset a lab's completion status
 weaklink report            # Progress report (supports --json, --csv, --team)
+# weaklink achieve         # (planned) View achievements and generate badges
 ```
 
 ## Prerequisites

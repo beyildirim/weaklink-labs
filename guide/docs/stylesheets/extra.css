@@ -7,6 +7,7 @@
   --phase-understand: #42a5f5;
   --phase-break: #ef5350;
   --phase-defend: #66bb6a;
+  --phase-detect: #ab47bc;
   --tier-available: #ff7043;
   --tier-locked: #546e7a;
   --card-bg: #1e1e2e;
@@ -154,6 +155,13 @@
   border: 1px solid rgba(102, 187, 106, 0.3);
 }
 
+/* --- Phase detect badge ----------------------------------- */
+.phase-badge.detect {
+  background: rgba(171, 71, 188, 0.15);
+  color: #ab47bc;
+  border: 1px solid rgba(171, 71, 188, 0.3);
+}
+
 /* --- Phase flow indicator --------------------------------- */
 .phase-flow {
   display: flex;
@@ -190,6 +198,12 @@
   background: rgba(102, 187, 106, 0.1);
   color: var(--phase-defend);
   border: 1px solid rgba(102, 187, 106, 0.25);
+}
+
+.phase-flow .phase-step.detect {
+  background: rgba(171, 71, 188, 0.1);
+  color: #ab47bc;
+  border: 1px solid rgba(171, 71, 188, 0.25);
 }
 
 .phase-flow .arrow {
