@@ -75,7 +75,12 @@ nav:
       - 0.5 Artifacts & Registries: labs/tier-0/0.5-artifacts-registries.md
     - Tier 1 Package Security:
       - 1.1 Dependency Resolution: labs/tier-1/1.1-dependency-resolution.md
-      - 1.2 Dependency Confusion: labs/tier-1/1.2-dependency-confusion.md
+      - 1.2 Dependency Confusion:
+        - labs/tier-1/1.2-dependency-confusion/index.md
+        - Understand: labs/tier-1/1.2-dependency-confusion/understand.md
+        - Break: labs/tier-1/1.2-dependency-confusion/break.md
+        - Defend: labs/tier-1/1.2-dependency-confusion/defend.md
+        - Detect: labs/tier-1/1.2-dependency-confusion/detect.md
       - 1.3 Typosquatting: labs/tier-1/1.3-typosquatting.md
       - 1.4 Lockfile Injection: labs/tier-1/1.4-lockfile-injection.md
       - 1.5 Manifest Confusion: labs/tier-1/1.5-manifest-confusion.md

@@ -1,4 +1,5 @@
-// Persistent terminal panel for lab pages (bottom or side).
+// THM-style right-side split terminal panel for lab pages.
+// States: split (active), collapsed (hidden + Show Split View btn), popped-out (same as collapsed).
 // Handles both initial load and MkDocs Material instant navigation.
 (function() {
   'use strict';
@@ -6,35 +7,29 @@
   var panel = null;
   var iframe = null;
   var iframeLoaded = false;
-  var position = localStorage.getItem('wl-terminal-pos') || 'bottom';
-  var isOpen = false;
+  var splitBtn = null;
+  var isOpen = localStorage.getItem('wl-terminal-open') === 'true';
 
   function createPanel() {
     if (panel) return;
 
     panel = document.createElement('div');
-    panel.className = 'terminal-panel collapsed pos-' + position;
+    panel.className = 'terminal-panel';
 
     var header = document.createElement('div');
     header.className = 'terminal-panel-header';
 
     var title = document.createElement('span');
     title.className = 'terminal-panel-title';
-    title.textContent = 'Terminal';
+    title.textContent = 'Workstation';
 
     var controls = document.createElement('div');
     controls.className = 'terminal-panel-controls';
 
-    var toggleBtn = document.createElement('button');
-    toggleBtn.className = 'terminal-panel-btn';
-    toggleBtn.textContent = 'Open';
+    controls.appendChild(makeBtn('\u21BB', 'Reconnect', reconnect));
+    controls.appendChild(makeBtn('\u2197', 'Open in new tab', popout));
+    controls.appendChild(makeBtn('\u2212', 'Collapse', collapse));
 
-    var dockBtn = document.createElement('button');
-    dockBtn.className = 'terminal-panel-btn';
-    dockBtn.textContent = position === 'bottom' ? 'Dock Right' : 'Dock Bottom';
-
-    controls.appendChild(toggleBtn);
-    controls.appendChild(dockBtn);
     header.appendChild(title);
     header.appendChild(controls);
 
@@ -43,86 +38,87 @@
 
     iframe = document.createElement('iframe');
     iframe.title = 'WeakLink Workstation Terminal';
-    // Don't set src yet; load lazily on first open
     body.appendChild(iframe);
 
     panel.appendChild(header);
     panel.appendChild(body);
     document.body.appendChild(panel);
 
-    header.addEventListener('click', function(e) {
-      if (e.target === dockBtn) return;
-      toggle();
-    });
+    // Show Split View button (floating, bottom-right)
+    splitBtn = document.createElement('button');
+    splitBtn.className = 'show-split-view-btn';
+    splitBtn.textContent = 'Show Terminal';
+    splitBtn.addEventListener('click', activate);
+    document.body.appendChild(splitBtn);
 
-    toggleBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      toggle();
-    });
-
-    dockBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      switchPosition();
-    });
-
-    function toggle() {
-      isOpen = !isOpen;
-      panel.classList.toggle('collapsed', !isOpen);
-      document.body.classList.toggle('terminal-' + position, isOpen);
-      toggleBtn.textContent = isOpen ? 'Collapse' : 'Open';
-
-      // Lazy-load iframe on first open
-      if (isOpen && !iframeLoaded) {
-        iframe.src = 'http://localhost:7681';
-        iframeLoaded = true;
-      }
-    }
-
-    function switchPosition() {
-      var wasOpen = isOpen;
-      if (wasOpen) {
-        document.body.classList.remove('terminal-' + position);
-      }
-      position = position === 'bottom' ? 'right' : 'bottom';
-      panel.classList.remove('pos-bottom', 'pos-right');
-      panel.classList.add('pos-' + position);
-      dockBtn.textContent = position === 'bottom' ? 'Dock Right' : 'Dock Bottom';
-      localStorage.setItem('wl-terminal-pos', position);
-      if (wasOpen) {
-        document.body.classList.add('terminal-' + position);
-      }
-    }
-
-    // If it was previously open (navigating between lab pages), restore state
     if (isOpen) {
-      panel.classList.remove('collapsed');
-      document.body.classList.add('terminal-' + position);
-      toggleBtn.textContent = 'Collapse';
-      if (!iframeLoaded) {
-        iframe.src = 'http://localhost:7681';
-        iframeLoaded = true;
-      }
+      activate();
+    } else {
+      splitBtn.style.display = 'block';
     }
+  }
+
+  function makeBtn(text, tip, handler) {
+    var b = document.createElement('button');
+    b.className = 'terminal-panel-btn';
+    b.textContent = text;
+    b.title = tip;
+    b.addEventListener('click', handler);
+    return b;
+  }
+
+  function activate() {
+    isOpen = true;
+    localStorage.setItem('wl-terminal-open', 'true');
+    if (panel) panel.classList.add('active');
+    document.body.classList.add('terminal-split');
+    if (splitBtn) splitBtn.style.display = 'none';
+    if (!iframeLoaded && iframe) {
+      iframe.src = 'http://localhost:7681';
+      iframeLoaded = true;
+    }
+  }
+
+  function collapse() {
+    isOpen = false;
+    localStorage.setItem('wl-terminal-open', 'false');
+    if (panel) panel.classList.remove('active');
+    document.body.classList.remove('terminal-split');
+    if (splitBtn) splitBtn.style.display = 'block';
+  }
+
+  function popout() {
+    window.open('http://localhost:7681', '_blank');
+    collapse();
+  }
+
+  function reconnect() {
+    if (!iframe) return;
+    iframeLoaded = false;
+    iframe.src = '';
+    setTimeout(function() {
+      iframe.src = 'http://localhost:7681';
+      iframeLoaded = true;
+    }, 200);
   }
 
   function destroyPanel() {
-    if (!panel) return;
-
-    // Clean up body classes
-    document.body.classList.remove('terminal-bottom', 'terminal-right');
-
-    panel.remove();
-    panel = null;
+    document.body.classList.remove('terminal-split');
+    if (panel) { panel.remove(); panel = null; }
+    if (splitBtn) { splitBtn.remove(); splitBtn = null; }
     iframe = null;
     iframeLoaded = false;
-    isOpen = false;
   }
 
   function onNavigate() {
-    var isLabPage = window.location.pathname.includes('/labs/');
-    if (isLabPage && !panel) {
+    var path = window.location.pathname;
+    var isLabPage = path.includes('/labs/');
+    var isReferencePage = path.match(/\/detect\/?$/);
+    var showTerminal = isLabPage && !isReferencePage;
+
+    if (showTerminal && !panel) {
       createPanel();
-    } else if (!isLabPage && panel) {
+    } else if (!showTerminal && panel) {
       destroyPanel();
     }
   }
