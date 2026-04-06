@@ -50,11 +50,14 @@ build_and_upload_pypi_package() {
     cd "$pkg_dir"
     python setup.py sdist bdist_wheel -q 2>/dev/null || python setup.py sdist -q
 
-    # Upload using twine-like approach via curl to pypiserver
+    # Upload using legacy PyPI upload protocol (requires :action field)
     for dist_file in dist/*; do
-        curl -sf -X POST "${registry_url}" \
+        if ! curl -sf -X POST "${registry_url}" \
+            -F ":action=file_upload" \
             -F "content=@${dist_file}" \
-            > /dev/null 2>&1 || true
+            > /dev/null 2>&1; then
+            warn "  Failed to upload $(basename "$dist_file") to ${registry_url}"
+        fi
     done
 
     ok "  ${pkg_name} uploaded"
