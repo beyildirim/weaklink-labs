@@ -8,6 +8,9 @@ LAB_ID="${1:-}"
 GOLDEN="/opt/labs/${LAB_ID}"
 [ -d "$GOLDEN" ] || { echo "Lab ${LAB_ID}: no source files found."; exit 0; }
 
+# Clean previous lab env vars
+rm -f /tmp/.weaklink-env
+
 # Copy golden files to writable workspace
 LAB_WORK="/home/labs/${LAB_ID}"
 rm -rf "$LAB_WORK" 2>/dev/null
@@ -27,6 +30,11 @@ fi
 # Run per-lab init if present (custom setup: /etc/pip.conf, git clones, etc.)
 if [ -x "${LAB_WORK}/lab-init.sh" ]; then
     source "${LAB_WORK}/lab-init.sh"
+fi
+
+# Source per-lab environment variables if set by lab-init.sh
+if [ -f /tmp/.weaklink-env ]; then
+    source /tmp/.weaklink-env
 fi
 
 # Track current lab
