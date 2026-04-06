@@ -10,8 +10,8 @@ PASS=0
 FAIL=0
 TOTAL=5
 
-pass() { echo "  PASS: $1"; ((PASS++)) || true; }
-fail() { echo "  FAIL: $1"; ((FAIL++)) || true; }
+pass() { echo "  PASS: $1"; ((PASS++)) || true || true; }
+fail() { echo "  FAIL: $1"; ((FAIL++)) || true || true; }
 
 echo "=== Lab 7.5: Threat Modeling Verification ==="
 echo ""
@@ -36,7 +36,7 @@ if [ -f "$WORK_DIR/threat-model.md" ] || [ -f "$WORK_DIR/threat-model.txt" ] || 
     STRIDE_COUNT=0
     for element in "spoof" "tamper" "repudiat" "disclosure\|information.leak" "denial.of.service\|dos" "elevation\|privilege.escalat"; do
         if grep -qi "$element" "$WORK_DIR"/threat-model.* "$WORK_DIR"/stride-analysis.* 2>/dev/null; then
-            ((STRIDE_COUNT++)) || true
+            ((STRIDE_COUNT++)) || true || true
         fi
     done
     if [ "$STRIDE_COUNT" -ge 4 ]; then
@@ -49,7 +49,7 @@ else
 fi
 
 # Check 4: Risk prioritization with likelihood and impact
-if grep -qiE '(likelihood|probability|impact|risk.score|risk.rating|high|medium|low|critical)' "$WORK_DIR"/threat-model.* "$WORK_DIR"/stride-analysis.* "$WORK_DIR"/risk-register.* 2>/dev/null; then
+if grep -qi '(likelihood|probability|impact|risk.score|risk.rating|high|medium|low|critical)' "$WORK_DIR"/threat-model.* "$WORK_DIR"/stride-analysis.* "$WORK_DIR"/risk-register.* 2>/dev/null; then
     pass "Risk prioritization with likelihood/impact assessment present"
 else
     fail "No risk prioritization found -- must rank threats by likelihood and impact"

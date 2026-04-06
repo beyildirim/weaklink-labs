@@ -10,8 +10,8 @@ PASS=0
 FAIL=0
 TOTAL=6
 
-pass() { echo "  PASS: $1"; ((PASS++)) || true; }
-fail() { echo "  FAIL: $1"; ((FAIL++)) || true; }
+pass() { echo "  PASS: $1"; ((PASS++)) || true || true; }
+fail() { echo "  FAIL: $1"; ((FAIL++)) || true || true; }
 
 echo "=== Lab 7.1: Detection Rules Verification ==="
 echo ""

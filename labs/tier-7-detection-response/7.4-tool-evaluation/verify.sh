@@ -10,8 +10,8 @@ PASS=0
 FAIL=0
 TOTAL=5
 
-pass() { echo "  PASS: $1"; ((PASS++)) || true; }
-fail() { echo "  FAIL: $1"; ((FAIL++)) || true; }
+pass() { echo "  PASS: $1"; ((PASS++)) || true || true; }
+fail() { echo "  FAIL: $1"; ((FAIL++)) || true || true; }
 
 echo "=== Lab 7.4: Tool Evaluation Verification ==="
 echo ""

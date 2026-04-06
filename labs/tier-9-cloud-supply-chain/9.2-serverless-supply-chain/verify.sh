@@ -10,8 +10,8 @@ PASS=0
 FAIL=0
 TOTAL=6
 
-pass() { echo "  PASS: $1"; ((PASS++)); }
-fail() { echo "  FAIL: $1"; ((FAIL++)); }
+pass() { echo "  PASS: $1"; ((PASS++)) || true; }
+fail() { echo "  FAIL: $1"; ((FAIL++)) || true; }
 
 echo "=== Lab 9.2: Serverless Supply Chain Verification ==="
 echo ""

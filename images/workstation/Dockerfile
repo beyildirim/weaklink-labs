@@ -62,6 +62,11 @@ RUN ARCH=$(uname -m) \
     && curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin v0.86.1 \
     && curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin latest
 
+# Helm (Tier 5 IaC labs) + kubectl (Tier 5.5 admission controller)
+RUN curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash \
+    && curl -fsSL -o /usr/local/bin/kubectl "https://dl.k8s.io/release/$(curl -fsSL https://dl.k8s.io/release/stable.txt)/bin/linux/$(uname -m | sed 's/aarch64/arm64/;s/x86_64/amd64/')/kubectl" \
+    && chmod +x /usr/local/bin/kubectl
+
 # Create non-root user
 RUN useradd -m -s /bin/bash hacker
 

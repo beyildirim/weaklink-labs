@@ -48,7 +48,7 @@ check "Dependency tree analysis identifies transitive Log4j inclusion" \
 
 # Check 5: Detection queries exist for JNDI patterns
 check "Detection queries cover JNDI pattern matching in logs" \
-    "test -f /app/detection-queries.txt && grep -qi 'jndi\|\\$\\{' /app/detection-queries.txt"
+    "test -f /app/detection-queries.txt && grep -Eqi 'jndi|\\$\\{' /app/detection-queries.txt"
 
 echo ""
 echo "  Results: ${PASS} passed, ${FAIL} failed"
