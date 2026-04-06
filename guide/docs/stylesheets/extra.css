@@ -359,7 +359,7 @@
   padding: 0 1rem;
   height: 48px;
   min-height: 48px;
-  background: linear-gradient(135deg, #bf360c, #d84315);
+  background-color: var(--md-primary-fg-color, #ff6e42);
   user-select: none;
 }
 .terminal-panel-title {
