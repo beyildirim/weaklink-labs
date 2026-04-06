@@ -10,8 +10,8 @@ PASS=0
 FAIL=0
 TOTAL=5
 
-pass() { echo "  PASS: $1"; ((PASS++)); }
-fail() { echo "  FAIL: $1"; ((FAIL++)); }
+pass() { echo "  PASS: $1"; ((PASS++)) || true; }
+fail() { echo "  FAIL: $1"; ((FAIL++)) || true; }
 
 echo "=== Lab 7.4: Tool Evaluation Verification ==="
 echo ""
@@ -27,7 +27,7 @@ fi
 TOOL_COUNT=0
 for tool in "scorecard" "guac" "deps.dev" "dependabot" "snyk" "socket" "pip-audit" "npm.audit" "grype" "trivy"; do
     if grep -qi "$tool" "$WORK_DIR"/comparison-matrix.* 2>/dev/null; then
-        ((TOOL_COUNT++))
+        ((TOOL_COUNT++)) || true
     fi
 done
 
@@ -41,7 +41,7 @@ fi
 ATTACK_COUNT=0
 for attack in "dependency.confusion" "typosquat" "lockfile" "manifest" "phantom"; do
     if grep -qiE "$attack" "$WORK_DIR"/comparison-matrix.* 2>/dev/null; then
-        ((ATTACK_COUNT++))
+        ((ATTACK_COUNT++)) || true
     fi
 done
 

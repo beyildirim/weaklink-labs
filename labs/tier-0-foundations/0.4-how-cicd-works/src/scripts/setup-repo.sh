@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 GITEA_URL="http://gitea:3000"
-ADMIN_USER="labadmin"
-ADMIN_PASS="SupplyChainLab1!"
+ADMIN_USER="weaklink"
+ADMIN_PASS="weaklink"
 
 echo "[*] Creating ci-demo repository..."
 curl -sf -X POST "${GITEA_URL}/api/v1/user/repos" \

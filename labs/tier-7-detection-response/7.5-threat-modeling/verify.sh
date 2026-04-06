@@ -10,8 +10,8 @@ PASS=0
 FAIL=0
 TOTAL=5
 
-pass() { echo "  PASS: $1"; ((PASS++)); }
-fail() { echo "  FAIL: $1"; ((FAIL++)); }
+pass() { echo "  PASS: $1"; ((PASS++)) || true; }
+fail() { echo "  FAIL: $1"; ((FAIL++)) || true; }
 
 echo "=== Lab 7.5: Threat Modeling Verification ==="
 echo ""
@@ -35,8 +35,8 @@ fi
 if [ -f "$WORK_DIR/threat-model.md" ] || [ -f "$WORK_DIR/threat-model.txt" ] || [ -f "$WORK_DIR/stride-analysis.md" ]; then
     STRIDE_COUNT=0
     for element in "spoof" "tamper" "repudiat" "disclosure\|information.leak" "denial.of.service\|dos" "elevation\|privilege.escalat"; do
-        if grep -qiE "$element" "$WORK_DIR"/threat-model.* "$WORK_DIR"/stride-analysis.* 2>/dev/null; then
-            ((STRIDE_COUNT++))
+        if grep -qi "$element" "$WORK_DIR"/threat-model.* "$WORK_DIR"/stride-analysis.* 2>/dev/null; then
+            ((STRIDE_COUNT++)) || true
         fi
     done
     if [ "$STRIDE_COUNT" -ge 4 ]; then

@@ -801,6 +801,8 @@ cmd_report_team() {
 
         printf "  %-4s %-40s %b%s%b\n" "$lid" "$ltitle" "$lab_color" "$ratio" "$NC"
     done
+}
+
 #----------------------------------------------------------------------
 # Main
 #----------------------------------------------------------------------
@@ -849,10 +851,6 @@ case "${1:-}" in
         else
             cmd_report_pretty
         fi
-        ;;
-    achieve)
-        shift
-        cmd_achieve "$@"
         ;;
     *)
         echo ""

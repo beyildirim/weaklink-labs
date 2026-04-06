@@ -15,9 +15,9 @@ data:
     uplinks: {}
     packages:
       '**':
-        access: $anonymous
-        publish: $anonymous
-        unpublish: $anonymous
+        access: $all
+        publish: $all
+        unpublish: $all
     server:
       keepAliveTimeout: 60
     middlewares:

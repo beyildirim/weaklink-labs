@@ -189,7 +189,7 @@ fi
 CURRENT_STEP="port-forward"
 
 # Kill any existing port-forwards from a previous run
-for pidfile in "${SCRIPT_DIR}/.weaklink-pf.pid" "${SCRIPT_DIR}/.weaklink-pf-ttyd.pid"; do
+for pidfile in "${SCRIPT_DIR}/.weaklink-pf.pid" "${SCRIPT_DIR}/.weaklink-pf-ttyd.pid" "${SCRIPT_DIR}/.weaklink-pf-verify.pid"; do
     if [[ -f "$pidfile" ]]; then
         old_pid=$(cat "$pidfile" 2>/dev/null || true)
         if [[ -n "$old_pid" ]] && kill -0 "$old_pid" 2>/dev/null; then
@@ -210,6 +210,12 @@ kubectl port-forward -n "${NAMESPACE}" svc/workstation 7681:7681 &>/dev/null &
 TTYD_PF_PID=$!
 echo "$TTYD_PF_PID" > "${SCRIPT_DIR}/.weaklink-pf-ttyd.pid"
 ok "Web terminal port-forward started (PID: $TTYD_PF_PID)."
+
+log "Starting port-forward for verify API (localhost:7682)..."
+kubectl port-forward -n "${NAMESPACE}" svc/workstation 7682:7682 &>/dev/null &
+VERIFY_PF_PID=$!
+echo "$VERIFY_PF_PID" > "${SCRIPT_DIR}/.weaklink-pf-verify.pid"
+ok "Verify API port-forward started (PID: $VERIFY_PF_PID)."
 
 CURRENT_STEP="done"
 

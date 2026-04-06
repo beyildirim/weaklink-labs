@@ -46,6 +46,22 @@ RUN npm install -g depcheck
 RUN curl -fsSL -o /usr/local/bin/ttyd https://github.com/tsl0922/ttyd/releases/download/1.7.7/ttyd.x86_64 \
     && chmod +x /usr/local/bin/ttyd
 
+# Docker CLI (connects to host runtime socket, mounted via Helm)
+RUN curl -fsSL https://download.docker.com/linux/static/stable/$(uname -m)/docker-27.5.1.tgz \
+    | tar xz --strip-components=1 -C /usr/local/bin docker/docker \
+    && chmod +x /usr/local/bin/docker
+
+# Supply chain security tools
+RUN ARCH=$(uname -m) \
+    && case "$ARCH" in aarch64) GOARCH=arm64; CRANE_ARCH=arm64 ;; *) GOARCH=amd64; CRANE_ARCH=x86_64 ;; esac \
+    && curl -fsSL "https://github.com/google/go-containerregistry/releases/download/v0.20.2/go-containerregistry_Linux_${CRANE_ARCH}.tar.gz" \
+       | tar xz -C /usr/local/bin crane && chmod +x /usr/local/bin/crane \
+    && curl -fsSL -o /usr/local/bin/cosign "https://github.com/sigstore/cosign/releases/download/v2.4.1/cosign-linux-${GOARCH}" \
+    && chmod +x /usr/local/bin/cosign \
+    && curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin v1.17.0 \
+    && curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin v0.86.1 \
+    && curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin latest
+
 # Create non-root user
 RUN useradd -m -s /bin/bash hacker
 
@@ -73,13 +89,15 @@ RUN mkdir -p /opt/labs && \
         lab_id=$(grep '^id:' "${lab_dir}/lab.yml" 2>/dev/null | sed 's/id: *"//;s/"//g' | tr -d ' '); \
         if [ -n "$lab_id" ] && [ -d "${lab_dir}/src" ]; then \
             cp -a "${lab_dir}/src" "/opt/labs/${lab_id}"; \
+            [ -f "${lab_dir}/verify.sh" ] && cp "${lab_dir}/verify.sh" "/opt/labs/${lab_id}/verify.sh"; \
         fi; \
     done && rm -rf /opt/labs-raw
 
 # Lab init/reset scripts
 COPY images/workstation/lab-init /usr/local/bin/lab-init
 COPY images/workstation/lab-reset /usr/local/bin/lab-reset
-RUN chmod +x /usr/local/bin/lab-init /usr/local/bin/lab-reset
+COPY images/workstation/verify-server.py /usr/local/bin/verify-server.py
+RUN chmod +x /usr/local/bin/lab-init /usr/local/bin/lab-reset /usr/local/bin/verify-server.py
 
 # Bash completion and prompt
 RUN echo 'source /etc/bash_completion 2>/dev/null' >> /home/hacker/.bashrc \
@@ -87,11 +105,12 @@ RUN echo 'source /etc/bash_completion 2>/dev/null' >> /home/hacker/.bashrc \
 
 # Git defaults
 RUN git config --system user.email "hacker@weaklink.local" \
-    && git config --system user.name "Hacker"
+    && git config --system user.name "Hacker" \
+    && git config --system credential.helper '!f() { echo "username=weaklink"; echo "password=weaklink"; }; f'
 
 # Pre-create lab directories writable by hacker (lab-init writes to these)
-RUN mkdir -p /app /etc/pip-configs /lab /repos /workspace /home/labs \
-    && chown hacker:hacker /app /etc/pip-configs /lab /repos /workspace /home/labs \
+RUN mkdir -p /app /etc/pip-configs /lab /repos /workspace /home/labs /runner \
+    && chown hacker:hacker /app /etc/pip-configs /lab /repos /workspace /home/labs /runner \
     && touch /etc/pip.conf && chown hacker:hacker /etc/pip.conf
 WORKDIR /home/labs
 
@@ -102,4 +121,4 @@ USER hacker
 
 # ttyd in foreground keeps the container alive; URL ?arg= params are appended
 # to the bash command (e.g. ?arg=-c&arg=lab-init 1.2; exec bash -l)
-CMD ["ttyd", "-W", "-p", "7681", "bash"]
+CMD bash -c "python3 /usr/local/bin/verify-server &>/dev/null & ttyd -W -p 7681 bash"

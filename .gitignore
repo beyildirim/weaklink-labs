@@ -28,14 +28,23 @@ node_modules/
 
 # Lab runtime
 .weaklink/
-.weaklink-pf.pid
-.weaklink-pf-ttyd.pid
+.weaklink-pf*.pid
 
 # MkDocs build
 guide/site/
 
 # Ruff cache
 .ruff_cache/
+
+# Python virtual environments
+venv/
+.venv/
+
+# Archives (lab builds)
+*.tar.gz
+
+# Cosign private keys
+.cosign/
 
 # Claude agents
 .agents/

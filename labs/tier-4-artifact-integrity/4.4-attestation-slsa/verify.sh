@@ -40,11 +40,11 @@ check "Attestation uses SLSA provenance predicate type" \
 
 # Check 3: Attestation was attached to the image
 check "Image has an attached attestation" \
-    "cosign verify-attestation --key /app/cosign.pub --type slsaprovenance registry:5000/weaklink-app:attested 2>/dev/null | grep -q 'payloadType\|predicateType'"
+    "cosign verify-attestation --allow-http-registry --allow-insecure-registry --key /app/cosign.pub --type slsaprovenance registry:5000/weaklink-app:attested 2>/dev/null | grep -q 'payloadType\|predicateType'"
 
 # Check 4: User identified the unattested image as unverifiable
 check "Verification of unattested image fails" \
-    "! cosign verify-attestation --key /app/cosign.pub --type slsaprovenance registry:5000/weaklink-app:no-provenance 2>/dev/null"
+    "! cosign verify-attestation --allow-http-registry --allow-insecure-registry --key /app/cosign.pub --type slsaprovenance registry:5000/weaklink-app:no-provenance 2>/dev/null"
 
 echo ""
 echo "  Results: ${PASS} passed, ${FAIL} failed"

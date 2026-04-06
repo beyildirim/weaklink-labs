@@ -10,8 +10,8 @@ PASS=0
 FAIL=0
 TOTAL=5
 
-pass() { echo "  PASS: $1"; ((PASS++)); }
-fail() { echo "  FAIL: $1"; ((FAIL++)); }
+pass() { echo "  PASS: $1"; ((PASS++)) || true; }
+fail() { echo "  FAIL: $1"; ((FAIL++)) || true; }
 
 echo "=== Lab 7.3: IR Playbook Verification ==="
 echo ""
@@ -27,7 +27,7 @@ fi
 NIST_PHASES=0
 for phase in "preparation" "detection" "containment" "eradication" "recovery" "lessons"; do
     if grep -qi "$phase" "$WORK_DIR"/ir-playbook.* 2>/dev/null; then
-        ((NIST_PHASES++))
+        ((NIST_PHASES++)) || true
     fi
 done
 
@@ -62,7 +62,7 @@ if [ -f "$WORK_DIR/post-incident-template.md" ] || [ -f "$WORK_DIR/post-incident
     SECTIONS=0
     for keyword in "root.cause" "timeline" "impact" "action.items\|remediation\|follow.up"; do
         if grep -qiE "$keyword" "$WORK_DIR"/post-incident*.md "$WORK_DIR"/pir-template.md 2>/dev/null; then
-            ((SECTIONS++))
+            ((SECTIONS++)) || true
         fi
     done
     if [ "$SECTIONS" -ge 3 ]; then

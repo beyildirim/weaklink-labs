@@ -17,6 +17,13 @@ spec:
       annotations:
         rollme: {{ randAlphaNum 5 | quote }}
     spec:
+      initContainers:
+        - name: fix-docker-sock
+          image: busybox:latest
+          command: ["sh", "-c", "chmod 666 /var/run/docker.sock 2>/dev/null || true"]
+          volumeMounts:
+            - name: docker-sock
+              mountPath: /var/run/docker.sock
       containers:
         - name: workstation
           image: "{{ .Values.workstation.image }}:{{ .Values.workstation.tag }}"
@@ -39,9 +46,14 @@ spec:
             - name: npm-config
               mountPath: /home/hacker/.npmrc
               subPath: .npmrc
+            - name: docker-sock
+              mountPath: /var/run/docker.sock
           ports:
             - name: ttyd
               containerPort: 7681
+              protocol: TCP
+            - name: verify
+              containerPort: 7682
               protocol: TCP
           resources:
             {{- toYaml .Values.workstation.resources | nindent 12 }}
@@ -52,6 +64,10 @@ spec:
         - name: npm-config
           configMap:
             name: workstation-config
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+            type: Socket
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -83,5 +99,8 @@ spec:
     - name: ttyd
       port: 7681
       targetPort: 7681
+    - name: verify
+      port: 7682
+      targetPort: 7682
   selector:
     {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "workstation") | nindent 4 }}

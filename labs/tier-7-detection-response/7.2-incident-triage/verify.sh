@@ -10,8 +10,8 @@ PASS=0
 FAIL=0
 TOTAL=5
 
-pass() { echo "  PASS: $1"; ((PASS++)); }
-fail() { echo "  FAIL: $1"; ((FAIL++)); }
+pass() { echo "  PASS: $1"; ((PASS++)) || true; }
+fail() { echo "  FAIL: $1"; ((FAIL++)) || true; }
 
 echo "=== Lab 7.2: Incident Triage Verification ==="
 echo ""
@@ -63,7 +63,7 @@ else
 fi
 
 # Check 5: Timeline reconstruction
-TIMELINE_REFS=$(grep -c -iE '([0-9]{2}:[0-9]{2}|hour|minute|T-[0-9]|timeline|timestamp|utc|ago)' "$WORK_DIR"/investigation.* "$WORK_DIR"/incident-summary.* 2>/dev/null || echo 0)
+TIMELINE_REFS=$(grep -hiE '([0-9]{2}:[0-9]{2}|hour|minute|T-[0-9]|timeline|timestamp|utc|ago)' "$WORK_DIR"/investigation.* "$WORK_DIR"/incident-summary.* 2>/dev/null | wc -l || echo 0)
 if [ "$TIMELINE_REFS" -ge 2 ]; then
     pass "Timeline reconstruction present ($TIMELINE_REFS time references)"
 else

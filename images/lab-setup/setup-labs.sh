@@ -48,7 +48,8 @@ build_and_upload_pypi_package() {
     log "  Building ${pkg_name}..."
 
     cd "$pkg_dir"
-    python setup.py sdist bdist_wheel -q 2>/dev/null || python setup.py sdist -q
+    rm -rf dist/ 2>/dev/null
+    python setup.py sdist -q
 
     # Upload using legacy PyPI upload protocol (requires :action field)
     for dist_file in dist/*; do

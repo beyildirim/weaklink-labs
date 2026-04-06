@@ -40,7 +40,7 @@ check "Enforcement policy pins the trusted public key" \
 
 # Check 3: Attacker-signed image is rejected
 check "Attacker-signed image fails trusted key verification" \
-    "! cosign verify --key /app/cosign.pub registry:5000/weaklink-app:attacker-signed 2>/dev/null"
+    "! cosign verify --allow-http-registry --allow-insecure-registry --key /app/cosign.pub registry:5000/weaklink-app:attacker-signed 2>/dev/null"
 
 # Check 4: Rollback attack documented
 check "Rollback attack is documented" \

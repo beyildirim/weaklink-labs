@@ -36,7 +36,7 @@ check "Cosign key pair was generated" \
 
 # Check 2: Image was signed (signature exists in registry)
 check "Image has been signed (cosign verify succeeds)" \
-    "cosign verify --key /app/cosign.pub registry:5000/weaklink-app:signed 2>/dev/null | grep -q 'Verified OK\|payloadType'"
+    "cosign verify --allow-http-registry --allow-insecure-registry --key /app/cosign.pub registry:5000/weaklink-app:signed 2>/dev/null | grep -q 'Verified OK\|payloadType'"
 
 # Check 3: Verification policy exists
 check "Verification policy file exists" \
@@ -44,7 +44,7 @@ check "Verification policy file exists" \
 
 # Check 4: Unsigned image is rejected by policy
 check "Unsigned image fails verification" \
-    "! cosign verify --key /app/cosign.pub registry:5000/weaklink-app:unsigned 2>/dev/null"
+    "! cosign verify --allow-http-registry --allow-insecure-registry --key /app/cosign.pub registry:5000/weaklink-app:unsigned 2>/dev/null"
 
 echo ""
 echo "  Results: ${PASS} passed, ${FAIL} failed"

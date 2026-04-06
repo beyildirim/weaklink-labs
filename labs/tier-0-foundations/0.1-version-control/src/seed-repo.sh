@@ -5,8 +5,8 @@
 set -euo pipefail
 
 GITEA_URL="http://gitea:3000"
-ADMIN_USER="labadmin"
-ADMIN_PASS="SupplyChainLab1!"
+ADMIN_USER="weaklink"
+ADMIN_PASS="weaklink"
 REPO_NAME="web-app"
 
 echo "[*] Waiting for Gitea to be ready..."

@@ -9,7 +9,7 @@ CACHE_DIR="/cache/pip"
 echo "[setup] Creating Gitea repo: ${REPO_NAME}"
 curl -sf -X POST "${GITEA_URL}/api/v1/user/repos" \
   -H "Content-Type: application/json" \
-  -u "developer:password" \
+  -u "weaklink:weaklink" \
   -d "{\"name\": \"${REPO_NAME}\", \"auto_init\": false}" || true
 
 mkdir -p "${REPO_DIR}" && cd "${REPO_DIR}"
@@ -23,7 +23,7 @@ cp /lab/src/repo/.gitea/workflows/ci.yml .gitea/workflows/ci.yml
 
 git add -A
 git commit -m "Initial commit: webapp with cached CI pipeline"
-git remote add origin "${GITEA_URL}/developer/${REPO_NAME}.git"
+git remote add origin "${GITEA_URL}/weaklink/${REPO_NAME}.git"
 git push -u origin main
 
 # Pre-populate the cache with legitimate packages
