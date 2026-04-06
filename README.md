@@ -20,10 +20,10 @@ Supply chain attacks have increased 742% since 2019. Most security training cove
 ```bash
 git clone https://github.com/beyildirim/weaklink-labs.git
 cd weaklink-labs
-make compose-up
+docker compose up -d
 ```
 
-Open **http://localhost:8000** in your browser. Done.
+Open **http://localhost:8000** in your browser. Done. Images are pulled from GHCR (no local building).
 
 ### Kubernetes (full experience)
 
