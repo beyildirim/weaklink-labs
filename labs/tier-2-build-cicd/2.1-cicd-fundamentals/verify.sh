@@ -31,7 +31,7 @@ echo "  Verifying Lab 2.1: CI/CD Fundamentals"
 echo "  ======================================"
 echo ""
 
-CI_FILE="/repos/acme-webapp/.gitea/workflows/ci.yml"
+CI_FILE="/repos/wl-webapp/.gitea/workflows/ci.yml"
 
 # Check 1: CI config exists
 check "CI workflow file exists" \

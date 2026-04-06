@@ -2,8 +2,8 @@
 # Setup script for Lab 1.6: Phantom Dependencies
 # Publishes packages to the local Verdaccio registry.
 #
-# Initial state: only acme-framework@1.0.0 is published (which depends on debug).
-# The malicious debug@99.0.0 and acme-framework@2.0.0 are published later during
+# Initial state: only wl-framework@1.0.0 is published (which depends on debug).
+# The malicious debug@99.0.0 and wl-framework@2.0.0 are published later during
 # the BREAK phase via publish-attack.sh.
 
 set -euo pipefail
@@ -28,7 +28,7 @@ echo "registry=${REGISTRY}/" >> ~/.npmrc
 echo "[+] Authenticated"
 
 # Publish the real debug package (v4.3.4 from npm)
-# We need the real debug for acme-framework v1 to work
+# We need the real debug for wl-framework v1 to work
 echo ""
 echo "=== Publishing debug@4.3.4 (real package) ==="
 WORK=$(mktemp -d)
@@ -82,12 +82,12 @@ JSEOF
 npm publish --registry "${REGISTRY}" 2>&1 || true
 echo "[+] ms@2.1.2 published"
 
-# Publish acme-framework@1.0.0 (depends on debug)
+# Publish wl-framework@1.0.0 (depends on debug)
 echo ""
-echo "=== Publishing acme-framework@1.0.0 ==="
-cd "${PACKAGES_DIR}/acme-framework/v1"
+echo "=== Publishing wl-framework@1.0.0 ==="
+cd "${PACKAGES_DIR}/wl-framework/v1"
 npm publish --registry "${REGISTRY}" 2>&1 || true
-echo "[+] acme-framework@1.0.0 published (depends on debug@4.3.4)"
+echo "[+] wl-framework@1.0.0 published (depends on debug@4.3.4)"
 
 # Clean up
 rm -rf "${WORK}"
@@ -98,8 +98,8 @@ echo ""
 echo "Packages available:"
 echo "  - debug@4.3.4 (real, safe)"
 echo "  - ms@2.1.2"
-echo "  - acme-framework@1.0.0 (depends on debug)"
+echo "  - wl-framework@1.0.0 (depends on debug)"
 echo ""
 echo "Packages NOT yet published (for Phase 2):"
-echo "  - acme-framework@2.0.0 (drops debug dependency)"
+echo "  - wl-framework@2.0.0 (drops debug dependency)"
 echo "  - debug@99.0.0 (malicious)"

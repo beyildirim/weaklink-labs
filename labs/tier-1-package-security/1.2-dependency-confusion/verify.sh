@@ -39,9 +39,9 @@ check "No compromise marker (/tmp/dependency-confusion-pwned does not exist)" \
 check "pip.conf uses --index-url (not --extra-index-url)" \
     "grep -q 'index-url' /etc/pip.conf && ! grep -q 'extra-index-url' /etc/pip.conf"
 
-# Check 3: acme-auth==1.0.0 is installed (not 99.0.0)
-check "acme-auth==1.0.0 is installed (legitimate version)" \
-    "pip show acme-auth 2>/dev/null | grep -q 'Version: 1.0.0'"
+# Check 3: wl-auth==1.0.0 is installed (not 99.0.0)
+check "wl-auth==1.0.0 is installed (legitimate version)" \
+    "pip show wl-auth 2>/dev/null | grep -q 'Version: 1.0.0'"
 
 # Check 4: pip config points to private registry
 check "pip.conf points to private registry only" \

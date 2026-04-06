@@ -1,4 +1,4 @@
-name: ACME Webapp CI (Ephemeral Runners)
+name: WeakLink Webapp CI (Ephemeral Runners)
 
 on:
   push:

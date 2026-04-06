@@ -30,7 +30,7 @@ echo "  Verifying Lab 2.2: Direct PPE"
 echo "  =============================="
 echo ""
 
-REPO="/repos/acme-webapp"
+REPO="/repos/wl-webapp"
 
 # Check 1: Main CI config only triggers on push (not PRs)
 check "Main CI workflow does not trigger on pull_request" \

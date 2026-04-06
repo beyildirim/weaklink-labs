@@ -48,11 +48,11 @@ check "Cleanup hook removes temp files" \
 
 # Check 5: CI uses container isolation or ephemeral config
 check "CI config uses container isolation" \
-    "grep -q 'container:' /repos/acme-webapp/.gitea/workflows/ci.yml"
+    "grep -q 'container:' /repos/wl-webapp/.gitea/workflows/ci.yml"
 
 # Check 6: CI has clean state verification step
 check "CI verifies clean state before build" \
-    "grep -q 'clean state\|Verify.*clean\|verify.*state' /repos/acme-webapp/.gitea/workflows/ci.yml"
+    "grep -q 'clean state\|Verify.*clean\|verify.*state' /repos/wl-webapp/.gitea/workflows/ci.yml"
 
 echo ""
 echo "  Results: ${PASS} passed, ${FAIL} failed"

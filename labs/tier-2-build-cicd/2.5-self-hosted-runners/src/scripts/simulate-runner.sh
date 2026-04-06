@@ -13,7 +13,7 @@ mkdir -p "${RUNNER_DIR}/config"
 # Create a .bashrc that gets sourced before each job
 cat > "${RUNNER_DIR}/workspace/.bashrc" << 'PROFILE'
 # Runner profile -- sourced before each job
-export RUNNER_NAME="acme-runner-01"
+export RUNNER_NAME="wl-runner-01"
 export RUNNER_OS="Linux"
 PROFILE
 
