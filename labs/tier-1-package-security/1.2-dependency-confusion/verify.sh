@@ -45,7 +45,7 @@ check "wl-auth==1.0.0 is installed (legitimate version)" \
 
 # Check 4: pip config points to private registry
 check "pip.conf points to private registry only" \
-    "grep -q 'private-pypi' /etc/pip.conf && ! grep -q 'public-pypi' /etc/pip.conf"
+    "grep -q 'pypi-private' /etc/pip.conf && ! grep -q 'pypi-public' /etc/pip.conf"
 
 echo ""
 echo "  Results: ${PASS} passed, ${FAIL} failed"

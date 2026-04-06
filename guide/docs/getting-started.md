@@ -1,15 +1,19 @@
 # Getting Started
 
-## Connecting to the Lab Environment
-
-All labs run inside a Kubernetes cluster on your machine. To start working:
+## Quick Start
 
 ```bash
-# Connect to the workstation
-./weaklink shell
+./start.sh
 ```
 
-You are now inside the lab workstation. All registries, Git servers, and tools are pre-configured and reachable by DNS name. You do not need to install anything else.
+This starts minikube, builds all images, and deploys the platform. When it finishes, open [http://localhost:8000](http://localhost:8000) in your browser.
+
+## Connecting to the Lab Environment
+
+All labs run inside a Kubernetes cluster on your machine. You can connect in two ways:
+
+1. **Browser (recommended):** Open any lab in the guide. The embedded terminal initializes the lab automatically.
+2. **CLI:** Run `./weaklink shell` to open a terminal, then run `lab-init <lab-id>` to set up the environment for a specific lab.
 
 ### Workstation Terminal
 
@@ -53,7 +57,7 @@ From inside the workstation, these services are reachable:
 
 ### Starting and Verifying Labs
 
-Each lab is started automatically when you connect. To verify your work after completing a lab:
+Each lab initializes automatically when you open it in the guide. If using the CLI directly, run `lab-init <lab-id>` to set up the environment. To verify your work after completing a lab:
 
 ```bash
 # Run from OUTSIDE the workstation (your host terminal)

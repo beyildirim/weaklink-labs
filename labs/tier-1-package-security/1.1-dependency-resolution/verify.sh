@@ -37,7 +37,7 @@ check "pip.conf uses --index-url (not --extra-index-url)" \
 
 # Check 2: pip.conf points to private registry only
 check "pip.conf points to private registry" \
-    "grep -q 'private-pypi' /etc/pip.conf"
+    "grep -q 'pypi-private' /etc/pip.conf"
 
 # Check 3: A lockfile (requirements.lock or frozen requirements) exists
 check "Lockfile exists (requirements.lock or frozen output)" \

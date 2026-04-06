@@ -1,13 +1,13 @@
 #!/bin/bash
 # Wait for PyPI servers to be ready
 echo "Waiting for private PyPI server..."
-until curl -sf http://private-pypi:8080/simple/ > /dev/null 2>&1; do
+until curl -sf http://pypi-private:8080/simple/ > /dev/null 2>&1; do
     sleep 1
 done
 echo "Private PyPI ready."
 
 echo "Waiting for public PyPI server..."
-until curl -sf http://public-pypi:8080/simple/ > /dev/null 2>&1; do
+until curl -sf http://pypi-public:8080/simple/ > /dev/null 2>&1; do
     sleep 1
 done
 echo "Public PyPI ready."
