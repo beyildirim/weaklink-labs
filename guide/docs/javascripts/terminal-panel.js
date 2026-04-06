@@ -156,11 +156,17 @@
     if (showTerminal && !panel) {
       createPanel();
     } else if (showTerminal && panel && isOpen) {
-      // Lab changed during navigation, trigger init for new lab
+      // Lab changed during navigation: re-init and reload terminal
       var labId = getLabId();
-      if (labId && labId !== currentLabId) {
+      if (labId && labId !== currentLabId && iframe) {
         currentLabId = labId;
         initLab(labId);
+        iframeLoaded = false;
+        iframe.src = '';
+        setTimeout(function() {
+          iframe.src = buildTerminalUrl();
+          iframeLoaded = true;
+        }, 1500);
       }
     } else if (!showTerminal && panel) {
       destroyPanel();
