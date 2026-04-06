@@ -49,8 +49,8 @@ RUN curl -fsSL -o /usr/local/bin/ttyd https://github.com/tsl0922/ttyd/releases/d
 # Create non-root user
 RUN useradd -m -s /bin/bash hacker
 
-# Vulnerable pip configuration (this is what labs teach users to fix)
-# extra-index-url checks BOTH registries; pip picks the highest version
+# Vulnerable pip configuration (fallback for local docker-run testing;
+# in K8s the Helm ConfigMap overrides this at the same path)
 RUN mkdir -p /home/hacker/.config/pip
 COPY images/workstation/pip.conf /home/hacker/.config/pip/pip.conf
 
@@ -89,8 +89,10 @@ RUN echo 'source /etc/bash_completion 2>/dev/null' >> /home/hacker/.bashrc \
 RUN git config --system user.email "hacker@weaklink.local" \
     && git config --system user.name "Hacker"
 
-# Working directory
-RUN mkdir -p /home/labs && chown hacker:hacker /home/labs
+# Pre-create lab directories writable by hacker (lab-init writes to these)
+RUN mkdir -p /app /etc/pip-configs /lab /repos /workspace /home/labs \
+    && chown hacker:hacker /app /etc/pip-configs /lab /repos /workspace /home/labs \
+    && touch /etc/pip.conf && chown hacker:hacker /etc/pip.conf
 WORKDIR /home/labs
 
 # Fix ownership
@@ -98,5 +100,6 @@ RUN chown -R hacker:hacker /home/hacker
 
 USER hacker
 
-# Start ttyd on port 7681 in background, then sleep to keep container alive
-CMD bash -c "ttyd -W -p 7681 bash &>/dev/null & sleep infinity"
+# ttyd in foreground keeps the container alive; URL ?arg= params are appended
+# to the bash command (e.g. ?arg=-c&arg=lab-init 1.2; exec bash -l)
+CMD ["ttyd", "-W", "-p", "7681", "bash"]

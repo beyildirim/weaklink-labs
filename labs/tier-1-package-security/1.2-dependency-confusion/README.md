@@ -16,8 +16,8 @@ In this lab, you are a developer at WeakLink Corp. You will see the attack happe
 | Service | Description |
 |---------|-------------|
 | `workstation` | WeakLink Corp developer machine with Python 3.11 |
-| `private-pypi` | WeakLink Corp private PyPI server with `wl-auth==1.0.0` |
-| `public-pypi` | Simulated public PyPI with attacker's `wl-auth==99.0.0` |
+| `pypi-private` | WeakLink Corp private PyPI server with `wl-auth==1.0.0` |
+| `pypi-public` | Simulated public PyPI with attacker's `wl-auth==99.0.0` |
 
 Connect to the workstation:
 
@@ -39,8 +39,8 @@ The app depends on `wl-auth==1.0.0`, an internal authentication library.
 ### Step 2: Check the private registry
 
 ```bash
-curl -s http://private-pypi:8080/simple/ | grep -o 'href="[^"]*"'
-curl -s http://private-pypi:8080/simple/wl-auth/
+curl -s http://pypi-private:8080/simple/ | grep -o 'href="[^"]*"'
+curl -s http://pypi-private:8080/simple/wl-auth/
 ```
 
 The legitimate `wl-auth 1.0.0` is on the private registry.
@@ -48,8 +48,8 @@ The legitimate `wl-auth 1.0.0` is on the private registry.
 ### Step 3: Check the public registry
 
 ```bash
-curl -s http://public-pypi:8080/simple/ | grep -o 'href="[^"]*"'
-curl -s http://public-pypi:8080/simple/wl-auth/
+curl -s http://pypi-public:8080/simple/ | grep -o 'href="[^"]*"'
+curl -s http://pypi-public:8080/simple/wl-auth/
 ```
 
 There IS a `wl-auth` on the public registry, version 99.0.0. This is the attacker's package. In the real world, the attacker found the internal package name (from a leaked `requirements.txt`, a job posting, or a public GitHub repo) and published a higher version.
