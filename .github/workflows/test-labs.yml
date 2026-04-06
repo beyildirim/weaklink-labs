@@ -39,7 +39,7 @@ jobs:
           docker build -f images/guide/Dockerfile -t weaklink-labs/guide:latest .
 
           echo "--- Building workstation image ---"
-          docker build -f images/workstation/Dockerfile -t weaklink-labs/workstation:latest images/workstation/
+          docker build -f images/workstation/Dockerfile -t weaklink-labs/workstation:latest .
 
           echo "--- Building lab-setup image ---"
           docker build -f images/lab-setup/Dockerfile -t weaklink-labs/lab-setup:latest .

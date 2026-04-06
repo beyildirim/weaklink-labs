@@ -42,6 +42,8 @@ spec:
               value: "false"
             - name: GITEA__service__REQUIRE_SIGNIN_VIEW
               value: "false"
+            - name: GITEA__actions__ENABLED
+              value: "true"
           readinessProbe:
             httpGet:
               path: /api/v1/version
@@ -98,3 +100,87 @@ spec:
       name: ssh
   selector:
     {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "gitea") | nindent 4 }}
+---
+# Gitea Actions Runner (lightweight, for CI/CD labs in Tier 0 and Tier 2)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitea-runner
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "weaklink-labs.componentLabels" (dict "context" . "component" "gitea-runner") | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "gitea-runner") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "gitea-runner") | nindent 8 }}
+    spec:
+      initContainers:
+        - name: register-runner
+          image: curlimages/curl:latest
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for Gitea..."
+              until curl -sf http://gitea:{{ .Values.gitea.port }}/api/v1/version >/dev/null 2>&1; do sleep 2; done
+              echo "Registering runner..."
+              TOKEN=$(curl -sf -X POST "http://gitea:{{ .Values.gitea.port }}/api/v1/admin/runners/registration-token" \
+                -u "{{ .Values.gitea.adminUser }}:{{ .Values.gitea.adminUser }}" \
+                -H "Content-Type: application/json" | grep -o '"token":"[^"]*"' | cut -d'"' -f4)
+              if [ -z "$TOKEN" ]; then
+                echo "Failed to get registration token, using fallback"
+                TOKEN="weaklink-runner-token"
+              fi
+              echo "$TOKEN" > /data/runner-token
+              echo "Runner token saved"
+          volumeMounts:
+            - name: runner-data
+              mountPath: /data
+      containers:
+        - name: runner
+          image: gitea/act_runner:latest
+          env:
+            - name: GITEA_INSTANCE_URL
+              value: "http://gitea:{{ .Values.gitea.port }}"
+            - name: GITEA_RUNNER_REGISTRATION_TOKEN_FILE
+              value: "/data/runner-token"
+            - name: GITEA_RUNNER_NAME
+              value: "weaklink-runner"
+            - name: GITEA_RUNNER_LABELS
+              value: "ubuntu-latest:docker://node:20-slim"
+          command:
+            - sh
+            - -c
+            - |
+              if [ -f /data/runner-token ]; then
+                act_runner register --no-interactive \
+                  --instance "$GITEA_INSTANCE_URL" \
+                  --token "$(cat /data/runner-token)" \
+                  --name "$GITEA_RUNNER_NAME" \
+                  --labels "$GITEA_RUNNER_LABELS" 2>/dev/null || true
+              fi
+              act_runner daemon
+          volumeMounts:
+            - name: runner-data
+              mountPath: /data
+            - name: docker-sock
+              mountPath: /var/run/docker.sock
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+      volumes:
+        - name: runner-data
+          emptyDir: {}
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+            type: Socket

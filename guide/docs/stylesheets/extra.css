@@ -359,15 +359,13 @@
   padding: 0 1rem;
   height: 48px;
   min-height: 48px;
-  background: #161b22;
-  border-bottom: 1px solid #30363d;
+  background: linear-gradient(135deg, #bf360c, #d84315);
   user-select: none;
 }
 .terminal-panel-title {
-  font-family: 'JetBrains Mono', monospace;
   font-size: 0.8rem;
   font-weight: 700;
-  color: #ff7043;
+  color: #fff;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -377,9 +375,9 @@
   align-items: center;
 }
 .terminal-panel-btn {
-  background: none;
-  border: 1px solid #30363d;
-  color: #8b949e;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.85);
   font-size: 0.85rem;
   width: 28px;
   height: 28px;
@@ -392,9 +390,9 @@
   line-height: 1;
 }
 .terminal-panel-btn:hover {
-  color: #f0f6fc;
-  border-color: #8b949e;
-  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.2);
 }
 .terminal-panel-body {
   flex: 1;

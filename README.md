@@ -36,10 +36,6 @@ Requires Docker, minikube, kubectl, and Helm. See [Prerequisites](#prerequisites
 
 Click the **Open in GitHub Codespaces** badge above. Everything is pre-installed.
 
-## Screenshot
-
-<!-- TODO: Add screenshot/GIF of the web UI with a lab open -->
-
 ## What You'll Learn
 
 | Tier | Topic | Labs |
