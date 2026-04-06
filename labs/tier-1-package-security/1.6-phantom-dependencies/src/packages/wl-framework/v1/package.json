@@ -1,5 +1,5 @@
 {
-  "name": "acme-framework",
+  "name": "wl-framework",
   "version": "1.0.0",
   "description": "A web framework that depends on debug (v1)",
   "main": "index.js",

@@ -30,7 +30,7 @@ echo "  Verifying Lab 2.4: Secret Exfiltration from CI"
 echo "  ==============================================="
 echo ""
 
-REPO="/repos/acme-webapp"
+REPO="/repos/wl-webapp"
 CI="${REPO}/.gitea/workflows/ci.yml"
 
 # Check 1: No global env secrets

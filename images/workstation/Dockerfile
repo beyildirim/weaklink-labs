@@ -50,20 +50,36 @@ RUN curl -fsSL -o /usr/local/bin/ttyd https://github.com/tsl0922/ttyd/releases/d
 RUN useradd -m -s /bin/bash hacker
 
 # Vulnerable pip configuration (this is what labs teach users to fix)
-# --extra-index-url checks BOTH registries; pip picks the highest version
+# extra-index-url checks BOTH registries; pip picks the highest version
 RUN mkdir -p /home/hacker/.config/pip
-COPY pip.conf /home/hacker/.config/pip/pip.conf
+COPY images/workstation/pip.conf /home/hacker/.config/pip/pip.conf
 
 # npm configuration pointing to Verdaccio
-COPY .npmrc /home/hacker/.npmrc
+COPY images/workstation/.npmrc /home/hacker/.npmrc
 
 # MOTD
-COPY motd /etc/motd
+COPY images/workstation/motd /etc/motd
 RUN echo 'cat /etc/motd' >> /home/hacker/.bashrc
 
 # weaklink-help script
-COPY weaklink-help /usr/local/bin/weaklink-help
+COPY images/workstation/weaklink-help /usr/local/bin/weaklink-help
 RUN chmod +x /usr/local/bin/weaklink-help
+
+# Copy all lab source files as read-only golden copies, then flatten
+# /opt/labs-raw/tier-1-package-security/1.2-dependency-confusion/src/ -> /opt/labs/1.2/
+COPY labs/ /opt/labs-raw/
+RUN mkdir -p /opt/labs && \
+    for lab_dir in /opt/labs-raw/tier-*/*/; do \
+        lab_id=$(grep '^id:' "${lab_dir}/lab.yml" 2>/dev/null | sed 's/id: *"//;s/"//g' | tr -d ' '); \
+        if [ -n "$lab_id" ] && [ -d "${lab_dir}/src" ]; then \
+            cp -a "${lab_dir}/src" "/opt/labs/${lab_id}"; \
+        fi; \
+    done && rm -rf /opt/labs-raw
+
+# Lab init/reset scripts
+COPY images/workstation/lab-init /usr/local/bin/lab-init
+COPY images/workstation/lab-reset /usr/local/bin/lab-reset
+RUN chmod +x /usr/local/bin/lab-init /usr/local/bin/lab-reset
 
 # Bash completion and prompt
 RUN echo 'source /etc/bash_completion 2>/dev/null' >> /home/hacker/.bashrc \

@@ -12,6 +12,6 @@ sha256sum Makefile scripts/run-tests.sh > .ci-checksums
 
 # Add verification to CI (already in ci-hardened.yml)
 cp /lab/src/repo/.gitea/workflows/ci-hardened.yml \
-   /repos/acme-webapp/.gitea/workflows/ci.yml
-cp /lab/src/repo/.ci-checksums /repos/acme-webapp/.ci-checksums
+   /repos/wl-webapp/.gitea/workflows/ci.yml
+cp /lab/src/repo/.ci-checksums /repos/wl-webapp/.ci-checksums
 ```

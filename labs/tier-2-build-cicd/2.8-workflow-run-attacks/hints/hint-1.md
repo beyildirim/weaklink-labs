@@ -1,13 +1,13 @@
 The `deploy.yml` workflow triggers via `workflow_run` after the PR CI
 completes. It downloads artifacts from the triggering workflow and
-executes them -- but it runs in the context of the DEFAULT BRANCH
+executes them. It runs in the context of the DEFAULT BRANCH
 with write permissions and full secret access.
 
 Look at the workflow chain:
 
 ```bash
-cat /repos/acme-webapp/.gitea/workflows/ci.yml
-cat /repos/acme-webapp/.gitea/workflows/deploy.yml
+cat /repos/wl-webapp/.gitea/workflows/ci.yml
+cat /repos/wl-webapp/.gitea/workflows/deploy.yml
 ```
 
 The deploy workflow trusts whatever artifact the CI produced.

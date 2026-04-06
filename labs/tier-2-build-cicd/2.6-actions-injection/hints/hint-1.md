@@ -5,7 +5,7 @@ before execution.
 Look at the vulnerable workflow:
 
 ```bash
-cat /repos/acme-webapp/.gitea/workflows/issue-handler.yml
+cat /repos/wl-webapp/.gitea/workflows/issue-handler.yml
 ```
 
 The `run:` block does:

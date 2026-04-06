@@ -1,6 +1,6 @@
 # Lab 1.6: Phantom Dependencies
 
-Your code imports `debug`. It works. But `debug` isn't in your `package.json`. It's there because `acme-framework` depends on it, and npm hoists transitive dependencies to the root of `node_modules/`. You're relying on something you don't control -- and one day, it will break. Or worse, an attacker will exploit the gap.
+Your code imports `debug`. It works. But `debug` isn't in your `package.json`. It's there because `wl-framework` depends on it, and npm hoists transitive dependencies to the root of `node_modules/`. You're relying on something you don't control, and one day, it will break. Or worse, an attacker will exploit the gap.
 
 This lab teaches you what phantom (implicit) dependencies are, how they silently break production, and how attackers weaponize them.
 
@@ -18,9 +18,9 @@ This lab teaches you what phantom (implicit) dependencies are, how they silently
 | **workspace** | `weaklink shell 1.6` | Your working shell with the app |
 
 The workspace contains:
-- An Express-like app (`app.js`) that uses `debug` -- but `debug` is NOT in `package.json`
-- `acme-framework@1.0.0` on the registry (depends on `debug@4.3.4`)
-- `acme-framework@2.0.0` ready to publish (drops `debug` dependency)
+- An Express-like app (`app.js`) that uses `debug`, but `debug` is NOT in `package.json`
+- `wl-framework@1.0.0` on the registry (depends on `debug@4.3.4`)
+- `wl-framework@2.0.0` ready to publish (drops `debug` dependency)
 
 ## Start the Lab
 
@@ -43,7 +43,7 @@ A phantom (or implicit) dependency is a package your code `require()`s that is N
 cat /workspace/package.json
 ```
 
-Dependencies: only `acme-framework`. No `debug`.
+Dependencies: only `wl-framework`. No `debug`.
 
 ```bash
 cat /workspace/app.js
@@ -71,7 +71,7 @@ ls node_modules/debug/
 npm ls debug
 ```
 
-You'll see: `debug@4.3.4` is installed as a dependency of `acme-framework@1.0.0`. npm hoisted it to `node_modules/debug/` at the root level, making it accessible to your code even though you never declared it.
+You'll see: `debug@4.3.4` is installed as a dependency of `wl-framework@1.0.0`. npm hoisted it to `node_modules/debug/` at the root level, making it accessible to your code even though you never declared it.
 
 ### Step 4: Find phantom dependencies with depcheck
 
@@ -83,7 +83,7 @@ depcheck /workspace
 
 ### Key Insight
 
-Your code depends on an implementation detail of `acme-framework`. If `acme-framework` upgrades, drops, or changes the version of `debug`, your app breaks -- and you have zero control over when that happens.
+Your code depends on an implementation detail of `wl-framework`. If `wl-framework` upgrades, drops, or changes the version of `debug`, your app breaks, and you have zero control over when that happens.
 
 ---
 
@@ -93,13 +93,13 @@ Your code depends on an implementation detail of `acme-framework`. If `acme-fram
 
 What happens when the upstream dependency drops `debug`?
 
-#### Step 1: Publish the updated acme-framework
+#### Step 1: Publish the updated wl-framework
 
 ```bash
 publish-attack
 ```
 
-This publishes `acme-framework@2.0.0` (which no longer depends on `debug`) and a malicious `debug@99.0.0` to the registry.
+This publishes `wl-framework@2.0.0` (which no longer depends on `debug`) and a malicious `debug@99.0.0` to the registry.
 
 #### Step 2: Update your dependencies
 
@@ -108,7 +108,7 @@ cd /workspace
 npm update
 ```
 
-npm upgrades `acme-framework` to v2.0.0. Since v2 doesn't depend on `debug`, npm may remove `debug` from `node_modules/` (or resolve the malicious v99).
+npm upgrades `wl-framework` to v2.0.0. Since v2 doesn't depend on `debug`, npm may remove `debug` from `node_modules/` (or resolve the malicious v99).
 
 #### Step 3: Try running the app
 
@@ -146,7 +146,7 @@ cat node_modules/debug/package.json | grep version
 ### What just happened
 
 - You depended on `debug` without declaring it
-- When `acme-framework` dropped `debug`, your implicit contract broke
+- When `wl-framework` dropped `debug`, your implicit contract broke
 - The malicious `debug@99.0.0` could fill the gap, silently compromising your app
 - **This is not hypothetical**: real packages like `event-stream` and `ua-parser-js` were compromised through similar dependency gaps
 
@@ -184,7 +184,7 @@ cat > package.json << 'EOF'
     "start": "node app.js"
   },
   "dependencies": {
-    "acme-framework": "1.0.0",
+    "wl-framework": "1.0.0",
     "debug": "4.3.4"
   }
 }
@@ -193,7 +193,7 @@ EOF
 
 Key changes:
 - `debug` is now an **explicit** dependency with a **pinned version** (`4.3.4`, not `^4.3.4`)
-- `acme-framework` is pinned to `1.0.0` (you can also use `^1.0.0` if you want minor updates)
+- `wl-framework` is pinned to `1.0.0` (you can also use `^1.0.0` if you want minor updates)
 
 ### Step 4: Install from clean state
 
@@ -232,7 +232,7 @@ No more phantom dependencies.
 
 ### Step 8: Test the defense against the attack
 
-Even if `acme-framework@2.0.0` is available and `debug@99.0.0` exists on the registry:
+Even if `wl-framework@2.0.0` is available and `debug@99.0.0` exists on the registry:
 
 ```bash
 # Try updating — debug stays at 4.3.4 because it's pinned
@@ -252,7 +252,7 @@ Because `debug@4.3.4` is explicitly declared and pinned, `npm update` won't repl
 
 | Concept | Real-World Application |
 |---------|----------------------|
-| Phantom dependencies | Packages your code uses but doesn't declare -- a ticking time bomb |
+| Phantom dependencies | Packages your code uses but doesn't declare. A ticking time bomb |
 | npm hoisting | Transitive deps get hoisted to root `node_modules/`, making them accidentally importable |
 | `depcheck` | Tool that finds undeclared dependencies by comparing `require()` calls vs `package.json` |
 | Pinned versions | `"debug": "4.3.4"` (exact) vs `"^4.3.4"` (allows minor/patch updates) |
@@ -267,7 +267,7 @@ Because `debug@4.3.4` is explicitly declared and pinned, `npm update` won't repl
 
 ## Further Reading
 
-- [Phantom dependencies in Node.js](https://rushjs.io/pages/advanced/phantom_deps/) -- Rush.js documentation on the problem
-- [npm hoisting explained](https://docs.npmjs.com/cli/v10/configuring-npm/package-lock-json) -- how npm flattens the dependency tree
-- [depcheck on npm](https://www.npmjs.com/package/depcheck) -- the tool for finding phantom deps
-- [Yarn PnP](https://yarnpkg.com/features/pnp) -- an alternative approach that eliminates hoisting entirely
+- [Phantom dependencies in Node.js](https://rushjs.io/pages/advanced/phantom_deps/), Rush.js documentation on the problem
+- [npm hoisting explained](https://docs.npmjs.com/cli/v10/configuring-npm/package-lock-json), explaining how npm flattens the dependency tree
+- [depcheck on npm](https://www.npmjs.com/package/depcheck), the tool for finding phantom deps
+- [Yarn PnP](https://yarnpkg.com/features/pnp), an alternative approach that eliminates hoisting entirely

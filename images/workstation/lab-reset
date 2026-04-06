@@ -1,0 +1,5 @@
+#!/bin/bash
+# Reset the current (or specified) lab to its initial state.
+LAB_ID="${1:-$(cat /tmp/.weaklink-current-lab 2>/dev/null)}"
+[ -z "$LAB_ID" ] && { echo "Usage: lab-reset [lab-id]"; exit 1; }
+lab-init "$LAB_ID"

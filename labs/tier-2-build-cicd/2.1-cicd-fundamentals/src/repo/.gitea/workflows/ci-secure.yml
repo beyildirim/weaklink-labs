@@ -1,4 +1,4 @@
-name: ACME Webapp CI (Secured)
+name: WeakLink Webapp CI (Secured)
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [main]
 
-# NO global env secrets -- secrets are scoped to individual steps
+# NO global env secrets. Secrets are scoped to individual steps.
 
 jobs:
   test:
@@ -29,12 +29,12 @@ jobs:
           mkdir -p dist
           cp app.py dist/
           cp requirements.txt dist/
-          tar czf acme-webapp.tar.gz dist/
+          tar czf wl-webapp.tar.gz dist/
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: webapp-build
-          path: acme-webapp.tar.gz
+          path: wl-webapp.tar.gz
 
   deploy:
     runs-on: ubuntu-latest

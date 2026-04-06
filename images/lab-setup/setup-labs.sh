@@ -123,8 +123,8 @@ build_and_upload_pypi_package "${LABS}/tier-1-package-security/1.1-dependency-re
 # data-processor 2.0.0 (from tier-1/1.1)
 build_and_upload_pypi_package "${LABS}/tier-1-package-security/1.1-dependency-resolution/src/packages/data-processor-2.0.0" "$PYPI_PRIVATE_UPLOAD"
 
-# acme-auth 1.0.0 (from tier-1/1.2)
-build_and_upload_pypi_package "${LABS}/tier-1-package-security/1.2-dependency-confusion/src/packages/acme-auth-1.0.0" "$PYPI_PRIVATE_UPLOAD"
+# wl-auth 1.0.0 (from tier-1/1.2)
+build_and_upload_pypi_package "${LABS}/tier-1-package-security/1.2-dependency-confusion/src/packages/wl-auth-1.0.0" "$PYPI_PRIVATE_UPLOAD"
 
 # flask-utils 1.0.0 (from tier-1/1.4)
 build_and_upload_pypi_package "${LABS}/tier-1-package-security/1.4-lockfile-injection/src/packages/flask-utils" "$PYPI_PRIVATE_UPLOAD"
@@ -146,8 +146,8 @@ PYPI_PUBLIC_UPLOAD="http://pypi-public:8080/"
 # internal-utils 99.0.0 — dependency confusion (from tier-1/1.1)
 build_and_upload_pypi_package "${LABS}/tier-1-package-security/1.1-dependency-resolution/src/packages/internal-utils-99.0.0" "$PYPI_PUBLIC_UPLOAD"
 
-# acme-auth 99.0.0 — dependency confusion (from tier-1/1.2)
-build_and_upload_pypi_package "${LABS}/tier-1-package-security/1.2-dependency-confusion/src/packages/acme-auth-99.0.0" "$PYPI_PUBLIC_UPLOAD"
+# wl-auth 99.0.0, dependency confusion (from tier-1/1.2)
+build_and_upload_pypi_package "${LABS}/tier-1-package-security/1.2-dependency-confusion/src/packages/wl-auth-99.0.0" "$PYPI_PUBLIC_UPLOAD"
 
 # malicious-utils 1.0.0 — malicious setup.py (from tier-0/0.2)
 build_and_upload_pypi_package "${LABS}/tier-0-foundations/0.2-package-managers/src/packages/malicious-utils" "$PYPI_PUBLIC_UPLOAD"
@@ -328,11 +328,11 @@ else
 fi
 ok "  crafted-widget published"
 
-# acme-framework@1.0.0 (from tier-1/1.6)
-npm_publish "${LABS}/tier-1-package-security/1.6-phantom-dependencies/src/packages/acme-framework/v1"
+# wl-framework@1.0.0 (from tier-1/1.6)
+npm_publish "${LABS}/tier-1-package-security/1.6-phantom-dependencies/src/packages/wl-framework/v1"
 
-# acme-framework@2.0.0 (from tier-1/1.6)
-npm_publish "${LABS}/tier-1-package-security/1.6-phantom-dependencies/src/packages/acme-framework/v2"
+# wl-framework@2.0.0 (from tier-1/1.6)
+npm_publish "${LABS}/tier-1-package-security/1.6-phantom-dependencies/src/packages/wl-framework/v2"
 
 # debug@4.3.4 — legitimate debug stub
 log "Creating debug@4.3.4 (legitimate)..."

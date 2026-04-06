@@ -20,5 +20,5 @@ Apply the fixed config:
 
 ```bash
 cp /lab/src/repo/.gitea/workflows/issue-handler-safe.yml \
-   /repos/acme-webapp/.gitea/workflows/issue-handler.yml
+   /repos/wl-webapp/.gitea/workflows/issue-handler.yml
 ```

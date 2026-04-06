@@ -36,7 +36,7 @@ build-guide: ## Build the guide image
 
 build-workstation: ## Build the workstation image
 	@eval $$(minikube docker-env) && \
-		docker build -t weaklink-labs/workstation:latest -f images/workstation/Dockerfile images/workstation/
+		docker build -t weaklink-labs/workstation:latest -f images/workstation/Dockerfile .
 
 build-lab-setup: ## Build the lab-setup image
 	@eval $$(minikube docker-env) && \

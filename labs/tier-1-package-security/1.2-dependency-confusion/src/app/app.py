@@ -1,14 +1,14 @@
-"""ACME Corp internal application.
+"""WeakLink Corp internal application.
 
-This app uses the internal acme-auth package for authentication.
+This app uses the internal wl-auth package for authentication.
 """
 
-from acme_auth import authenticate, get_version
+from wl_auth import authenticate, get_version
 
 
 def main():
     print("=" * 50)
-    print("  ACME Corp Internal Application")
+    print("  WeakLink Corp Internal Application")
     print("=" * 50)
     print()
     print(f"  Auth library: {get_version()}")

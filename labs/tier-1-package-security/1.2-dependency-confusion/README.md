@@ -1,10 +1,10 @@
 # Lab 1.2: Dependency Confusion
 
-In February 2021, security researcher Alex Birsan published a technique that allowed him to execute code inside Microsoft, Apple, PayPal, Tesla, Uber, and dozens of other companies -- just by publishing packages to public PyPI with the same names as their internal packages.
+In February 2021, security researcher Alex Birsan published a technique that allowed him to execute code inside Microsoft, Apple, PayPal, Tesla, Uber, and dozens of other companies simply by publishing packages to public PyPI with the same names as their internal packages.
 
-The attack is simple: if a company uses an internal package called `acme-auth` from their private registry but also has `--extra-index-url https://pypi.org/simple/` in their pip config, an attacker can publish `acme-auth==99.0.0` to public PyPI. Pip picks the higher version, runs the attacker's `setup.py`, and the company is compromised.
+The attack is simple: if a company uses an internal package called `wl-auth` from their private registry but also has `--extra-index-url https://pypi.org/simple/` in their pip config, an attacker can publish `wl-auth==99.0.0` to public PyPI. Pip picks the higher version, runs the attacker's `setup.py`, and the company is compromised.
 
-In this lab, you are a developer at ACME Corp. You will see the attack happen, then defend against it.
+In this lab, you are a developer at WeakLink Corp. You will see the attack happen, then defend against it.
 
 ## Prerequisites
 
@@ -15,9 +15,9 @@ In this lab, you are a developer at ACME Corp. You will see the attack happen, t
 
 | Service | Description |
 |---------|-------------|
-| `workstation` | ACME Corp developer machine with Python 3.11 |
-| `private-pypi` | ACME Corp private PyPI server with `acme-auth==1.0.0` |
-| `public-pypi` | Simulated public PyPI with attacker's `acme-auth==99.0.0` |
+| `workstation` | WeakLink Corp developer machine with Python 3.11 |
+| `private-pypi` | WeakLink Corp private PyPI server with `wl-auth==1.0.0` |
+| `public-pypi` | Simulated public PyPI with attacker's `wl-auth==99.0.0` |
 
 Connect to the workstation:
 
@@ -34,25 +34,25 @@ cat /app/requirements.txt
 cat /app/app.py
 ```
 
-The app depends on `acme-auth==1.0.0`, an internal authentication library.
+The app depends on `wl-auth==1.0.0`, an internal authentication library.
 
 ### Step 2: Check the private registry
 
 ```bash
 curl -s http://private-pypi:8080/simple/ | grep -o 'href="[^"]*"'
-curl -s http://private-pypi:8080/simple/acme-auth/
+curl -s http://private-pypi:8080/simple/wl-auth/
 ```
 
-The legitimate `acme-auth 1.0.0` is on the private registry.
+The legitimate `wl-auth 1.0.0` is on the private registry.
 
 ### Step 3: Check the public registry
 
 ```bash
 curl -s http://public-pypi:8080/simple/ | grep -o 'href="[^"]*"'
-curl -s http://public-pypi:8080/simple/acme-auth/
+curl -s http://public-pypi:8080/simple/wl-auth/
 ```
 
-There IS an `acme-auth` on the public registry -- version 99.0.0. This is the attacker's package. In the real world, the attacker found the internal package name (from a leaked `requirements.txt`, a job posting, or a public GitHub repo) and published a higher version.
+There IS a `wl-auth` on the public registry, version 99.0.0. This is the attacker's package. In the real world, the attacker found the internal package name (from a leaked `requirements.txt`, a job posting, or a public GitHub repo) and published a higher version.
 
 ### Step 4: Check pip configuration
 
@@ -64,14 +64,14 @@ Notice: `extra-index-url` points to the public registry. This means pip checks *
 
 ### Step 5: Install and test (safe for now)
 
-Because the requirements pin `acme-auth==1.0.0` exactly, the first install is safe:
+Because the requirements pin `wl-auth==1.0.0` exactly, the first install is safe:
 
 ```bash
 pip install -r requirements.txt
 python app.py
 ```
 
-The app works. No compromise. The exact version pin (`==1.0.0`) protects you -- for now.
+The app works. No compromise. The exact version pin (`==1.0.0`) protects you, for now.
 
 ### Step 6: Verify no compromise
 
@@ -83,15 +83,15 @@ Clean. But the danger is lurking.
 
 ## Phase 2: Break
 
-This is where it gets real. An attacker has already published `acme-auth==99.0.0` to the public registry.
+This is where it gets real. An attacker has already published `wl-auth==99.0.0` to the public registry.
 
 ### Step 1: Simulate a common developer action
 
 A developer loosens the version pin (maybe to get the "latest" version, or during a dependency upgrade):
 
 ```bash
-# Change ==1.0.0 to just acme-auth (any version)
-sed -i 's/acme-auth==1.0.0/acme-auth/' requirements.txt
+# Change ==1.0.0 to just wl-auth (any version)
+sed -i 's/wl-auth==1.0.0/wl-auth/' requirements.txt
 cat requirements.txt
 ```
 
@@ -135,7 +135,7 @@ bash /app/scripts/check-compromise.sh
 ### Step 6: Understand why it worked
 
 ```bash
-pip show acme-auth
+pip show wl-auth
 ```
 
 Version 99.0.0. The attack worked because:
@@ -167,10 +167,10 @@ Now pip ONLY knows about the private registry.
 
 ```bash
 # Restore the exact version pin
-echo "acme-auth==1.0.0" > requirements.txt
+echo "wl-auth==1.0.0" > requirements.txt
 
 # Uninstall the malicious version
-pip uninstall -y acme-auth
+pip uninstall -y wl-auth
 
 # Install from private registry only
 pip install -r requirements.txt
@@ -180,7 +180,7 @@ pip install -r requirements.txt
 
 ```bash
 # Check the version
-pip show acme-auth
+pip show wl-auth
 
 # Run the app
 python app.py
@@ -202,17 +202,17 @@ Beyond switching to `--index-url`, organizations should also:
 
    ```bash
    # Generate hashes
-   pip hash /path/to/acme-auth-1.0.0.tar.gz
+   pip hash /path/to/wl-auth-1.0.0.tar.gz
 
    # In requirements.txt:
-   # acme-auth==1.0.0 --hash=sha256:abc123...
+   # wl-auth==1.0.0 --hash=sha256:abc123...
    ```
 
 2. **Register internal package names on public PyPI**: Claim the namespace so attackers can't. Even an empty package with `0.0.1` blocks attackers from using the name.
 
 3. **Use a repository manager** (Artifactory, Nexus): These can proxy public PyPI and be configured to prefer private packages by name pattern.
 
-4. **Scope packages**: Some ecosystems support scoped packages (npm's `@acme/auth`). Python doesn't have native namespaces, but naming conventions like `acme-*` help.
+4. **Scope packages**: Some ecosystems support scoped packages (npm's `@company/auth`). Python doesn't have native namespaces, but naming conventions with a company prefix help.
 
 ### Step 4: Final verification
 
@@ -225,12 +225,12 @@ weaklink verify 1.2
 
 ## What You Learned
 
-1. **Dependency confusion is a real attack** -- it compromised Microsoft, Apple, PayPal, and 35+ other companies in 2021.
-2. **`setup.py` runs during install** -- malicious code executes before you ever `import` the package. The damage is done before you can detect it.
-3. **`--extra-index-url` is the root cause** -- it tells pip to search multiple registries and pick the highest version, regardless of source.
-4. **`--index-url` is the fix** -- pointing pip to only the private registry eliminates the attack vector entirely.
-5. **Version pins alone are not enough** -- they help, but a developer loosening a pin (or running `pip install --upgrade`) reopens the vulnerability.
-6. **Defense in depth matters** -- combine `--index-url`, exact version pins, hash verification, and namespace claiming.
+1. **Dependency confusion is a real attack.** It compromised Microsoft, Apple, PayPal, and 35+ other companies in 2021.
+2. **`setup.py` runs during install.** Malicious code executes before you ever `import` the package. The damage is done before you can detect it.
+3. **`--extra-index-url` is the root cause.** It tells pip to search multiple registries and pick the highest version, regardless of source.
+4. **`--index-url` is the fix.** Pointing pip to only the private registry eliminates the attack vector entirely.
+5. **Version pins alone are not enough.** They help, but a developer loosening a pin (or running `pip install --upgrade`) reopens the vulnerability.
+6. **Defense in depth matters.** Combine `--index-url`, exact version pins, hash verification, and namespace claiming.
 
 ## Further Reading
 

@@ -5,13 +5,13 @@
 # checking the private registry, an attacker can publish a higher-version
 # package on public PyPI with the same name as the internal package.
 #
-# The internal package "acme-order-utils" exists on the private registry
-# at version 1.2.3. An attacker publishes "acme-order-utils" version 99.0.0
+# The internal package "wl-order-utils" exists on the private registry
+# at version 1.2.3. An attacker publishes "wl-order-utils" version 99.0.0
 # on public PyPI. The build step installs 99.0.0 (malicious) instead of
 # 1.2.3 (legitimate).
 
 boto3>=1.28.0
 botocore>=1.31.0
-acme-order-utils>=1.0.0
-acme-notification-client>=2.0.0
+wl-order-utils>=1.0.0
+wl-notification-client>=2.0.0
 requests>=2.31.0

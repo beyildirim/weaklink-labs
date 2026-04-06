@@ -1,10 +1,10 @@
-# Supply Chain Security Program -- Implementation Plan
+# Supply Chain Security Program: Implementation Plan
 
 ## Organization Profile
 
 | Field | Value |
 |-------|-------|
-| Organization | Acme Corp (sample) |
+| Organization | WeakLink Corp (sample) |
 | Total Employees | 500 |
 | Engineering / Developers | 200 |
 | Technology Stack | Cloud-native (Kubernetes, containers, CI/CD, microservices) |

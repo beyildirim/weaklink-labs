@@ -13,9 +13,9 @@ def generate_mock_json(logsource_category, title):
             "source": "github_audit",
             "action": "repository.push",
             "actor": "compromised_user_token",
-            "repo": "acme/internal-api",
+            "repo": "wl-corp/internal-api",
             "changes": [".github/workflows/ci.yml", "Makefile", "scripts/build.sh"],
-            "url": "https://github.com/acme/internal-api/commit/abc1234",
+            "url": "https://github.com/wl-corp/internal-api/commit/abc1234",
             "message": "Update build configuration"
         }
     elif "package" in title or "npm" in title or "pip" in title:

@@ -7,10 +7,10 @@
       {"name": "AWS_SECRET_ACCESS_KEY", "value": "***REDACTED***", "scope": "org-level"},
       {"name": "NPM_TOKEN", "value": "npm_***REDACTED***", "scope": "org-level"},
       {"name": "DOCKER_PASSWORD", "value": "***REDACTED***", "scope": "org-level"},
-      {"name": "DOCKER_USERNAME", "value": "acme-ci", "scope": "org-level"},
+      {"name": "DOCKER_USERNAME", "value": "wl-ci", "scope": "org-level"},
       {"name": "GITHUB_TOKEN", "value": "ghp_***REDACTED***", "scope": "repo-level", "permissions": "read-write"},
       {"name": "SONAR_TOKEN", "value": "sqp_***REDACTED***", "scope": "org-level"},
-      {"name": "SENTRY_DSN", "value": "https://***@sentry.acme.corp/2", "scope": "repo-level"}
+      {"name": "SENTRY_DSN", "value": "https://***@sentry.wl.corp/2", "scope": "repo-level"}
     ],
     "compromised_pipelines": ["api-build-3291"]
   },
@@ -22,7 +22,7 @@
       {"name": "AWS_SECRET_ACCESS_KEY", "value": "***REDACTED***", "scope": "org-level"},
       {"name": "NPM_TOKEN", "value": "npm_***REDACTED***", "scope": "org-level"},
       {"name": "DOCKER_PASSWORD", "value": "***REDACTED***", "scope": "org-level"},
-      {"name": "DOCKER_USERNAME", "value": "acme-ci", "scope": "org-level"},
+      {"name": "DOCKER_USERNAME", "value": "wl-ci", "scope": "org-level"},
       {"name": "GITHUB_TOKEN", "value": "ghp_***REDACTED***", "scope": "repo-level", "permissions": "read-write"},
       {"name": "PYPI_TOKEN", "value": "pypi-***REDACTED***", "scope": "repo-level"},
       {"name": "CLOUDFLARE_API_KEY", "value": "***REDACTED***", "scope": "repo-level"}
@@ -35,7 +35,7 @@
     "environment_variables": [
       {"name": "AWS_ACCESS_KEY_ID", "value": "AKIAI44QH8DHBEXAMPLE", "scope": "repo-level"},
       {"name": "AWS_SECRET_ACCESS_KEY", "value": "***REDACTED***", "scope": "repo-level"},
-      {"name": "S3_BUCKET", "value": "acme-ml-models-prod", "scope": "repo-level"},
+      {"name": "S3_BUCKET", "value": "wl-ml-models-prod", "scope": "repo-level"},
       {"name": "WANDB_API_KEY", "value": "***REDACTED***", "scope": "repo-level"},
       {"name": "GITHUB_TOKEN", "value": "ghp_***REDACTED***", "scope": "repo-level", "permissions": "read-only"}
     ],
