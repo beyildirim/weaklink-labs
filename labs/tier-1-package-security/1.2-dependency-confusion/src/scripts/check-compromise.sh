@@ -17,7 +17,7 @@ if [ -f /tmp/dependency-confusion-pwned ]; then
     cat /tmp/dependency-confusion-pwned | sed 's/^/  /'
     echo "  ---"
     echo ""
-    echo "  The malicious setup.py in acme-auth==99.0.0 ran during pip install."
+    echo "  The malicious setup.py in wl-auth==99.0.0 ran during pip install."
     echo "  In a real attack, this could have:"
     echo "    - Exfiltrated AWS/GCP credentials from environment variables"
     echo "    - Installed a reverse shell or backdoor"
@@ -31,16 +31,16 @@ fi
 echo ""
 
 # Also check which version is installed
-if pip show acme-auth &>/dev/null; then
-    VERSION=$(pip show acme-auth 2>/dev/null | grep "^Version:" | awk '{print $2}')
+if pip show wl-auth &>/dev/null; then
+    VERSION=$(pip show wl-auth 2>/dev/null | grep "^Version:" | awk '{print $2}')
     if [ "$VERSION" = "1.0.0" ]; then
-        echo "  acme-auth version: ${VERSION} (legitimate, from private registry)"
+        echo "  wl-auth version: ${VERSION} (legitimate, from private registry)"
     elif [ "$VERSION" = "99.0.0" ]; then
-        echo "  acme-auth version: ${VERSION} (MALICIOUS, from public registry)"
+        echo "  wl-auth version: ${VERSION} (MALICIOUS, from public registry)"
     else
-        echo "  acme-auth version: ${VERSION} (unexpected)"
+        echo "  wl-auth version: ${VERSION} (unexpected)"
     fi
 else
-    echo "  acme-auth is not installed."
+    echo "  wl-auth is not installed."
 fi
 echo ""

@@ -30,7 +30,7 @@ echo "  Verifying Lab 2.3: Indirect PPE"
 echo "  ================================"
 echo ""
 
-REPO="/repos/acme-webapp"
+REPO="/repos/wl-webapp"
 
 # Check 1: Checksum file exists
 check "CI checksums file exists" \

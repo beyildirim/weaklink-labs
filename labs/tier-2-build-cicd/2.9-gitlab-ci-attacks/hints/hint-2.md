@@ -29,5 +29,5 @@ To defend against the three GitLab CI attack vectors:
 Apply the hardened configuration:
 
 ```bash
-cp /lab/src/hardened-gitlab-ci.yml /repos/acme-webapp/.gitlab-ci.yml
+cp /lab/src/hardened-gitlab-ci.yml /repos/wl-webapp/.gitlab-ci.yml
 ```

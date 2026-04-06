@@ -5,15 +5,15 @@
          https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.acme</groupId>
-    <artifactId>acme-webapp</artifactId>
+    <groupId>com.wl</groupId>
+    <artifactId>wl-webapp</artifactId>
     <version>3.2.1</version>
     <packaging>jar</packaging>
 
-    <name>ACME Web Application</name>
+    <name>WeakLink Web Application</name>
     <description>
         This application uses Spring Boot 2.6.1, which transitively depends on
-        Log4j 2.14.1 -- the version vulnerable to CVE-2021-44228 (Log4Shell).
+        Log4j 2.14.1, the version vulnerable to CVE-2021-44228 (Log4Shell).
 
         The developer never explicitly added Log4j as a dependency.
         It arrives through: spring-boot-starter-web -> spring-boot-starter-logging

@@ -1,0 +1,24 @@
+#!/bin/bash
+# Prepare the workstation for a specific lab.
+# Copies golden files from /opt/labs/<id> to /home/labs/<id>,
+# then runs per-lab init if present.
+LAB_ID="${1:-}"
+[ -z "$LAB_ID" ] && { echo "Usage: lab-init <lab-id>"; exit 1; }
+
+GOLDEN="/opt/labs/${LAB_ID}"
+[ -d "$GOLDEN" ] || { echo "Lab ${LAB_ID}: no source files found."; exit 0; }
+
+# Copy golden files to writable workspace
+LAB_WORK="/home/labs/${LAB_ID}"
+rm -rf "$LAB_WORK" 2>/dev/null
+cp -a "$GOLDEN" "$LAB_WORK"
+
+# Run per-lab init if present (sets up /app, /etc/pip.conf, etc.)
+if [ -x "${LAB_WORK}/lab-init.sh" ]; then
+    source "${LAB_WORK}/lab-init.sh"
+fi
+
+# Track current lab
+echo "$LAB_ID" > /tmp/.weaklink-current-lab
+
+echo "Lab ${LAB_ID} initialized. Working directory: ${LAB_WORK}"

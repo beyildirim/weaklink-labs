@@ -16,7 +16,7 @@ cat > package.json << 'EOF'
     "start": "node app.js"
   },
   "dependencies": {
-    "acme-framework": "1.0.0",
+    "wl-framework": "1.0.0",
     "debug": "4.3.4"
   }
 }

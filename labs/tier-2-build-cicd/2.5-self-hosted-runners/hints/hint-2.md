@@ -1,8 +1,8 @@
 To defend against runner persistence attacks:
 
-1. **Verify clean state** before each job -- check for unexpected files
-2. **Use ephemeral runners** -- destroy and recreate after each job
-3. **Container isolation** -- run each job in a fresh container
+1. **Verify clean state** before each job. Check for unexpected files.
+2. **Use ephemeral runners.** Destroy and recreate after each job.
+3. **Container isolation.** Run each job in a fresh container.
 
 Apply the defense:
 

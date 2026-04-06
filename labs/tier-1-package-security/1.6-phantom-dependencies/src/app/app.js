@@ -1,11 +1,11 @@
 // app.js — Application that uses a PHANTOM dependency.
 //
 // "debug" is NOT in our package.json, but it works because
-// acme-framework@1.0.0 depends on it and npm hoists it to node_modules/.
+// wl-framework@1.0.0 depends on it and npm hoists it to node_modules/.
 //
 // This is the phantom dependency anti-pattern.
 
-const framework = require('acme-framework');
+const framework = require('wl-framework');
 const debug = require('debug');  // <-- PHANTOM: not in our package.json!
 
 const log = debug('myapp');

@@ -2,11 +2,11 @@
 # publish-attack.sh — Phase 2 attack setup for Lab 1.6
 #
 # Publishes:
-# 1. acme-framework@2.0.0 (drops the debug dependency)
+# 1. wl-framework@2.0.0 (drops the debug dependency)
 # 2. debug@99.0.0 (malicious version that simulates an attacker takeover)
 #
 # After running this, `npm update` in the victim app will:
-# - Upgrade acme-framework to v2.0.0 (which no longer depends on debug)
+# - Upgrade wl-framework to v2.0.0 (which no longer depends on debug)
 # - Potentially resolve debug@99.0.0 (the malicious version)
 
 set -euo pipefail
@@ -24,12 +24,12 @@ TOKEN=$(curl -sf -X PUT "${REGISTRY}/-/user/org.couchdb.user:labuser" \
 echo "//registry:4873/:_authToken=${TOKEN}" > ~/.npmrc
 echo "registry=${REGISTRY}/" >> ~/.npmrc
 
-# Publish acme-framework@2.0.0 (no debug dependency)
+# Publish wl-framework@2.0.0 (no debug dependency)
 echo ""
-echo "[1] Publishing acme-framework@2.0.0 (debug dependency REMOVED)..."
-cd "${PACKAGES_DIR}/acme-framework/v2"
+echo "[1] Publishing wl-framework@2.0.0 (debug dependency REMOVED)..."
+cd "${PACKAGES_DIR}/wl-framework/v2"
 npm publish --registry "${REGISTRY}" 2>&1 || true
-echo "[+] acme-framework@2.0.0 published"
+echo "[+] wl-framework@2.0.0 published"
 
 # Publish malicious debug@99.0.0
 echo ""
@@ -44,4 +44,4 @@ echo ""
 echo "Now in the victim app, run:"
 echo "  npm update"
 echo ""
-echo "This will upgrade acme-framework to v2.0.0 and may resolve debug@99.0.0."
+echo "This will upgrade wl-framework to v2.0.0 and may resolve debug@99.0.0."

@@ -30,7 +30,7 @@ echo "  Verifying Lab 2.6: GitHub Actions Injection"
 echo "  ============================================"
 echo ""
 
-REPO="/repos/acme-webapp"
+REPO="/repos/wl-webapp"
 ISSUE_WF="${REPO}/.gitea/workflows/issue-handler.yml"
 
 # Check 1: No direct ${{ }} interpolation in run: blocks

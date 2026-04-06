@@ -6,10 +6,10 @@
     "timestamp": "2021-12-09T00:00:00Z",
     "component": {
       "type": "application",
-      "name": "acme-webapp",
+      "name": "wl-webapp",
       "version": "3.2.1",
-      "group": "com.acme",
-      "description": "ACME Web Application -- SBOM generated BEFORE Log4Shell disclosure"
+      "group": "com.wl",
+      "description": "WeakLink Web Application. SBOM generated BEFORE Log4Shell disclosure"
     },
     "tools": [
       {
@@ -42,7 +42,7 @@
       "name": "spring-boot-starter-logging",
       "version": "2.6.1",
       "scope": "required",
-      "description": "Logging starter -- this is where Log4j enters the dependency tree"
+      "description": "Logging starter. This is where Log4j enters the dependency tree"
     },
     {
       "type": "library",
@@ -50,7 +50,7 @@
       "name": "log4j-to-slf4j",
       "version": "2.14.1",
       "scope": "required",
-      "description": "Log4j to SLF4J bridge -- brings in log4j-api as transitive dependency"
+      "description": "Log4j to SLF4J bridge. Brings in log4j-api as transitive dependency"
     },
     {
       "type": "library",
@@ -58,7 +58,7 @@
       "name": "log4j-api",
       "version": "2.14.1",
       "scope": "required",
-      "description": "VULNERABLE: Log4j API -- CVE-2021-44228 affects versions < 2.17.0"
+      "description": "VULNERABLE: Log4j API. CVE-2021-44228 affects versions < 2.17.0"
     },
     {
       "type": "library",
@@ -66,7 +66,7 @@
       "name": "log4j-core",
       "version": "2.14.1",
       "scope": "required",
-      "description": "VULNERABLE: Log4j Core -- contains the JNDI lookup code that enables CVE-2021-44228"
+      "description": "VULNERABLE: Log4j Core. Contains the JNDI lookup code that enables CVE-2021-44228"
     },
     {
       "type": "library",
@@ -92,7 +92,7 @@
   ],
   "dependencies": [
     {
-      "ref": "com.acme:acme-webapp:3.2.1",
+      "ref": "com.wl:wl-webapp:3.2.1",
       "dependsOn": [
         "org.springframework.boot:spring-boot-starter-web:2.6.1",
         "org.springframework.boot:spring-boot-starter-data-jpa:2.6.1",

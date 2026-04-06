@@ -3,7 +3,7 @@
 set -euo pipefail
 
 GITEA_URL="http://gitea:3000"
-REPO_NAME="acme-webapp"
+REPO_NAME="wl-webapp"
 REPO_DIR="/repos/${REPO_NAME}"
 
 echo "[setup] Creating Gitea repo: ${REPO_NAME}"
@@ -26,7 +26,7 @@ mkdir -p .gitea/workflows
 cp /lab/src/repo/.gitea/workflows/ci.yml .gitea/workflows/ci.yml
 
 git add -A
-git commit -m "Initial commit: ACME webapp with CI pipeline"
+git commit -m "Initial commit: WeakLink webapp with CI pipeline"
 
 git remote add origin "${GITEA_URL}/developer/${REPO_NAME}.git"
 git push -u origin main
@@ -35,7 +35,7 @@ git push -u origin main
 curl -sf -X PUT "${GITEA_URL}/api/v1/repos/developer/${REPO_NAME}/actions/secrets/SECRET_TOKEN" \
   -H "Content-Type: application/json" \
   -u "developer:password" \
-  -d '{"data": "sk-acme-prod-7f3a9b2c4d5e6f1a"}'
+  -d '{"data": "sk-wl-prod-7f3a9b2c4d5e6f1a"}'
 
 curl -sf -X PUT "${GITEA_URL}/api/v1/repos/developer/${REPO_NAME}/actions/secrets/DEPLOY_TOKEN" \
   -H "Content-Type: application/json" \

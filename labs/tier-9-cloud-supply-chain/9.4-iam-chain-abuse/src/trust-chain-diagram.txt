@@ -77,10 +77,10 @@
                           ATTACK TIMELINE
 ================================================================================
 
-  T+0h    Attacker publishes malicious npm package "eslint-config-acme"
-          on public npm (typosquat of internal "eslint-config-acme-corp")
+  T+0h    Attacker publishes malicious npm package "eslint-config-wl"
+          on public npm (typosquat of internal "eslint-config-wl-corp")
 
-  T+2h    Developer installs it: npm install eslint-config-acme
+  T+2h    Developer installs it: npm install eslint-config-wl
           Malicious postinstall.js reads ~/.aws/credentials
           Exfiltrates dev-deploy role temporary credentials
 
@@ -99,6 +99,6 @@
 
 ================================================================================
                     NONE OF THE INDIVIDUAL TRUST POLICIES
-                    ARE "WRONG" -- EACH MAKES SENSE ALONE.
+                    ARE "WRONG". EACH MAKES SENSE ALONE.
                     THE VULNERABILITY IS THE TRANSITIVE CHAIN.
 ================================================================================

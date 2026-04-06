@@ -14,5 +14,5 @@ depcheck /workspace
 npm ls debug
 ```
 
-The issue: `app.js` does `require('debug')` but `package.json` only lists `acme-framework`.
-It works by accident because npm hoists `acme-framework`'s dependency on `debug` to the root `node_modules/`.
+The issue: `app.js` does `require('debug')` but `package.json` only lists `wl-framework`.
+It works by accident because npm hoists `wl-framework`'s dependency on `debug` to the root `node_modules/`.

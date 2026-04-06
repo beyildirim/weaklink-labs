@@ -1,4 +1,4 @@
-"""ACME Corp internal authentication library.
+"""WeakLink Corp internal authentication library.
 
 This is the legitimate package from the private registry.
 """
@@ -8,7 +8,7 @@ __source__ = "private-registry"
 
 
 def authenticate(username, token):
-    """Authenticate a user against the internal ACME auth service."""
+    """Authenticate a user against the internal WeakLink auth service."""
     # Simplified for the lab
     if username and token:
         return {"authenticated": True, "user": username, "source": __source__}
@@ -16,4 +16,4 @@ def authenticate(username, token):
 
 
 def get_version():
-    return f"acme-auth {__version__} (from {__source__})"
+    return f"wl-auth {__version__} (from {__source__})"

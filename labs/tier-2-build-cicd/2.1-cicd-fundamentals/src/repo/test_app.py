@@ -1,4 +1,4 @@
-"""Basic tests for the ACME webapp."""
+"""Basic tests for the WeakLink webapp."""
 import subprocess
 import sys
 
