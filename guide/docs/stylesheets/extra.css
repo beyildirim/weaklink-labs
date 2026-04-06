@@ -504,6 +504,91 @@ a.phase-step:hover {
   font-size: 0.7rem;
 }
 
+/* --- Placement quiz ---------------------------------------- */
+.quiz-progress {
+  font-size: 0.75rem;
+  color: #546e7a;
+  margin-bottom: 0.5rem;
+}
+.quiz-topic {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #ff7043;
+  background: rgba(255, 112, 67, 0.1);
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  margin-bottom: 0.75rem;
+}
+.quiz-question {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #f0f6fc;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.quiz-option {
+  text-align: left;
+  padding: 0.65rem 1rem;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  color: #b0bec5;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.quiz-option:hover:not(:disabled) {
+  border-color: #ff7043;
+  background: rgba(255, 112, 67, 0.05);
+  color: #f0f6fc;
+}
+.quiz-option:disabled { cursor: default; opacity: 0.7; }
+.quiz-option.correct {
+  border-color: #66bb6a;
+  background: rgba(102, 187, 106, 0.1);
+  color: #66bb6a;
+}
+.quiz-option.wrong {
+  border-color: #ef5350;
+  background: rgba(239, 83, 80, 0.1);
+  color: #ef5350;
+}
+.quiz-result {
+  text-align: center;
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid #21262d;
+}
+.quiz-pass { background: rgba(102, 187, 106, 0.06); border-color: rgba(102, 187, 106, 0.3); }
+.quiz-fail { background: rgba(239, 83, 80, 0.06); border-color: rgba(239, 83, 80, 0.3); }
+.quiz-score {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+.quiz-pass .quiz-score { color: #66bb6a; }
+.quiz-fail .quiz-score { color: #ef5350; }
+.quiz-message { color: #b0bec5; font-size: 0.9rem; margin-bottom: 1rem; }
+.quiz-weak-areas { color: #ffa726; font-size: 0.82rem; margin-bottom: 1rem; }
+.quiz-retry {
+  background: none;
+  border: 1px solid #30363d;
+  color: #8b949e;
+  padding: 0.4rem 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+.quiz-retry:hover { color: #f0f6fc; border-color: #8b949e; }
+
 /* No-terminal notice on detect/reference pages */
 .no-terminal-notice {
   background: rgba(66, 165, 245, 0.06);

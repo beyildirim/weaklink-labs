@@ -35,6 +35,7 @@ extra_javascript:
   - javascripts/terminal-panel.js
   - javascripts/sidebar-toggle.js
   - javascripts/verify-button.js
+  - javascripts/placement-quiz.js
 
 markdown_extensions:
   - admonition
