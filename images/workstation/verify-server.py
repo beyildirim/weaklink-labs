@@ -9,6 +9,20 @@ import os
 
 class VerifyHandler(BaseHTTPRequestHandler):
     def do_GET(self):
+        # Set current lab (called by guide JS on navigation)
+        set_match = re.match(r"/set-lab/([\d.]+)", self.path)
+        if set_match:
+            lab_id = set_match.group(1)
+            with open("/tmp/.weaklink-current-lab", "w") as f:
+                f.write(lab_id)
+            # Also trigger lab-init in background
+            subprocess.Popen(
+                ["bash", "-c", f"lab-init {lab_id}"],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
+            self._respond({"lab": lab_id, "status": "initializing"})
+            return
+
         match = re.match(r"/verify/([\d.]+)", self.path)
         if not match:
             self.send_error(404)

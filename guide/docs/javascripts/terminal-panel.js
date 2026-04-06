@@ -16,12 +16,13 @@
     return match ? match[1] : null;
   }
 
-  function buildTerminalUrl(labId) {
-    if (labId) {
-      return 'http://localhost:7681/?arg=-c&arg=' +
-        encodeURIComponent('lab-init ' + labId + '; exec bash -l');
-    }
+  function buildTerminalUrl() {
     return 'http://localhost:7681';
+  }
+
+  function initLab(labId) {
+    if (!labId) return;
+    fetch('http://localhost:7682/set-lab/' + labId).catch(function() {});
   }
 
   function createPanel() {
@@ -91,11 +92,22 @@
     var labId = getLabId();
     if (!iframeLoaded && iframe) {
       currentLabId = labId;
-      iframe.src = buildTerminalUrl(labId);
-      iframeLoaded = true;
+      initLab(labId);
+      // Delay iframe load to let lab-init finish
+      setTimeout(function() {
+        iframe.src = buildTerminalUrl();
+        iframeLoaded = true;
+      }, 1500);
     } else if (labId && labId !== currentLabId && iframe) {
+      // Lab changed: re-init and reload terminal for fresh shell
       currentLabId = labId;
-      iframe.src = buildTerminalUrl(labId);
+      initLab(labId);
+      iframeLoaded = false;
+      iframe.src = '';
+      setTimeout(function() {
+        iframe.src = buildTerminalUrl();
+        iframeLoaded = true;
+      }, 1500);
     }
   }
 
@@ -108,21 +120,23 @@
   }
 
   function popout() {
-    var labId = getLabId();
-    window.open(buildTerminalUrl(labId), '_blank');
+    window.open(buildTerminalUrl(), '_blank');
     collapse();
   }
 
   function resetLab() {
-    if (!iframe) return;
     var labId = getLabId();
     currentLabId = labId;
-    iframeLoaded = false;
-    iframe.src = '';
-    setTimeout(function() {
-      iframe.src = buildTerminalUrl(labId);
-      iframeLoaded = true;
-    }, 200);
+    initLab(labId);
+    // Also reload the iframe to get a fresh shell
+    if (iframe) {
+      iframeLoaded = false;
+      iframe.src = '';
+      setTimeout(function() {
+        iframe.src = buildTerminalUrl();
+        iframeLoaded = true;
+      }, 500);
+    }
   }
 
   function destroyPanel() {
@@ -142,11 +156,11 @@
     if (showTerminal && !panel) {
       createPanel();
     } else if (showTerminal && panel && isOpen) {
-      // Lab changed during navigation, reload with new lab-init
+      // Lab changed during navigation, trigger init for new lab
       var labId = getLabId();
-      if (labId && labId !== currentLabId && iframe) {
+      if (labId && labId !== currentLabId) {
         currentLabId = labId;
-        iframe.src = buildTerminalUrl(labId);
+        initLab(labId);
       }
     } else if (!showTerminal && panel) {
       destroyPanel();

@@ -104,9 +104,16 @@ COPY images/workstation/lab-reset /usr/local/bin/lab-reset
 COPY images/workstation/verify-server.py /usr/local/bin/verify-server.py
 RUN chmod +x /usr/local/bin/lab-init /usr/local/bin/lab-reset /usr/local/bin/verify-server.py
 
-# Bash completion and prompt
+# Bash completion, prompt, and lab auto-cd
 RUN echo 'source /etc/bash_completion 2>/dev/null' >> /home/hacker/.bashrc \
-    && echo 'export PS1="\[\033[1;32m\]hacker@weaklink\[\033[0m\]:\[\033[1;34m\]\w\[\033[0m\]\$ "' >> /home/hacker/.bashrc
+    && echo 'export PS1="\[\033[1;32m\]hacker@weaklink\[\033[0m\]:\[\033[1;34m\]\w\[\033[0m\]\$ "' >> /home/hacker/.bashrc \
+    && printf '%s\n' \
+       '# Auto-cd to current lab directory' \
+       'if [ -f /tmp/.weaklink-current-lab ]; then' \
+       '  _wl_lab=$(cat /tmp/.weaklink-current-lab)' \
+       '  [ -d "/home/labs/$_wl_lab" ] && cd "/home/labs/$_wl_lab"' \
+       '  unset _wl_lab' \
+       'fi' >> /home/hacker/.bashrc
 
 # Git defaults
 RUN git config --system user.email "hacker@weaklink.local" \
@@ -124,6 +131,5 @@ RUN chown -R hacker:hacker /home/hacker
 
 USER hacker
 
-# ttyd in foreground keeps the container alive; URL ?arg= params are appended
-# to the bash command (e.g. ?arg=-c&arg=lab-init 1.2; exec bash -l)
-CMD bash -c "python3 /usr/local/bin/verify-server &>/dev/null & ttyd -W -p 7681 bash"
+# Verify API (port 7682) in background, ttyd (port 7681) in foreground
+CMD bash -c "python3 /usr/local/bin/verify-server.py &>/dev/null & ttyd -W -p 7681 bash"
