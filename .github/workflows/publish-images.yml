@@ -74,7 +74,7 @@ jobs:
           provenance: true
 
       - name: Install cosign
-        uses: sigstore/cosign-installer@3454372f43399081ed03b604cb2d021f6b1bda55 # v3.8.2
+        uses: sigstore/cosign-installer@cad07c2e89fa2edd6e2d7bab4c1aa38e53f76003 # v4.1.1
 
       - name: Sign image with cosign (keyless)
         env:
@@ -84,7 +84,7 @@ jobs:
           cosign sign --yes "${IMAGE}@${DIGEST}"
 
       - name: Generate SBOM with syft
-        uses: anchore/sbom-action@e11c554f704a0b820cbf8c51673c5028e1243e31 # v0.18.0
+        uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
         with:
           image: ghcr.io/${{ github.repository_owner }}/weaklink-labs/${{ matrix.image.name }}@${{ steps.build.outputs.digest }}
           format: cyclonedx-json
