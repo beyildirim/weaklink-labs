@@ -23,8 +23,8 @@
 ## What tools cannot replace
 
 1. **Hardened CI/CD configuration**. `--index-url` not `--extra-index-url`, pinned hashes, locked registries.
-2. **SIEM detection rules**. the rules from [Lab 7.1](../../7.1-detection-rules/) catch what no scanner can.
-3. **Incident response playbooks**. [Lab 7.3](../../7.3-ir-playbook/) is your response when tools fail.
+2. **SIEM detection rules**. the rules from [Lab 7.1](../7.1-detection-rules/) catch what no scanner can.
+3. **Incident response playbooks**. [Lab 7.3](../7.3-ir-playbook/) is your response when tools fail.
 
 ## Final verification
 

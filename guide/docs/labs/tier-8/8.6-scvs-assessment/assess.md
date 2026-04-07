@@ -48,12 +48,12 @@ grep -rE 'cosign verify|slsa-verifier' /app/.github/workflows/ 2>/dev/null
 
 | SCVS Category | Gap | WeakLink Lab |
 |---------------|-----|-------------|
-| V1 | No automated inventory beyond lockfile | [Lab 4.1](../../tier-4/4.1-sbom-contents.md) |
-| V2 | No SBOM generated | [Lab 4.1](../../tier-4/4.1-sbom-contents.md) |
-| V3 | No SLSA provenance, Actions not pinned to SHA | [Lab 4.4](../../tier-4/4.4-attestation-slsa.md) |
+| V1 | No automated inventory beyond lockfile | [Lab 4.1](../../tier-4/4.1-sbom-contents/) |
+| V2 | No SBOM generated | [Lab 4.1](../../tier-4/4.1-sbom-contents/) |
+| V3 | No SLSA provenance, Actions not pinned to SHA | [Lab 4.4](../../tier-4/4.4-attestation-slsa/) |
 | V4 | No hash verification, using `--extra-index-url` | [Lab 1.2](../../tier-1/1.2-dependency-confusion/) |
 | V5 | No automated scanning, no remediation SLAs | [Lab 7.4](../../tier-7/7.4-tool-evaluation/) |
-| V6 | No signature verification, no upstream health checks | [Lab 4.5](../../tier-4/4.5-signature-bypass.md) |
+| V6 | No signature verification, no upstream health checks | [Lab 4.5](../../tier-4/4.5-signature-bypass/) |
 
 ---
 
