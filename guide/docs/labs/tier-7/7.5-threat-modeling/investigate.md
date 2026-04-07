@@ -73,5 +73,5 @@
 
 ---
 
-!!! success "Checkpoint"
+???+ success "Checkpoint"
     You should have 7 trust boundaries mapped. For each, you should be able to name what data crosses and in which direction. This map is the input to STRIDE analysis.

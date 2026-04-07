@@ -72,5 +72,5 @@ Draw the architecture as a diagram or table mapping each available tool to its s
 
 ---
 
-!!! success "Checkpoint"
+???+ success "Checkpoint"
     You should have governance structure, tooling architecture, and detection matrix defined. These three components form the operational backbone of the program.

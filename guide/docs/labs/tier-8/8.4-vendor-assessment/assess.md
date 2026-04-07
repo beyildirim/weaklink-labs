@@ -75,5 +75,5 @@ ls /app/.github/dependabot.yml 2>/dev/null
 
 ---
 
-!!! success "Checkpoint"
+???+ success "Checkpoint"
     You should have scores for all 5 sections. Calculate the total out of 78. This score determines the risk tier.
