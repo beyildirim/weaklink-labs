@@ -3,7 +3,7 @@
 <div class="lab-meta">
   <span>Phase 1 ~10 min | Phase 2 ~10 min | Phase 3 ~15 min | Phase 4 ~5 min</span>
   <span class="difficulty intermediate">Intermediate</span>
-  <span>Prerequisites: <a href="../../tier-4/4.4-attestation-slsa.md">Lab 4.4</a></span>
+  <span>Prerequisites: <a href="../../tier-4/4.4-attestation-slsa/">Lab 4.4</a></span>
 </div>
 
 <div class="phase-stepper">
@@ -18,7 +18,7 @@
   <a href="document/" class="phase-step upcoming">Document</a>
 </div>
 
-In [Lab 4.4](../../tier-4/4.4-attestation-slsa.md), you generated and verified SLSA provenance. This lab goes deeper: assess a real project against SLSA requirements, create a concrete action plan to reach Level 3, and produce a self-assessment for auditors.
+In [Lab 4.4](../../tier-4/4.4-attestation-slsa/), you generated and verified SLSA provenance. This lab goes deeper: assess a real project against SLSA requirements, create a concrete action plan to reach Level 3, and produce a self-assessment for auditors.
 
 **Reference:** [SLSA v1.0 Specification](https://slsa.dev/spec/v1.0/)
 

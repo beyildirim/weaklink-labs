@@ -61,4 +61,4 @@ This code ran as user: root
 
 ### Step 5: Think about scale
 
-On the real PyPI (pypi.org), there are over 500,000 packages. Any one of them could have a malicious `setup.py`. Typosquatting attacks ([Lab 1.3](../../../tier-1/1.3-typosquatting/)) create packages with names like `reqeusts` instead of `requests`, hoping people make typos.
+On the real PyPI (pypi.org), there are over 500,000 packages. Any one of them could have a malicious `setup.py`. Typosquatting attacks ([Lab 1.3](../../tier-1/1.3-typosquatting/)) create packages with names like `reqeusts` instead of `requests`, hoping people make typos.

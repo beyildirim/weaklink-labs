@@ -3,7 +3,7 @@
 <div class="lab-meta">
   <span>~25 min hands-on | ~10 min reference</span>
   <span class="difficulty intermediate">Intermediate</span>
-  <span>Prerequisites: <a href="../../tier-1/1.1-dependency-resolution.md">Lab 1.1</a></span>
+  <span>Prerequisites: <a href="../../tier-1/1.1-dependency-resolution/">Lab 1.1</a></span>
 </div>
 
 <div class="phase-stepper">
