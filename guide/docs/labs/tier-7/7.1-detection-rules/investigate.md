@@ -74,5 +74,5 @@
 
 ---
 
-!!! success "Checkpoint"
+???+ success "Checkpoint"
     You should now be able to identify IOCs for all five Tier 1 attack types across proxy, EDR, CI/CD, and Git audit logs. If any attack type's indicators are unclear, review the corresponding Tier 1 lab before continuing.

@@ -70,5 +70,5 @@ Does deps.dev distinguish the typosquat from the real package?
 
 ---
 
-!!! success "Checkpoint"
+???+ success "Checkpoint"
     You should have findings from at least 4 tools (pip-audit, npm audit, Grype/Trivy, Scorecard). Note which Tier 1 attacks each tool caught and which it missed.

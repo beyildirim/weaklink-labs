@@ -68,5 +68,5 @@ aws secretsmanager get-secret-value --secret-id prod/database/master-password
 
 ---
 
-!!! success "Checkpoint"
+???+ success "Checkpoint"
     You should have traced the full 4-hop chain and understand why each hop succeeded. The key insight: the chain mirrors the legitimate deployment lifecycle, but the attacker walked it manually in 8 minutes instead of waiting for CI/CD.
