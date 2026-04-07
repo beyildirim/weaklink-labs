@@ -55,6 +55,88 @@ No single signal is conclusive. The key is **cross-layer correlation**: a typosq
 
 ---
 
+### CI Integration
+
+Add this workflow to correlate multiple supply chain signals within a single PR. Save as `.github/workflows/multi-vector-check.yml`:
+
+```yaml
+name: Multi-Vector Supply Chain Check
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  cross-layer-correlation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Correlate supply chain signals
+        run: |
+          SIGNALS=0
+          REPORT=""
+
+          # Signal 1: New dependencies added
+          DEP_CHANGES=$(git diff --name-only origin/main...HEAD -- \
+            'package.json' 'package-lock.json' \
+            'requirements*.txt' 'pyproject.toml' || true)
+          if [ -n "$DEP_CHANGES" ]; then
+            SIGNALS=$((SIGNALS + 1))
+            REPORT="${REPORT}\n- Dependency files changed: $DEP_CHANGES"
+          fi
+
+          # Signal 2: CI/workflow files modified
+          CI_CHANGES=$(git diff --name-only origin/main...HEAD -- \
+            '.github/workflows/' '.gitea/workflows/' \
+            'Jenkinsfile' '.gitlab-ci.yml' || true)
+          if [ -n "$CI_CHANGES" ]; then
+            SIGNALS=$((SIGNALS + 1))
+            REPORT="${REPORT}\n- CI config files changed: $CI_CHANGES"
+          fi
+
+          # Signal 3: Dockerfile or image config modified
+          IMAGE_CHANGES=$(git diff --name-only origin/main...HEAD -- \
+            '**/Dockerfile*' '**/docker-compose*.yml' \
+            'k8s/' 'deploy/' 'helm/' || true)
+          if [ -n "$IMAGE_CHANGES" ]; then
+            SIGNALS=$((SIGNALS + 1))
+            REPORT="${REPORT}\n- Container/deploy files changed: $IMAGE_CHANGES"
+          fi
+
+          # Signal 4: Install scripts or post-install hooks
+          SCRIPT_CHANGES=$(git diff origin/main...HEAD -- '*.py' '*.js' '*.sh' | \
+            grep -c '^\+.*\(postinstall\|preinstall\|setup(\|subprocess\)' || true)
+          if [ "$SCRIPT_CHANGES" -gt 0 ]; then
+            SIGNALS=$((SIGNALS + 1))
+            REPORT="${REPORT}\n- Install script patterns detected in diff"
+          fi
+
+          echo "Supply chain signals detected: $SIGNALS"
+          if [ "$SIGNALS" -ge 3 ]; then
+            echo "::error::MULTI-VECTOR ALERT: $SIGNALS supply chain layers modified in a single PR."
+            echo -e "Signals found:$REPORT"
+            echo ""
+            echo "This combination requires manual security review."
+            exit 1
+          elif [ "$SIGNALS" -ge 2 ]; then
+            echo "::warning::$SIGNALS supply chain layers modified. Review carefully."
+            echo -e "Signals found:$REPORT"
+          else
+            echo "PASS: No multi-vector pattern detected."
+          fi
+```
+
+---
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)
+
+---
+
 ## What You Learned
 
 - **Real attacks chain multiple techniques.** Typosquatting, CI poisoning, and image tampering are more dangerous in combination because each stage operates in the blind spot of the previous layer's controls.

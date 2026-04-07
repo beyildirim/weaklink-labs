@@ -56,6 +56,91 @@ Dependency confusion is not theoretical. It produced $130,000+ in bug bounties f
 
 ---
 
+### CI Integration
+
+Add this workflow to block `--extra-index-url` usage and detect public package names that collide with internal namespaces. Save as `.github/workflows/dependency-confusion-check.yml`:
+
+```yaml
+name: Dependency Confusion Prevention
+
+on:
+  pull_request:
+    paths:
+      - "requirements*.txt"
+      - "setup.py"
+      - "setup.cfg"
+      - "pyproject.toml"
+      - "pip.conf"
+      - ".pip/**"
+
+permissions:
+  contents: read
+
+jobs:
+  check-dependency-confusion:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Block extra-index-url usage
+        run: |
+          EXIT_CODE=0
+          for f in pip.conf .pip/pip.conf setup.cfg pyproject.toml; do
+            if [ -f "$f" ]; then
+              if grep -qi "extra-index-url" "$f"; then
+                echo "::error file=$f::BLOCKED: $f contains extra-index-url."
+                echo "Use --index-url with a single private registry that proxies public packages."
+                EXIT_CODE=1
+              fi
+            fi
+          done
+          for f in requirements*.txt; do
+            if [ -f "$f" ]; then
+              if grep -qi "\-\-extra-index-url" "$f"; then
+                echo "::error file=$f::BLOCKED: $f contains --extra-index-url inline flag."
+                EXIT_CODE=1
+              fi
+            fi
+          done
+          if [ "$EXIT_CODE" -eq 0 ]; then
+            echo "PASS: No extra-index-url usage found."
+          fi
+          exit $EXIT_CODE
+
+      - name: Check for internal namespace on public PyPI
+        run: |
+          INTERNAL_PREFIXES="wl- internal- company-"
+          EXIT_CODE=0
+          for f in requirements*.txt; do
+            if [ -f "$f" ]; then
+              while IFS= read -r line; do
+                [[ "$line" =~ ^[[:space:]]*# ]] && continue
+                [[ "$line" =~ ^[[:space:]]*$ ]] && continue
+                [[ "$line" =~ ^- ]] && continue
+                pkg=$(echo "$line" | sed 's/[>=<!=;\[].*//' | xargs | tr '[:upper:]' '[:lower:]' | tr '_' '-')
+                [ -z "$pkg" ] && continue
+                for prefix in $INTERNAL_PREFIXES; do
+                  if [[ "$pkg" == ${prefix}* ]]; then
+                    echo "::error file=$f::Package '$pkg' matches internal namespace prefix '$prefix'."
+                    echo "Ensure this is installed from your private registry only."
+                    EXIT_CODE=1
+                  fi
+                done
+              done < "$f"
+            fi
+          done
+          if [ "$EXIT_CODE" -eq 0 ]; then
+            echo "PASS: No internal namespace collisions detected."
+          fi
+          exit $EXIT_CODE
+```
+
+---
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)
+
+---
+
 ## What You Learned
 
 1. **`--extra-index-url` is the root cause**: it tells pip to search multiple registries and pick the highest version, regardless of source.

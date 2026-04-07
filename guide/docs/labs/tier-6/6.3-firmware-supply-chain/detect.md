@@ -54,6 +54,82 @@ Firmware compromises are rare but catastrophic. A single compromised image deplo
 
 ---
 
+### CI Integration
+
+Add this workflow to verify firmware image integrity during the build process. Save as `.github/workflows/firmware-integrity.yml`:
+
+```yaml
+name: Firmware Image Integrity
+
+on:
+  pull_request:
+    paths:
+      - "firmware/**"
+      - "images/**"
+  push:
+    branches: [main]
+    paths:
+      - "firmware/**"
+
+permissions:
+  contents: read
+
+jobs:
+  verify-firmware:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify firmware image checksums
+        run: |
+          MANIFEST="firmware/checksums.sha256"
+          if [ ! -f "$MANIFEST" ]; then
+            echo "::warning::No firmware checksum manifest at $MANIFEST."
+            echo "Create one from vendor-provided checksums."
+            exit 0
+          fi
+          echo "Verifying firmware image checksums..."
+          FAILED=0
+          while IFS= read -r line; do
+            [[ "$line" =~ ^[[:space:]]*# ]] && continue
+            [[ "$line" =~ ^[[:space:]]*$ ]] && continue
+            expected_hash=$(echo "$line" | awk '{print $1}')
+            filepath=$(echo "$line" | awk '{print $2}')
+            if [ -f "$filepath" ]; then
+              actual_hash=$(sha256sum "$filepath" | awk '{print $1}')
+              if [ "$expected_hash" != "$actual_hash" ]; then
+                echo "::error file=$filepath::Firmware hash mismatch: expected $expected_hash, got $actual_hash"
+                FAILED=1
+              fi
+            fi
+          done < "$MANIFEST"
+          if [ "$FAILED" -eq 0 ]; then
+            echo "PASS: All firmware images match expected checksums."
+          else
+            exit 1
+          fi
+
+      - name: Check for unsigned firmware images
+        run: |
+          UNSIGNED=0
+          for img in $(find firmware/ -type f -name '*.bin' -o -name '*.fw' -o -name '*.img' 2>/dev/null); do
+            SIG="${img}.sig"
+            if [ ! -f "$SIG" ]; then
+              echo "::warning file=$img::No signature file found ($SIG). Firmware should be cryptographically signed."
+              UNSIGNED=1
+            fi
+          done
+          if [ "$UNSIGNED" -eq 0 ]; then
+            echo "PASS: All firmware images have corresponding signature files."
+          fi
+```
+
+---
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)
+
+---
+
 ## What You Learned
 
 - **Firmware is the root of the supply chain.** A compromised firmware invalidates all higher-level security controls.

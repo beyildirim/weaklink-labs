@@ -59,6 +59,80 @@ Every enterprise control designed to verify "is this software from the vendor?" 
 
 ---
 
+### CI Integration
+
+Add this workflow to verify build reproducibility by comparing build outputs against expected digests. Save as `.github/workflows/reproducible-build-check.yml`:
+
+```yaml
+name: Build Reproducibility Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-build-reproducibility:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and record artifact hashes
+        run: |
+          echo "--- Build Artifact Integrity ---"
+          # Record hashes of all build outputs
+          ARTIFACTS_DIR="dist/"
+          if [ -d "$ARTIFACTS_DIR" ]; then
+            echo "Existing artifacts found. Recording hashes..."
+            find "$ARTIFACTS_DIR" -type f -exec sha256sum {} \; | sort > /tmp/pre-build-hashes.txt
+            cat /tmp/pre-build-hashes.txt
+          fi
+
+      - name: Verify no unexpected files in build output
+        run: |
+          EXIT_CODE=0
+          ARTIFACTS_DIR="dist/"
+          if [ -d "$ARTIFACTS_DIR" ]; then
+            # Check for suspicious files in build output
+            SUSPICIOUS=$(find "$ARTIFACTS_DIR" -type f \( \
+              -name '*.dll' -o -name '*.so' -o -name '*.dylib' \
+            \) 2>/dev/null || true)
+            if [ -n "$SUSPICIOUS" ]; then
+              echo "::warning::Binary artifacts found in build output:"
+              echo "$SUSPICIOUS"
+              echo ""
+              echo "Verify these are expected. SolarWinds-style attacks inject"
+              echo "malicious DLLs during the build process."
+            fi
+          fi
+
+      - name: Check for build script modifications
+        run: |
+          EXIT_CODE=0
+          BUILD_CHANGES=$(git diff --name-only origin/main...HEAD -- \
+            'Makefile' 'build.sh' 'build/' 'scripts/build*' \
+            '.github/workflows/*build*' '.github/workflows/*release*' \
+            'setup.py' 'pyproject.toml' || true)
+          if [ -n "$BUILD_CHANGES" ]; then
+            echo "::warning::Build configuration modified in this PR:"
+            echo "$BUILD_CHANGES"
+            echo ""
+            echo "Build pipeline changes require security review."
+            echo "The SolarWinds attack injected code via the build system."
+          else
+            echo "PASS: No build configuration changes detected."
+          fi
+```
+
+---
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)
+
+---
+
 ## What You Learned
 
 - **Build systems are high-value targets.** Compromising the build pipeline lets attackers inject code that source review, signing, and antivirus all miss.
