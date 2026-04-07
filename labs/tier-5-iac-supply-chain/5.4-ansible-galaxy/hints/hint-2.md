@@ -18,5 +18,5 @@ EOF
 ```
 
 Always review every task in a role before running it. The `ansible-playbook
---check` flag only shows what WOULD change -- it does not protect against
+--check` flag only shows what WOULD change. It does not protect against
 install-time execution in custom modules.

@@ -1,4 +1,4 @@
-# Supply Chain Security Program -- Executive Briefing
+# Supply Chain Security Program: Executive Briefing
 
 **Date:** ____________
 **Prepared by:** ____________

@@ -7,7 +7,7 @@ Branch protection is configured in the Gitea web UI, not from the command line.
 1. Go to http://gitea:3000/labadmin/web-app/settings/branches
 2. Click "Add New Rule"
 3. Type `main` in the branch name pattern field
-4. Enable "Disable Push" -- this blocks all direct pushes to main
+4. Enable "Disable Push" (this blocks all direct pushes to main)
 5. Enable "Enable Pull Request reviews" and set required approvals to 1
 6. Click Save
 

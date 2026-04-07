@@ -17,4 +17,4 @@ To fix:
 cd /app/infra && terraform providers lock
 ```
 
-Also check for `external` data sources -- they can execute arbitrary programs too.
+Also check for `external` data sources. They can execute arbitrary programs too.

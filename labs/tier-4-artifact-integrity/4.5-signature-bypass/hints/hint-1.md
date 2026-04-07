@@ -1,4 +1,4 @@
-Start with bypass #1 -- no enforcement. Deploy the unsigned image:
+Start with bypass #1, no enforcement. Deploy the unsigned image:
 
 ```
 kubectl run test-unsigned --image=registry:5000/weaklink-app:unsigned
@@ -7,7 +7,7 @@ kubectl get pods
 
 It runs without complaint. Signing only works if verification is enforced.
 
-For bypass #2 -- key confusion, generate an attacker key pair:
+For bypass #2, key confusion. Generate an attacker key pair:
 
 ```
 cosign generate-key-pair --output-key-prefix attacker-cosign
@@ -21,4 +21,4 @@ cosign sign --key /app/attacker-cosign.key registry:5000/weaklink-app:attacker-s
 ```
 
 If the deployer verifies with `--key /app/attacker-cosign.pub`, it passes.
-The image is "signed" -- just not by anyone you trust.
+The image is "signed", just not by anyone you trust.

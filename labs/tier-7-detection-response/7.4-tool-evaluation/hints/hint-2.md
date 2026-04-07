@@ -18,10 +18,10 @@ Your matrix should have tools as rows and capabilities as columns:
 | deps.dev | ? | ? | ? | ? | ? | ? | Free | ? |
 
 Use these ratings:
-- **Full** -- detects the attack type reliably
-- **Partial** -- detects some variants or requires configuration
-- **None** -- does not detect this attack type
-- **N/A** -- not applicable to this tool's scope
+- **Full:** detects the attack type reliably
+- **Partial:** detects some variants or requires configuration
+- **None:** does not detect this attack type
+- **N/A:** not applicable to this tool's scope
 
 ## What You'll Likely Find
 

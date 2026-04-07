@@ -1,6 +1,6 @@
 # Lab 1.4: Lockfile Injection
 
-A pull request titled "chore: update flask-utils to latest version" looks routine. The PR only changes the lockfile -- auto-generated, thousands of lines, nobody reads it carefully. But hidden in the diff, one hash has been swapped. The new hash points to a backdoored package. This lab teaches you how lockfile tampering works and how to catch it.
+A pull request titled "chore: update flask-utils to latest version" looks routine. The PR only changes the lockfile. Auto-generated, thousands of lines, nobody reads it carefully. But hidden in the diff, one hash has been swapped. The new hash points to a backdoored package. This lab teaches you how lockfile tampering works and how to catch it.
 
 ## Prerequisites
 
@@ -95,7 +95,7 @@ cd /app/node-demo
 cat package.json
 ```
 
-This is like `requirements.in` -- it says "I want lodash ^4.17.21" (any compatible version).
+This is like `requirements.in`. It says "I want lodash ^4.17.21" (any compatible version).
 
 ```bash
 npm install
@@ -181,9 +181,9 @@ The hashes differ. The tampered hash corresponds to a backdoored version of `fla
 echo "
 === Why lockfile injection is so effective ===
 
-1. Lockfile diffs are HUGE and BORING -- reviewers skip them
-2. The commit message says 'ran pip-compile' -- looks legitimate
-3. The version number doesn't change -- only the hash
+1. Lockfile diffs are HUGE and BORING. Reviewers skip them
+2. The commit message says 'ran pip-compile'. Looks legitimate
+3. The version number doesn't change. Only the hash
 4. CI/CD trusts the lockfile and installs whatever it says
 5. The backdoor runs at INSTALL time, not at import time
 
@@ -311,7 +311,7 @@ The verification checks:
 |---------|----------|
 | **Lockfiles** | They pin exact versions and hashes to ensure reproducible, verified builds |
 | **Lockfile injection** | Attackers swap hashes in lockfile PRs to point to backdoored packages |
-| **Review blindness** | Lockfile diffs are large and "auto-generated" -- reviewers skip them |
+| **Review blindness** | Lockfile diffs are large and "auto-generated". Reviewers skip them |
 | **Regeneration check** | Always regenerate lockfiles in CI and compare against the committed version |
 | **Hash verification** | `--require-hashes` ensures pip only installs packages matching expected hashes |
 
@@ -327,5 +327,5 @@ The verification checks:
 - [Lockfile Injection (Snyk Research)](https://snyk.io/blog/why-npm-lockfiles-can-be-a-security-blindspot-for-injecting-malicious-modules/)
 - [pip-compile documentation](https://pip-tools.readthedocs.io/)
 - [npm lockfile integrity](https://docs.npmjs.com/cli/v10/configuring-npm/package-lock-json)
-- [PEP 665 -- Python Lockfiles](https://peps.python.org/pep-0665/)
+- [PEP 665: Python Lockfiles](https://peps.python.org/pep-0665/)
 - [SLSA Build Requirements](https://slsa.dev/spec/v1.0/requirements)

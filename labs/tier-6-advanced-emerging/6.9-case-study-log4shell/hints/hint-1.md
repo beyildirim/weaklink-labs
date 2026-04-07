@@ -10,7 +10,7 @@ The attack chain:
 2. Log4j's message formatter resolves the JNDI expression
 3. The JVM connects to the attacker's LDAP server
 4. The LDAP server returns a reference to a malicious Java class
-5. The JVM downloads and executes the class -- full RCE
+5. The JVM downloads and executes the class, achieving full RCE
 
 The supply chain angle: most organizations did not know they used
 Log4j because it was a transitive dependency. Your app uses Spring

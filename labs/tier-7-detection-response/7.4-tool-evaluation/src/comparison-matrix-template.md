@@ -4,10 +4,10 @@
 
 Fill in each cell after running the tool against the WeakLink lab workstation. Use these ratings:
 
-- **Full** -- reliably detects this attack type
-- **Partial** -- detects some variants or requires specific configuration
-- **None** -- does not detect this attack type
-- **N/A** -- outside this tool's scope
+- **Full:** reliably detects this attack type
+- **Partial:** detects some variants or requires specific configuration
+- **None:** does not detect this attack type
+- **N/A:** outside this tool's scope
 
 ## Matrix
 

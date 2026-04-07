@@ -1,4 +1,4 @@
-For bypass #3 -- rollback attack: take a valid signature from an old
+For bypass #3, the rollback attack: take a valid signature from an old
 image and attach it to a new (malicious) image. Because signatures are
 tied to the image digest, this won't work with cosign, but it
 demonstrates why digest-based verification matters.

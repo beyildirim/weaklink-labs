@@ -8,10 +8,10 @@ Your first 15 minutes should focus on **scoping**, not remediation. You need to 
 
 Look at `src/logs/ci-pipeline-logs.json`. Search for every CI run that installed `internal-utils` in the last 24 hours. Key fields:
 
-- `pipeline_id` -- which pipeline ran
-- `timestamp` -- when it ran
-- `package_version` -- what version was installed
-- `runner_id` -- which runner executed it
+- `pipeline_id`: which pipeline ran
+- `timestamp`: when it ran
+- `package_version`: what version was installed
+- `runner_id`: which runner executed it
 
 ## Step 2: Identify exposed secrets
 

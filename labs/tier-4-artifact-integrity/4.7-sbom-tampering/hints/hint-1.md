@@ -4,7 +4,7 @@ Start by examining the SBOM and finding the vulnerable component:
 cat /app/sbom-original.json | jq '.components[] | select(.name == "log4j-core")'
 ```
 
-Now tamper with it -- remove the vulnerable component:
+Now tamper with it by removing the vulnerable component:
 
 ```
 cat /app/sbom-original.json | jq 'del(.components[] | select(.name == "log4j-core"))' > /app/sbom-tampered.json

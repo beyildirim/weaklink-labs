@@ -10,5 +10,5 @@ grep -r 'provisioner' /app/infra/modules/
 grep -r 'local-exec' /app/infra/modules/
 ```
 
-Pay attention to `null_resource` blocks -- they exist only to run provisioners
+Pay attention to `null_resource` blocks. They exist only to run provisioners
 and have no actual infrastructure purpose.

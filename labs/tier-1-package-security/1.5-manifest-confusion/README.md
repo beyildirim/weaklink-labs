@@ -1,6 +1,6 @@
 # Lab 1.5: Manifest Confusion
 
-In 2023, security researcher Darcy Clarke discovered a fundamental flaw in the npm ecosystem: the package metadata that `npm view` shows you can differ from what's actually inside the tarball you install. Auditing tools, security scanners, and developers all trusted the registry API -- but the registry was lying.
+In 2023, security researcher Darcy Clarke discovered a fundamental flaw in the npm ecosystem: the package metadata that `npm view` shows you can differ from what's actually inside the tarball you install. Auditing tools, security scanners, and developers all trusted the registry API, but the registry was lying.
 
 This lab teaches you how npm packages are published, how registry metadata can be manipulated, and how to detect and defend against manifest confusion attacks.
 
@@ -18,9 +18,9 @@ This lab teaches you how npm packages are published, how registry metadata can b
 | **workspace** | `weaklink shell 1.5` | Your working shell |
 
 Packages pre-loaded on the registry:
-- `safe-utils@1.0.0` -- a normal, legitimate package
-- `crafted-widget@2.1.0` -- a package with **mismatched manifests** (the attack)
-- `evil-pkg@1.0.0` -- the hidden malicious dependency
+- `safe-utils@1.0.0`: a normal, legitimate package
+- `crafted-widget@2.1.0`: a package with **mismatched manifests** (the attack)
+- `evil-pkg@1.0.0`: the hidden malicious dependency
 
 ## Start the Lab
 
@@ -41,7 +41,7 @@ When a developer publishes a package, two things happen:
 2. `npm publish` uploads that tarball to the registry, which extracts metadata from it
 
 The registry then serves **two things** for each package:
-- **Metadata** (via the API): what `npm view` shows -- name, version, dependencies, scripts
+- **Metadata** (via the API): what `npm view` shows, including name, version, dependencies, scripts
 - **Tarball** (the download): what `npm install` actually extracts into `node_modules/`
 
 ### Step 1: Inspect a normal package via the registry API
@@ -83,8 +83,8 @@ cat package/package.json
 **Look carefully at the dependencies and scripts.** Compare them to what `npm view` showed.
 
 You should see:
-- The tarball has `"evil-pkg": "*"` in dependencies -- the registry API did NOT show this
-- The tarball has a `postinstall` script -- the registry API did NOT show this
+- The tarball has `"evil-pkg": "*"` in dependencies. The registry API did NOT show this
+- The tarball has a `postinstall` script. The registry API did NOT show this
 
 This is **manifest confusion**: the registry metadata and the tarball contents disagree.
 
@@ -126,7 +126,7 @@ If you were a security team, you'd probably check what this dependency pulls in:
 npm view crafted-widget dependencies
 ```
 
-Output: `{ lodash: '^4.17.21' }` -- looks safe. No suspicious dependencies.
+Output: `{ lodash: '^4.17.21' }`. Looks safe. No suspicious dependencies.
 
 ### Step 4: Install the package
 
@@ -151,15 +151,15 @@ cat node_modules/crafted-widget/package.json | head -20
 
 ### What just happened?
 
-1. You checked `npm view crafted-widget` -- it showed only `lodash` as a dependency
-2. You installed `crafted-widget` -- npm downloaded the **tarball**, which contained `evil-pkg` as a dependency
+1. You checked `npm view crafted-widget`. It showed only `lodash` as a dependency
+2. You installed `crafted-widget`. npm downloaded the **tarball**, which contained `evil-pkg` as a dependency
 3. npm installed `evil-pkg` and ran its `postinstall` script, which wrote to `/tmp/manifest-confusion-pwned`
 4. **Every security tool that trusts registry metadata would have missed this entirely**
 
 ### Real-world impact
 
 This vulnerability (CVE-2022-25881 / Darcy Clarke's disclosure) affected:
-- `npm audit` -- used registry metadata, not tarball contents
+- `npm audit` used registry metadata, not tarball contents
 - Socket.dev, Snyk, and other security scanners at the time
 - GitHub's dependency graph
 - Any tool calling the npm registry API to determine dependencies
@@ -238,7 +238,7 @@ Verify the lockfile has integrity hashes:
 cat package-lock.json | grep -A2 '"integrity"'
 ```
 
-Now use `npm ci` (clean install) -- this enforces the lockfile exactly:
+Now use `npm ci` (clean install). This enforces the lockfile exactly:
 
 ```bash
 rm -rf node_modules
@@ -286,7 +286,7 @@ You can reference `/lab/src/compare-manifests.sh` as a starting point.
 
 ## Further Reading
 
-- [Darcy Clarke: "The massive hole in the npm ecosystem"](https://blog.vlt.sh/blog/the-massive-hole-in-the-npm-ecosystem) -- the original disclosure
-- [GitHub Advisory: Manifest Confusion](https://github.blog/2023-07-12-introducing-npm-package-provenance/) -- npm's response with package provenance
-- [npm RFC: Package Provenance](https://github.com/npm/rfcs/pull/626) -- the fix proposal
-- [Socket.dev](https://socket.dev/) -- a scanner that checks actual package contents, not just metadata
+- [Darcy Clarke: "The massive hole in the npm ecosystem"](https://blog.vlt.sh/blog/the-massive-hole-in-the-npm-ecosystem), the original disclosure
+- [GitHub Advisory: Manifest Confusion](https://github.blog/2023-07-12-introducing-npm-package-provenance/), npm's response with package provenance
+- [npm RFC: Package Provenance](https://github.com/npm/rfcs/pull/626), the fix proposal
+- [Socket.dev](https://socket.dev/), a scanner that checks actual package contents, not just metadata

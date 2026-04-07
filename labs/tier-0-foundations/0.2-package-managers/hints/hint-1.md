@@ -21,4 +21,4 @@ Then extract the tarball with `tar xzf` and read the files inside.
 
 ## Phase 2 (BREAK)
 
-The key insight: `setup.py` is a regular Python script. When pip runs it during installation, any code at the top level of the file executes immediately. Look at the malicious package's `setup.py` -- the payload runs before the `setup()` call.
+The key insight: `setup.py` is a regular Python script. When pip runs it during installation, any code at the top level of the file executes immediately. Look at the malicious package's `setup.py`. The payload runs before the `setup()` call.

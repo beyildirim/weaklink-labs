@@ -23,7 +23,7 @@ cosign sign --key cosign.key registry:5000/webapp:clean 2>&1 | tee /app/cosign-o
 cosign verify --key cosign.pub registry:5000/webapp:clean
 ```
 
-Try verifying the tampered image -- it should fail because the injected
+Try verifying the tampered image. It should fail because the injected
 layer changed the image digest.
 
 Document your findings including the injected layer digest and the

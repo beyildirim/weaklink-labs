@@ -1,4 +1,4 @@
-Verify the forged attestation -- it passes because the signature is valid:
+Verify the forged attestation. It passes because the signature is valid:
 
 ```
 cosign verify-attestation --key /app/cosign.pub \

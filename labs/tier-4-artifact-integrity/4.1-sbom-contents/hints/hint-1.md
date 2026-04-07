@@ -12,4 +12,4 @@ cat /app/sbom-spdx.json | jq '.packages[] | {name, versionInfo, licenseConcluded
 cat /app/sbom-cdx.json | jq '.components[] | {name, version, licenses}'
 ```
 
-Compare the two -- do they list the same packages?
+Compare the two. Do they list the same packages?

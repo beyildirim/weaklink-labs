@@ -2,7 +2,7 @@
 
 ## Key actions
 
-1. Fix namespace exemptions -- remove `monitoring` from exempt list:
+1. Fix namespace exemptions. Remove `monitoring` from exempt list:
 
 ```yaml
 # Only kube-system should be exempt
@@ -54,7 +54,7 @@ EOF
 
 ## Why it works
 
-- Exempt namespaces are a complete bypass -- anything deployed there skips all checks
+- Exempt namespaces are a complete bypass; anything deployed there skips all checks
 - CRDs that are not covered by constraints pass through unchecked
 - Post-admission mutations are invisible to admission controllers
 - Audit mode detects drift between what was admitted and what currently exists

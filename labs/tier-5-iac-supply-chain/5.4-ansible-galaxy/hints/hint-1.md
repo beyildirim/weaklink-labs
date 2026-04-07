@@ -1,4 +1,4 @@
-Don't just read the role's README -- inspect the actual tasks. A role can
+Don't just read the role's README. Inspect the actual tasks. A role can
 contain hidden tasks that do not match its advertised purpose:
 
 ```bash

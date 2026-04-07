@@ -14,6 +14,6 @@ docker inspect --format='{{.RepoDigests}}' registry:5000/webapp:1.0.0
 ```
 
 Now push the backdoored image with the same tag and check the digest again.
-It changed -- same tag, completely different image.
+It changed. Same tag, completely different image.
 
 The fix is to reference images by their digest instead of their tag.

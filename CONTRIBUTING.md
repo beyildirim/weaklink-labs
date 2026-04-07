@@ -88,7 +88,7 @@ Brief description of what this lab teaches and why it matters.
 
 ---
 
-!!! info "Phase 1: UNDERSTAND -- Title"
+!!! info "Phase 1: UNDERSTAND. Title"
 
     **Goal:** What the learner will explore.
 
@@ -96,7 +96,7 @@ Brief description of what this lab teaches and why it matters.
 
 ---
 
-!!! warning "Phase 2: BREAK -- Title"
+!!! warning "Phase 2: BREAK. Title"
 
     **Goal:** What the learner will attack.
 
@@ -104,7 +104,7 @@ Brief description of what this lab teaches and why it matters.
 
 ---
 
-!!! success "Phase 3: DEFEND -- Title"
+!!! success "Phase 3: DEFEND. Title"
 
     **Goal:** What the learner will fix.
 

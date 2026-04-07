@@ -1,5 +1,5 @@
 Every Dockerfile starts with `FROM <base-image>`. You inherit everything
-in that base -- binaries, libraries, config files, and potentially
+in that base: binaries, libraries, config files, and potentially
 backdoors.
 
 To see what the poisoned base image adds, compare it to a known-clean

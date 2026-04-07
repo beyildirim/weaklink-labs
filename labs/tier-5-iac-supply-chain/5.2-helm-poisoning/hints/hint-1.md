@@ -1,5 +1,5 @@
 Use `helm template` to render all manifests without installing them. Look
-carefully at the output for anything unexpected -- especially `Job` resources
+carefully at the output for anything unexpected, especially `Job` resources
 that are Helm hooks:
 
 ```bash

@@ -13,6 +13,6 @@ with open('/app/models/malicious_model.pt', 'rb') as f:
 " 2>&1 | head -50
 ```
 
-Look for `REDUCE` opcodes -- these execute arbitrary callables during
+Look for `REDUCE` opcodes. These execute arbitrary callables during
 deserialization. Any `os.system`, `subprocess`, or `exec` call is a
 red flag.

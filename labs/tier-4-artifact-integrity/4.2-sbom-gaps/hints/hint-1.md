@@ -18,4 +18,4 @@ echo "syft: $(cat /app/sbom-syft.json | jq '.components | length') components"
 echo "trivy: $(cat /app/sbom-trivy.json | jq '.components | length') components"
 ```
 
-They will likely differ -- that's the point.
+They will likely differ. That is the point.

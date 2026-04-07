@@ -1,6 +1,6 @@
 # Lab 1.3: Typosquatting
 
-A developer installs `reqeusts` instead of `requests`. The package works perfectly -- but it also steals their secrets. This lab demonstrates one of the most common and effective supply chain attacks: typosquatting.
+A developer installs `reqeusts` instead of `requests`. The package works perfectly, but it also steals their secrets. This lab demonstrates one of the most common and effective supply chain attacks: typosquatting.
 
 ## Prerequisites
 
@@ -58,8 +58,8 @@ It works. This is the real (simulated) `requests` library.
 
 Consider:
 - PyPI has over **500,000** packages
-- Anyone can register a package name -- there is no verification of identity or intent
-- Package names are just strings. `requests` vs `reqeusts` vs `request` vs `requets` -- they all look similar at a glance
+- Anyone can register a package name. There is no verification of identity or intent
+- Package names are just strings. `requests` vs `reqeusts` vs `request` vs `requets`. They all look similar at a glance
 
 Real typosquatting packages caught in the wild:
 
@@ -148,7 +148,7 @@ But look what happened during installation:
 cat /tmp/typosquat-exfil
 ```
 
-Your `SECRET_API_KEY`, username, home directory, and hostname were all written to this file. In a real attack, this data would be sent to an attacker's server during `pip install` -- before the developer even writes a single line of code.
+Your `SECRET_API_KEY`, username, home directory, and hostname were all written to this file. In a real attack, this data would be sent to an attacker's server during `pip install`, before the developer even writes a single line of code.
 
 ### Step 6: Understand why this is devastating
 
@@ -157,7 +157,7 @@ python3 -c "
 import reqeusts
 # The developer uses it normally. Code review sees 'reqeusts.get(...)'.
 # Maybe a reviewer notices the typo. Maybe not.
-# But the damage is already done -- the secret was stolen at INSTALL time.
+# But the damage is already done. The secret was stolen at INSTALL time.
 # Not at import time. Not at runtime. At install time.
 print('The secret was stolen during pip install, not during import.')
 print('By the time you run this code, your keys are already compromised.')
@@ -253,7 +253,7 @@ The verification checks:
 | Concept | Takeaway |
 |---------|----------|
 | **Typosquatting** | Attackers register package names that are one keystroke away from popular packages |
-| **Post-install hooks** | `setup.py` can run arbitrary code during `pip install` -- before you ever import the package |
+| **Post-install hooks** | `setup.py` can run arbitrary code during `pip install`, before you ever import the package |
 | **Functional wrappers** | Malicious packages can wrap the real one, passing all tests while exfiltrating data |
 | **Version pinning** | Exact version pins in `requirements.txt` prevent accidental installation of wrong packages |
 | **Allowlists** | Validating installed packages against an approved list catches unauthorized packages |
@@ -262,7 +262,7 @@ The verification checks:
 
 - **2017**: `python3-dateutil` was uploaded to PyPI, targeting the hugely popular `python-dateutil`. It contained credential-stealing code.
 - **2021**: Researchers published "An Empirical Study of Typosquatting in the Python Package Index" finding thousands of squatting candidates.
-- **2022**: `ctx` package on PyPI was compromised and used to steal environment variables -- the exact technique shown in this lab.
+- **2022**: `ctx` package on PyPI was compromised and used to steal environment variables, the exact technique shown in this lab.
 - **2023**: Multiple PyPI packages (`colorslib`, `httpslib`, `libhttps`) were found with `setup.py` hooks that stole secrets.
 
 ## Further Reading
@@ -270,5 +270,5 @@ The verification checks:
 - [PyPI Typosquatting Research (2023)](https://blog.phylum.io/pypi-malware-replaces-crypto-addresses-in-developers-clipboard)
 - [Typosquatting in Python Ecosystem](https://arxiv.org/abs/2005.09535)
 - [pip-audit documentation](https://github.com/pypa/pip-audit)
-- [PEP 685 -- Comparison of Lockfiles](https://peps.python.org/pep-0685/)
+- [PEP 685: Comparison of Lockfiles](https://peps.python.org/pep-0685/)
 - [OWASP Supply Chain Risks](https://owasp.org/www-project-top-10-ci-cd-security-risks/)
