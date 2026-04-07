@@ -47,5 +47,5 @@ python3 -m json.tool sbom.json | head -80
 
 ---
 
-!!! success "Checkpoint"
+???+ success "Checkpoint"
     You should have a compliance scorecard showing readiness percentage for each of the 5 EO 14028 requirements. Most projects score below 50% on first assessment.

@@ -85,5 +85,5 @@ Were any of the compromised artifacts deployed to production? If so, which ones 
 
 ---
 
-!!! success "Checkpoint"
+???+ success "Checkpoint"
     You should now have a complete blast radius picture covering: affected runners, affected pipelines, exfiltrated secrets, compromised artifacts, and any production deployments. If any scope element is missing, query the corresponding log source before continuing.

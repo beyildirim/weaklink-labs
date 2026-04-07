@@ -48,5 +48,5 @@
 
 ---
 
-!!! success "Checkpoint"
+???+ success "Checkpoint"
     You should have a mapping of at least 10 WeakLink Lab defenses to SSDF tasks, plus a list of uncovered gaps. The gaps should be concentrated in PO and RV practice areas.
