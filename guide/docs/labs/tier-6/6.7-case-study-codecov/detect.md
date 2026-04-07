@@ -55,6 +55,80 @@ The pattern trades security for convenience. When the script was modified, every
 
 ---
 
+### CI Integration
+
+Add this workflow to detect `curl | bash` patterns and enforce script pinning in CI workflows. Save as `.github/workflows/script-pinning-check.yml`:
+
+```yaml
+name: CI Script Pinning Check
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+      - "scripts/**"
+      - "Makefile"
+
+permissions:
+  contents: read
+
+jobs:
+  check-script-pinning:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect curl-pipe-bash patterns
+        run: |
+          EXIT_CODE=0
+          # Scan workflow files for curl|bash, wget|bash, curl|sh patterns
+          for f in $(find .github/workflows/ -name '*.yml' -o -name '*.yaml' 2>/dev/null); do
+            PIPES=$(grep -nE 'curl.*\|\s*(ba)?sh|wget.*\|\s*(ba)?sh' "$f" || true)
+            if [ -n "$PIPES" ]; then
+              echo "::error file=$f::BLOCKED: curl-pipe-bash pattern detected:"
+              echo "$PIPES"
+              echo ""
+              echo "Download scripts, verify their SHA256, then execute."
+              EXIT_CODE=1
+            fi
+          done
+          # Also check Makefiles and shell scripts
+          for f in Makefile $(find scripts/ -name '*.sh' 2>/dev/null); do
+            if [ -f "$f" ]; then
+              PIPES=$(grep -nE 'curl.*\|\s*(ba)?sh|wget.*\|\s*(ba)?sh' "$f" || true)
+              if [ -n "$PIPES" ]; then
+                echo "::warning file=$f::curl-pipe-bash pattern found:"
+                echo "$PIPES"
+              fi
+            fi
+          done
+          if [ "$EXIT_CODE" -eq 0 ]; then
+            echo "PASS: No curl-pipe-bash patterns in CI workflows."
+          fi
+          exit $EXIT_CODE
+
+      - name: Verify downloaded script checksums are enforced
+        run: |
+          # Check for download-then-verify patterns (good) vs download-then-run (bad)
+          for f in $(find .github/workflows/ -name '*.yml' -o -name '*.yaml' 2>/dev/null); do
+            DOWNLOADS=$(grep -nE 'curl -[a-zA-Z]*o |wget -O ' "$f" || true)
+            if [ -n "$DOWNLOADS" ]; then
+              VERIFY=$(grep -c 'sha256sum\|shasum\|openssl dgst' "$f" || true)
+              if [ "$VERIFY" -eq 0 ]; then
+                echo "::warning file=$f::Scripts are downloaded but no SHA256 verification found."
+                echo "Add checksum verification after downloading external scripts."
+              fi
+            fi
+          done
+          echo "Script pinning check complete."
+```
+
+---
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)
+
+---
+
 ## What You Learned
 
 - **`curl | bash` is a supply chain attack waiting to happen.** No verification, no pinning, no visibility into changes.

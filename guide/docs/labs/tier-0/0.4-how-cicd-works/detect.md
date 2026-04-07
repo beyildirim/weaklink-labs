@@ -33,6 +33,70 @@ What to look for:
 
 ---
 
+### CI Integration
+
+Add this workflow to flag changes to CI configuration files and detect secret access in pipeline steps. Save as `.github/workflows/pipeline-audit.yml`:
+
+```yaml
+name: Pipeline Modification Audit
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+      - ".gitea/workflows/**"
+      - "Jenkinsfile"
+      - ".gitlab-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  audit-pipeline-changes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Flag CI config modifications
+        run: |
+          echo "--- Scanning CI config changes in this PR ---"
+          CHANGED=$(git diff --name-only origin/main...HEAD -- \
+            '.github/workflows/' '.gitea/workflows/' \
+            '.gitlab-ci.yml' 'Jenkinsfile' \
+            '.circleci/' '.travis.yml')
+          if [ -z "$CHANGED" ]; then
+            echo "PASS: No CI config files modified."
+            exit 0
+          fi
+          echo "::warning::CI pipeline configs modified in this PR:"
+          echo "$CHANGED"
+
+      - name: Check for secret exfiltration patterns
+        run: |
+          EXIT_CODE=0
+          for f in $(git diff --name-only origin/main...HEAD -- \
+            '.github/workflows/' '.gitea/workflows/'); do
+            if [ -f "$f" ]; then
+              if grep -nE '(curl|wget|nc |ncat |base64|printenv|\$\{secrets\.)' "$f"; then
+                echo "::error file=$f::Potential secret exfiltration pattern detected."
+                EXIT_CODE=1
+              fi
+            fi
+          done
+          if [ "$EXIT_CODE" -eq 0 ]; then
+            echo "PASS: No suspicious patterns found in workflow changes."
+          fi
+          exit $EXIT_CODE
+```
+
+---
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)
+
+---
+
 ## What You Learned
 
 - **CI/CD pipelines execute whatever is in the workflow file.** Anyone with push access to the repository can modify the pipeline behavior.

@@ -55,6 +55,81 @@ event-stream (social engineering) is harder to detect: obfuscated, targeted. ua-
 
 ---
 
+### CI Integration
+
+Add this workflow to detect unexpected transitive dependency changes and install script additions. Save as `.github/workflows/npm-dependency-audit.yml`:
+
+```yaml
+name: npm Dependency Change Audit
+
+on:
+  pull_request:
+    paths:
+      - "package.json"
+      - "package-lock.json"
+      - "yarn.lock"
+
+permissions:
+  contents: read
+
+jobs:
+  audit-dependency-changes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect new transitive dependencies
+        run: |
+          # Compare package-lock.json changes
+          if git show origin/main:package-lock.json > /tmp/old-lock.json 2>/dev/null; then
+            OLD_DEPS=$(jq -r '.packages | keys[]' /tmp/old-lock.json 2>/dev/null | sort || true)
+            NEW_DEPS=$(jq -r '.packages | keys[]' package-lock.json 2>/dev/null | sort || true)
+            ADDED=$(comm -13 <(echo "$OLD_DEPS") <(echo "$NEW_DEPS") || true)
+            if [ -n "$ADDED" ]; then
+              echo "::warning::New dependencies added to lockfile:"
+              echo "$ADDED"
+              echo ""
+              echo "Verify these additions are intentional."
+              echo "The event-stream attack added flatmap-stream as a transitive dependency."
+            else
+              echo "PASS: No new transitive dependencies."
+            fi
+          else
+            echo "No previous lockfile to compare against."
+          fi
+
+      - name: Check for install script additions
+        run: |
+          EXIT_CODE=0
+          if git show origin/main:package.json > /tmp/old-package.json 2>/dev/null; then
+            OLD_SCRIPTS=$(jq -r '.scripts // {} | keys[]' /tmp/old-package.json 2>/dev/null | \
+              grep -E 'preinstall|postinstall|preuninstall|postuninstall' || true)
+            NEW_SCRIPTS=$(jq -r '.scripts // {} | keys[]' package.json 2>/dev/null | \
+              grep -E 'preinstall|postinstall|preuninstall|postuninstall' || true)
+            ADDED_SCRIPTS=$(comm -13 <(echo "$OLD_SCRIPTS") <(echo "$NEW_SCRIPTS") || true)
+            if [ -n "$ADDED_SCRIPTS" ]; then
+              echo "::error::Install lifecycle scripts added:"
+              echo "$ADDED_SCRIPTS"
+              echo ""
+              echo "Install scripts execute automatically during npm install."
+              echo "The ua-parser-js attack used a preinstall script to deploy miners."
+              EXIT_CODE=1
+            fi
+          fi
+          if [ "$EXIT_CODE" -eq 0 ]; then
+            echo "PASS: No new install scripts detected."
+          fi
+          exit $EXIT_CODE
+```
+
+---
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)
+
+---
+
 ## What You Learned
 
 - **Maintainer accounts are the master key.** A single compromised or transferred npm account affects every downstream consumer.

@@ -40,6 +40,74 @@ Detection targets:
 
 ---
 
+### CI Integration
+
+Add this workflow to verify dataset integrity by checking hashes and detecting unauthorized modifications. Save as `.github/workflows/dataset-integrity.yml`:
+
+```yaml
+name: Dataset Integrity Check
+
+on:
+  pull_request:
+    paths:
+      - "data/**"
+      - "datasets/**"
+      - "training/**"
+  push:
+    branches: [main]
+    paths:
+      - "data/**"
+      - "datasets/**"
+
+permissions:
+  contents: read
+
+jobs:
+  verify-dataset-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify dataset checksums
+        run: |
+          MANIFEST="data/checksums.sha256"
+          if [ ! -f "$MANIFEST" ]; then
+            echo "::warning::No dataset checksum manifest found at $MANIFEST."
+            echo "Create one with: find data/ -type f -exec sha256sum {} \\; > $MANIFEST"
+            exit 0
+          fi
+          echo "Verifying dataset checksums..."
+          if sha256sum -c "$MANIFEST" --quiet 2>/dev/null; then
+            echo "PASS: All dataset checksums match."
+          else
+            echo "::error::Dataset checksum mismatch detected."
+            echo "One or more data files have been modified since the manifest was generated."
+            sha256sum -c "$MANIFEST" 2>/dev/null | grep -i FAILED || true
+            exit 1
+          fi
+
+      - name: Check for unexpected data file changes
+        run: |
+          CHANGED=$(git diff --name-only origin/main...HEAD -- \
+            'data/' 'datasets/' 'training/' | grep -E '\.(csv|json|parquet|tfrecord|npy|npz)$' || true)
+          if [ -n "$CHANGED" ]; then
+            echo "::warning::Data files modified in this PR:"
+            echo "$CHANGED"
+            echo ""
+            echo "Verify these changes are intentional and update the checksum manifest."
+          else
+            echo "PASS: No data files modified."
+          fi
+```
+
+---
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)
+
+---
+
 ## What You Learned
 
 1. **Training data is a supply chain dependency.** External datasets deserve the same suspicion as external code.

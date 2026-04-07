@@ -26,6 +26,82 @@ Alert on: rapid cross-account AssumeRole chains (<2 min between hops), unexpecte
 | Use Alternate Authentication Material | [T1550.001](https://attack.mitre.org/techniques/T1550/001/) | STS tokens chained via AssumeRole |
 | Supply Chain Compromise: Software Supply Chain | [T1195.002](https://attack.mitre.org/techniques/T1195/002/) | Initial access via malicious npm package |
 
+### CI Integration
+
+Add this workflow to audit IAM trust policies for excessive cross-account role chaining. Save as `.github/workflows/iam-chain-audit.yml`:
+
+```yaml
+name: IAM Trust Chain Audit
+
+on:
+  pull_request:
+    paths:
+      - "terraform/**"
+      - "iam/**"
+      - "cloudformation/**"
+      - "*.tf"
+
+permissions:
+  contents: read
+
+jobs:
+  audit-iam-chains:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect cross-account AssumeRole chains
+        run: |
+          EXIT_CODE=0
+          CHAIN_DEPTH=0
+
+          for f in $(find . -name '*.tf' -o -name '*.json' 2>/dev/null | head -100); do
+            # Count AssumeRole trust relationships per file
+            ASSUME_ROLES=$(grep -c 'sts:AssumeRole\|AssumeRolePolicyDocument' "$f" 2>/dev/null || true)
+            if [ "$ASSUME_ROLES" -gt 2 ]; then
+              echo "::warning file=$f::$ASSUME_ROLES AssumeRole relationships found."
+              echo "Excessive role chaining creates transitive trust paths."
+              CHAIN_DEPTH=$((CHAIN_DEPTH + ASSUME_ROLES))
+            fi
+
+            # Check for wildcard principals in trust policies
+            WILD_TRUST=$(grep -nE '"Principal".*"\*"|principal.*=.*"\*"' "$f" || true)
+            if [ -n "$WILD_TRUST" ]; then
+              echo "::error file=$f::Wildcard principal in trust policy:"
+              echo "$WILD_TRUST"
+              echo "Any AWS account can assume this role."
+              EXIT_CODE=1
+            fi
+
+            # Check for missing external ID conditions
+            CROSS_ACCOUNT=$(grep -l 'arn:aws:iam::[0-9]' "$f" 2>/dev/null || true)
+            if [ -n "$CROSS_ACCOUNT" ]; then
+              EXT_ID=$(grep -c 'sts:ExternalId\|externalId\|external_id' "$f" || true)
+              if [ "$EXT_ID" -eq 0 ]; then
+                echo "::warning file=$f::Cross-account trust without ExternalId condition."
+                echo "Add sts:ExternalId to prevent confused deputy attacks."
+              fi
+            fi
+          done
+
+          if [ "$CHAIN_DEPTH" -gt 5 ]; then
+            echo "::error::Total role chain depth across configs: $CHAIN_DEPTH"
+            echo "Reduce transitive trust. Use OIDC federation instead of role chains."
+            EXIT_CODE=1
+          fi
+
+          if [ "$EXIT_CODE" -eq 0 ]; then
+            echo "PASS: No excessive IAM chain patterns detected."
+          fi
+          exit $EXIT_CODE
+```
+
+---
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)
+
+---
+
 ## What You Learned
 
 - Cloud IAM is a supply chain. Trust relationships form transitive chains enabling traversal from low-privilege to high-privilege accounts.
