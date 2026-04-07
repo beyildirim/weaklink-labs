@@ -40,6 +40,69 @@ Detection targets:
 
 ---
 
+### CI Integration
+
+Add this workflow to block unsafe model formats and enforce safetensors usage. Save as `.github/workflows/model-format-check.yml`:
+
+```yaml
+name: ML Model Format Safety
+
+on:
+  pull_request:
+    paths:
+      - "models/**"
+      - "*.py"
+      - "requirements*.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  check-model-safety:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Reject unsafe model formats
+        run: |
+          EXIT_CODE=0
+          # Check for pickle-based model files in the repository
+          UNSAFE=$(find . -type f \( \
+            -name '*.pt' -o -name '*.pth' -o -name '*.pkl' \
+            -o -name '*.pickle' -o -name '*.joblib' \
+          \) 2>/dev/null || true)
+          if [ -n "$UNSAFE" ]; then
+            echo "::error::Unsafe model formats detected (pickle-based deserialization):"
+            echo "$UNSAFE"
+            echo ""
+            echo "Convert to safetensors format to eliminate code execution risk."
+            EXIT_CODE=1
+          fi
+          if [ "$EXIT_CODE" -eq 0 ]; then
+            echo "PASS: No unsafe model formats found."
+          fi
+          exit $EXIT_CODE
+
+      - name: Check for unsafe deserialization calls
+        run: |
+          EXIT_CODE=0
+          FOUND=$(grep -rn 'torch\.load\|joblib\.load' \
+            --include='*.py' . || true)
+          if [ -n "$FOUND" ]; then
+            echo "::warning::Found unsafe deserialization calls:"
+            echo "$FOUND"
+            echo ""
+            echo "Use safetensors.torch.load_file() or torch.load(weights_only=True) instead."
+          fi
+          echo "Check complete."
+```
+
+---
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)
+
+---
+
 ## What You Learned
 
 1. **ML models are code.** The PyTorch `.pt` format executes arbitrary Python during deserialization. Every model download is a potential code execution vector.
