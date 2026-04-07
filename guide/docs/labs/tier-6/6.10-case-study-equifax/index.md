@@ -39,3 +39,9 @@ graph LR
   <span class="phase-arrow">›</span>
   <a href="detect/" class="phase-step upcoming">Detect</a>
 </div>
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [1.1 How Dependency Resolution Works](../../tier-1/1.1-dependency-resolution/index.md) — Dependency resolution and the risks of unpatched dependencies
+    - **See also:** [6.9 Case Study: Log4Shell](../6.9-case-study-log4shell/index.md) — Log4Shell is another case of a known dependency vulnerability
+    - **See also:** [4.1 What SBOMs Actually Contain](../../tier-4/4.1-sbom-contents/index.md) — SBOM visibility would have flagged the vulnerable Apache Struts
+    - **See also:** [7.2 Supply Chain Incident Triage](../../tier-7/7.2-incident-triage/index.md) — Incident triage techniques for responding to dependency vulnerabilities

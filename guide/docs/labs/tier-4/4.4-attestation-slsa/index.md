@@ -36,3 +36,9 @@ graph LR
 | Workstation | `weaklink-ws` | Has cosign, crane, slsa-verifier, jq |
 | Registry | `registry:5000` | Contains images with and without provenance attestations |
 | Kubernetes | `kind-cluster` | Local cluster for deployment testing |
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [4.3 Signing Fundamentals](../4.3-signing-fundamentals/index.md) — Signing fundamentals underpin attestation and provenance
+    - **Next:** [4.6 Attestation Forgery](../4.6-attestation-forgery/index.md) — Attestation forgery attacks the provenance chain built here
+    - **See also:** [8.1 SLSA Framework Deep Dive](../../tier-8/8.1-slsa-deep-dive/index.md) — SLSA framework formalizes the attestation levels covered here
+    - **See also:** [2.1 CI/CD Fundamentals](../../tier-2/2.1-cicd-fundamentals/index.md) — CI/CD pipelines generate the build provenance attested here

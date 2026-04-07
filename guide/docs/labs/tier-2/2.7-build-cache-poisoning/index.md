@@ -36,3 +36,9 @@ graph LR
 | Gitea | `gitea:3000` | Git server hosting `wl-webapp` with CI caching |
 | Registry | `registry:5000` | Local package registry |
 | Workstation | (your shell) | Development environment |
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [2.1 CI/CD Fundamentals](../2.1-cicd-fundamentals/index.md) — CI/CD fundamentals including how build caching works
+    - **Next:** [2.8 Workflow Run & Cross-Workflow Attacks](../2.8-workflow-run-attacks/index.md) — Workflow run attacks are another advanced CI/CD technique
+    - **See also:** [2.5 Self-Hosted Runner Attacks](../2.5-self-hosted-runners/index.md) — Self-hosted runners have persistent caches that are easier to poison
+    - **See also:** [3.5 Layer Injection](../../tier-3/3.5-layer-injection/index.md) — Layer injection applies cache-like persistence to container builds

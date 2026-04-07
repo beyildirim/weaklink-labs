@@ -38,3 +38,9 @@ graph LR
 | Policies | `/app/policies/` | Gatekeeper ConstraintTemplates and Kyverno ClusterPolicies |
 | Attack Manifests | `/app/attacks/` | Kubernetes manifests that bypass admission controllers |
 | Workloads | `/app/workloads/` | Legitimate application manifests for testing |
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [5.2 Helm Chart Poisoning](../5.2-helm-poisoning/index.md) — Understanding Helm chart poisoning gives context for what admission controllers block
+    - **See also:** [4.3 Signing Fundamentals](../../tier-4/4.3-signing-fundamentals/index.md) — Admission controllers verify the signatures covered here
+    - **See also:** [4.4 Attestation & Provenance (SLSA)](../../tier-4/4.4-attestation-slsa/index.md) — Attestation policies are enforced by admission controllers
+    - **See also:** [3.2 Tag Mutability Attacks](../../tier-3/3.2-tag-mutability/index.md) — Tag mutability is one of the risks admission controllers mitigate

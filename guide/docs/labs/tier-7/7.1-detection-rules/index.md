@@ -29,3 +29,9 @@ graph LR
     C --> D[Alert fires<br>in SIEM]
     D --> E[Analyst triages<br>and investigates]
 ```
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [1.1 How Dependency Resolution Works](../../tier-1/1.1-dependency-resolution/index.md) — Understanding the attacks you are writing detection rules for
+    - **Next:** [7.2 Supply Chain Incident Triage](../7.2-incident-triage/index.md) — Incident triage uses the detection rules built here
+    - **See also:** [6.6 Case Study: SolarWinds (SUNBURST)](../../tier-6/6.6-case-study-solarwinds/index.md) — SolarWinds is a key case study for build-system detection
+    - **See also:** [4.1 What SBOMs Actually Contain](../../tier-4/4.1-sbom-contents/index.md) — SBOM monitoring feeds into supply chain detection rules

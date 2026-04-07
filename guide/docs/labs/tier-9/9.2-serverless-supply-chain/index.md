@@ -29,3 +29,9 @@ graph LR
     C --> D[Layer intercepts<br>every event]
     D --> E[PII and credentials<br>exfiltrated]
 ```
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [1.2 Dependency Confusion](../../tier-1/1.2-dependency-confusion/index.md) — Dependency confusion applies to serverless function dependencies
+    - **See also:** [2.4 Secret Exfiltration from CI](../../tier-2/2.4-secret-exfiltration/index.md) — Secret exfiltration from serverless execution environments
+    - **See also:** [5.3 Terraform Module and Provider Attacks](../../tier-5/5.3-terraform-module-attacks/index.md) — IaC attacks often deploy malicious serverless functions
+    - **See also:** [9.3 Cloud CI/CD Attacks](../9.3-cloud-cicd-attacks/index.md) — Cloud CI/CD can deploy compromised serverless functions

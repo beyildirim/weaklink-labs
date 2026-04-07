@@ -36,3 +36,9 @@ graph LR
 |---------|---------|-------------|
 | Gitea | `gitea:3000` | Git server hosting `wl-webapp` with CI secrets |
 | Workstation | (your shell) | Development environment |
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [2.1 CI/CD Fundamentals](../2.1-cicd-fundamentals/index.md) — Understanding CI/CD fundamentals is essential for this attack
+    - **Next:** [2.3 Indirect Poisoned Pipeline Execution](../2.3-indirect-ppe/index.md) — Indirect PPE is a stealthier variant of pipeline poisoning
+    - **See also:** [2.6 GitHub Actions Injection](../2.6-actions-injection/index.md) — Actions injection is another way to execute code in pipelines
+    - **See also:** [6.6 Case Study: SolarWinds (SUNBURST)](../../tier-6/6.6-case-study-solarwinds/index.md) — SolarWinds compromised the build process at scale

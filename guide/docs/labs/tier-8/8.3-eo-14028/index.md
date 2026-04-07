@@ -31,3 +31,9 @@ graph TD
     C --> D[Vendors produce<br>SBOM + VEX]
     D --> E[Federal agencies<br>verify compliance]
 ```
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [8.2 SSDF / NIST SP 800-218 Mapping](../8.2-ssdf-nist/index.md) — SSDF practices underpin EO 14028 compliance requirements
+    - **Next:** [8.5 Building a Supply Chain Security Program](../8.5-building-a-program/index.md) — Building a program implements EO 14028 requirements operationally
+    - **See also:** [4.1 What SBOMs Actually Contain](../../tier-4/4.1-sbom-contents/index.md) — SBOM requirements are a core EO 14028 mandate
+    - **See also:** [8.4 Vendor Supply Chain Assessment](../8.4-vendor-assessment/index.md) — Vendor assessment aligns with EO 14028 supplier requirements

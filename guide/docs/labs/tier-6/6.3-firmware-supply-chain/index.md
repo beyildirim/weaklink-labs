@@ -39,3 +39,8 @@ graph LR
   <span class="phase-arrow">›</span>
   <a href="detect/" class="phase-step upcoming">Detect</a>
 </div>
+
+!!! tip "Related Labs"
+    - **See also:** [4.3 Signing Fundamentals](../../tier-4/4.3-signing-fundamentals/index.md) — Signing is a key defense for firmware integrity verification
+    - **See also:** [4.4 Attestation & Provenance (SLSA)](../../tier-4/4.4-attestation-slsa/index.md) — Attestation provides provenance for firmware builds
+    - **See also:** [6.6 Case Study: SolarWinds (SUNBURST)](../6.6-case-study-solarwinds/index.md) — SolarWinds compromised software distribution, similar to firmware updates

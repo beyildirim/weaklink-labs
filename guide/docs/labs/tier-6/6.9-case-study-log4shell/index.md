@@ -39,3 +39,9 @@ graph LR
   <span class="phase-arrow">›</span>
   <a href="detect/" class="phase-step upcoming">Detect</a>
 </div>
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [1.1 How Dependency Resolution Works](../../tier-1/1.1-dependency-resolution/index.md) — Dependency resolution explains how Log4j propagated everywhere
+    - **See also:** [1.6 Phantom Dependencies](../../tier-1/1.6-phantom-dependencies/index.md) — Log4j was a phantom transitive dependency in most affected projects
+    - **See also:** [4.1 What SBOMs Actually Contain](../../tier-4/4.1-sbom-contents/index.md) — SBOMs would have revealed Log4j in dependency trees
+    - **See also:** [6.10 Case Study: Equifax Breach](../6.10-case-study-equifax/index.md) — Equifax also involved a known vulnerability in a dependency

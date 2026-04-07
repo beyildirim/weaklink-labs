@@ -30,3 +30,9 @@ graph LR
     D --> E[Incident<br>Response]
     E --> F[Continuous<br>Improvement]
 ```
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [8.1 SLSA Framework Deep Dive](../8.1-slsa-deep-dive/index.md) — SLSA framework is a core component of any program
+    - **Prerequisite:** [8.2 SSDF / NIST SP 800-218 Mapping](../8.2-ssdf-nist/index.md) — SSDF provides the practice framework for your program
+    - **See also:** [7.3 Incident Response Playbook](../../tier-7/7.3-ir-playbook/index.md) — IR playbooks are a critical program component
+    - **See also:** [7.5 Threat Modeling for Supply Chains](../../tier-7/7.5-threat-modeling/index.md) — Threat modeling drives program priorities
