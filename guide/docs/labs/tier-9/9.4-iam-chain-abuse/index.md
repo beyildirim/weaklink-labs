@@ -3,7 +3,7 @@
 <div class="lab-meta">
   <span>Phase 1 ~10 min | Phase 2 ~15 min | Phase 3 ~15 min | Phase 4 ~5 min</span>
   <span class="difficulty advanced">Advanced</span>
-  <span>Prerequisites: <a href="../../tier-2/2.4-secret-exfiltration.md">Lab 2.4</a></span>
+  <span>Prerequisites: <a href="../../tier-2/2.4-secret-exfiltration/">Lab 2.4</a></span>
 </div>
 
 <div class="phase-stepper">
