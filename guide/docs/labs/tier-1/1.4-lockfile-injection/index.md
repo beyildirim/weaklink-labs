@@ -38,3 +38,9 @@ graph LR
 | Gitea | `gitea:3000` | A Gitea instance with a repo containing a malicious PR |
 
 Login: `weaklink` / `weaklink`
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [1.1 How Dependency Resolution Works](../1.1-dependency-resolution/index.md) — Lockfiles record resolution decisions, which this attack modifies
+    - **Next:** [1.5 Manifest Confusion](../1.5-manifest-confusion/index.md) — Manifest confusion is another metadata-based package attack
+    - **See also:** [1.6 Phantom Dependencies](../1.6-phantom-dependencies/index.md) — Phantom dependencies arise when lockfiles diverge from manifests
+    - **See also:** [4.7 SBOM Tampering](../../tier-4/4.7-sbom-tampering/index.md) — SBOM tampering is a similar integrity attack on metadata

@@ -40,3 +40,9 @@ Packages pre-loaded:
 - `safe-utils@1.0.0`: normal, legitimate package
 - `crafted-widget@2.1.0`: **mismatched manifests** (the attack)
 - `evil-pkg@1.0.0`: the hidden malicious dependency
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [1.1 How Dependency Resolution Works](../1.1-dependency-resolution/index.md) — Understanding how manifests declare dependencies is essential
+    - **Next:** [1.6 Phantom Dependencies](../1.6-phantom-dependencies/index.md) — Phantom dependencies exploit undeclared manifest entries
+    - **See also:** [1.4 Lockfile Injection](../1.4-lockfile-injection/index.md) — Both attacks target package metadata rather than code
+    - **See also:** [4.2 SBOM Gaps in Practice](../../tier-4/4.2-sbom-gaps/index.md) — SBOM gaps miss the same discrepancies manifest confusion creates

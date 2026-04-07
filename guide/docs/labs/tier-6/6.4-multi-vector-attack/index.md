@@ -40,3 +40,9 @@ graph LR
   <span class="phase-arrow">›</span>
   <a href="detect/" class="phase-step upcoming">Detect</a>
 </div>
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [1.3 Typosquatting](../../tier-1/1.3-typosquatting/index.md) — Typosquatting is one vector in the multi-vector chain
+    - **Prerequisite:** [2.2 Direct Poisoned Pipeline Execution](../../tier-2/2.2-direct-ppe/index.md) — Pipeline poisoning is another vector in the chain
+    - **Prerequisite:** [3.3 Base Image Poisoning](../../tier-3/3.3-base-image-poisoning/index.md) — Base image poisoning is the container vector in the chain
+    - **See also:** [7.2 Supply Chain Incident Triage](../../tier-7/7.2-incident-triage/index.md) — Triaging multi-vector incidents requires special techniques

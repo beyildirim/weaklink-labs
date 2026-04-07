@@ -29,3 +29,9 @@ graph LR
     C --> D[Classify<br>risk tier]
     D --> E[Approve / reject /<br>require remediation]
 ```
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [8.1 SLSA Framework Deep Dive](../8.1-slsa-deep-dive/index.md) — SLSA levels are a primary vendor assessment criterion
+    - **Next:** [8.5 Building a Supply Chain Security Program](../8.5-building-a-program/index.md) — Vendor assessment feeds into building a full security program
+    - **See also:** [8.3 Executive Order 14028 Compliance](../8.3-eo-14028/index.md) — EO 14028 mandates vendor supply chain transparency
+    - **See also:** [4.1 What SBOMs Actually Contain](../../tier-4/4.1-sbom-contents/index.md) — SBOM requirements are central to vendor evaluation

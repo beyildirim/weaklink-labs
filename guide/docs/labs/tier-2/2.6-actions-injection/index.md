@@ -36,3 +36,9 @@ graph LR
 |---------|---------|-------------|
 | Gitea | `gitea:3000` | Git server hosting `wl-webapp` with Actions workflows |
 | Workstation | (your shell) | Development environment |
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [2.2 Direct Poisoned Pipeline Execution](../2.2-direct-ppe/index.md) — PPE shows how pipeline configs can be poisoned
+    - **Next:** [2.8 Workflow Run & Cross-Workflow Attacks](../2.8-workflow-run-attacks/index.md) — Workflow run attacks combine injection with cross-workflow triggers
+    - **See also:** [2.3 Indirect Poisoned Pipeline Execution](../2.3-indirect-ppe/index.md) — Both exploit how untrusted input reaches pipeline execution
+    - **See also:** [6.7 Case Study: Codecov Bash Uploader](../../tier-6/6.7-case-study-codecov/index.md) — Codecov injected code into a widely-used CI script

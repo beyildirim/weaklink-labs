@@ -35,3 +35,9 @@ graph LR
 |---------|---------|-------------|
 | OCI Registry | `registry:5000` | Local registry with pre-loaded images |
 | Workstation | Pod with docker CLI, crane, and jq | Your working environment |
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [0.3 How Containers Work](../../tier-0/0.3-containers/index.md) — Basic container concepts before diving into image internals
+    - **Next:** [3.2 Tag Mutability Attacks](../3.2-tag-mutability/index.md) — Tag mutability attacks exploit how images are referenced
+    - **Next:** [3.5 Layer Injection](../3.5-layer-injection/index.md) — Layer injection manipulates the layer structure covered here
+    - **See also:** [4.3 Signing Fundamentals](../../tier-4/4.3-signing-fundamentals/index.md) — Signing fundamentals protect the images analyzed here

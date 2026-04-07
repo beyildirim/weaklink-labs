@@ -37,3 +37,9 @@ graph LR
 | PyPI Private | `http://pypi-private:8080` |
 | Verdaccio | `http://verdaccio:4873` |
 | OCI Registry | `http://registry:5000` |
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [0.2 How Package Managers Work](../0.2-package-managers/index.md) — Registries host the packages that package managers install
+    - **Prerequisite:** [0.3 How Containers Work](../0.3-containers/index.md) — Container registries store the images you build
+    - **Next:** [3.4 Registry Confusion](../../tier-3/3.4-registry-confusion/index.md) — What happens when registry resolution is ambiguous
+    - **See also:** [1.2 Dependency Confusion](../../tier-1/1.2-dependency-confusion/index.md) — Dependency confusion exploits how registries are prioritized

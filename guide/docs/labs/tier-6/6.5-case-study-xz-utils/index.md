@@ -39,3 +39,9 @@ graph LR
   <span class="phase-arrow">›</span>
   <a href="detect/" class="phase-step upcoming">Detect</a>
 </div>
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [2.3 Indirect Poisoned Pipeline Execution](../../tier-2/2.3-indirect-ppe/index.md) — Indirect PPE is the core technique used in the xz-utils attack
+    - **See also:** [0.1 How Version Control Works](../../tier-0/0.1-version-control/index.md) — The attack exploited version control trust and maintainer access
+    - **See also:** [6.6 Case Study: SolarWinds (SUNBURST)](../6.6-case-study-solarwinds/index.md) — SolarWinds is another build-system compromise at a different scale
+    - **See also:** [7.3 Incident Response Playbook](../../tier-7/7.3-ir-playbook/index.md) — IR playbooks address how to respond to attacks like this

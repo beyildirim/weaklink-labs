@@ -35,3 +35,9 @@ graph LR
 | Service | Address | Description |
 |---------|---------|-------------|
 | PyPI | `pypi-private:8080` | A private PyPI server with both legitimate and typosquatted packages |
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [1.1 How Dependency Resolution Works](../1.1-dependency-resolution/index.md) — Package resolution determines which typosquatted package gets installed
+    - **Next:** [1.4 Lockfile Injection](../1.4-lockfile-injection/index.md) — Another way to slip malicious packages past developers
+    - **See also:** [1.2 Dependency Confusion](../1.2-dependency-confusion/index.md) — Both attacks exploit the package namespace
+    - **See also:** [6.1 AI/ML Model Supply Chain](../../tier-6/6.1-ml-model-supply-chain/index.md) — ML model registries face the same typosquatting risks
