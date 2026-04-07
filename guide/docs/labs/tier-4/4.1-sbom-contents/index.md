@@ -3,7 +3,7 @@
 <div class="lab-meta">
   <span>Phase 1 ~10min | Phase 2 ~10min | Phase 3 ~10min</span>
   <span class="difficulty beginner">Beginner</span>
-  <span>Prerequisites: <a href="../../tier-1/1.1-dependency-resolution.md">Lab 1.1</a></span>
+  <span>Prerequisites: <a href="../../tier-1/1.1-dependency-resolution/">Lab 1.1</a></span>
 </div>
 
 <div class="phase-stepper">

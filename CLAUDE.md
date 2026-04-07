@@ -4,7 +4,7 @@ Supply chain security training platform. 62 labs, 10 tiers, runs on minikube.
 
 ## Architecture
 
-- **Runtime:** K8s only (minikube). No Docker Compose for labs. Workstation pod mounts the Docker socket for container labs.
+- **Runtime:** K8s (minikube) for full experience, Docker Compose for quick start. Workstation pod/container mounts the Docker socket for container labs.
 - **Guide:** MkDocs Material, served as a pod, accessed via port-forward at localhost:8000
 - **Terminal:** ttyd baked into workstation image, port 7681
 - **Registries:** pypi-private, pypi-public, verdaccio, gitea, OCI registry (all K8s services)
@@ -25,27 +25,21 @@ images/lab-setup/            Lab seeder (setup-labs.sh)
 images/guide/                MkDocs Dockerfile
 labs/tier-N-*/               Lab source files (lab.yml, verify.sh, hints/, src/)
 cli/weaklink                 CLI script
-start.sh / stop.sh           Lifecycle scripts
+start.sh / stop.sh           Lifecycle scripts (minikube path)
+docker-compose.yml           Quick start (Docker Compose path)
+Makefile                     Developer convenience targets
+scripts/                     Operational utilities (sign-images.sh)
 ```
 
 ## Lab Guide Page Structure
 
-Every guide page at `guide/docs/labs/tier-N/*.md` follows this structure:
-1. Title + `<div class="lab-meta">` (time, difficulty, prerequisites)
-2. Intro paragraph (2-3 sentences)
-3. `### Attack Flow` with ```mermaid diagram (graph LR, 4-7 nodes, no classDef)
-4. `## Environment` table
-5. `## Connect to the Workstation` + terminal embed iframe
-6. `???+ info "Phase 1: UNDERSTAND"` (collapsible, expanded)
-7. `???+ warning "Phase 2: BREAK"` (collapsible, expanded)
-8. `???+ success "Phase 3: DEFEND"` (collapsible, expanded)
-9. `??? danger "Phase 4: DETECT"` (collapsible, collapsed)
-10. `??? tip "SOC Relevance"` (collapsed)
-11. `??? example "CI Integration"` (collapsed)
-12. `## What You Learned`
-13. `## Further Reading`
+All labs use the phase-per-page structure: `guide/docs/labs/tier-N/N.X-lab-name/` with separate files:
 
-Lab 1.2 uses a phase-per-page structure (directory with index.md, understand.md, break.md, defend.md, detect.md) as the prototype for splitting large labs into separate pages.
+- `index.md` (title, lab-meta, phase stepper nav, attack flow mermaid, environment table)
+- `understand.md` (Phase 1)
+- `break.md` (Phase 2)
+- `defend.md` (Phase 3)
+- `detect.md` (Phase 4)
 
 Case study labs (6.5-6.10) use: UNDERSTAND/ANALYZE/LESSONS/DETECT
 Tier 7 labs use: UNDERSTAND/INVESTIGATE/VALIDATE/IMPROVE
@@ -57,7 +51,7 @@ Tier 8 labs use: UNDERSTAND/ASSESS/PLAN/DOCUMENT
 - Never add inline Sigma/Splunk/KQL detection rules to guide pages. Phase 4 DETECT is conceptual only (bullet points, indicator tables, MITRE mapping).
 - Never add Co-Authored-By or AI attribution to commits.
 - Admonitions: use `???+` (expanded) for phases 1-3, `???` (collapsed) for phase 4/SOC/CI.
-- Prerequisites in guide pages must be hyperlinked: `[Lab 1.2](../tier-1/1.2-dependency-confusion.md)`
+- Prerequisites in guide pages must be hyperlinked: `<a href="../../tier-1/1.2-dependency-confusion/">Lab 1.2</a>`
 - Mermaid diagrams: `graph LR`, simple, no classDef styling.
 - MkDocs nav: 3 tabs only (Home, Labs, Resources). Tiers nested under Labs in order 0-9.
 - Target audience: SOC analysts, security engineers, DevSecOps, DevOps. Not just one persona.
@@ -82,7 +76,7 @@ Tier 8 labs use: UNDERSTAND/ASSESS/PLAN/DOCUMENT
 
 ## What NOT to Do
 
-- Don't add Docker Compose files. K8s only.
+- Don't duplicate Docker Compose definitions. Root docker-compose.yml is canonical; .devcontainer extends it.
 - Don't add full detection rules inline. Keep Phase 4 conceptual.
 - Don't make the MkDocs nav crowded. 3 tabs, tiers nested.
 - Don't use `navigation.expand` in mkdocs.yml (makes sidebar too long).

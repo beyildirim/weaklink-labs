@@ -3,7 +3,7 @@
 <div class="lab-meta">
   <span>Phase 1: ~10 min | Phase 2: ~10 min | Phase 3: ~10 min | Phase 4: ~5 min</span>
   <span class="difficulty intermediate">Intermediate</span>
-  <span>Prerequisites: <a href="../../tier-0/0.3-containers.md">Lab 0.3</a></span>
+  <span>Prerequisites: <a href="../../tier-0/0.3-containers/">Lab 0.3</a></span>
 </div>
 
 <div class="phase-stepper">

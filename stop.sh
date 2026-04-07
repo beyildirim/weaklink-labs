@@ -34,6 +34,11 @@ if [[ -f "${SCRIPT_DIR}/.weaklink-pf-ttyd.pid" ]]; then
     kill "$TTYD_PID" 2>/dev/null && ok "Web terminal port-forward stopped." || true
     rm -f "${SCRIPT_DIR}/.weaklink-pf-ttyd.pid"
 fi
+if [[ -f "${SCRIPT_DIR}/.weaklink-pf-verify.pid" ]]; then
+    VERIFY_PID=$(cat "${SCRIPT_DIR}/.weaklink-pf-verify.pid")
+    kill "$VERIFY_PID" 2>/dev/null && ok "Verify API port-forward stopped." || true
+    rm -f "${SCRIPT_DIR}/.weaklink-pf-verify.pid"
+fi
 
 # Uninstall Helm release
 log "Uninstalling Helm release..."

@@ -3,7 +3,7 @@
 <div class="lab-meta">
   <span>~20 min hands-on | ~10 min reference</span>
   <span class="difficulty beginner">Beginner</span>
-  <span>Prerequisites: <a href="../../tier-0/0.3-containers.md">Lab 0.3</a></span>
+  <span>Prerequisites: <a href="../../tier-0/0.3-containers/">Lab 0.3</a></span>
 </div>
 
 <div class="phase-stepper">
