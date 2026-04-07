@@ -454,3 +454,5 @@ nav:
         - Detect: labs/tier-9/9.4-iam-chain-abuse/detect.md
   - Resources:
     - Roadmap: roadmap.md
+    - Detection Rule Library: resources/detection-rules.md
+    - CI Security Snippets: resources/ci-snippets.md
