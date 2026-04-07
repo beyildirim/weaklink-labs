@@ -22,7 +22,7 @@ labs/tier-1-package-security/1.2-dependency-confusion/
 └── solution/            # Reference solution
 ```
 
-Each lab also has a corresponding guide page at `guide/docs/labs/tier-N/N.X-lab-name.md`.
+Each lab also has a corresponding guide directory at `guide/docs/labs/tier-N/N.X-lab-name/` containing `index.md` and phase pages (`understand.md`, `break.md`, `defend.md`, `detect.md`).
 
 ## Adding a New Lab
 
@@ -56,72 +56,19 @@ phase_defend: "What the learner fixes in phase 3"
 - Print clear messages about what passed and what failed
 - Check the **defense**, not just the attack (the user should have fixed the issue)
 
-### 4. Add the lab guide page
+### 4. Add the lab guide pages
 
-Create `guide/docs/labs/tier-N/N.X-lab-name.md` using MkDocs Material format. The guide follows the 3-phase structure using admonitions to mark phase transitions:
+Create a directory `guide/docs/labs/tier-N/N.X-lab-name/` with these files:
 
-```markdown
-# Lab N.X: Title
+- `index.md` (overview, attack flow, environment table, phase stepper navigation)
+- `understand.md` (Phase 1)
+- `break.md` (Phase 2)
+- `defend.md` (Phase 3)
+- `detect.md` (Phase 4)
 
-<div class="lab-meta">
-  <span>~30 minutes</span>
-  <span>Intermediate</span>
-  <span>Prerequisites: Lab N.Y</span>
-</div>
+Use an existing lab directory (e.g., `guide/docs/labs/tier-1/1.2-dependency-confusion/`) as a template.
 
-Brief description of what this lab teaches and why it matters.
-
----
-
-## Environment
-
-| Service     | Address              |
-|-------------|----------------------|
-| Service UI  | `service:port`       |
-| Login       | `user` / `password`  |
-
-## Connect to the Workstation
-
-```bash
-./weaklink shell
-```
-
----
-
-!!! info "Phase 1: UNDERSTAND. Title"
-
-    **Goal:** What the learner will explore.
-
-### Step 1: ...
-
----
-
-!!! warning "Phase 2: BREAK. Title"
-
-    **Goal:** What the learner will attack.
-
-### Step N: ...
-
----
-
-!!! success "Phase 3: DEFEND. Title"
-
-    **Goal:** What the learner will fix.
-
-### Step N: ...
-
----
-
-## What You Learned
-
-Summary mapping to real-world relevance.
-
-## Further Reading
-
-- [Link](url)
-```
-
-Then add the page to the nav in `guide/mkdocs.yml`.
+Then add all pages to the nav in `guide/mkdocs.yml`.
 
 ### 5. Seed lab content (if needed)
 
@@ -159,22 +106,22 @@ If your lab's services should only deploy when the tier is enabled, use the appr
 1. Start the environment:
 
     ```bash
-    ./weaklink start
+    ./start.sh
     ```
 
     This builds the Docker images, starts Minikube, and deploys the Helm chart.
 
-2. Open the guide in your browser (served on `localhost:30080`).
+2. Open the guide in your browser at `http://localhost:8000`.
 
 3. Work through your lab following the guide.
 
 4. Verify completion:
 
     ```bash
-    ./weaklink verify <lab-id>
+    weaklink verify <lab-id>
     ```
 
-5. Confirm all 3 phases work end-to-end: understand, break, defend.
+5. Confirm all phases work end-to-end.
 
 ## PR Process
 
