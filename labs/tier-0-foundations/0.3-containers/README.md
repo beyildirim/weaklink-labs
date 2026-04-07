@@ -2,7 +2,7 @@
 
 **Time:** ~30 minutes | **Difficulty:** Beginner | **Prerequisites:** Lab 0.2
 
-Containers are how modern software is packaged and deployed. When you pull a Docker image, you are trusting that the image contains what you expect. But container tags like `latest` are mutable -- they can be changed to point to a completely different image at any time. This is a real supply chain attack vector.
+Containers are how modern software is packaged and deployed. When you pull a Docker image, you are trusting that the image contains what you expect. But container tags like `latest` are mutable. They can be changed to point to a completely different image at any time. This is a real supply chain attack vector.
 
 In this lab you will build and inspect a container image, then see how an attacker can swap a tagged image for a backdoored one, then defend against it using digest pinning.
 
@@ -40,7 +40,7 @@ You are now inside the workstation pod with its own Docker daemon. All commands 
 
 ---
 
-## Phase 1: UNDERSTAND -- Building and Inspecting Container Images
+## Phase 1: UNDERSTAND. Building and Inspecting Container Images
 
 **Goal:** Learn what a container image is, how it is built, and how layers work.
 
@@ -149,11 +149,11 @@ Note the digest that docker prints (it starts with `sha256:`). This digest is a 
 cat /workspace/safe-digest.txt
 ```
 
-**Remember this digest -- it matters in Phase 3.**
+**Remember this digest. It matters in Phase 3.**
 
 ---
 
-## Phase 2: BREAK -- Mutable Tags and Image Substitution
+## Phase 2: BREAK. Mutable Tags and Image Substitution
 
 **Goal:** Demonstrate that a `latest` tag can be silently replaced with a backdoored image.
 
@@ -196,7 +196,7 @@ docker push registry:5000/webapp:latest
 
 The `latest` tag now points to the **backdoored image**. The registry accepted it without complaint.
 
-### Step 3: Pull "latest" again -- you get the backdoor
+### Step 3: Pull "latest" again. You get the backdoor
 
 Remove your local cached copy first to simulate a fresh pull:
 
@@ -243,11 +243,11 @@ curl -s http://localhost:8001/health | jq .
 docker stop check-pinned && docker rm check-pinned
 ```
 
-The `backdoor` field is `false`. The attacker only overwrote `latest`, not `1.0.0`. But version tags are also mutable -- they can be overwritten too. **The only immutable reference is the digest.**
+The `backdoor` field is `false`. The attacker only overwrote `latest`, not `1.0.0`. But version tags are also mutable; they can be overwritten too. **The only immutable reference is the digest.**
 
 ---
 
-## Phase 3: DEFEND -- Digest Pinning
+## Phase 3: DEFEND. Digest Pinning
 
 **Goal:** Use image digests instead of tags to guarantee you always get the exact image you verified.
 
@@ -260,7 +260,7 @@ SAFE_DIGEST=$(cat /workspace/safe-digest.txt)
 echo "Safe image digest: ${SAFE_DIGEST}"
 ```
 
-### Step 2: Pull by digest -- get the safe image regardless of tag changes
+### Step 2: Pull by digest. Get the safe image regardless of tag changes
 
 ```bash
 docker pull "registry:5000/webapp@${SAFE_DIGEST}"
@@ -345,7 +345,7 @@ bash verify.sh
 | **Images are built from layers** | Each layer can introduce vulnerabilities or malicious code |
 | **Tags are mutable pointers** | `latest`, `v1.0`, even `stable` can be overwritten at any time |
 | **Registries accept overwrites** | Pushing a new image with the same tag replaces the old one silently |
-| **Digests are immutable** | A `sha256:...` digest uniquely identifies image contents -- it cannot be faked |
+| **Digests are immutable** | A `sha256:...` digest uniquely identifies image contents. It cannot be faked |
 | **Digest pinning = defense** | Using `@sha256:...` in Dockerfiles and deployments prevents tag substitution attacks |
 
 ## Real-World Examples

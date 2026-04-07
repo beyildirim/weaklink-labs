@@ -9,7 +9,7 @@ will not read more than that. Focus on:
    Continuous Improvement.
 
 3. **Timeline** (table): Four rows. 30 days, 90 days, 6 months, 1 year.
-   Each row: 1-2 key deliverables. Not details -- milestones.
+   Each row: 1-2 key deliverables. Not details, milestones.
 
 4. **Investment** (table): What it costs. Tooling, headcount, training,
    external audits. Year 1 total.

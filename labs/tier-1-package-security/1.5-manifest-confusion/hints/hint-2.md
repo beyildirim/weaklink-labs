@@ -3,8 +3,8 @@
 To defend against manifest confusion, you need to:
 
 1. **Never trust `npm view` for security decisions.** Always inspect the actual tarball.
-2. **Use a lockfile** (`package-lock.json`) with integrity hashes -- this pins exact tarball contents.
-3. **Use `npm ci`** instead of `npm install` -- it strictly follows the lockfile without modifying it.
+2. **Use a lockfile** (`package-lock.json`) with integrity hashes. This pins exact tarball contents.
+3. **Use `npm ci`** instead of `npm install`. It strictly follows the lockfile without modifying it.
 
 For the lab, you need to:
 - Remove `crafted-widget` from your dependencies

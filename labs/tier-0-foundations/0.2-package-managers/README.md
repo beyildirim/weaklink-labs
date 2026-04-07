@@ -2,7 +2,7 @@
 
 **Time:** ~25 minutes | **Difficulty:** Beginner | **Prerequisites:** Lab 0.1
 
-Every modern application is built from dozens or hundreds of third-party packages. When you run `pip install`, you are downloading and executing code written by strangers. Package managers make this convenient -- but convenience is the enemy of security.
+Every modern application is built from dozens or hundreds of third-party packages. When you run `pip install`, you are downloading and executing code written by strangers. Package managers make this convenient, but convenience is the enemy of security.
 
 In this lab you will see how `pip install` works, then install a package with a malicious `setup.py` that runs arbitrary code on your machine, then defend against it using hash verification.
 
@@ -41,7 +41,7 @@ You are now inside the workstation pod. All commands below run here.
 
 ---
 
-## Phase 1: UNDERSTAND -- How pip install Works
+## Phase 1: UNDERSTAND. How pip install Works
 
 **Goal:** See what actually happens when you install a Python package.
 
@@ -74,7 +74,7 @@ pip install --index-url http://pypi:8080/simple/ --trusted-host pypi safe-utils
 pip show safe-utils
 ```
 
-This shows you the package metadata: name, version, location on disk. Look at the `Location` field -- that is where Python stores installed packages.
+This shows you the package metadata: name, version, location on disk. Look at the `Location` field. That is where Python stores installed packages.
 
 ### Step 4: Use the package
 
@@ -110,11 +110,11 @@ You should see `setup.py`, `safe_utils.py`, and `PKG-INFO`.
 cat safe-utils-1.0.0/setup.py
 ```
 
-This is the file that pip executes when installing. For `safe-utils`, it just defines the package name, version, and modules. **But setup.py is a full Python script -- it can do anything.**
+This is the file that pip executes when installing. For `safe-utils`, it just defines the package name, version, and modules. **But setup.py is a full Python script. It can do anything.**
 
 ---
 
-## Phase 2: BREAK -- Malicious Code in setup.py
+## Phase 2: BREAK. Malicious Code in setup.py
 
 **Goal:** See what happens when a package has a malicious `setup.py`.
 
@@ -124,7 +124,7 @@ This is the file that pip executes when installing. For `safe-utils`, it just de
 ls -la /tmp/pwned 2>&1
 ```
 
-You should see "No such file or directory". Good -- nothing has been compromised yet.
+You should see "No such file or directory". Good, nothing has been compromised yet.
 
 ### Step 2: Look at the malicious package (before installing)
 
@@ -150,7 +150,7 @@ In a real attack, this payload could steal API keys, install backdoors, or exfil
 pip install --index-url http://pypi:8080/simple/ --trusted-host pypi malicious-utils
 ```
 
-You will see a warning message printed during installation. In a real attack, there would be no warning -- the malicious code would run silently.
+You will see a warning message printed during installation. In a real attack, there would be no warning. The malicious code would run silently.
 
 ### Step 4: Check the damage
 
@@ -173,7 +173,7 @@ On the real PyPI (pypi.org), there are over 500,000 packages. Any one of them co
 
 ---
 
-## Phase 3: DEFEND -- Hash Verification with --require-hashes
+## Phase 3: DEFEND. Hash Verification with --require-hashes
 
 **Goal:** Use pip's hash checking to ensure you only install packages you have explicitly verified.
 
@@ -224,7 +224,7 @@ pip install --require-hashes \
     -r /workspace/requirements.txt
 ```
 
-This should succeed -- the hash matches.
+This should succeed. The hash matches.
 
 ### Step 5: Try to install the malicious package with wrong hash
 

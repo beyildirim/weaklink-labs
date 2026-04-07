@@ -6,10 +6,10 @@ For each SSDF practice group below, map the WeakLink Labs defenses you have impl
 (or would implement) to the corresponding SSDF task. Mark coverage status and note any gaps.
 
 Coverage Legend:
-- **Full** -- Defense fully addresses this task
-- **Partial** -- Defense addresses some aspects but not all
-- **None** -- No defense currently maps to this task
-- **N/A** -- Not applicable to this organization
+- **Full:** Defense fully addresses this task
+- **Partial:** Defense addresses some aspects but not all
+- **None:** No defense currently maps to this task
+- **N/A:** Not applicable to this organization
 
 ---
 

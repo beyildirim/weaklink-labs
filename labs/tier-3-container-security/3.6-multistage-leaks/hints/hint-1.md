@@ -1,9 +1,9 @@
 Multi-stage builds are supposed to keep build-time secrets out of the
 final image. But secrets leak in three common ways:
 
-1. **ENV/ARG baked into layer metadata** -- `docker history` reveals them
-2. **Files copied from build stage** -- may carry metadata or embedded secrets
-3. **Environment variables inherited** -- ENV persists across stages
+1. **ENV/ARG baked into layer metadata.** `docker history` reveals them
+2. **Files copied from build stage.** May carry metadata or embedded secrets
+3. **Environment variables inherited.** ENV persists across stages
 
 Check the vulnerable image for leaks:
 

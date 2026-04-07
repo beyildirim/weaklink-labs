@@ -26,10 +26,10 @@ T+0h00m  17:02 UTC  Detection rule fires: "internal package from public registry
 - Z artifacts produced from compromised builds (may contain backdoors)
 
 ### 4. Immediate Actions (Recommended)
-1. **Quarantine** -- disable affected pipelines NOW
-2. **Rotate secrets** -- every credential that was in a compromised runner's environment
-3. **Block the package** -- add `internal-utils` to the private registry to prevent future confusion
-4. **Audit artifacts** -- any container images or packages built during the compromise window must be rebuilt from clean runners
+1. **Quarantine:** disable affected pipelines NOW
+2. **Rotate secrets:** every credential that was in a compromised runner's environment
+3. **Block the package:** add `internal-utils` to the private registry to prevent future confusion
+4. **Audit artifacts:** any container images or packages built during the compromise window must be rebuilt from clean runners
 
 ### 5. Severity Classification
 Use your organization's scale. This is likely **SEV-1 / Critical** because it involves credential exfiltration with active attacker access.

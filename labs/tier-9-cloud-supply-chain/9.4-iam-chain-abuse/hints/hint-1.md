@@ -30,7 +30,7 @@ Production Account (444444444444)
 
 1. **Initial access:** Attacker compromises a dev dependency (malicious npm package in a dev tool). The malicious package runs in the developer's environment and steals the `dev-deploy` role credentials from `~/.aws/credentials` or environment variables.
 
-2. **Hop 1: Dev -> CI:** Attacker uses `dev-deploy` credentials to `AssumeRole` into the CI account's `ci-runner` role. This is a normal operation -- developers trigger CI builds constantly.
+2. **Hop 1: Dev -> CI:** Attacker uses `dev-deploy` credentials to `AssumeRole` into the CI account's `ci-runner` role. This is a normal operation; developers trigger CI builds constantly.
 
 3. **Hop 2: CI -> Staging:** The `ci-runner` role can assume `staging-deploy` because CI deploys to staging. Attacker uses these credentials to hop to the staging account.
 

@@ -12,7 +12,7 @@
 
 ---
 
-## V1: Inventory -- Knowing What You Have
+## V1: Inventory. Knowing What You Have
 
 ### Level 1
 
@@ -49,7 +49,7 @@
 
 ---
 
-## V2: Software Bill of Materials -- SBOM Quality
+## V2: Software Bill of Materials. SBOM Quality
 
 ### Level 1
 
@@ -88,7 +88,7 @@
 
 ---
 
-## V3: Build Environment -- Build Integrity
+## V3: Build Environment. Build Integrity
 
 ### Level 1
 
@@ -125,7 +125,7 @@
 
 ---
 
-## V4: Package Management -- Dependency Controls
+## V4: Package Management. Dependency Controls
 
 ### Level 1
 
@@ -163,7 +163,7 @@
 
 ---
 
-## V5: Component Analysis -- Vulnerability Management
+## V5: Component Analysis. Vulnerability Management
 
 ### Level 1
 
@@ -200,7 +200,7 @@
 
 ---
 
-## V6: Pedigree and Provenance -- Origin Tracking
+## V6: Pedigree and Provenance. Origin Tracking
 
 ### Level 1
 

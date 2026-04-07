@@ -14,4 +14,4 @@ For Splunk, your queries will target `index=proxy` for network-based detection a
 
 For Suricata, focus on **network indicators**: HTTP requests to public registries from build servers, and outbound connections from `setup.py` child processes.
 
-Look at the sample logs in `src/logs/` -- each file simulates one attack type. Study the log format before writing queries.
+Look at the sample logs in `src/logs/`. Each file simulates one attack type. Study the log format before writing queries.

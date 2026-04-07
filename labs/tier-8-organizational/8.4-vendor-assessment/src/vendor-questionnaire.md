@@ -7,10 +7,10 @@ ongoing vendor management process. Score each response on the 0-3 scale below.
 Require evidence for any claim scored 2 or higher.
 
 **Scoring:**
-- **0** -- No capability / no response
-- **1** -- Ad-hoc or informal process exists
-- **2** -- Documented process, partially implemented
-- **3** -- Fully implemented, auditable, with evidence
+- **0:** No capability / no response
+- **1:** Ad-hoc or informal process exists
+- **2:** Documented process, partially implemented
+- **3:** Fully implemented, auditable, with evidence
 
 ---
 

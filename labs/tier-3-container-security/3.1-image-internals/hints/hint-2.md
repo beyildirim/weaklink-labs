@@ -24,5 +24,5 @@ You can also use crane to inspect the manifest directly:
 crane manifest registry:5000/webapp:latest | jq .
 ```
 
-Document what you find in `/app/findings.txt` -- include the layer hash
+Document what you find in `/app/findings.txt`, including the layer hash
 and the hidden filename.

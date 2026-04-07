@@ -55,4 +55,4 @@ EOF
 - `helm template` renders all manifests without applying them, letting you review before install
 - Removing the hook eliminates the backdoor
 - The Kyverno policy blocks future attempts to create overly permissive ClusterRoleBindings
-- Always review hooks (`helm.sh/hook` annotations) -- they run as Jobs and can do anything
+- Always review hooks (`helm.sh/hook` annotations). They run as Jobs and can do anything

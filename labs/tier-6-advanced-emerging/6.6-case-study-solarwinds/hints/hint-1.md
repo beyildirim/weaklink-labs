@@ -4,14 +4,14 @@ itself, injecting code during compilation.
 
 Key attack components:
 
-1. **Build system access** -- The attackers gained access to the
+1. **Build system access.** The attackers gained access to the
    SolarWinds build environment (TeamCity CI/CD).
 
-2. **Source code injection at build time** -- A build plugin modified
+2. **Source code injection at build time.** A build plugin modified
    `SolarWinds.Orion.Core.BusinessLayer.dll` during compilation,
    adding the SUNBURST backdoor class.
 
-3. **Legitimate code signing** -- The backdoored DLL was signed with
+3. **Legitimate code signing.** The backdoored DLL was signed with
    SolarWinds' legitimate code signing certificate, making it trusted.
 
 Examine the simulation:

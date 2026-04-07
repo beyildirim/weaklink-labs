@@ -28,7 +28,7 @@
 
 - **Scope:** [Describe the application, repositories, and build pipelines assessed]
 - **Assessment type:** [Self-assessment / third-party / automated tooling]
-- **Evidence collection:** [How evidence was gathered -- CI logs, tool output, interviews]
+- **Evidence collection:** [How evidence was gathered: CI logs, tool output, interviews]
 - **Limitations:** [Any constraints on the assessment]
 
 ---
@@ -182,7 +182,7 @@
 
 ## Remediation Roadmap
 
-### Priority 1 -- Critical (0-30 days)
+### Priority 1: Critical (0-30 days)
 
 | # | Action | SCVS Control | Effort | Owner |
 |:-:|--------|-------------|:------:|-------|
@@ -190,7 +190,7 @@
 | 2 | | | | |
 | 3 | | | | |
 
-### Priority 2 -- High (30-90 days)
+### Priority 2: High (30-90 days)
 
 | # | Action | SCVS Control | Effort | Owner |
 |:-:|--------|-------------|:------:|-------|
@@ -198,7 +198,7 @@
 | 5 | | | | |
 | 6 | | | | |
 
-### Priority 3 -- Medium (90-180 days)
+### Priority 3: Medium (90-180 days)
 
 | # | Action | SCVS Control | Effort | Owner |
 |:-:|--------|-------------|:------:|-------|

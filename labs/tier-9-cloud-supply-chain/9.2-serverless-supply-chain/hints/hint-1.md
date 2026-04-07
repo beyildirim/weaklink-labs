@@ -8,9 +8,9 @@ Lambda Layers are ZIP archives that contain libraries, custom runtimes, or other
 
 For a Python Lambda, the runtime loads handler code by importing it. A malicious layer can:
 
-1. **Replace the runtime bootstrap** -- place a custom `/opt/bootstrap` that wraps the real runtime
-2. **Monkey-patch the handler** -- add a `/opt/python/sitecustomize.py` that modifies `sys.modules` or patches built-in functions
-3. **Intercept HTTP calls** -- add a custom `urllib3` or `requests` to `/opt/python/` that logs all outbound traffic
+1. **Replace the runtime bootstrap:** place a custom `/opt/bootstrap` that wraps the real runtime
+2. **Monkey-patch the handler:** add a `/opt/python/sitecustomize.py` that modifies `sys.modules` or patches built-in functions
+3. **Intercept HTTP calls:** add a custom `urllib3` or `requests` to `/opt/python/` that logs all outbound traffic
 
 ## What to Look For
 

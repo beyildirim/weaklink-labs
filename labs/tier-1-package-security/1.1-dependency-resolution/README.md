@@ -1,6 +1,6 @@
 # Lab 1.1: How Dependency Resolution Works
 
-When you run `pip install`, pip doesn't just download one package -- it resolves an entire dependency tree. Understanding how this works is essential because **every supply chain attack exploits something about this process**.
+When you run `pip install`, pip doesn't just download one package. It resolves an entire dependency tree. Understanding how this works is essential because **every supply chain attack exploits something about this process**.
 
 This lab gives you a private PyPI registry, a public PyPI registry, and a Python app with dependencies. You'll see exactly how pip decides which package version to install and from which source.
 
@@ -59,7 +59,7 @@ Watch the output. Pip resolves all packages from the private registry. Everythin
 pipdeptree
 ```
 
-You can see the full tree: `data-processor` depends on `internal-utils`, which depends on `logging-helper`. This is **dependency resolution** -- pip figures out the entire chain.
+You can see the full tree: `data-processor` depends on `internal-utils`, which depends on `logging-helper`. This is **dependency resolution**. Pip figures out the entire chain.
 
 ### Step 5: Test the app
 
@@ -126,7 +126,7 @@ curl -s http://pypi-private:8080/simple/ | grep -o 'href="[^"]*"'
 curl -s http://pypi-public:8080/simple/ | grep -o 'href="[^"]*"'
 ```
 
-The public registry has `internal-utils` version 99.0.0 -- a fake higher version.
+The public registry has `internal-utils` version 99.0.0, a fake higher version.
 
 ### Step 2: See how pip resolves with --extra-index-url
 
@@ -161,7 +161,7 @@ This is the foundational issue behind **dependency confusion attacks** (covered 
 cat /etc/pip.conf
 ```
 
-The problem is `extra-index-url`. It doesn't mean "fallback" -- it means "also check here." Pip merges results from all sources and picks the highest version.
+The problem is `extra-index-url`. It doesn't mean "fallback"; it means "also check here." Pip merges results from all sources and picks the highest version.
 
 ## Phase 3: Defend
 
@@ -193,7 +193,7 @@ pip show internal-utils
 python app.py
 ```
 
-You should see version 1.0.0 -- the legitimate version from the private registry.
+You should see version 1.0.0, the legitimate version from the private registry.
 
 ### Step 4: Create a lockfile
 
@@ -202,7 +202,7 @@ pip freeze > requirements.lock
 cat requirements.lock
 ```
 
-This lockfile captures the exact versions of every installed package. Commit this to version control -- it ensures that every developer and CI system installs the same versions.
+This lockfile captures the exact versions of every installed package. Commit this to version control. It ensures that every developer and CI system installs the same versions.
 
 ### Step 5: Verify the defense
 
@@ -219,11 +219,11 @@ weaklink verify 1.1
 
 ## What You Learned
 
-1. **Dependency resolution is a tree** -- one package can pull in many others, each with their own version constraints.
-2. **`--extra-index-url` is dangerous** -- it tells pip to merge results from multiple sources and pick the highest version, regardless of which source it comes from.
-3. **`--index-url` is safer** -- it tells pip to only use one source.
-4. **Lockfiles freeze versions** -- `pip freeze` captures exact versions so builds are reproducible and resistant to new malicious versions appearing.
-5. **Version pins matter** -- `==1.0.0` is strict; `>=1.0.0` opens the door to unexpected upgrades.
+1. **Dependency resolution is a tree.** One package can pull in many others, each with their own version constraints.
+2. **`--extra-index-url` is dangerous.** It tells pip to merge results from multiple sources and pick the highest version, regardless of which source it comes from.
+3. **`--index-url` is safer.** It tells pip to only use one source.
+4. **Lockfiles freeze versions.** `pip freeze` captures exact versions so builds are reproducible and resistant to new malicious versions appearing.
+5. **Version pins matter.** `==1.0.0` is strict; `>=1.0.0` opens the door to unexpected upgrades.
 
 ## Further Reading
 

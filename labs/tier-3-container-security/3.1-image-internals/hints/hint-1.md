@@ -1,4 +1,4 @@
-A container image is not a single blob -- it is a stack of layers.
+A container image is not a single blob; it is a stack of layers.
 Each `RUN`, `COPY`, or `ADD` instruction in a Dockerfile creates a new layer.
 
 When a layer "deletes" a file, it only marks it as deleted (a whiteout) in

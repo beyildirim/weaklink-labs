@@ -18,5 +18,5 @@ Key questions to guide your assessment:
   its source? Is there signed provenance? Are upstream maintainers vetted?
 
 Most projects that have not specifically invested in SCVS will meet some
-Level 1 controls but very few Level 2 or 3 controls. Be honest -- the
+Level 1 controls but very few Level 2 or 3 controls. Be honest. The
 value is in identifying gaps, not claiming maturity.

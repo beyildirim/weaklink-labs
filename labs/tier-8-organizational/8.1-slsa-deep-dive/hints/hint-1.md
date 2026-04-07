@@ -10,5 +10,5 @@ Key questions to guide your assessment:
 - Level 4: Are builds hermetic? Is there two-party review?
 
 Most projects that have not specifically invested in SLSA compliance land
-at Level 0 or Level 1. Be honest in your assessment -- the value of the
+at Level 0 or Level 1. Be honest in your assessment. The value of the
 exercise is in identifying the gaps, not in claiming a high level.

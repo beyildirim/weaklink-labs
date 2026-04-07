@@ -63,7 +63,7 @@ This matrix maps OWASP SCVS verification categories to equivalent requirements i
 | V4.3 Curated registry/proxy | -- | PO.3.1 (specify tools) | -- |
 | V4.3 Behavioral analysis | -- | PW.7.2 (automated testing) | -- |
 
-**Key insight:** SLSA does not cover package management at all -- it focuses on build integrity. SCVS V4 aligns with SSDF PW.4.x practices. This is the area where WeakLink Labs Tier 1 provides the most direct coverage.
+**Key insight:** SLSA does not cover package management at all; it focuses on build integrity. SCVS V4 aligns with SSDF PW.4.x practices. This is the area where WeakLink Labs Tier 1 provides the most direct coverage.
 
 ---
 

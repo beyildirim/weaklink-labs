@@ -21,6 +21,6 @@ Key overlap patterns to look for:
    satisfy multiple frameworks simultaneously.
 
 For the remediation roadmap, prioritize controls that satisfy multiple
-frameworks at once -- these give the best return on investment. For
+frameworks at once. These give the best return on investment. For
 example, implementing SBOM generation satisfies SCVS V2, SSDF RV.3.3,
 and EO 14028 requirements simultaneously.

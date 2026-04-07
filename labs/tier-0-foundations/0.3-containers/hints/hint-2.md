@@ -6,7 +6,7 @@ The defense is to reference images by their **digest** instead of their **tag**.
 
 ### What is a digest?
 
-A digest is a `sha256:...` hash of the image contents. Unlike tags, digests are immutable -- you cannot push a different image with the same digest.
+A digest is a `sha256:...` hash of the image contents. Unlike tags, digests are immutable. You cannot push a different image with the same digest.
 
 ### How to get the digest:
 
