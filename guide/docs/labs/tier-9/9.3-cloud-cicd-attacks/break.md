@@ -53,5 +53,5 @@ Permanent admin access survives after build finishes.
 
 ---
 
-!!! success "Checkpoint"
+???+ success "Checkpoint"
     You should understand all three attack vectors and why they succeed: account-wide SSM access, unsanitized substitution variables in shell commands, and unrestricted AssumeRole permissions.

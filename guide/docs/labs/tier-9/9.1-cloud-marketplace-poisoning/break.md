@@ -57,5 +57,5 @@ docker stop marketplace-test && docker rm marketplace-test
 
 ---
 
-!!! success "Checkpoint"
+???+ success "Checkpoint"
     You should have identified all three backdoors (cron phone-home, SSH key, boot-time credential theft) and understand their persistence mechanisms.

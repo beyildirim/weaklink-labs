@@ -68,5 +68,5 @@ Based on your evidence, what SLSA level does this project meet?
 
 ---
 
-!!! success "Checkpoint"
+???+ success "Checkpoint"
     You should have a clear assessment of the project's current SLSA level with evidence for each requirement. This assessment is the input to the roadmap.
