@@ -39,3 +39,9 @@ graph LR
   <span class="phase-arrow">›</span>
   <a href="detect/" class="phase-step upcoming">Detect</a>
 </div>
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [2.2 Direct Poisoned Pipeline Execution](../../tier-2/2.2-direct-ppe/index.md) — Direct PPE shows how build pipelines can be compromised
+    - **See also:** [6.5 Case Study: xz-utils (CVE-2024-3094)](../6.5-case-study-xz-utils/index.md) — xz-utils is another build-system compromise by a trusted insider
+    - **See also:** [4.4 Attestation & Provenance (SLSA)](../../tier-4/4.4-attestation-slsa/index.md) — Attestation would have helped detect the tampered build
+    - **See also:** [7.1 Building Detection Rules](../../tier-7/7.1-detection-rules/index.md) — Detection rules for build-system compromise apply here

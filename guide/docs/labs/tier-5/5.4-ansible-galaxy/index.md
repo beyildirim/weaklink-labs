@@ -37,3 +37,9 @@ graph LR
 | Galaxy Server | `galaxy-server:8080` | Simulated Ansible Galaxy with legitimate and malicious roles |
 | Managed Hosts | `target-host-1`, `target-host-2` | Target hosts managed by Ansible |
 | Requirements | `/app/requirements.yml` | Galaxy role and collection requirements file |
+
+!!! tip "Related Labs"
+    - **Next:** [5.5 Kubernetes Admission Controller Bypass](../5.5-admission-controller-bypass/index.md) — Admission controllers can enforce policy on Ansible-deployed resources
+    - **See also:** [5.3 Terraform Module and Provider Attacks](../5.3-terraform-module-attacks/index.md) — Terraform module attacks target a parallel IaC ecosystem
+    - **See also:** [1.3 Typosquatting](../../tier-1/1.3-typosquatting/index.md) — Galaxy role typosquatting mirrors package typosquatting
+    - **See also:** [5.2 Helm Chart Poisoning](../5.2-helm-poisoning/index.md) — Helm chart poisoning is the same concept in Kubernetes native tooling

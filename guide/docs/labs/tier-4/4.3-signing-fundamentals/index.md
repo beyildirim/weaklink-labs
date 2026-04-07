@@ -36,3 +36,9 @@ graph LR
 | Workstation | `weaklink-ws` | Has cosign, crane, and kubectl installed |
 | Registry | `registry:5000` | Local registry with signed and unsigned images |
 | Kubernetes | `kind-cluster` | Local cluster for deployment testing |
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [0.3 How Containers Work](../../tier-0/0.3-containers/index.md) — Container image signing is a core use case for these fundamentals
+    - **Next:** [4.4 Attestation & Provenance (SLSA)](../4.4-attestation-slsa/index.md) — Attestation builds on signing to create provenance records
+    - **Next:** [4.5 Signature Bypass Attacks](../4.5-signature-bypass/index.md) — Signature bypass attacks break the defenses built here
+    - **See also:** [5.5 Kubernetes Admission Controller Bypass](../../tier-5/5.5-admission-controller-bypass/index.md) — Admission controllers enforce the signatures you learn to create

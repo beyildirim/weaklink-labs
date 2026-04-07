@@ -37,3 +37,9 @@ graph LR
 |---------|---------|-------------|
 | Model Registry | `model-registry:8080` | Simulated HuggingFace Hub with legitimate and malicious models |
 | Workstation | `workstation` | PyTorch, safetensors, and model scanning tools installed |
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [1.2 Dependency Confusion](../../tier-1/1.2-dependency-confusion/index.md) — Dependency confusion patterns apply to model registries
+    - **Next:** [6.2 Dataset Poisoning](../6.2-dataset-poisoning/index.md) — Dataset poisoning extends model supply chain attacks to training data
+    - **See also:** [1.3 Typosquatting](../../tier-1/1.3-typosquatting/index.md) — Typosquatting on model hubs mirrors package typosquatting
+    - **See also:** [4.1 What SBOMs Actually Contain](../../tier-4/4.1-sbom-contents/index.md) — SBOMs for ML models face unique challenges

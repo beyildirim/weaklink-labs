@@ -38,3 +38,9 @@ graph LR
 | Malicious Chart | `/app/malicious-redis-chart/` | Attacker's redis chart v99.0.0 with exfil hook |
 | Private Registry | `private-registry:5000` | Trusted OCI-based chart registry |
 | Public Repo | `untrusted-public` | Simulated public Helm repository |
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [0.3 How Containers Work](../../tier-0/0.3-containers/index.md) — Container and packaging concepts underpin Helm chart resolution
+    - **Next:** [5.2 Helm Chart Poisoning](../5.2-helm-poisoning/index.md) — Helm chart poisoning exploits the resolution process covered here
+    - **See also:** [1.1 How Dependency Resolution Works](../../tier-1/1.1-dependency-resolution/index.md) — Same resolution concepts applied to a different package ecosystem
+    - **See also:** [5.3 Terraform Module and Provider Attacks](../5.3-terraform-module-attacks/index.md) — Terraform modules have a similar dependency resolution model

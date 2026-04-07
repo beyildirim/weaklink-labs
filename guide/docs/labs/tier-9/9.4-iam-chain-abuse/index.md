@@ -29,3 +29,9 @@ graph LR
     C --> D[AssumeRole<br>to Production]
     D --> E[Full access to<br>customer data]
 ```
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [2.4 Secret Exfiltration from CI](../../tier-2/2.4-secret-exfiltration/index.md) — Secret exfiltration is often the first step in IAM chain abuse
+    - **See also:** [9.3 Cloud CI/CD Attacks](../9.3-cloud-cicd-attacks/index.md) — Cloud CI/CD attacks frequently lead to IAM exploitation
+    - **See also:** [6.7 Case Study: Codecov Bash Uploader](../../tier-6/6.7-case-study-codecov/index.md) — Codecov enabled IAM credential theft across many organizations
+    - **See also:** [2.5 Self-Hosted Runner Attacks](../../tier-2/2.5-self-hosted-runners/index.md) — Self-hosted runner attacks expose cloud IAM credentials

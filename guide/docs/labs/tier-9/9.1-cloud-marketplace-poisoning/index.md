@@ -29,3 +29,9 @@ graph LR
     C --> D[Pre-installed SSH key<br>gives root access]
     D --> E[Cloud credentials<br>exfiltrated]
 ```
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [3.1 Container Image Internals](../../tier-3/3.1-image-internals/index.md) — Container image internals apply to marketplace container offerings
+    - **See also:** [3.4 Registry Confusion](../../tier-3/3.4-registry-confusion/index.md) — Registry confusion is the same concept applied to container registries
+    - **See also:** [5.3 Terraform Module and Provider Attacks](../../tier-5/5.3-terraform-module-attacks/index.md) — Terraform module attacks target cloud IaC marketplace equivalents
+    - **See also:** [1.2 Dependency Confusion](../../tier-1/1.2-dependency-confusion/index.md) — Dependency confusion applied to cloud marketplace namespaces

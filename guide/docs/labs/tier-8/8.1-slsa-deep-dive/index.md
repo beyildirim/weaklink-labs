@@ -31,3 +31,9 @@ graph LR
     C --> D[Artifact signed<br>and verified]
     D --> E[Deploy with<br>policy enforcement]
 ```
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [4.4 Attestation & Provenance (SLSA)](../../tier-4/4.4-attestation-slsa/index.md) — Attestation and SLSA basics before the deep dive
+    - **Next:** [8.2 SSDF / NIST SP 800-218 Mapping](../8.2-ssdf-nist/index.md) — SSDF covers a broader compliance framework that references SLSA
+    - **Next:** [8.4 Vendor Supply Chain Assessment](../8.4-vendor-assessment/index.md) — Vendor assessment uses SLSA levels to evaluate suppliers
+    - **See also:** [4.6 Attestation Forgery](../../tier-4/4.6-attestation-forgery/index.md) — Attestation forgery challenges the SLSA guarantees explored here

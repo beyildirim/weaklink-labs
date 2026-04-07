@@ -36,3 +36,9 @@ graph LR
 |---------|---------|-------------|
 | Private PyPI | `pypi-private:8080` | Corporate internal PyPI server with legitimate packages |
 | Public PyPI | `pypi-public:8080` | Simulated public PyPI (starts with a higher-version fake package) |
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [0.2 How Package Managers Work](../../tier-0/0.2-package-managers/index.md) — Understanding package managers is essential before attacking resolution
+    - **Next:** [1.2 Dependency Confusion](../1.2-dependency-confusion/index.md) — Exploiting resolution with dependency confusion
+    - **Next:** [1.3 Typosquatting](../1.3-typosquatting/index.md) — Another resolution-based attack using name similarity
+    - **See also:** [4.1 What SBOMs Actually Contain](../../tier-4/4.1-sbom-contents/index.md) — SBOMs track the dependencies resolved here

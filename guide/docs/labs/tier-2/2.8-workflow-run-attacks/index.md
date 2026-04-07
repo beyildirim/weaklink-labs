@@ -35,3 +35,9 @@ graph LR
 |---------|---------|-------------|
 | Gitea | `gitea:3000` | Git server hosting `wl-webapp` with workflow_run triggers |
 | Workstation | (your shell) | Development environment |
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [2.2 Direct Poisoned Pipeline Execution](../2.2-direct-ppe/index.md) — Understanding PPE is essential for cross-workflow exploitation
+    - **Prerequisite:** [2.6 GitHub Actions Injection](../2.6-actions-injection/index.md) — Actions injection techniques combine with workflow_run triggers
+    - **See also:** [2.3 Indirect Poisoned Pipeline Execution](../2.3-indirect-ppe/index.md) — Indirect PPE uses similar indirection to trigger malicious execution
+    - **See also:** [9.3 Cloud CI/CD Attacks](../../tier-9/9.3-cloud-cicd-attacks/index.md) — Cloud CI/CD attacks extend these patterns to other platforms
