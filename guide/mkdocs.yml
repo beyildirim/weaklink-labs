@@ -454,3 +454,4 @@ nav:
         - Detect: labs/tier-9/9.4-iam-chain-abuse/detect.md
   - Resources:
     - Roadmap: roadmap.md
+    - Detection Rules: resources/detection-rules.md
