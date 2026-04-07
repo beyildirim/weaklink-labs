@@ -1,63 +1,43 @@
 services:
   workstation:
-    image: ghcr.io/beyildirim/weaklink-labs/workstation:latest
-    ports:
-      - "7681:7681"
-      - "7682:7682"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    depends_on:
-      lab-setup:
-        condition: service_completed_successfully
+    extends:
+      file: ../docker-compose.yml
+      service: workstation
 
   guide:
-    image: ghcr.io/beyildirim/weaklink-labs/guide:latest
-    ports:
-      - "8000:8000"
+    extends:
+      file: ../docker-compose.yml
+      service: guide
 
   pypi-private:
-    image: pypiserver/pypiserver:latest
-    command: run -P . -a . --server wsgiref
-    volumes:
-      - pypi-private-data:/data/packages
+    extends:
+      file: ../docker-compose.yml
+      service: pypi-private
 
   pypi-public:
-    image: pypiserver/pypiserver:latest
-    command: run -P . -a . --server wsgiref
-    volumes:
-      - pypi-public-data:/data/packages
+    extends:
+      file: ../docker-compose.yml
+      service: pypi-public
 
   verdaccio:
-    image: verdaccio/verdaccio:5
-    environment:
-      VERDACCIO_PORT: "4873"
-    volumes:
-      - verdaccio-data:/verdaccio/storage
+    extends:
+      file: ../docker-compose.yml
+      service: verdaccio
 
   gitea:
-    image: gitea/gitea:1.22
-    environment:
-      - GITEA__security__INSTALL_LOCK=true
-      - GITEA__database__DB_TYPE=sqlite3
-      - GITEA__service__DISABLE_REGISTRATION=false
-      - GITEA__service__REQUIRE_SIGNIN_VIEW=false
-      - GITEA__actions__ENABLED=true
-    volumes:
-      - gitea-data:/data
+    extends:
+      file: ../docker-compose.yml
+      service: gitea
 
   registry:
-    image: registry:2
-    volumes:
-      - registry-data:/var/lib/registry
+    extends:
+      file: ../docker-compose.yml
+      service: registry
 
   lab-setup:
-    image: ghcr.io/beyildirim/weaklink-labs/lab-setup:latest
-    depends_on:
-      - pypi-private
-      - pypi-public
-      - verdaccio
-      - gitea
-      - registry
+    extends:
+      file: ../docker-compose.yml
+      service: lab-setup
 
 volumes:
   pypi-private-data:
