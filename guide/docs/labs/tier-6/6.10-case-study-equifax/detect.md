@@ -54,6 +54,76 @@ The SOC's role extends beyond detecting exploitation. It includes monitoring **p
 
 ---
 
+### CI Integration
+
+Add this workflow to enforce vulnerability scanning with SLA-based blocking. Save as `.github/workflows/vuln-sla-check.yml`:
+
+```yaml
+name: Vulnerability SLA Enforcement
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 6 * * *"  # Daily scan
+
+permissions:
+  contents: read
+
+jobs:
+  check-vulnerability-sla:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run vulnerability scan
+        run: |
+          pip install pip-audit 2>/dev/null || true
+          EXIT_CODE=0
+          if [ -f requirements.txt ]; then
+            echo "--- Scanning Python dependencies ---"
+            if pip-audit -r requirements.txt --desc 2>/dev/null; then
+              echo "PASS: No known vulnerabilities found."
+            else
+              echo "::error::Known vulnerabilities detected in dependencies."
+              echo ""
+              echo "The Equifax breach was caused by a known Struts vulnerability"
+              echo "that remained unpatched for 2 months after the fix was available."
+              echo "Patch critical CVEs within 72 hours."
+              EXIT_CODE=1
+            fi
+          fi
+          exit $EXIT_CODE
+
+      - name: Check for outdated critical dependencies
+        run: |
+          if [ -f requirements.txt ]; then
+            pip install pip-outdated 2>/dev/null || true
+            if command -v pip-outdated >/dev/null 2>&1; then
+              pip-outdated requirements.txt || true
+            fi
+          fi
+          # Check for Maven/Gradle (Java projects like Struts)
+          for pom in $(find . -name 'pom.xml' 2>/dev/null); do
+            if grep -q 'struts' "$pom"; then
+              echo "::error file=$pom::Apache Struts dependency found. Verify version is patched."
+            fi
+          done
+          echo "Dependency freshness check complete."
+```
+
+---
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)
+
+---
+
 ## What You Learned
 
 - **The Equifax breach was entirely preventable.** The patch existed for two months. The scanner found it. The process failed.

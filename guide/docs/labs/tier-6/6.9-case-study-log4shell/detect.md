@@ -54,6 +54,86 @@ During the initial response, SOCs were overwhelmed by scanning volume (both atta
 
 ---
 
+### CI Integration
+
+Add this workflow to detect vulnerable Log4j versions in Java projects via SBOM and dependency analysis. Save as `.github/workflows/log4j-check.yml`:
+
+```yaml
+name: Log4j Vulnerability Check
+
+on:
+  pull_request:
+    paths:
+      - "pom.xml"
+      - "build.gradle*"
+      - "gradle.lockfile"
+      - "**/pom.xml"
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 6 * * 1"  # Weekly scan
+
+permissions:
+  contents: read
+
+jobs:
+  check-log4j:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scan for vulnerable Log4j versions
+        run: |
+          EXIT_CODE=0
+          echo "--- Scanning for Log4j CVE-2021-44228 ---"
+
+          # Check Maven pom.xml files
+          for pom in $(find . -name 'pom.xml' 2>/dev/null); do
+            if grep -q 'log4j' "$pom"; then
+              # Extract version if directly specified
+              VERSION=$(grep -A2 'log4j' "$pom" | grep '<version>' | \
+                sed 's/.*<version>\(.*\)<\/version>.*/\1/' | head -1 || true)
+              if [ -n "$VERSION" ]; then
+                echo "Found log4j version $VERSION in $pom"
+                # Check if version is vulnerable (< 2.17.1)
+                if echo "$VERSION" | grep -qE '^2\.(0|1[0-6]|17\.0)'; then
+                  echo "::error file=$pom::Vulnerable Log4j version $VERSION detected."
+                  echo "Upgrade to 2.17.1+ immediately."
+                  EXIT_CODE=1
+                fi
+              fi
+            fi
+          done
+
+          # Check Gradle files
+          for gradle in $(find . -name 'build.gradle*' 2>/dev/null); do
+            if grep -q 'log4j' "$gradle"; then
+              echo "::warning file=$gradle::Log4j dependency found. Verify version >= 2.17.1."
+            fi
+          done
+
+          if [ "$EXIT_CODE" -eq 0 ]; then
+            echo "PASS: No vulnerable Log4j versions detected."
+          fi
+          exit $EXIT_CODE
+
+      - name: Check for JNDI lookup exposure
+        run: |
+          # Look for log4j2.xml configs that do not disable lookups
+          for cfg in $(find . -name 'log4j2*.xml' -o -name 'log4j2*.properties' 2>/dev/null); do
+            if ! grep -q 'log4j2.formatMsgNoLookups=true' "$cfg" 2>/dev/null; then
+              echo "::warning file=$cfg::Consider setting log4j2.formatMsgNoLookups=true as defense in depth."
+            fi
+          done
+          echo "JNDI lookup check complete."
+```
+
+---
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)
+
+---
+
 ## What You Learned
 
 - **Log4Shell was a supply chain vulnerability.** Log4j arrived as a transitive dependency nobody chose. SBOM would have reduced response time from days to minutes.

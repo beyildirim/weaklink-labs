@@ -51,6 +51,77 @@ The backdoor was designed to be invisible at the application and network layer. 
 
 ---
 
+### CI Integration
+
+Add this workflow to detect sole-maintainer risk and tarball-vs-source divergence. Save as `.github/workflows/source-tarball-check.yml`:
+
+```yaml
+name: Source vs Tarball Integrity
+
+on:
+  pull_request:
+    paths:
+      - "requirements*.txt"
+      - "pyproject.toml"
+      - "go.sum"
+      - "Cargo.lock"
+  schedule:
+    - cron: "0 6 * * 1"  # Weekly Monday check
+
+permissions:
+  contents: read
+
+jobs:
+  check-source-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for single-maintainer dependencies
+        run: |
+          echo "--- Checking for sole-maintainer risk ---"
+          echo "Dependencies with a single maintainer are high-risk targets"
+          echo "for social engineering (xz-utils pattern)."
+          echo ""
+          echo "Review your critical dependencies for:"
+          echo "  - Single maintainer with no co-maintainers"
+          echo "  - Maintainer recently changed"
+          echo "  - Low bus factor (only 1-2 active contributors)"
+          echo ""
+          # Check if pip-audit is available for vulnerability scanning
+          if command -v pip-audit >/dev/null 2>&1; then
+            pip-audit -r requirements.txt --desc 2>/dev/null || true
+          else
+            echo "Install pip-audit for automated vulnerability checks."
+          fi
+
+      - name: Detect build-from-source vs tarball differences
+        run: |
+          echo "--- Tarball vs Git Source Check ---"
+          echo "The xz-utils backdoor existed ONLY in release tarballs,"
+          echo "not in the git source. Verify your build process uses"
+          echo "git tags, not release tarballs, for critical dependencies."
+          echo ""
+          # Flag any curl/wget of tarballs in build scripts
+          TARBALL_DOWNLOADS=$(grep -rn 'curl.*\.tar\|wget.*\.tar' \
+            --include='*.sh' --include='*.yml' --include='*.yaml' \
+            --include='Dockerfile*' --include='Makefile' . || true)
+          if [ -n "$TARBALL_DOWNLOADS" ]; then
+            echo "::warning::Found tarball downloads in build scripts:"
+            echo "$TARBALL_DOWNLOADS"
+            echo ""
+            echo "Prefer git clone with tag verification over tarball downloads."
+          else
+            echo "PASS: No direct tarball downloads found in build scripts."
+          fi
+```
+
+---
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)
+
+---
+
 ## What You Learned
 
 - **Social engineering is the most dangerous supply chain vector.** The attacker spent two years building trust, including sock puppet pressure campaigns.
