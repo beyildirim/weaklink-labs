@@ -35,3 +35,9 @@ graph LR
 |---------|---------|-------------|
 | OCI Registry | `registry:5000` | Contains `python-base:3.12` (poisoned) and build artifacts |
 | Workstation | Pod with docker CLI, crane, trivy | Your working environment |
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [3.1 Container Image Internals](../3.1-image-internals/index.md) — Image internals explain how base images propagate into builds
+    - **Next:** [3.5 Layer Injection](../3.5-layer-injection/index.md) — Layer injection is a more targeted variant of image manipulation
+    - **See also:** [3.2 Tag Mutability Attacks](../3.2-tag-mutability/index.md) — Tag mutability enables base image poisoning when tags are reused
+    - **See also:** [6.6 Case Study: SolarWinds (SUNBURST)](../../tier-6/6.6-case-study-solarwinds/index.md) — SolarWinds poisoned the build environment, similar to base image attacks

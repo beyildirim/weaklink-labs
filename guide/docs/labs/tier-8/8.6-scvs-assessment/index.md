@@ -32,3 +32,9 @@ graph TD
     D --> E[V5: Analyze<br>vulnerabilities]
     E --> F[V6: Verify pedigree<br>and provenance]
 ```
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [8.1 SLSA Framework Deep Dive](../8.1-slsa-deep-dive/index.md) — SLSA framework knowledge helps interpret SCVS controls
+    - **Prerequisite:** [8.2 SSDF / NIST SP 800-218 Mapping](../8.2-ssdf-nist/index.md) — SSDF mapping provides context for SCVS assessment
+    - **See also:** [8.5 Building a Supply Chain Security Program](../8.5-building-a-program/index.md) — SCVS assessment informs program building priorities
+    - **See also:** [4.1 What SBOMs Actually Contain](../../tier-4/4.1-sbom-contents/index.md) — SBOM practices are heavily assessed in SCVS

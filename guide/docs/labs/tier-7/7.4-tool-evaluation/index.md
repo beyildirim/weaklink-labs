@@ -30,3 +30,9 @@ graph LR
     D --> E[Compare<br>findings]
     E --> F[Identify<br>coverage gaps]
 ```
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [1.1 How Dependency Resolution Works](../../tier-1/1.1-dependency-resolution/index.md) — Understanding the threats tools need to address
+    - **See also:** [4.1 What SBOMs Actually Contain](../../tier-4/4.1-sbom-contents/index.md) — SBOM tools are a primary category evaluated here
+    - **See also:** [4.3 Signing Fundamentals](../../tier-4/4.3-signing-fundamentals/index.md) — Signing tools are another key evaluation target
+    - **See also:** [8.5 Building a Supply Chain Security Program](../../tier-8/8.5-building-a-program/index.md) — Tool selection is part of building a security program

@@ -31,3 +31,9 @@ graph TD
     C --> D[Respond to<br>Vulnerabilities RV]
     D --> E[Self-Attestation<br>to CISA]
 ```
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [4.1 What SBOMs Actually Contain](../../tier-4/4.1-sbom-contents/index.md) — SBOM understanding is essential for SSDF compliance
+    - **Next:** [8.3 Executive Order 14028 Compliance](../8.3-eo-14028/index.md) — EO 14028 mandates the SSDF practices covered here
+    - **See also:** [8.1 SLSA Framework Deep Dive](../8.1-slsa-deep-dive/index.md) — SLSA and SSDF are complementary frameworks
+    - **See also:** [8.6 OWASP SCVS Framework Assessment](../8.6-scvs-assessment/index.md) — OWASP SCVS provides another assessment framework

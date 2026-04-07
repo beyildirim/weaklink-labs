@@ -36,3 +36,9 @@ graph LR
 |---------------|-----------------------------|
 | Local PyPI    | `pypi-private:8080`         |
 | PyPI browser  | `pypi-private:8080/simple/` |
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [0.1 How Version Control Works](../0.1-version-control/index.md) — Package manifests live in version-controlled repos
+    - **Next:** [1.1 How Dependency Resolution Works](../../tier-1/1.1-dependency-resolution/index.md) — Deep dive into how package managers resolve version ranges
+    - **Next:** [0.5 Artifacts & Registries](../0.5-artifacts-registries/index.md) — Where built packages get stored and distributed
+    - **See also:** [1.2 Dependency Confusion](../../tier-1/1.2-dependency-confusion/index.md) — What happens when public and private packages collide

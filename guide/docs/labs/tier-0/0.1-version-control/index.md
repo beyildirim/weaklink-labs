@@ -37,3 +37,8 @@ graph LR
 | Gitea UI    | `gitea:3000`                        |
 | Login       | `weaklink` / `weaklink`     |
 | Repository  | `weaklink/web-app`                  |
+
+!!! tip "Related Labs"
+    - **Next:** [0.2 How Package Managers Work](../0.2-package-managers/index.md) — Builds on version control to explore how dependencies are resolved
+    - **Next:** [0.4 How CI/CD Works](../0.4-how-cicd-works/index.md) — Version control feeds directly into CI/CD pipelines
+    - **See also:** [2.2 Direct Poisoned Pipeline Execution](../../tier-2/2.2-direct-ppe/index.md) — Attackers modify repo code to poison pipelines

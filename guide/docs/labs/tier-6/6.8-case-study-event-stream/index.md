@@ -38,3 +38,9 @@ graph LR
   <span class="phase-arrow">›</span>
   <a href="detect/" class="phase-step upcoming">Detect</a>
 </div>
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [1.6 Phantom Dependencies](../../tier-1/1.6-phantom-dependencies/index.md) — Phantom dependencies explain how event-stream was used implicitly
+    - **See also:** [1.2 Dependency Confusion](../../tier-1/1.2-dependency-confusion/index.md) — Both attacks exploit trust in the package ecosystem
+    - **See also:** [0.1 How Version Control Works](../../tier-0/0.1-version-control/index.md) — The attacker gained maintainer access through social engineering
+    - **See also:** [6.5 Case Study: xz-utils (CVE-2024-3094)](../6.5-case-study-xz-utils/index.md) — xz-utils used the same social engineering maintainer takeover pattern

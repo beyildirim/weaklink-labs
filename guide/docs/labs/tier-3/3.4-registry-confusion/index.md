@@ -35,3 +35,9 @@ graph LR
 | Private Registry | `registry:5000` | Your organization's registry with `myapp:latest` |
 | Attacker Registry | `attacker-registry:5000` | Simulated public registry with malicious `myapp:latest` |
 | Workstation | Pod with docker CLI, crane, kubectl | Your working environment |
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [3.1 Container Image Internals](../3.1-image-internals/index.md) — Image internals cover how registries store and serve images
+    - **Next:** [3.5 Layer Injection](../3.5-layer-injection/index.md) — Layer injection combines registry access with image manipulation
+    - **See also:** [1.2 Dependency Confusion](../../tier-1/1.2-dependency-confusion/index.md) — Dependency confusion applies the same concept to package registries
+    - **See also:** [9.1 Cloud Marketplace Poisoning](../../tier-9/9.1-cloud-marketplace-poisoning/index.md) — Cloud marketplace poisoning is registry confusion at cloud scale

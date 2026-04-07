@@ -29,3 +29,9 @@ graph LR
     C --> D[Production secrets<br>read from SSM]
     D --> E[AWS keys stolen /<br>backdoor created]
 ```
+
+!!! tip "Related Labs"
+    - **Prerequisite:** [2.1 CI/CD Fundamentals](../../tier-2/2.1-cicd-fundamentals/index.md) — CI/CD fundamentals before exploring cloud-native CI/CD attacks
+    - **See also:** [2.2 Direct Poisoned Pipeline Execution](../../tier-2/2.2-direct-ppe/index.md) — Pipeline poisoning techniques adapt to cloud CI/CD platforms
+    - **See also:** [2.8 Workflow Run & Cross-Workflow Attacks](../../tier-2/2.8-workflow-run-attacks/index.md) — Workflow run attacks have cloud-native equivalents
+    - **See also:** [9.4 IAM Chain Abuse](../9.4-iam-chain-abuse/index.md) — IAM chain abuse often starts from compromised CI/CD
