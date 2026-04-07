@@ -42,7 +42,7 @@ python3 -m json.tool sbom.json | head -80
 | SBOM delivery mechanism | Not implemented | 20% |
 | VEX documents | Not implemented | 0% |
 | Vulnerability disclosure policy | Not published | 10% |
-| Incident notification process | Playbook exists ([Lab 7.3](../../../tier-7/7.3-ir-playbook/)) | 40% |
+| Incident notification process | Playbook exists ([Lab 7.3](../../tier-7/7.3-ir-playbook/)) | 40% |
 | SSDF self-attestation | Draft from [Lab 8.2](../8.2-ssdf-nist/) | 50% |
 
 ---
