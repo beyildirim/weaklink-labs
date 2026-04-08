@@ -48,3 +48,4 @@ venv/
 
 # Claude agents
 .agents/
+.claude/worktrees/
