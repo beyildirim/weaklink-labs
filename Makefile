@@ -116,7 +116,7 @@ guide-dev: ## Serve the guide locally with hot-reload (no k8s needed)
 
 test: ## Run all lab verify scripts against the cluster
 	@WORKSTATION_POD=$$(kubectl get pod -n $(NAMESPACE) \
-		-l app.kubernetes.io/component=workstation \
+		-l app.kubernetes.io/name=workstation \
 		-o jsonpath='{.items[0].metadata.name}') && \
 	FAILED=0 && \
 	for verify_script in $$(find labs -name "verify.sh" -type f | sort); do \
