@@ -96,7 +96,6 @@ weaklink path              # Show the learning roadmap and your progress
 weaklink assess            # Take the placement test
 weaklink reset <lab-id>    # Reset a lab's completion status
 weaklink report            # Progress report (supports --json, --csv, --team)
-# weaklink achieve         # (planned) View achievements and generate badges
 ```
 
 ## Prerequisites

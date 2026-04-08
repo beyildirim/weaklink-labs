@@ -16,10 +16,6 @@
 #   weaklink report --json     Machine-readable JSON report
 #   weaklink report --csv      CSV report for spreadsheets
 #   weaklink report --team     Aggregate team report from JSON inputs
-#   weaklink achieve           Show achievements and progress
-#   weaklink achieve --generate Generate SVG badges for unlocked achievements
-#   weaklink achieve --share   Generate badges + LinkedIn post text
-#   weaklink achieve --proof   Generate JSON attestation files
 
 set -euo pipefail
 
@@ -455,10 +451,12 @@ cmd_assess() {
         mark_completed "0.1"
         mark_completed "0.2"
         mark_completed "0.3"
+        mark_completed "0.4"
+        mark_completed "0.5"
 
-        echo -e "  ${GREEN}${BOLD}Tier 0 skipped -- you're ready for Tier 1!${NC}"
+        echo -e "  ${GREEN}${BOLD}Tier 0 skipped. You're ready for Tier 1!${NC}"
         echo ""
-        echo -e "  ${DIM}Labs 0.1, 0.2, and 0.3 marked as completed.${NC}"
+        echo -e "  ${DIM}Tier 0 (Labs 0.1-0.5) marked as completed.${NC}"
         echo -e "  ${DIM}Run 'weaklink path' to see your updated roadmap.${NC}"
     else
         echo -e "  ${YELLOW}We recommend completing Tier 0 labs.${NC}"
