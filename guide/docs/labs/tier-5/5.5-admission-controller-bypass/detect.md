@@ -76,8 +76,7 @@ jobs:
 
 | Technique | ID | Relevance |
 |-----------|-----|-----------|
-| **Impair Defenses: Disable or Modify Tools** | [T1562.001](https://attack.mitre.org/techniques/T1562/001/) | Bypassing admission controllers disables primary policy enforcement |
-| **Deploy Container** | [T1610](https://attack.mitre.org/techniques/T1610/) | Privileged containers via exempt namespaces or uncovered CRDs |
+| **Deploy Container** | [T1610](https://attack.mitre.org/techniques/T1610/) | Primary. Deploying privileged containers via policy gaps (exempt namespaces, uncovered CRDs) |
 | **Exploitation for Privilege Escalation** | [T1068](https://attack.mitre.org/techniques/T1068/) | Post-admission mutations escalate workload privileges |
 
 **Alerts:** "Pod created in kube-system by non-system account" (audit log), "Admission webhook returning errors" (API server metrics), "Gatekeeper audit violation: privileged container detected" (policy engine).

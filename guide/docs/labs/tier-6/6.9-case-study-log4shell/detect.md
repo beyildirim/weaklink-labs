@@ -36,9 +36,11 @@ WAF rules detect JNDI patterns including obfuscation, but new bypasses were disc
 
 | Technique | ID | Relevance |
 |-----------|-----|-----------|
-| **Supply Chain Compromise: Software Supply Chain** | [T1195.002](https://attack.mitre.org/techniques/T1195/002/) | Log4j as a ubiquitous transitive dependency exploited at scale |
-| **Exploit Public-Facing Application** | [T1190](https://attack.mitre.org/techniques/T1190/) | JNDI injection via any logged input field |
+| **Exploit Public-Facing Application** | [T1190](https://attack.mitre.org/techniques/T1190/) | **Primary.** JNDI injection via any logged input field |
+| **Supply Chain Compromise: Software Supply Chain** | [T1195.002](https://attack.mitre.org/techniques/T1195/002/) | Contextual. Log4j arrived as a transitive dependency nobody chose |
 | **Command and Scripting Interpreter: Unix Shell** | [T1059.004](https://attack.mitre.org/techniques/T1059/004/) | Post-exploitation: JNDI loads a malicious Java class that spawns shell commands |
+
+> **Note:** Log4Shell is a supply chain *risk* (transitive dependency), not a supply chain *attack* (deliberate compromise of build/delivery). The primary technique is T1190.
 
 **Alerts:** "JNDI injection pattern detected" (WAF/IDS), "Outbound LDAP from application server" (firewall/NDR), "Java process spawned shell command" (EDR), "DNS query with encoded data" (DNS monitoring).
 
