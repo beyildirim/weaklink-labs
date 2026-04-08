@@ -37,6 +37,8 @@ spec:
               port: http
             initialDelaySeconds: 10
             periodSeconds: 30
+          securityContext:
+            allowPrivilegeEscalation: false
           resources:
             {{- toYaml .Values.guide.resources | nindent 12 }}
 ---

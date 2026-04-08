@@ -46,6 +46,8 @@ spec:
           volumeMounts:
             - name: packages
               mountPath: /data/packages
+          securityContext:
+            allowPrivilegeEscalation: false
           resources:
             {{- toYaml .Values.pypiPrivate.resources | nindent 12 }}
       volumes:
