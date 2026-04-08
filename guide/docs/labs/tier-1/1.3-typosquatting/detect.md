@@ -29,7 +29,7 @@ What to look for:
 
 | Technique | ID | Relevance |
 |-----------|-----|-----------|
-| **Supply Chain Compromise: Compromise Software Supply Chain** | [T1195.002](https://attack.mitre.org/techniques/T1195/002/) | Attacker publishes a malicious package with a name designed to be confused with a legitimate one |
+| **Supply Chain Compromise: Compromise Software Dependencies and Development Tools** | [T1195.001](https://attack.mitre.org/techniques/T1195/001/) | Attacker publishes a malicious package with a name designed to be confused with a legitimate one |
 | **User Execution: Malicious File** | [T1204.002](https://attack.mitre.org/techniques/T1204/002/) | Developer executes `pip install <typosquat>` believing it to be the legitimate package |
 | **Masquerading** | [T1036](https://attack.mitre.org/techniques/T1036/) | Typosquatted package masquerades as the legitimate one: same version, same description, wraps the real functionality |
 
