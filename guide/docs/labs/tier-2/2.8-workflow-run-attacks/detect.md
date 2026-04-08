@@ -54,9 +54,9 @@ Look for `workflow_run` workflows that download artifacts and then access secret
 name: Artifact Safety Check
 
 on:
-  # List your workflow names explicitly - wildcards are not supported
   workflow_run:
-    workflows: ["CI", "Build", "Release"]
+    # List your workflow names explicitly; wildcards are not supported
+    workflows: ["CI", "Build", "Deploy"]
     types: [completed]
 
 jobs:

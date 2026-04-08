@@ -36,12 +36,12 @@ Add binary gap detection to your pipeline:
 ```yaml
 - name: Check for vendored binaries not in SBOM
   run: |
-    docker run --rm $IMAGE find /app -name "*.so" -o -name "*.a" | while read f; do
+    while read -r f; do
       LIBNAME=$(basename "$f" | sed 's/\.so.*//' | sed 's/^lib//')
       if ! jq -e ".components[] | select(.name | test(\"$LIBNAME\"; \"i\"))" sbom.json > /dev/null 2>&1; then
         echo "::warning::Vendored binary $f not found in SBOM"
       fi
-    done
+    done < <(docker run --rm $IMAGE find /app -name "*.so" -o -name "*.a")
 ```
 
 ### MITRE ATT&CK Mapping
