@@ -30,8 +30,7 @@ What to look for:
 
 | Technique | ID | Relevance |
 |-----------|-----|-----------|
-| Supply Chain Compromise: Compromise Software Dependencies | **T1195.002** | Exploiting implicit dependency relationships in the package ecosystem |
-| Supply Chain Compromise: Compromise Software Supply Chain | **T1195.001** | Attacker publishes a malicious version of a commonly-used transitive package |
+| Supply Chain Compromise: Compromise Software Dependencies and Development Tools | **T1195.001** | Attacker publishes a malicious version of a commonly-used transitive package, exploiting implicit dependency relationships |
 | Hijack Execution Flow | **T1574.002** | Attacker places a malicious package where the resolver will find it, exploiting npm's hoisting mechanism |
 
 ---
