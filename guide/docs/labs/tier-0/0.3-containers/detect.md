@@ -70,7 +70,7 @@ jobs:
           EXIT_CODE=0
           echo "Scanning for Dockerfiles..."
 
-          find . -name 'Dockerfile*' -type f | while read -r dockerfile; do
+          while read -r dockerfile; do
             echo "Checking: ${dockerfile}"
 
             # Find FROM lines that use tags instead of digests
@@ -87,7 +87,7 @@ jobs:
               echo "Get the digest with: docker pull python:3.11-slim && docker inspect --format='{{index .RepoDigests 0}}' python:3.11-slim"
               EXIT_CODE=1
             fi
-          done
+          done < <(find . -name 'Dockerfile*' -type f)
 
           exit $EXIT_CODE
 

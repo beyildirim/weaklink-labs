@@ -52,7 +52,8 @@ name: Secret Leak Prevention
 
 on:
   workflow_run:
-    workflows: ["*"]
+    # List your workflow names explicitly; wildcards are not supported
+    workflows: ["CI", "Build", "Deploy"]
     types: [completed]
 
 jobs:
@@ -69,12 +70,12 @@ jobs:
         run: |
           echo "--- Scanning build artifacts for leaked secrets ---"
           LEAKED=0
-          find /tmp/artifacts/ -type f | while read f; do
+          while read -r f; do
             if grep -lqE '(ghp_|AKIA|sk-|password=|token=|secret=)' "$f" 2>/dev/null; then
               echo "::error::Secret pattern found in artifact: $f"
               LEAKED=1
             fi
-          done
+          done < <(find /tmp/artifacts/ -type f)
           if [ "$LEAKED" -eq 1 ]; then
             echo "CRITICAL: Secrets detected in build artifacts. Rotate immediately."
             exit 1
