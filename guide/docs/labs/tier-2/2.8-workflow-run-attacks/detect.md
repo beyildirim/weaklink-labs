@@ -55,7 +55,8 @@ name: Artifact Safety Check
 
 on:
   workflow_run:
-    workflows: ["*"]
+    # List your workflow names explicitly; wildcards are not supported
+    workflows: ["CI", "Build", "Deploy"]
     types: [completed]
 
 jobs:
