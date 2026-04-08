@@ -8,9 +8,9 @@
 set -uo pipefail
 
 GITEA_URL="http://gitea:3000"
-ADMIN_USER="labadmin"
-ADMIN_PASS="SupplyChainLab1!"
-REPO="labadmin/web-app"
+ADMIN_USER="weaklink"
+ADMIN_PASS="weaklink"
+REPO="weaklink/web-app"
 
 PASS=0
 FAIL=0
@@ -106,7 +106,7 @@ echo "  Failed: ${FAIL}"
 echo ""
 
 if [ "${FAIL}" -eq 0 ]; then
-    echo "  ALL CHECKS PASSED -- Lab 0.1 complete!"
+    echo "  ALL CHECKS PASSED. Lab 0.1 complete!"
     echo ""
     exit 0
 else
