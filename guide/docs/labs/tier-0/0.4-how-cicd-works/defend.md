@@ -12,20 +12,119 @@
   <a href="../detect/" class="phase-step upcoming">Detect</a>
 </div>
 
-## Securing the CI/CD Pipeline
+## Protecting the Pipeline
 
-1. **Restrict Pipeline Modifications:** In Gitea, navigate to Repo Settings -> Branches. Enable branch protection for `main`. Require pull request reviews before merging. This stops attackers from directly pushing modified `.gitea/workflows/` files.
+In the Break phase you pushed a malicious workflow change directly to `main`. The pipeline ran immediately with no review, no approval, and no questions asked. That is the core problem: anyone with push access can rewrite what the pipeline does.
 
-2. **Use Ephemeral Credentials:** Never store static, long-lived secrets (like `DEPLOY_KEY`) in CI. Use OpenID Connect (OIDC) to generate short-lived, scoped tokens dynamically during the build.
+### Step 1: Undo the malicious pipeline change
 
-3. Revert your malicious commit:
-   ```bash
-   git revert HEAD --no-edit
-   git push
-   ```
+First, revert the commit that added the secret exfiltration step.
 
-### Verify the lab
+```bash
+cd /workspace/ci-demo
+git revert HEAD --no-edit
+git push origin main
+```
+
+Open the **Actions** tab in Gitea (`http://gitea:3000`) and confirm the pipeline runs cleanly without the exfiltration step.
+
+### Step 2: Enable branch protection in Gitea
+
+Now lock down `main` so nobody can push directly to it.
+
+1. Log in to Gitea at `http://gitea:3000` as `weaklink` / `weaklink`
+2. Go to the repository: click on **weaklink/ci-demo**
+3. Click **Settings** (gear icon, top right of the repo page)
+4. Click **Branches** in the left sidebar
+5. Under "Branch Protection Rules", click **Add New Rule**
+6. Set the following:
+   - **Branch name pattern:** `main`
+   - Check **Disable Push** (blocks all direct pushes to main)
+   - Check **Enable Pull Request reviews**
+   - Set **Required approvals:** `1`
+7. Click **Save**
+
+This is the same defense you used in Lab 0.1, but here the stakes are higher. In Lab 0.1 you protected source code. Here you are protecting the CI configuration itself, which controls what runs in your build environment and which secrets it can access.
+
+### Step 3: Verify direct push is blocked
+
+Try pushing a change directly to `main`. It should fail.
+
+```bash
+cd /workspace/ci-demo
+
+echo "# This push should be rejected" >> app.py
+git add app.py
+git commit -m "Trying to push directly to main"
+git push origin main
+```
+
+The push should be **rejected**. This means an attacker can no longer modify `.gitea/workflows/ci.yml` by pushing straight to `main`.
+
+### Step 4: Verify workflow changes require review
+
+The safe path is through a pull request. Create a branch with a harmless change and submit a PR.
+
+```bash
+cd /workspace/ci-demo
+git checkout -b feature/add-comment
+echo "# Safe change via PR" >> app.py
+git add app.py
+git commit -m "Add comment via PR"
+git push origin feature/add-comment
+```
+
+```bash
+curl -sf -X POST "http://gitea:3000/api/v1/repos/weaklink/ci-demo/pulls" \
+    -H "Content-Type: application/json" \
+    -u "weaklink:weaklink" \
+    -d '{
+        "title": "Add comment to app.py",
+        "body": "Safe change submitted through a pull request.",
+        "head": "feature/add-comment",
+        "base": "main"
+    }'
+```
+
+The PR cannot be merged without an approving review. If an attacker tried to sneak a pipeline modification into this PR, a reviewer would catch it before it reaches `main`.
+
+### Step 5: Try the attack again
+
+Switch back to `main` and attempt the same pipeline poisoning from the Break phase, this time through the protected flow.
+
+```bash
+cd /workspace/ci-demo
+git checkout main
+git checkout -b attack/exfiltrate-secrets
+```
+
+Edit `.gitea/workflows/ci.yml` and add the exfiltration step from the Break phase:
+
+```yaml
+      - name: Exfiltrate secrets
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+        run: |
+          echo "The secret is: $DEPLOY_KEY" > /tmp/stolen-secret.txt
+```
+
+```bash
+git add .gitea/workflows/ci.yml
+git commit -m "Totally legitimate pipeline update"
+git push origin attack/exfiltrate-secrets
+```
+
+The push to the *branch* succeeds (branch protection only covers `main`), but merging requires review. A reviewer would see the exfiltration step and reject the PR. The attack is blocked.
+
+### Step 6: Verify the lab
 
 ```bash
 weaklink verify 0.4
 ```
+
+### Further Reading
+
+The branch protection rule stops the most basic form of Poisoned Pipeline Execution (PPE), where an attacker pushes directly to the default branch. More advanced defenses include:
+
+- **Ephemeral credentials via OIDC.** Instead of storing long-lived secrets like `DEPLOY_KEY`, the pipeline can request short-lived tokens from your cloud provider at build time. If a secret is never stored, it cannot be stolen from CI configuration. This is covered in later tiers.
+- **CODEOWNERS for workflow files.** Some platforms let you require specific reviewers for changes to paths like `.github/workflows/` or `.gitea/workflows/`. This adds a second layer beyond general branch protection.

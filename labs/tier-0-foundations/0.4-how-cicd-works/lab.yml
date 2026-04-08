@@ -9,4 +9,4 @@ tags: ["cicd", "pipeline", "github-actions", "gitea", "secrets", "triggers"]
 mitre: ["T1195.002", "T1059"]
 phase_understand: "Examine a CI/CD workflow — triggers, jobs, steps, and how secrets are accessed"
 phase_break: "Submit a PR that modifies the pipeline to exfiltrate secrets during build"
-phase_defend: "Restrict pipeline modifications to protected branches and use OIDC instead of long-lived secrets"
+phase_defend: "Enable branch protection to block direct pipeline modifications, then verify the attack fails"
