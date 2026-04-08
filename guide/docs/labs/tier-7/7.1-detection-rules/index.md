@@ -1,7 +1,7 @@
 # Lab 7.1: Building Detection Rules for Supply Chain Attacks
 
 <div class="lab-meta">
-  <span>Phase 1 ~10 min | Phase 2 ~15 min | Phase 3 ~15 min | Phase 4 ~5 min</span>
+  <span>Understand: ~10 min | Investigate: ~15 min | Validate: ~15 min | Improve: ~5 min</span>
   <span class="difficulty advanced">Advanced</span>
   <span>Prerequisites: <a href="../../tier-1/1.1-dependency-resolution/">Lab 1.1</a>, <a href="../../tier-1/1.2-dependency-confusion/">Lab 1.2</a>, <a href="../../tier-1/1.3-typosquatting/">Lab 1.3</a>, <a href="../../tier-1/1.4-lockfile-injection/">Lab 1.4</a>, <a href="../../tier-1/1.5-manifest-confusion/">Lab 1.5</a>, <a href="../../tier-1/1.6-phantom-dependencies/">Lab 1.6</a></span>
 </div>

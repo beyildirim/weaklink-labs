@@ -152,3 +152,5 @@ See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI 
 - [Alex Birsan: Dependency Confusion (original disclosure)](https://medium.com/@alex.birsan/dependency-confusion-4a5d60fec610)
 - [Microsoft: 3 Ways to Mitigate Risk When Using Private Package Feeds](https://azure.microsoft.com/en-us/resources/3-ways-to-mitigate-risk-using-private-package-feeds/)
 - [pip documentation: --extra-index-url](https://pip.pypa.io/en/stable/cli/pip_install/#cmdoption-extra-index-url)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

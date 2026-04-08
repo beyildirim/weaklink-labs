@@ -1,7 +1,7 @@
 # Lab 4.6: Attestation Forgery
 
 <div class="lab-meta">
-  <span>~25 min hands-on | ~15 min reference</span>
+  <span>Understand: ~8 min | Break: ~8 min | Defend: ~9 min | Detect: ~15 min</span>
   <span class="difficulty advanced">Advanced</span>
   <span>Prerequisites: <a href="../4.4-attestation-slsa/">Lab 4.4</a></span>
 </div>

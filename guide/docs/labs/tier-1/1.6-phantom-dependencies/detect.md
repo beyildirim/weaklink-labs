@@ -135,3 +135,5 @@ jobs:
 - [Phantom dependencies in Node.js (Rush.js)](https://rushjs.io/pages/advanced/phantom_deps/)
 - [depcheck on npm](https://www.npmjs.com/package/depcheck)
 - [Yarn PnP](https://yarnpkg.com/features/pnp/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

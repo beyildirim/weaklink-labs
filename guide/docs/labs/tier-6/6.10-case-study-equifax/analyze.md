@@ -1,4 +1,4 @@
-# Lab 6.10: Case Study. Equifax Breach (CVE-2017-5638)
+# Lab 6.10: Case Study: Equifax Breach (CVE-2017-5638)
 
 <div class="phase-stepper">
   <a href="../" class="phase-step done">Overview</a>

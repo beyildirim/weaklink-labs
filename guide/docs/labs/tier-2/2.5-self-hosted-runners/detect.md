@@ -12,6 +12,8 @@
   <span class="phase-step current">Detect</span>
 </div>
 
+<div class="no-terminal-notice">Reference material. No terminal needed.</div>
+
 ## Catching Runner Persistence
 
 ### MITRE ATT&CK Mapping
@@ -118,3 +120,5 @@ jobs:
 - [GitHub: Security hardening for self-hosted runners](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#hardening-for-self-hosted-runners)
 - [Adnan Khan: Pwning Self-Hosted GitHub Runners](https://adnanthekhan.com/2023/12/20/one-supply-chain-attack-to-rule-them-all/)
 - [Praetorian: Self-Hosted Runner Attacks](https://www.praetorian.com/blog/self-hosted-github-runners-are-backdoors/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

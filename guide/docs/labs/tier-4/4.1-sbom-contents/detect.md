@@ -85,3 +85,5 @@ When your vulnerability scanner reports a finding for a component not in your SB
 - [SPDX Specification](https://spdx.github.io/spdx-spec/v2.3/)
 - [CycloneDX Specification](https://cyclonedx.org/docs/1.5/)
 - [NTIA Minimum Elements for SBOM](https://www.ntia.gov/sites/default/files/publications/sbom_minimum_elements_report_0.pdf)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

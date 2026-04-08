@@ -12,6 +12,8 @@
   <span class="phase-step current">Detect</span>
 </div>
 
+<div class="no-terminal-notice">Reference material. No terminal needed.</div>
+
 **Goal:** Detect compromised functions using CloudWatch and layer version auditing.
 
 Compromised function behavioral changes:
@@ -117,3 +119,5 @@ See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI 
 - [AWS: Lambda Layers](https://docs.aws.amazon.com/lambda/latest/dg/chapter-layers.html)
 - [AWS: Lambda Security Best Practices](https://docs.aws.amazon.com/lambda/latest/dg/lambda-security.html)
 - [Python: sitecustomize documentation](https://docs.python.org/3/library/site.html)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

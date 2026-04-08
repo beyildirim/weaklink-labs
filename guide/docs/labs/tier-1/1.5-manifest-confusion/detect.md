@@ -115,3 +115,5 @@ jobs:
 - [Darcy Clarke: "The massive hole in the npm ecosystem"](https://blog.vlt.sh/blog/the-massive-hole-in-the-npm-ecosystem)
 - [npm Package Provenance](https://github.blog/2023-07-12-introducing-npm-package-provenance/)
 - [Socket.dev](https://socket.dev/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

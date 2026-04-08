@@ -12,6 +12,8 @@
   <span class="phase-step current">Detect</span>
 </div>
 
+<div class="no-terminal-notice">Reference material. No terminal needed.</div>
+
 ## Catching Pipeline Poisoning
 
 ### MITRE ATT&CK Mapping
@@ -94,3 +96,5 @@ jobs:
 - [Cider Security: Poisoned Pipeline Execution](https://www.cidersecurity.io/blog/research/ppe-poisoned-pipeline-execution/)
 - [GitHub: Security hardening. using secrets](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions)
 - [OWASP: CI/CD Security Risks - PPE](https://owasp.org/www-project-top-10-ci-cd-security-risks/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

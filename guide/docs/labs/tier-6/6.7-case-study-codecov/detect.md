@@ -1,4 +1,4 @@
-# Lab 6.7: Case Study. Codecov Bash Uploader
+# Lab 6.7: Case Study: Codecov Bash Uploader
 
 <div class="phase-stepper">
   <a href="../" class="phase-step done">Overview</a>
@@ -140,3 +140,5 @@ See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI 
 - [Codecov: Bash Uploader Security Update](https://about.codecov.io/security-update/)
 - [HashiCorp: Codecov Incident Response](https://discuss.hashicorp.com/t/hcsec-2021-12-codecov-security-event-and-hashicorp-gpg-key-exposure/23512)
 - [OpenSSF: Best Practices for CI/CD Security](https://best.openssf.org/SCM-Best-Practices/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

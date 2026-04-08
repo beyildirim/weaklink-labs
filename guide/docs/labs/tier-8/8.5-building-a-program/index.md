@@ -1,7 +1,7 @@
 # Lab 8.5: Building a Supply Chain Security Program
 
 <div class="lab-meta">
-  <span>Phase 1 ~10 min | Phase 2 ~20 min | Phase 3 ~20 min | Phase 4 ~10 min</span>
+  <span>Understand: ~10 min | Assess: ~20 min | Plan: ~20 min | Document: ~10 min</span>
   <span class="difficulty advanced">Advanced</span>
   <span>Prerequisites: <a href="../8.1-slsa-deep-dive/">Lab 8.1</a>, <a href="../8.2-ssdf-nist/">Lab 8.2</a>, <a href="../../tier-7/7.3-ir-playbook/">Lab 7.3</a></span>
 </div>

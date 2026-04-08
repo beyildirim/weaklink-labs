@@ -12,6 +12,8 @@
   <span class="phase-step current">Detect</span>
 </div>
 
+<div class="no-terminal-notice">Reference material. No terminal needed.</div>
+
 ## Catching Cross-Workflow Exploitation
 
 ### MITRE ATT&CK Mapping
@@ -109,3 +111,5 @@ jobs:
 - [GitHub: Events that trigger workflows - workflow_run](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_run)
 - [GitHub Security Lab: Keeping your GitHub Actions and workflows secure](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/)
 - [Legit Security: GitHub Actions Privilege Escalation](https://www.legitsecurity.com/blog/github-privilege-escalation-vulnerability)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

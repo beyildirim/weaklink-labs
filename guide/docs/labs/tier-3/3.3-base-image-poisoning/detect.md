@@ -12,6 +12,8 @@
   <span class="phase-step current">Detect</span>
 </div>
 
+<div class="no-terminal-notice">Reference material. No terminal needed.</div>
+
 ## Catching Base Image Compromise
 
 The core signal is a **base image digest change without a corresponding approved update**. Base images should only change through your controlled update process.
@@ -115,3 +117,5 @@ jobs:
 - [Docker Official Images: How They Work](https://docs.docker.com/trusted-content/official-images/)
 - [XZ Utils Backdoor (CVE-2024-3094)](https://nvd.nist.gov/vuln/detail/CVE-2024-3094)
 - [Cosign: Container Image Signing](https://docs.sigstore.dev/cosign/signing/signing_with_containers/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

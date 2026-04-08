@@ -1,7 +1,7 @@
 # Lab 4.1: What SBOMs Actually Contain
 
 <div class="lab-meta">
-  <span>Phase 1 ~10min | Phase 2 ~10min | Phase 3 ~10min</span>
+  <span>Understand: ~10 min | Break: ~10 min | Defend: ~10 min | Detect: ~5 min</span>
   <span class="difficulty beginner">Beginner</span>
   <span>Prerequisites: <a href="../../tier-1/1.1-dependency-resolution/">Lab 1.1</a></span>
 </div>

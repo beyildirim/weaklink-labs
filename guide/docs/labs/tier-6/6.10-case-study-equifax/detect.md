@@ -1,4 +1,4 @@
-# Lab 6.10: Case Study. Equifax Breach (CVE-2017-5638)
+# Lab 6.10: Case Study: Equifax Breach (CVE-2017-5638)
 
 <div class="phase-stepper">
   <a href="../" class="phase-step done">Overview</a>
@@ -135,3 +135,5 @@ See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI 
 - [US House Committee: The Equifax Data Breach Report](https://oversight.house.gov/wp-content/uploads/2018/12/Equifax-Report.pdf)
 - [Apache Struts: CVE-2017-5638 Advisory](https://cwiki.apache.org/confluence/display/WW/S2-045)
 - [FTC: Equifax Data Breach Settlement](https://www.ftc.gov/enforcement/refunds/equifax-data-breach-settlement)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

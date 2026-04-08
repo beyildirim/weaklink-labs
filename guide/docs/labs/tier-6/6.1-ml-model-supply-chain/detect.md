@@ -114,3 +114,5 @@ See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI 
 - [HuggingFace: Safetensors](https://huggingface.co/docs/safetensors/)
 - [Trail of Bits: Fickling - model file security analysis](https://github.com/trailofbits/fickling)
 - [NVIDIA: Securing the AI/ML Supply Chain](https://developer.nvidia.com/blog/securing-the-ai-supply-chain/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

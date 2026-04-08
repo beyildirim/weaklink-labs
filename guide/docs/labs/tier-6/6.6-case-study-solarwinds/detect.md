@@ -1,4 +1,4 @@
-# Lab 6.6: Case Study. SolarWinds (SUNBURST)
+# Lab 6.6: Case Study: SolarWinds (SUNBURST)
 
 <div class="phase-stepper">
   <a href="../" class="phase-step done">Overview</a>
@@ -144,3 +144,5 @@ See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI 
 - [CISA Emergency Directive 21-01](https://www.cisa.gov/emergency-directive-21-01)
 - [CrowdStrike: SUNSPOT. Implant in the Build Environment](https://www.crowdstrike.com/blog/sunspot-malware-technical-analysis/)
 - [MITRE ATT&CK: SolarWinds Compromise](https://attack.mitre.org/campaigns/C0024/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

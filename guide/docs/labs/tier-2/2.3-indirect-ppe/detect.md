@@ -12,6 +12,8 @@
   <span class="phase-step current">Detect</span>
 </div>
 
+<div class="no-terminal-notice">Reference material. No terminal needed.</div>
+
 ## Catching Indirect PPE
 
 ### MITRE ATT&CK Mapping
@@ -104,3 +106,5 @@ jobs:
 - [Cider Security: Indirect Poisoned Pipeline Execution](https://www.cidersecurity.io/blog/research/ppe-poisoned-pipeline-execution/)
 - [Aqua Security: CI/CD Pipeline Attacks](https://blog.aquasec.com/github-actions-security-ci-cd)
 - [OWASP Top 10 CI/CD: Poisoned Pipeline Execution](https://owasp.org/www-project-top-10-ci-cd-security-risks/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

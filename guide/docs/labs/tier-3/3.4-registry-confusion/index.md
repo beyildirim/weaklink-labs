@@ -1,7 +1,7 @@
 # Lab 3.4: Registry Confusion
 
 <div class="lab-meta">
-  <span>~20 min hands-on | ~10 min reference</span>
+  <span>Understand: ~7 min | Break: ~7 min | Defend: ~6 min | Detect: ~10 min</span>
   <span class="difficulty intermediate">Intermediate</span>
   <span>Prerequisites: <a href="../3.1-image-internals/">Lab 3.1</a></span>
 </div>

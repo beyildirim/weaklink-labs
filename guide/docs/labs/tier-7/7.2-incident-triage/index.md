@@ -1,7 +1,7 @@
 # Lab 7.2: Supply Chain Incident Triage
 
 <div class="lab-meta">
-  <span>Phase 1 ~5 min | Phase 2 ~15 min | Phase 3 ~10 min | Phase 4 ~10 min</span>
+  <span>Understand: ~5 min | Investigate: ~15 min | Validate: ~10 min | Improve: ~10 min</span>
   <span class="difficulty advanced">Advanced</span>
   <span>Prerequisites: <a href="../../tier-1/1.2-dependency-confusion/">Lab 1.2</a>, <a href="../7.1-detection-rules/">Lab 7.1</a></span>
 </div>

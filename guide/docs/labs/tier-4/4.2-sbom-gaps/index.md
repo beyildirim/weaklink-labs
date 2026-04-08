@@ -1,7 +1,7 @@
 # Lab 4.2: SBOM Gaps in Practice
 
 <div class="lab-meta">
-  <span>Phase 1 ~10min | Phase 2 ~10min | Phase 3 ~15min</span>
+  <span>Understand: ~10 min | Break: ~10 min | Defend: ~15 min | Detect: ~5 min</span>
   <span class="difficulty intermediate">Intermediate</span>
   <span>Prerequisites: <a href="../4.1-sbom-contents/">Lab 4.1</a></span>
 </div>

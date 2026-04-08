@@ -1,7 +1,7 @@
 # Lab 3.3: Base Image Poisoning
 
 <div class="lab-meta">
-  <span>~25 min hands-on | ~10 min reference</span>
+  <span>Understand: ~8 min | Break: ~8 min | Defend: ~9 min | Detect: ~10 min</span>
   <span class="difficulty intermediate">Intermediate</span>
   <span>Prerequisites: <a href="../3.1-image-internals/">Lab 3.1</a></span>
 </div>

@@ -109,3 +109,5 @@ jobs:
 - [Git Basics (git-scm.com)](https://git-scm.com/book/en/v2/Getting-Started-Git-Basics)
 - [GitHub Branch Protection Rules](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-a-branch-protection-rule)
 - [OWASP Top 10 CI/CD: Insufficient Flow Control](https://owasp.org/www-project-top-10-ci-cd-security-risks/CICD-SEC-06-Insufficient-Credential-Hygiene)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

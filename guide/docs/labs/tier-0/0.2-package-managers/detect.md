@@ -105,3 +105,5 @@ jobs:
 - [pip install --require-hashes documentation](https://pip.pypa.io/en/stable/topics/secure-installs/)
 - [PyPI Malware: What You Need to Know](https://blog.phylum.io/pypi-malware/)
 - [OWASP Dependency Check](https://owasp.org/www-project-dependency-check/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

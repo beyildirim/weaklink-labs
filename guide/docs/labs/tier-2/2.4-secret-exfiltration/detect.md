@@ -12,6 +12,8 @@
   <span class="phase-step current">Detect</span>
 </div>
 
+<div class="no-terminal-notice">Reference material. No terminal needed.</div>
+
 ## Catching Secret Exfiltration
 
 ### MITRE ATT&CK Mapping
@@ -96,3 +98,5 @@ jobs:
 - [CircleCI Security Incident (2023)](https://circleci.com/blog/jan-4-2023-incident-report/)
 - [GitHub: Security hardening. using secrets](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions)
 - [Cycode: Secret Scanning in CI/CD](https://cycode.com/blog/cicd-secret-scanning/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

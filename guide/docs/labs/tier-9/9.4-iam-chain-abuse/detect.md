@@ -12,6 +12,8 @@
   <span class="phase-step current">Detect</span>
 </div>
 
+<div class="no-terminal-notice">Reference material. No terminal needed.</div>
+
 **Goal:** Detect chain abuse via timing, source IP, and action pattern anomalies.
 
 **Key insight:** Legitimate traversals follow a predictable pattern. Malicious traversals deviate in timing (seconds vs. minutes between hops), source IP, session duration, and subsequent actions.
@@ -113,3 +115,5 @@ See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI 
 - [AWS: Cross-Account Access Best Practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html)
 - [AWS: How to Use External ID](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html)
 - [Rhino Security Labs: AWS IAM Privilege Escalation](https://rhinosecuritylabs.com/aws/aws-privilege-escalation-methods-mitigation/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

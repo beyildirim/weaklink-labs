@@ -149,3 +149,5 @@ jobs:
 - [pip documentation: --extra-index-url](https://pip.pypa.io/en/stable/cli/pip_install/#cmdoption-extra-index-url)
 - [Python Packaging: Dependency Specifiers](https://packaging.python.org/en/latest/specifications/dependency-specifiers/)
 - [Tidelift: The danger of --extra-index-url](https://blog.tidelift.com/the-danger-of-extra-index-url-in-pip)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)
