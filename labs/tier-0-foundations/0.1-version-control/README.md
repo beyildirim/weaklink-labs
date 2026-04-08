@@ -15,8 +15,8 @@ This lab runs a **Gitea** server (a lightweight Git hosting platform, similar to
 | Service     | URL / Access                        |
 |-------------|-------------------------------------|
 | Gitea UI    | http://gitea:3000                   |
-| Login       | `labadmin` / `SupplyChainLab1!`     |
-| Repository  | `labadmin/web-app`                  |
+| Login       | `weaklink` / `weaklink`             |
+| Repository  | `weaklink/web-app`                  |
 
 ## Starting the Lab
 
@@ -50,7 +50,7 @@ You are now inside the workstation pod. All Git commands below run here.
 
 ```bash
 cd /workspace
-git clone http://labadmin:SupplyChainLab1!@gitea:3000/labadmin/web-app.git
+git clone http://weaklink:weaklink@gitea:3000/weaklink/web-app.git
 cd web-app
 ```
 
@@ -218,9 +218,9 @@ EXFILTRATED: SECRET_API_KEY=sk-prod-abc123-very-secret
 
 ### Step 5: See how it looks in the Gitea UI
 
-Open http://gitea:3000/labadmin/web-app/commits/branch/main in your browser.
+Open http://gitea:3000/weaklink/web-app/commits/branch/main in your browser.
 
-Click on the latest commit. The malicious line is there in the diff, but buried among legitimate code changes. In a real PR with 500 changed lines, would you have caught it?
+Click on the latest commit. The malicious line is there in the diff, buried among legitimate code changes. In a real PR with 500 changed lines, would you have caught it?
 
 ---
 
@@ -242,8 +242,8 @@ git push origin main
 
 Open the Gitea UI at http://gitea:3000.
 
-1. Log in as `labadmin` / `SupplyChainLab1!`
-2. Go to the repository: click on **labadmin/web-app**
+1. Log in as `weaklink` / `weaklink`
+2. Go to the repository: click on **weaklink/web-app**
 3. Click **Settings** (gear icon, top right of the repo page)
 4. Click **Branches** in the left sidebar
 5. Under "Branch Protection Rules", click **Add New Rule**
@@ -282,9 +282,9 @@ git push origin feature/add-evil-file
 Now create a pull request via the Gitea API:
 
 ```bash
-curl -sf -X POST "http://gitea:3000/api/v1/repos/labadmin/web-app/pulls" \
+curl -sf -X POST "http://gitea:3000/api/v1/repos/weaklink/web-app/pulls" \
     -H "Content-Type: application/json" \
-    -u "labadmin:SupplyChainLab1!" \
+    -u "weaklink:weaklink" \
     -d '{
         "title": "Add new file",
         "body": "This change adds a new file to the project.",

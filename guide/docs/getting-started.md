@@ -1,30 +1,71 @@
 # Getting Started
 
-## Prerequisites
+## What is Software Supply Chain Security?
 
-Before you begin, make sure the following tools are installed:
+The software supply chain is everything between a developer writing code and that code running in production. It includes source code repositories, package registries, build systems, CI/CD pipelines, container images, and deployment configurations. Every one of these stages is a link in a chain, and every link is a potential target.
+
+Attackers know this. Instead of attacking your application directly, they compromise one of the tools or dependencies your application relies on. A poisoned npm package, a backdoored container base image, a tampered CI pipeline. These attacks bypass traditional application security entirely because the malicious code arrives through trusted channels.
+
+In WeakLink Labs, you will execute real supply chain attacks against isolated lab infrastructure, then build the defenses that stop them. You will work with Git repositories, package registries, container images, build pipelines, and signing systems across 62 hands-on labs organized into 10 progressive tiers.
+
+---
+
+## Choose Your Setup Path
+
+WeakLink Labs supports three ways to get started. Pick the one that fits your situation.
+
+### Quick Start (Docker Compose)
+
+The fastest way to start. Requires only Docker.
 
 | Tool | Minimum version | Install |
 |------|----------------|---------|
 | [Docker](https://docs.docker.com/get-docker/) | 20.10+ | `brew install --cask docker` |
-| [minikube](https://minikube.sigs.k8s.io/) | 1.30+ | `brew install minikube` |
-| [kubectl](https://kubernetes.io/docs/tasks/tools/) | 1.27+ | `brew install kubectl` |
-| [Helm](https://helm.sh/) | 3.12+ | `brew install helm` |
 
-## Quick Start
+```bash
+docker compose up -d
+open http://localhost:8000
+```
+
+This pulls the pre-built images and starts all services. The guide is available at [http://localhost:8000](http://localhost:8000) and the workstation terminal at [http://localhost:7681](http://localhost:7681).
+
+### Full Experience (Kubernetes)
+
+Runs the platform on a local Kubernetes cluster. This gives you the full infrastructure (Helm charts, services, pods) and is closer to a production setup. Recommended if you want to explore Kubernetes-based supply chain attacks in later tiers.
+
+| Tool | Minimum version | Install | What it does |
+|------|----------------|---------|--------------|
+| [Docker](https://docs.docker.com/get-docker/) | 20.10+ | `brew install --cask docker` | Container runtime |
+| [minikube](https://minikube.sigs.k8s.io/) | 1.30+ | `brew install minikube` | Runs a single-node Kubernetes cluster locally |
+| [kubectl](https://kubernetes.io/docs/tasks/tools/) | 1.27+ | `brew install kubectl` | CLI for interacting with Kubernetes clusters |
+| [Helm](https://helm.sh/) | 3.12+ | `brew install helm` | Kubernetes package manager for deploying the lab chart |
 
 ```bash
 ./start.sh
 ```
 
-This starts minikube, builds all images, and deploys the platform. When it finishes, open [http://localhost:8000](http://localhost:8000) in your browser.
+This starts minikube, builds all images, and deploys the platform via Helm. When it finishes, open [http://localhost:8000](http://localhost:8000).
+
+### Zero Install (GitHub Codespaces)
+
+Open the repository in a GitHub Codespace. The devcontainer configuration handles all setup automatically. No local installation required.
+
+---
 
 ## Connecting to the Lab Environment
 
-All labs run inside a Kubernetes cluster on your machine. You can connect in two ways:
+Labs run inside your Docker Compose or Kubernetes environment. You can connect in two ways:
 
 1. **Browser (recommended):** Open any lab in the guide. The embedded terminal initializes the lab automatically.
 2. **CLI:** Run `./cli/weaklink shell` to open a terminal, then run `lab-init <lab-id>` to set up the environment for a specific lab.
+
+!!! warning "Two Terminals, Two Purposes"
+    You have two terminals, and it matters which one you use:
+
+    1. **The browser terminal** at [localhost:7681](http://localhost:7681) is your **lab workstation**. This is where you run lab commands (clone repos, install packages, execute attacks and defenses).
+    2. **Your own Mac/Linux terminal** is where you run `weaklink verify`, `weaklink hint`, and other CLI commands that check your progress.
+
+    When a lab says "run this command", it means inside the browser terminal unless it explicitly says otherwise.
 
 ### Workstation Terminal
 
