@@ -51,8 +51,9 @@ Three detection surfaces map to the three channels. Build logs: strings matching
 name: Secret Leak Prevention
 
 on:
+  # List your workflow names explicitly - wildcards are not supported
   workflow_run:
-    workflows: ["*"]
+    workflows: ["CI", "Build", "Release"]
     types: [completed]
 
 jobs:
@@ -68,14 +69,8 @@ jobs:
       - name: Scan for secret patterns
         run: |
           echo "--- Scanning build artifacts for leaked secrets ---"
-          LEAKED=0
-          find /tmp/artifacts/ -type f | while read f; do
-            if grep -lqE '(ghp_|AKIA|sk-|password=|token=|secret=)' "$f" 2>/dev/null; then
-              echo "::error::Secret pattern found in artifact: $f"
-              LEAKED=1
-            fi
-          done
-          if [ "$LEAKED" -eq 1 ]; then
+          if find /tmp/artifacts/ -type f -exec grep -lE '(ghp_|AKIA|sk-|password=|token=|secret=)' {} + 2>/dev/null | grep -q .; then
+            echo "::error::Secret patterns found in build artifacts"
             echo "CRITICAL: Secrets detected in build artifacts. Rotate immediately."
             exit 1
           fi
