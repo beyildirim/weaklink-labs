@@ -9,7 +9,7 @@ sudo ln -sf /workspaces/weaklink-labs/cli/weaklink /usr/local/bin/weaklink
 
 # Install common tools used across labs
 pip install --quiet pip-audit pipdeptree
-npm install -g npm-audit
+# npm audit is built into npm, no separate package needed
 
 # Create progress tracking directory
 mkdir -p ~/.weaklink

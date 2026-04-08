@@ -10,5 +10,6 @@
     "7682": {"label": "Verify API", "onAutoForward": "silent"}
   },
   "waitFor": "onCreateCommand",
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
   "postStartCommand": "echo 'WeakLink Labs ready. Open the Guide tab or visit port 8000.'"
 }
