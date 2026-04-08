@@ -36,9 +36,8 @@ No single signal is conclusive. The key is **cross-layer correlation**: a typosq
 
 | Technique | ID | Stage | Relevance |
 |-----------|-----|-------|-----------|
-| **Supply Chain Compromise: Software Supply Chain** | [T1195.002](https://attack.mitre.org/techniques/T1195/002/) | 1, 2, 3 | End-to-end supply chain compromise |
+| **Supply Chain Compromise: Software Supply Chain** | [T1195.002](https://attack.mitre.org/techniques/T1195/002/) | 1, 2, 3 | End-to-end supply chain compromise. Stage 2 maps to [OWASP CI/CD-SEC-4: Poisoned Pipeline Execution](https://owasp.org/www-project-top-10-ci-cd-security-risks/CICD-SEC-04-Poisoned-Pipeline-Execution) |
 | **Command and Scripting Interpreter: JavaScript** | [T1059.007](https://attack.mitre.org/techniques/T1059/007/) | 1 | npm postinstall script executes attacker code |
-| **Modify CI/CD Pipeline** | [T1584.010](https://attack.mitre.org/techniques/T1584/010/) | 2 | Attacker modifies build pipeline |
 | **Deploy Container** | [T1610](https://attack.mitre.org/techniques/T1610/) | 3 | Backdoored container image deployed to production |
 
 **Alerts (individually, each looks low-severity):** "New npm dependency added" (package audit), "CI workflow file modified" (repo audit), "Container image layers changed" (registry audit), "Outbound connection from production pod" (network monitor).

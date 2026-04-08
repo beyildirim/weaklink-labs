@@ -42,7 +42,7 @@ SUNBURST generated detectable signals: **DNS queries to `avsvmcloud.com`**, **un
 | Technique | ID | Relevance |
 |-----------|-----|-----------|
 | **Supply Chain Compromise: Software Supply Chain** | [T1195.002](https://attack.mitre.org/techniques/T1195/002/) | Backdoor injected via compromised build system |
-| **Signed Binary Proxy Execution** | [T1218](https://attack.mitre.org/techniques/T1218/) | Backdoored DLL signed by SolarWinds' certificate |
+| **Subvert Trust Controls: Code Signing** | [T1553.002](https://attack.mitre.org/techniques/T1553/002/) | Backdoored DLL passed validation because it was signed by SolarWinds' legitimate certificate |
 | **Application Layer Protocol: DNS** | [T1071.004](https://attack.mitre.org/techniques/T1071/004/) | DNS-based C2 communication |
 
 **Alerts:** "DNS query to known SUNBURST C2 domain" (threat intel), "SolarWinds Orion DLL hash matches known-bad" (FIM), "Lateral movement from SolarWinds server" (behavioral).
