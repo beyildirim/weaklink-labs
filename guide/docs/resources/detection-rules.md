@@ -1,16 +1,24 @@
 # Detection Rule Library
 
-Centralized Sigma detection rules for every attack technique covered in WeakLink Labs. Each rule is production-ready: copy it into your SIEM (Splunk, Elastic, Microsoft Sentinel) using a Sigma converter like `sigma-cli` or `pySigma`.
+Detection rules for every attack technique covered in WeakLink Labs. This library contains two categories of rules:
 
-Rules are organized by tier and attack category. Each rule references the lab where the technique is taught and maps to MITRE ATT&CK. For conceptual detection guidance (indicators, triage workflows, false positive rates), see the Detect phase of each individual lab.
+**Production-ready Sigma rules** use standard log sources (proxy, EDR/Sysmon, DNS, Kubernetes audit logs, CloudTrail, web server logs) that compile through `sigma-cli` or `pySigma` into any supported SIEM backend. These can be converted and deployed directly.
+
+**Detection logic patterns** describe detection strategies for CI/CD pipelines, VCS platforms, container registries, SBOM validators, and other telemetry sources that have no standard Sigma backend. These rules document the detection logic and field mappings you need, but require translation into your SIEM's native query language (KQL, SPL, Lucene) and adaptation to your organization's log pipeline.
+
+All rules are organized by tier and attack category. Each rule references the lab where the technique is taught and maps to MITRE ATT&CK. For conceptual detection guidance (indicators, triage workflows, false positive rates), see the Detect phase of each individual lab.
 
 ---
+
+## Production-Ready Sigma Rules
+
+The rules in this section use standard Sigma log sources. Convert them with `sigma-cli` or `pySigma` and deploy to your SIEM (Splunk, Elastic, Microsoft Sentinel).
 
 ???+ note "Tier 1: Package Security"
 
     ### Dependency Resolution: Public Registry Fallback
 
-    **Lab:** 1.1 Dependency Resolution | **Log Source:** Web proxy, DNS
+    **Lab:** 1.1 Dependency Resolution | **Log Source:** Web proxy
 
     Detects build infrastructure contacting public PyPI when a private registry is configured. Build servers should never resolve packages from `pypi.org` directly.
 
@@ -56,9 +64,9 @@ Rules are organized by tier and attack category. Each rule references the lab wh
 
     ### Dependency Confusion: Private Package Override
 
-    **Lab:** 1.2 Dependency Confusion | **Log Source:** Package manager logs, proxy logs
+    **Lab:** 1.2 Dependency Confusion | **Log Source:** Proxy logs, EDR
 
-    Detects a package with an internal namespace prefix being resolved from a public registry at a suspiciously high version number.
+    Detects a package with an internal namespace prefix being resolved from a public registry, and detects setup.py spawning network processes during installation.
 
     ```yaml
     title: Dependency Confusion - Internal Package from Public Registry
@@ -142,9 +150,9 @@ Rules are organized by tier and attack category. Each rule references the lab wh
 
     ### Typosquatting: Near-Homograph Package Installation
 
-    **Lab:** 1.3 Typosquatting | **Log Source:** Package manager logs, EDR
+    **Lab:** 1.3 Typosquatting | **Log Source:** EDR
 
-    Detects installation of packages with names that are within edit distance 1 of popular packages, combined with suspicious post-install behavior.
+    Detects suspicious post-install behavior from package installation, such as reading environment variables during setup.py execution.
 
     ```yaml
     title: Typosquatting - setup.py Reading Environment Variables
@@ -189,6 +197,1002 @@ Rules are organized by tier and attack category. Each rule references the lab wh
       - attack.defense_evasion
       - attack.t1036
     ```
+
+    ### Manifest Confusion: Hidden Install Script Execution
+
+    **Lab:** 1.5 Manifest Confusion | **Log Source:** EDR
+
+    Detects npm packages executing install scripts that are not visible in registry metadata, indicating manifest confusion where the tarball contains hooks hidden from the API.
+
+    ```yaml
+    title: Manifest Confusion - Hidden postinstall Script Execution
+    id: f6a7b8c9-1501-4f0a-d12b-34e5f6a7b8c9
+    status: experimental
+    description: >
+      An npm package executed a postinstall, preinstall, or install script
+      that was not listed in the registry API metadata. This is the signature
+      of a manifest confusion attack where the tarball contains different
+      metadata than the registry.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      category: process_creation
+      product: linux
+    detection:
+      selection_parent:
+        ParentImage|endswith: '/node'
+        ParentCommandLine|contains:
+          - 'npm'
+          - 'lifecycle'
+      selection_script:
+        CommandLine|contains:
+          - 'postinstall'
+          - 'preinstall'
+      selection_network:
+        Image|endswith:
+          - '/curl'
+          - '/wget'
+          - '/node'
+        DestinationPort:
+          - 80
+          - 443
+      condition: selection_parent and (selection_script or selection_network)
+    fields:
+      - ParentCommandLine
+      - CommandLine
+      - DestinationIp
+      - DestinationPort
+    falsepositives:
+      - Legitimate packages with install scripts (husky, esbuild, sharp, node-gyp)
+    level: medium
+    tags:
+      - attack.supply_chain_compromise
+      - attack.t1195.002
+      - attack.defense_evasion
+      - attack.t1036.005
+      - attack.execution
+      - attack.t1574
+    ```
+
+???+ note "Tier 2: Build & CI/CD Security (EDR and DNS rules)"
+
+    ### Secret Exfiltration: DNS Tunneling from CI Runner
+
+    **Lab:** 2.4 Secret Exfiltration | **Log Source:** DNS
+
+    Detects CI runners making DNS queries with unusually long subdomains (>30 chars), indicating DNS-based exfiltration of secrets encoded in query labels.
+
+    ```yaml
+    title: Secret Exfiltration - DNS Tunneling from CI Runner
+    id: f2a3b4c5-2402-4f6a-d78b-90e1f2a3b4c5
+    status: experimental
+    description: >
+      CI runner made DNS queries with unusually long subdomains (>30 chars),
+      indicating DNS-based exfiltration of secrets encoded in query labels.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      category: dns
+      product: dns_server
+    detection:
+      selection:
+        query|re: '^[a-zA-Z0-9]{30,}\.'
+        src_ip|cidr:
+          - '10.0.0.0/8'
+      filter_legitimate:
+        query|endswith:
+          - '.amazonaws.com'
+          - '.cloudfront.net'
+          - '.github.com'
+      condition: selection and not filter_legitimate
+    fields:
+      - src_ip
+      - query
+      - timestamp
+    falsepositives:
+      - CDN hostnames with long subdomains
+    level: high
+    tags:
+      - attack.exfiltration
+      - attack.t1020
+      - attack.command_and_control
+      - attack.t1071.004
+    ```
+
+    ### Self-Hosted Runner Persistence
+
+    **Lab:** 2.5 Self-Hosted Runners | **Log Source:** EDR, host audit logs
+
+    Detects persistence mechanisms planted on self-hosted CI runners, such as cron jobs, shell profile modifications, or files written outside the workspace.
+
+    ```yaml
+    title: Runner Persistence - File Written Outside Workspace
+    id: a3b4c5d6-2501-4a7b-e89c-01f2a3b4c5d6
+    status: experimental
+    description: >
+      A CI job wrote files outside the designated workspace directory.
+      This indicates a persistence attempt via tool cache, shell profiles,
+      or cron job installation on a self-hosted runner.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      category: file_event
+      product: linux
+    detection:
+      selection_process:
+        Image|contains: 'runner'
+      selection_paths:
+        TargetFilename|contains:
+          - '/.bash_profile'
+          - '/.bashrc'
+          - '/.profile'
+          - '/cron.d/'
+          - '/crontab'
+          - '/_work/_tool/.hidden'
+          - '/systemd/system/'
+      condition: selection_process and selection_paths
+    fields:
+      - Image
+      - TargetFilename
+      - User
+      - timestamp
+    falsepositives:
+      - Runner setup scripts that configure the tool cache
+    level: critical
+    tags:
+      - attack.supply_chain_compromise
+      - attack.t1195.002
+      - attack.persistence
+      - attack.t1053
+    ```
+
+???+ note "Tier 3: Container Security (Kubernetes audit log rules)"
+
+    ### Registry Confusion: Unqualified Image Name Resolution
+
+    **Lab:** 3.4 Registry Confusion | **Log Source:** Kubernetes audit logs
+
+    Detects container images being pulled from registries not on the approved list, or using unqualified names that resolve to Docker Hub by default.
+
+    ```yaml
+    title: Registry Confusion - Pull from Unapproved Registry
+    id: b0c1d2e3-3401-4b4c-f56d-78a9b0c1d2e3
+    status: experimental
+    description: >
+      A container image was pulled from a registry not in the approved
+      list. Unqualified image names default to docker.io, which an
+      attacker can exploit by registering matching image names.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      product: kubernetes
+      service: audit
+    detection:
+      selection:
+        verb: 'create'
+        objectRef.resource: 'pods'
+      pull_event:
+        requestObject.spec.containers.image|startswith:
+          - 'docker.io/'
+      filter_approved:
+        requestObject.spec.containers.image|startswith:
+          - 'registry.internal.corp/'
+          - 'gcr.io/'
+          - 'registry.k8s.io/'
+      condition: selection and pull_event and not filter_approved
+    fields:
+      - requestObject.spec.containers.image
+      - user.username
+      - objectRef.namespace
+    falsepositives:
+      - Development namespaces with relaxed registry policies
+    level: high
+    tags:
+      - attack.supply_chain_compromise
+      - attack.t1195.002
+      - attack.defense_evasion
+      - attack.t1036.005
+    ```
+
+???+ note "Tier 4: SBOM & Signing (Kubernetes audit log rules)"
+
+    ### Signature Bypass: Unsigned Image Deployed
+
+    **Lab:** 4.5 Signature Bypass | **Log Source:** Kubernetes audit logs
+
+    Detects deployment of container images that lack a valid cryptographic signature or where the signature was created by an untrusted key.
+
+    ```yaml
+    title: Signature Bypass - Unsigned Image Deployment Attempt
+    id: f4a5b6c7-4501-4f8a-d90b-12e3f4a5b6c7
+    status: experimental
+    description: >
+      A container image was deployed or attempted deployment without a
+      valid cosign/notation signature. This bypasses the integrity
+      verification that ties images to trusted build pipelines.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      product: kubernetes
+      service: audit
+    detection:
+      selection:
+        verb: 'create'
+        objectRef.resource: 'pods'
+      signature_missing:
+        annotations|not_contains: 'cosign.sigstore.dev'
+        responseStatus.code: 403
+        responseStatus.reason|contains: 'signature'
+      condition: selection and signature_missing
+    fields:
+      - requestObject.spec.containers.image
+      - user.username
+      - objectRef.namespace
+      - responseStatus.reason
+    falsepositives:
+      - Development namespaces exempt from signing requirements
+    level: high
+    tags:
+      - attack.defense_evasion
+      - attack.t1553
+    ```
+
+???+ note "Tier 5: IaC Supply Chain"
+
+    ### Helm Resolution: Chart Pulled from Untrusted Repository
+
+    **Lab:** 5.1 Helm Resolution | **Log Source:** Proxy logs
+
+    Detects Helm pulling charts from public repositories when policy requires using only the private chart registry.
+
+    ```yaml
+    title: Helm Chart - Pull from Untrusted Repository
+    id: c7d8e9f0-5101-4c1d-a23e-45b6c7d8e9f0
+    status: experimental
+    description: >
+      Helm resolved and pulled a chart from a public repository not on
+      the approved list. This enables dependency confusion at the
+      chart level where an attacker publishes a higher-version chart
+      to a public repo.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      category: proxy
+      product: squid
+    detection:
+      selection:
+        c-uri|contains:
+          - '/charts/'
+          - '/index.yaml'
+        cs-method: 'GET'
+      filter_approved:
+        cs-host|contains:
+          - 'charts.internal.corp'
+          - 'harbor.internal.corp'
+      condition: selection and not filter_approved
+    fields:
+      - src_ip
+      - cs-host
+      - c-uri
+      - timestamp
+    falsepositives:
+      - Approved public chart repositories (add to filter)
+    level: high
+    tags:
+      - attack.supply_chain_compromise
+      - attack.t1195.002
+    ```
+
+    ### Helm Poisoning: Post-Install Hook Creating RBAC Resources
+
+    **Lab:** 5.2 Helm Poisoning | **Log Source:** Kubernetes audit logs
+
+    Detects Helm post-install hooks that create ClusterRoleBindings or other RBAC resources, which is the signature of a privilege escalation payload in a poisoned chart.
+
+    ```yaml
+    title: Helm Poisoning - Hook Creating ClusterRoleBinding
+    id: d8e9f0a1-5201-4d2e-b34f-56c7d8e9f0a1
+    status: experimental
+    description: >
+      A Kubernetes Job with helm.sh/hook annotations created a
+      ClusterRoleBinding. Legitimate charts rarely create cluster-wide
+      RBAC resources from hooks. This is the signature of a privilege
+      escalation payload in a poisoned Helm chart.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      product: kubernetes
+      service: audit
+    detection:
+      selection_resource:
+        verb: 'create'
+        objectRef.resource: 'clusterrolebindings'
+      selection_source:
+        user.username|contains: 'system:serviceaccount'
+        sourceIPs|cidr:
+          - '10.0.0.0/8'
+      hook_job:
+        requestObject.metadata.annotations|contains: 'helm.sh/hook'
+      condition: selection_resource and (selection_source or hook_job)
+    fields:
+      - requestObject.metadata.name
+      - requestObject.roleRef.name
+      - user.username
+      - objectRef.namespace
+    falsepositives:
+      - Legitimate charts that require cluster-admin (cert-manager, ingress controllers)
+    level: critical
+    tags:
+      - attack.supply_chain_compromise
+      - attack.t1195.002
+      - attack.privilege_escalation
+      - attack.t1078
+    ```
+
+    ### Terraform Module Attacks: Credential Exfiltration via local-exec
+
+    **Lab:** 5.3 Terraform Modules | **Log Source:** EDR
+
+    Detects `terraform apply` spawning child processes that make outbound network connections, indicating a malicious `local-exec` provisioner exfiltrating credentials.
+
+    ```yaml
+    title: Terraform Module Attack - local-exec Network Exfiltration
+    id: e9f0a1b2-5301-4e3f-c45a-67d8e9f0a1b2
+    status: experimental
+    description: >
+      Terraform apply spawned a child process (curl, wget, nc) that made
+      outbound network connections. Malicious Terraform modules use
+      local-exec provisioners to exfiltrate cloud credentials from
+      the CI environment.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      category: process_creation
+      product: linux
+    detection:
+      selection_parent:
+        ParentImage|endswith: '/terraform'
+        ParentCommandLine|contains: 'apply'
+      selection_child:
+        Image|endswith:
+          - '/curl'
+          - '/wget'
+          - '/nc'
+          - '/ncat'
+          - '/python'
+          - '/python3'
+      condition: selection_parent and selection_child
+    fields:
+      - ParentCommandLine
+      - CommandLine
+      - DestinationIp
+      - User
+    falsepositives:
+      - Terraform provisioners that legitimately call APIs (e.g., health checks)
+    level: critical
+    tags:
+      - attack.supply_chain_compromise
+      - attack.t1195.002
+      - attack.execution
+      - attack.t1059
+      - attack.exfiltration
+      - attack.t1020
+    ```
+
+    ### Ansible Galaxy: Malicious Role Installing SSH Backdoor
+
+    **Lab:** 5.4 Ansible Galaxy | **Log Source:** Host audit logs
+
+    Detects SSH authorized_keys modifications following an Ansible playbook run, indicating a malicious role planted a backdoor SSH key.
+
+    ```yaml
+    title: Ansible Galaxy - Unauthorized SSH Key Planted by Role
+    id: f0a1b2c3-5401-4f4a-d56b-78e9f0a1b2c3
+    status: experimental
+    description: >
+      SSH authorized_keys was modified during or immediately after an
+      Ansible playbook run. A malicious Galaxy role can plant SSH
+      keys using the authorized_key module while performing its
+      stated purpose.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      category: file_event
+      product: linux
+    detection:
+      selection:
+        TargetFilename|endswith: '/authorized_keys'
+        EventType: 'FileWrite'
+      timeframe_correlation:
+        ParentImage|contains:
+          - 'ansible'
+          - 'python'
+        ParentCommandLine|contains: 'playbook'
+      condition: selection and timeframe_correlation
+    fields:
+      - TargetFilename
+      - ParentCommandLine
+      - User
+      - timestamp
+    falsepositives:
+      - Ansible roles that legitimately manage SSH keys (user management roles)
+    level: high
+    tags:
+      - attack.supply_chain_compromise
+      - attack.t1195.002
+      - attack.persistence
+      - attack.t1098.004
+    ```
+
+    ### Admission Controller Bypass: Privileged Pod in Exempt Namespace
+
+    **Lab:** 5.5 Admission Bypass | **Log Source:** Kubernetes audit logs
+
+    Detects creation of privileged containers in namespaces typically exempt from admission controller policies.
+
+    ```yaml
+    title: Admission Bypass - Privileged Pod in kube-system
+    id: a1b2c3d4-5501-4a5b-e67c-89f0a1b2c3d4
+    status: experimental
+    description: >
+      A privileged container was created in kube-system or another
+      namespace exempt from admission controller policies. Attackers
+      deploy workloads in exempt namespaces to bypass OPA/Gatekeeper
+      and Kyverno policies.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      product: kubernetes
+      service: audit
+    detection:
+      selection:
+        verb: 'create'
+        objectRef.resource: 'pods'
+        objectRef.namespace:
+          - 'kube-system'
+          - 'kube-public'
+          - 'default'
+      privileged:
+        requestObject.spec.containers.securityContext.privileged: true
+      filter_system:
+        user.username|startswith:
+          - 'system:node:'
+          - 'system:serviceaccount:kube-system:'
+      condition: selection and privileged and not filter_system
+    fields:
+      - requestObject.metadata.name
+      - requestObject.spec.containers.image
+      - user.username
+      - objectRef.namespace
+    falsepositives:
+      - System components that require privileged access (CNI plugins, monitoring agents)
+    level: critical
+    tags:
+      - attack.privilege_escalation
+      - attack.t1611
+      - attack.defense_evasion
+      - attack.t1562
+    ```
+
+???+ note "Tier 6: Case Studies & Frontier Attacks"
+
+    ### ML Model Supply Chain: Malicious Deserialization
+
+    **Lab:** 6.1 ML Model Supply Chain | **Log Source:** EDR
+
+    Detects Python processes spawning unexpected child processes during model loading, indicating a deserialization attack via unsafe model formats.
+
+    ```yaml
+    title: ML Model Attack - Code Execution During Model Load
+    id: b2c3d4e5-6101-4b6c-f78d-90a1b2c3d4e5
+    status: experimental
+    description: >
+      A Python process spawned unexpected child processes (shell, curl,
+      wget) during model deserialization. Unsafe model loading functions
+      execute arbitrary code embedded in model files.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      category: process_creation
+      product: linux
+    detection:
+      selection_parent:
+        ParentImage|endswith:
+          - '/python'
+          - '/python3'
+        ParentCommandLine|contains:
+          - 'load_model'
+          - 'torch.load'
+          - 'joblib.load'
+      selection_child:
+        Image|endswith:
+          - '/sh'
+          - '/bash'
+          - '/curl'
+          - '/wget'
+          - '/nc'
+      condition: selection_parent and selection_child
+    fields:
+      - ParentCommandLine
+      - CommandLine
+      - DestinationIp
+      - User
+    falsepositives:
+      - ML frameworks that spawn subprocesses for GPU initialization
+    level: critical
+    tags:
+      - attack.supply_chain_compromise
+      - attack.t1195.002
+      - attack.execution
+      - attack.t1059.006
+      - attack.defense_evasion
+      - attack.t1480
+    ```
+
+    ### Dataset Poisoning: Training Data Integrity Drift
+
+    **Lab:** 6.2 Dataset Poisoning | **Log Source:** File integrity monitoring
+
+    Detects modifications to training datasets after download or unexpected changes in label distribution.
+
+    ```yaml
+    title: Dataset Poisoning - Training Data Modified After Download
+    id: c3d4e5f6-6201-4c7d-a89e-01b2c3d4e5f6
+    status: experimental
+    description: >
+      A training dataset file was modified after its initial download
+      and integrity verification. Dataset poisoning attacks modify
+      training data to inject backdoor triggers.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      category: file_event
+      product: linux
+    detection:
+      selection:
+        TargetFilename|contains:
+          - '/datasets/'
+          - '/training_data/'
+          - '/data/train'
+        EventType: 'FileWrite'
+      filter_download:
+        Image|endswith:
+          - '/curl'
+          - '/wget'
+          - '/python'
+      filter_expected:
+        User:
+          - 'data-pipeline'
+          - 'ml-train'
+      condition: selection and not filter_download and not filter_expected
+    fields:
+      - TargetFilename
+      - Image
+      - User
+      - timestamp
+    falsepositives:
+      - Data preprocessing pipelines that transform data in place
+    level: high
+    tags:
+      - attack.impact
+      - attack.t1565.001
+      - attack.supply_chain_compromise
+      - attack.t1195.002
+    ```
+
+    ### SolarWinds (SUNBURST): C2 Domain Detection
+
+    **Lab:** 6.6 SolarWinds | **Log Source:** DNS logs
+
+    Detects DNS queries to known SUNBURST C2 domains.
+
+    ```yaml
+    title: SolarWinds SUNBURST - C2 DNS Communication
+    id: a7b8c9d0-6601-4a1b-e23c-45f6a7b8c9d0
+    status: experimental
+    description: >
+      DNS queries to avsvmcloud.com, the SUNBURST C2 domain, or build
+      artifacts that do not match expected hashes from the same source
+      code. Build compromise attacks produce different binaries from
+      identical source.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      category: dns
+      product: dns_server
+    detection:
+      selection_sunburst:
+        query|endswith: '.avsvmcloud.com'
+      condition: selection_sunburst
+    fields:
+      - src_ip
+      - query
+      - timestamp
+    falsepositives:
+      - None. This domain is confirmed C2 infrastructure.
+    level: critical
+    tags:
+      - attack.supply_chain_compromise
+      - attack.t1195.002
+      - attack.command_and_control
+      - attack.t1071.004
+    ```
+
+    ### Codecov: CI Script Tampering and Env Exfiltration
+
+    **Lab:** 6.7 Codecov | **Log Source:** EDR
+
+    Detects CI runners downloading scripts via curl/wget and piping them directly to a shell, which is the Codecov attack pattern.
+
+    ```yaml
+    title: Codecov-Style Attack - CI Script Hash Mismatch
+    id: c9d0e1f2-6701-4c3d-a45e-67b8c9d0e1f2
+    status: experimental
+    description: >
+      A CI pipeline downloaded a script via curl/wget and the file hash
+      does not match the expected value. This is the Codecov attack
+      pattern where the bash uploader was modified to exfiltrate secrets.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      category: process_creation
+      product: linux
+    detection:
+      selection_download:
+        CommandLine|contains:
+          - 'curl -s'
+          - 'curl -fsSL'
+          - 'wget -q'
+        CommandLine|contains:
+          - '| bash'
+          - '| sh'
+      condition: selection_download
+    fields:
+      - CommandLine
+      - ParentCommandLine
+      - DestinationIp
+      - User
+    falsepositives:
+      - Legitimate CI setup scripts (should be pinned by hash)
+    level: high
+    tags:
+      - attack.supply_chain_compromise
+      - attack.t1195.002
+      - attack.execution
+      - attack.t1059.004
+      - attack.exfiltration
+      - attack.t1020
+    ```
+
+    ### Log4Shell: JNDI Lookup Exploitation
+
+    **Lab:** 6.9 Log4Shell | **Log Source:** Web server logs, EDR
+
+    Detects JNDI lookup patterns in application input and outbound LDAP connections from Java processes, indicating Log4Shell exploitation.
+
+    ```yaml
+    title: Log4Shell - JNDI Lookup Pattern in Input
+    id: e1f2a3b4-6901-4e5f-c67a-89d0e1f2a3b4
+    status: experimental
+    description: >
+      Application input contains JNDI lookup patterns (${jndi:ldap://,
+      ${jndi:rmi://, ${jndi:dns://) including common obfuscation
+      techniques. This is the primary exploitation vector for
+      CVE-2021-44228.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      category: webserver
+      product: apache
+    detection:
+      selection:
+        cs-uri|contains:
+          - '${jndi:'
+          - '${${lower:j}ndi:'
+          - '${${::-j}${::-n}${::-d}${::-i}:'
+        cs-User-Agent|contains:
+          - '${jndi:'
+      selection_headers:
+        cs-Referer|contains: '${jndi:'
+        X-Forwarded-For|contains: '${jndi:'
+      condition: selection or selection_headers
+    fields:
+      - cs-uri
+      - cs-User-Agent
+      - c-ip
+      - timestamp
+    falsepositives:
+      - Security scanners testing for Log4Shell
+    level: critical
+    tags:
+      - attack.initial_access
+      - attack.t1190
+      - attack.execution
+      - attack.t1059
+    ```
+
+    ```yaml
+    title: Log4Shell - Outbound LDAP from Java Process
+    id: f2a3b4c5-6902-4f6a-d78b-90e1f2a3b4c5
+    status: experimental
+    description: >
+      A Java process initiated an outbound LDAP connection to a non-internal
+      server. This indicates successful Log4Shell exploitation where the
+      JNDI lookup connected to an attacker-controlled LDAP server.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      category: network_connection
+      product: linux
+    detection:
+      selection:
+        Image|endswith: '/java'
+        DestinationPort:
+          - 389
+          - 636
+          - 1099
+          - 1389
+      filter_internal:
+        DestinationIp|cidr:
+          - '10.0.0.0/8'
+          - '172.16.0.0/12'
+          - '192.168.0.0/16'
+      condition: selection and not filter_internal
+    fields:
+      - Image
+      - DestinationIp
+      - DestinationPort
+      - User
+      - timestamp
+    falsepositives:
+      - Applications that legitimately connect to external LDAP servers
+    level: critical
+    tags:
+      - attack.initial_access
+      - attack.t1190
+      - attack.execution
+      - attack.t1203
+    ```
+
+    ### Equifax (CVE-2017-5638): Struts OGNL Injection
+
+    **Lab:** 6.10 Equifax | **Log Source:** Web server logs
+
+    Detects OGNL expression patterns in HTTP Content-Type headers, the exploitation vector for the Apache Struts vulnerability.
+
+    ```yaml
+    title: Equifax-Style - OGNL Expression in Content-Type Header
+    id: a3b4c5d6-6100-4a7b-e89c-01f2a3b4c5d6
+    status: experimental
+    description: >
+      An HTTP request contains OGNL expression patterns in the Content-Type
+      header, the signature of CVE-2017-5638 exploitation. This was the
+      vector used in the Equifax breach.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      category: webserver
+      product: apache
+    detection:
+      selection:
+        Content-Type|contains:
+          - 'OgnlContext'
+          - '#cmd='
+          - 'Runtime.getRuntime()'
+          - 'ProcessBuilder'
+          - 'multipart/form-data'
+        Content-Type|re: '#\w+\s*=\s*@'
+      condition: selection
+    fields:
+      - c-ip
+      - cs-uri
+      - Content-Type
+      - timestamp
+    falsepositives:
+      - None for OGNL patterns in Content-Type headers
+    level: critical
+    tags:
+      - attack.initial_access
+      - attack.t1190
+      - attack.execution
+      - attack.t1059
+    ```
+
+???+ note "Tier 9: Cloud Supply Chain"
+
+    ### Cloud Marketplace Poisoning: Backdoored AMI Deployment
+
+    **Lab:** 9.1 Marketplace Poisoning | **Log Source:** CloudTrail
+
+    Detects EC2 instances launched from AMIs by unknown publishers, with subsequent outbound connections to attacker infrastructure.
+
+    ```yaml
+    title: Cloud Marketplace Poisoning - AMI from Unknown Publisher
+    id: b4c5d6e7-9101-4b8c-f90d-12a3b4c5d6e7
+    status: experimental
+    description: >
+      An EC2 instance was launched from an AMI whose publisher is not on
+      the approved list. Cloud marketplace images can contain pre-installed
+      backdoors, SSH keys, and cryptocurrency miners.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      product: aws
+      service: cloudtrail
+    detection:
+      selection:
+        eventName: 'RunInstances'
+      filter_approved:
+        requestParameters.instancesSet.items.imageId|startswith:
+          - 'ami-approved-'
+        responseElements.instancesSet.items.imageId|in_approved_list: true
+      condition: selection and not filter_approved
+    fields:
+      - requestParameters.instancesSet.items.imageId
+      - userIdentity.arn
+      - sourceIPAddress
+      - awsRegion
+    falsepositives:
+      - New AMIs being evaluated in sandbox accounts
+    level: high
+    tags:
+      - attack.supply_chain_compromise
+      - attack.t1195.002
+      - attack.persistence
+      - attack.t1525
+      - attack.initial_access
+      - attack.t1078.004
+    ```
+
+    ### Serverless Supply Chain: Malicious Lambda Layer
+
+    **Lab:** 9.2 Serverless Supply Chain | **Log Source:** CloudTrail
+
+    Detects Lambda function configuration changes that add layers from untrusted sources, or Lambda functions with unexpected execution duration increases.
+
+    ```yaml
+    title: Serverless Attack - Lambda Layer from Untrusted Source
+    id: c5d6e7f8-9201-4c9d-a01e-23b4c5d6e7f8
+    status: experimental
+    description: >
+      A Lambda function configuration was updated to include a layer from
+      an account not on the approved list. Malicious layers can inject
+      code that executes on every invocation without modifying the
+      function source.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      product: aws
+      service: cloudtrail
+    detection:
+      selection:
+        eventName:
+          - 'UpdateFunctionConfiguration20150331v2'
+          - 'CreateFunction20150331'
+        requestParameters.layers|contains: 'arn:aws:lambda:'
+      filter_approved:
+        requestParameters.layers|contains:
+          - ':123456789012:'   # your account
+          - ':aws:'            # AWS-managed layers
+      condition: selection and not filter_approved
+    fields:
+      - requestParameters.functionName
+      - requestParameters.layers
+      - userIdentity.arn
+      - sourceIPAddress
+    falsepositives:
+      - Approved third-party layers (add account IDs to filter)
+    level: high
+    tags:
+      - attack.supply_chain_compromise
+      - attack.t1195.002
+      - attack.resource_development
+      - attack.t1583.007
+      - attack.execution
+      - attack.t1059
+    ```
+
+    ### Cloud CI/CD Attacks: CodeBuild Privilege Escalation
+
+    **Lab:** 9.3 Cloud CI/CD Attacks | **Log Source:** CloudTrail
+
+    Detects CodeBuild projects assuming IAM roles outside their intended scope or accessing production SSM parameters.
+
+    ```yaml
+    title: Cloud CI/CD - CodeBuild Accessing Production Secrets
+    id: d6e7f8a9-9301-4d0e-b12f-34c5d6e7f8a9
+    status: experimental
+    description: >
+      An AWS CodeBuild project accessed SSM Parameter Store parameters
+      outside its designated path, or assumed an IAM role not intended
+      for build workloads. This indicates privilege escalation from
+      a compromised build environment.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      product: aws
+      service: cloudtrail
+    detection:
+      selection_ssm:
+        eventName: 'GetParameter'
+        requestParameters.name|startswith: '/prod/'
+        userIdentity.arn|contains: 'codebuild'
+      selection_escalation:
+        eventName: 'AssumeRole'
+        userIdentity.arn|contains: 'codebuild'
+        requestParameters.roleArn|not_contains: 'codebuild'
+      condition: selection_ssm or selection_escalation
+    fields:
+      - eventName
+      - requestParameters.name
+      - requestParameters.roleArn
+      - userIdentity.arn
+      - sourceIPAddress
+    falsepositives:
+      - Build pipelines that legitimately deploy to production (should use separate roles)
+    level: critical
+    tags:
+      - attack.supply_chain_compromise
+      - attack.t1195.002
+      - attack.credential_access
+      - attack.t1552.001
+      - attack.privilege_escalation
+      - attack.t1078
+    ```
+
+    ### IAM Chain Abuse: Rapid Cross-Account AssumeRole
+
+    **Lab:** 9.4 IAM Chain Abuse | **Log Source:** CloudTrail
+
+    Detects rapid cross-account AssumeRole chains that traverse multiple accounts in quick succession, indicating stolen credentials being used to traverse trust relationships.
+
+    ```yaml
+    title: IAM Chain Abuse - Rapid Cross-Account Role Traversal
+    id: e7f8a9b0-9401-4e1f-c23a-45d6e7f8a9b0
+    status: experimental
+    description: >
+      Multiple cross-account AssumeRole calls occurred within a short
+      timeframe from the same source, traversing different AWS accounts.
+      Legitimate cross-account access follows predictable patterns.
+      Rapid traversal across 3+ accounts indicates credential abuse.
+    author: WeakLink Labs
+    date: 2026/04/07
+    logsource:
+      product: aws
+      service: cloudtrail
+    detection:
+      selection:
+        eventName: 'AssumeRole'
+        resources.accountId|different_from: userIdentity.accountId
+      timeframe: 5m
+      condition: selection | count(resources.accountId) by userIdentity.arn > 2
+    fields:
+      - userIdentity.arn
+      - requestParameters.roleArn
+      - resources.accountId
+      - sourceIPAddress
+      - eventTime
+    falsepositives:
+      - Infrastructure-as-code tools that deploy across multiple accounts
+      - Centralized monitoring systems
+    level: critical
+    tags:
+      - attack.lateral_movement
+      - attack.t1078.004
+      - attack.credential_access
+      - attack.t1550.001
+      - attack.supply_chain_compromise
+      - attack.t1195.002
+    ```
+
+---
+
+## Detection Logic Patterns
+
+!!! warning "Detection Logic, Not Production Sigma"
+    The rules below describe detection patterns for CI/CD, VCS, container registry, SBOM, and other specialized telemetry. They use custom log source definitions that require platform-specific parsing and indexing before use. Adapt the logic to your SIEM's native query language (KQL, SPL, Lucene) and your organization's log pipeline.
+
+???+ note "Tier 1: Package Security (VCS and CI patterns)"
 
     ### Lockfile Injection: Lockfile-Only PR Modification
 
@@ -251,62 +1255,6 @@ Rules are organized by tier and attack category. Each rule references the lab wh
       - attack.t1553
     ```
 
-    ### Manifest Confusion: Hidden Install Script Execution
-
-    **Lab:** 1.5 Manifest Confusion | **Log Source:** EDR, npm audit logs
-
-    Detects npm packages executing install scripts that are not visible in registry metadata, indicating manifest confusion where the tarball contains hooks hidden from the API.
-
-    ```yaml
-    title: Manifest Confusion - Hidden postinstall Script Execution
-    id: f6a7b8c9-1501-4f0a-d12b-34e5f6a7b8c9
-    status: experimental
-    description: >
-      An npm package executed a postinstall, preinstall, or install script
-      that was not listed in the registry API metadata. This is the signature
-      of a manifest confusion attack where the tarball contains different
-      metadata than the registry.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      category: process_creation
-      product: linux
-    detection:
-      selection_parent:
-        ParentImage|endswith: '/node'
-        ParentCommandLine|contains:
-          - 'npm'
-          - 'lifecycle'
-      selection_script:
-        CommandLine|contains:
-          - 'postinstall'
-          - 'preinstall'
-      selection_network:
-        Image|endswith:
-          - '/curl'
-          - '/wget'
-          - '/node'
-        DestinationPort:
-          - 80
-          - 443
-      condition: selection_parent and (selection_script or selection_network)
-    fields:
-      - ParentCommandLine
-      - CommandLine
-      - DestinationIp
-      - DestinationPort
-    falsepositives:
-      - Legitimate packages with install scripts (husky, esbuild, sharp, node-gyp)
-    level: medium
-    tags:
-      - attack.supply_chain_compromise
-      - attack.t1195.002
-      - attack.defense_evasion
-      - attack.t1036.005
-      - attack.execution
-      - attack.t1574
-    ```
-
     ### Phantom Dependencies: Undeclared Package Import
 
     **Lab:** 1.6 Phantom Dependencies | **Log Source:** CI pipeline logs, package manager logs
@@ -347,7 +1295,7 @@ Rules are organized by tier and attack category. Each rule references the lab wh
       - attack.t1574.002
     ```
 
-???+ note "Tier 2: Build & CI/CD Security"
+???+ note "Tier 2: Build & CI/CD Security (VCS and CI patterns)"
 
     ### Direct PPE: CI Config Modified in Pull Request
 
@@ -439,7 +1387,7 @@ Rules are organized by tier and attack category. Each rule references the lab wh
 
     ### Indirect PPE: Build Script Modification with Network Commands
 
-    **Lab:** 2.3 Indirect PPE | **Log Source:** VCS webhooks, EDR
+    **Lab:** 2.3 Indirect PPE | **Log Source:** VCS webhooks
 
     Detects modifications to files executed by CI (Makefiles, shell scripts) that introduce network commands, without touching the CI config itself.
 
@@ -527,90 +1475,6 @@ Rules are organized by tier and attack category. Each rule references the lab wh
       - attack.t1020
       - attack.credential_access
       - attack.t1552.001
-    ```
-
-    ```yaml
-    title: Secret Exfiltration - DNS Tunneling from CI Runner
-    id: f2a3b4c5-2402-4f6a-d78b-90e1f2a3b4c5
-    status: experimental
-    description: >
-      CI runner made DNS queries with unusually long subdomains (>30 chars),
-      indicating DNS-based exfiltration of secrets encoded in query labels.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      category: dns
-      product: dns_server
-    detection:
-      selection:
-        query|re: '^[a-zA-Z0-9]{30,}\.'
-        src_ip|cidr:
-          - '10.0.0.0/8'
-      filter_legitimate:
-        query|endswith:
-          - '.amazonaws.com'
-          - '.cloudfront.net'
-          - '.github.com'
-      condition: selection and not filter_legitimate
-    fields:
-      - src_ip
-      - query
-      - timestamp
-    falsepositives:
-      - CDN hostnames with long subdomains
-    level: high
-    tags:
-      - attack.exfiltration
-      - attack.t1020
-      - attack.command_and_control
-      - attack.t1071.004
-    ```
-
-    ### Self-Hosted Runner Persistence
-
-    **Lab:** 2.5 Self-Hosted Runners | **Log Source:** EDR, host audit logs
-
-    Detects persistence mechanisms planted on self-hosted CI runners, such as cron jobs, shell profile modifications, or files written outside the workspace.
-
-    ```yaml
-    title: Runner Persistence - File Written Outside Workspace
-    id: a3b4c5d6-2501-4a7b-e89c-01f2a3b4c5d6
-    status: experimental
-    description: >
-      A CI job wrote files outside the designated workspace directory.
-      This indicates a persistence attempt via tool cache, shell profiles,
-      or cron job installation on a self-hosted runner.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      category: file_event
-      product: linux
-    detection:
-      selection_process:
-        Image|contains: 'runner'
-      selection_paths:
-        TargetFilename|contains:
-          - '/.bash_profile'
-          - '/.bashrc'
-          - '/.profile'
-          - '/cron.d/'
-          - '/crontab'
-          - '/_work/_tool/.hidden'
-          - '/systemd/system/'
-      condition: selection_process and selection_paths
-    fields:
-      - Image
-      - TargetFilename
-      - User
-      - timestamp
-    falsepositives:
-      - Runner setup scripts that configure the tool cache
-    level: critical
-    tags:
-      - attack.supply_chain_compromise
-      - attack.t1195.002
-      - attack.persistence
-      - attack.t1053
     ```
 
     ### Actions Injection: Shell Metacharacters in Event Metadata
@@ -747,7 +1611,7 @@ Rules are organized by tier and attack category. Each rule references the lab wh
       - attack.t1574
     ```
 
-???+ note "Tier 3: Container Security"
+???+ note "Tier 3: Container Security (registry and scanner patterns)"
 
     ### Image Internals: Hidden Content in Layers
 
@@ -890,52 +1754,6 @@ Rules are organized by tier and attack category. Each rule references the lab wh
       - attack.t1525
     ```
 
-    ### Registry Confusion: Unqualified Image Name Resolution
-
-    **Lab:** 3.4 Registry Confusion | **Log Source:** Kubernetes audit logs, container runtime logs
-
-    Detects container images being pulled from registries not on the approved list, or using unqualified names that resolve to Docker Hub by default.
-
-    ```yaml
-    title: Registry Confusion - Pull from Unapproved Registry
-    id: b0c1d2e3-3401-4b4c-f56d-78a9b0c1d2e3
-    status: experimental
-    description: >
-      A container image was pulled from a registry not in the approved
-      list. Unqualified image names default to docker.io, which an
-      attacker can exploit by registering matching image names.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      product: kubernetes
-      service: audit
-    detection:
-      selection:
-        verb: 'create'
-        objectRef.resource: 'pods'
-      pull_event:
-        requestObject.spec.containers.image|startswith:
-          - 'docker.io/'
-      filter_approved:
-        requestObject.spec.containers.image|startswith:
-          - 'registry.internal.corp/'
-          - 'gcr.io/'
-          - 'registry.k8s.io/'
-      condition: selection and pull_event and not filter_approved
-    fields:
-      - requestObject.spec.containers.image
-      - user.username
-      - objectRef.namespace
-    falsepositives:
-      - Development namespaces with relaxed registry policies
-    level: high
-    tags:
-      - attack.supply_chain_compromise
-      - attack.t1195.002
-      - attack.defense_evasion
-      - attack.t1036.005
-    ```
-
     ### Layer Injection: Manifest Modification Outside CI
 
     **Lab:** 3.5 Layer Injection | **Log Source:** Container registry audit logs
@@ -1030,7 +1848,7 @@ Rules are organized by tier and attack category. Each rule references the lab wh
       - attack.t1525
     ```
 
-???+ note "Tier 4: SBOM & Signing"
+???+ note "Tier 4: SBOM & Signing (SBOM and signing tool patterns)"
 
     ### SBOM Coverage Gaps: Drift Between SBOM and Runtime
 
@@ -1070,47 +1888,6 @@ Rules are organized by tier and attack category. Each rule references the lab wh
     tags:
       - attack.defense_evasion
       - attack.t1036
-    ```
-
-    ### Signature Bypass: Unsigned Image Deployed
-
-    **Lab:** 4.5 Signature Bypass | **Log Source:** Admission controller logs, CI pipeline logs
-
-    Detects deployment of container images that lack a valid cryptographic signature or where the signature was created by an untrusted key.
-
-    ```yaml
-    title: Signature Bypass - Unsigned Image Deployment Attempt
-    id: f4a5b6c7-4501-4f8a-d90b-12e3f4a5b6c7
-    status: experimental
-    description: >
-      A container image was deployed or attempted deployment without a
-      valid cosign/notation signature. This bypasses the integrity
-      verification that ties images to trusted build pipelines.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      product: kubernetes
-      service: audit
-    detection:
-      selection:
-        verb: 'create'
-        objectRef.resource: 'pods'
-      signature_missing:
-        annotations|not_contains: 'cosign.sigstore.dev'
-        responseStatus.code: 403
-        responseStatus.reason|contains: 'signature'
-      condition: selection and signature_missing
-    fields:
-      - requestObject.spec.containers.image
-      - user.username
-      - objectRef.namespace
-      - responseStatus.reason
-    falsepositives:
-      - Development namespaces exempt from signing requirements
-    level: high
-    tags:
-      - attack.defense_evasion
-      - attack.t1553
     ```
 
     ### Attestation Forgery: OIDC Issuer Mismatch
@@ -1196,348 +1973,7 @@ Rules are organized by tier and attack category. Each rule references the lab wh
       - attack.t1195.002
     ```
 
-???+ note "Tier 5: IaC Supply Chain"
-
-    ### Helm Resolution: Chart Pulled from Untrusted Repository
-
-    **Lab:** 5.1 Helm Resolution | **Log Source:** Helm audit logs, proxy logs
-
-    Detects Helm pulling charts from public repositories when policy requires using only the private chart registry.
-
-    ```yaml
-    title: Helm Chart - Pull from Untrusted Repository
-    id: c7d8e9f0-5101-4c1d-a23e-45b6c7d8e9f0
-    status: experimental
-    description: >
-      Helm resolved and pulled a chart from a public repository not on
-      the approved list. This enables dependency confusion at the
-      chart level where an attacker publishes a higher-version chart
-      to a public repo.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      category: proxy
-      product: squid
-    detection:
-      selection:
-        c-uri|contains:
-          - '/charts/'
-          - '/index.yaml'
-        cs-method: 'GET'
-      filter_approved:
-        cs-host|contains:
-          - 'charts.internal.corp'
-          - 'harbor.internal.corp'
-      condition: selection and not filter_approved
-    fields:
-      - src_ip
-      - cs-host
-      - c-uri
-      - timestamp
-    falsepositives:
-      - Approved public chart repositories (add to filter)
-    level: high
-    tags:
-      - attack.supply_chain_compromise
-      - attack.t1195.002
-    ```
-
-    ### Helm Poisoning: Post-Install Hook Creating RBAC Resources
-
-    **Lab:** 5.2 Helm Poisoning | **Log Source:** Kubernetes audit logs
-
-    Detects Helm post-install hooks that create ClusterRoleBindings or other RBAC resources, which is the signature of a privilege escalation payload in a poisoned chart.
-
-    ```yaml
-    title: Helm Poisoning - Hook Creating ClusterRoleBinding
-    id: d8e9f0a1-5201-4d2e-b34f-56c7d8e9f0a1
-    status: experimental
-    description: >
-      A Kubernetes Job with helm.sh/hook annotations created a
-      ClusterRoleBinding. Legitimate charts rarely create cluster-wide
-      RBAC resources from hooks. This is the signature of a privilege
-      escalation payload in a poisoned Helm chart.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      product: kubernetes
-      service: audit
-    detection:
-      selection_resource:
-        verb: 'create'
-        objectRef.resource: 'clusterrolebindings'
-      selection_source:
-        user.username|contains: 'system:serviceaccount'
-        sourceIPs|cidr:
-          - '10.0.0.0/8'
-      hook_job:
-        requestObject.metadata.annotations|contains: 'helm.sh/hook'
-      condition: selection_resource and (selection_source or hook_job)
-    fields:
-      - requestObject.metadata.name
-      - requestObject.roleRef.name
-      - user.username
-      - objectRef.namespace
-    falsepositives:
-      - Legitimate charts that require cluster-admin (cert-manager, ingress controllers)
-    level: critical
-    tags:
-      - attack.supply_chain_compromise
-      - attack.t1195.002
-      - attack.privilege_escalation
-      - attack.t1078
-    ```
-
-    ### Terraform Module Attacks: Credential Exfiltration via local-exec
-
-    **Lab:** 5.3 Terraform Modules | **Log Source:** EDR, CI runner process logs
-
-    Detects `terraform apply` spawning child processes that make outbound network connections, indicating a malicious `local-exec` provisioner exfiltrating credentials.
-
-    ```yaml
-    title: Terraform Module Attack - local-exec Network Exfiltration
-    id: e9f0a1b2-5301-4e3f-c45a-67d8e9f0a1b2
-    status: experimental
-    description: >
-      Terraform apply spawned a child process (curl, wget, nc) that made
-      outbound network connections. Malicious Terraform modules use
-      local-exec provisioners to exfiltrate cloud credentials from
-      the CI environment.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      category: process_creation
-      product: linux
-    detection:
-      selection_parent:
-        ParentImage|endswith: '/terraform'
-        ParentCommandLine|contains: 'apply'
-      selection_child:
-        Image|endswith:
-          - '/curl'
-          - '/wget'
-          - '/nc'
-          - '/ncat'
-          - '/python'
-          - '/python3'
-      condition: selection_parent and selection_child
-    fields:
-      - ParentCommandLine
-      - CommandLine
-      - DestinationIp
-      - User
-    falsepositives:
-      - Terraform provisioners that legitimately call APIs (e.g., health checks)
-    level: critical
-    tags:
-      - attack.supply_chain_compromise
-      - attack.t1195.002
-      - attack.execution
-      - attack.t1059
-      - attack.exfiltration
-      - attack.t1020
-    ```
-
-    ### Ansible Galaxy: Malicious Role Installing SSH Backdoor
-
-    **Lab:** 5.4 Ansible Galaxy | **Log Source:** Host audit logs, SSH logs
-
-    Detects SSH authorized_keys modifications following an Ansible playbook run, indicating a malicious role planted a backdoor SSH key.
-
-    ```yaml
-    title: Ansible Galaxy - Unauthorized SSH Key Planted by Role
-    id: f0a1b2c3-5401-4f4a-d56b-78e9f0a1b2c3
-    status: experimental
-    description: >
-      SSH authorized_keys was modified during or immediately after an
-      Ansible playbook run. A malicious Galaxy role can plant SSH
-      keys using the authorized_key module while performing its
-      stated purpose.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      category: file_event
-      product: linux
-    detection:
-      selection:
-        TargetFilename|endswith: '/authorized_keys'
-        EventType: 'FileWrite'
-      timeframe_correlation:
-        ParentImage|contains:
-          - 'ansible'
-          - 'python'
-        ParentCommandLine|contains: 'playbook'
-      condition: selection and timeframe_correlation
-    fields:
-      - TargetFilename
-      - ParentCommandLine
-      - User
-      - timestamp
-    falsepositives:
-      - Ansible roles that legitimately manage SSH keys (user management roles)
-    level: high
-    tags:
-      - attack.supply_chain_compromise
-      - attack.t1195.002
-      - attack.persistence
-      - attack.t1098.004
-    ```
-
-    ### Admission Controller Bypass: Privileged Pod in Exempt Namespace
-
-    **Lab:** 5.5 Admission Bypass | **Log Source:** Kubernetes audit logs
-
-    Detects creation of privileged containers in namespaces typically exempt from admission controller policies.
-
-    ```yaml
-    title: Admission Bypass - Privileged Pod in kube-system
-    id: a1b2c3d4-5501-4a5b-e67c-89f0a1b2c3d4
-    status: experimental
-    description: >
-      A privileged container was created in kube-system or another
-      namespace exempt from admission controller policies. Attackers
-      deploy workloads in exempt namespaces to bypass OPA/Gatekeeper
-      and Kyverno policies.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      product: kubernetes
-      service: audit
-    detection:
-      selection:
-        verb: 'create'
-        objectRef.resource: 'pods'
-        objectRef.namespace:
-          - 'kube-system'
-          - 'kube-public'
-          - 'default'
-      privileged:
-        requestObject.spec.containers.securityContext.privileged: true
-      filter_system:
-        user.username|startswith:
-          - 'system:node:'
-          - 'system:serviceaccount:kube-system:'
-      condition: selection and privileged and not filter_system
-    fields:
-      - requestObject.metadata.name
-      - requestObject.spec.containers.image
-      - user.username
-      - objectRef.namespace
-    falsepositives:
-      - System components that require privileged access (CNI plugins, monitoring agents)
-    level: critical
-    tags:
-      - attack.privilege_escalation
-      - attack.t1611
-      - attack.defense_evasion
-      - attack.t1562
-    ```
-
-???+ note "Tier 6: Case Studies & Frontier Attacks"
-
-    ### ML Model Supply Chain: Malicious Deserialization
-
-    **Lab:** 6.1 ML Model Supply Chain | **Log Source:** EDR, application logs
-
-    Detects Python processes spawning unexpected child processes during model loading, indicating a deserialization attack via unsafe model formats.
-
-    ```yaml
-    title: ML Model Attack - Code Execution During Model Load
-    id: b2c3d4e5-6101-4b6c-f78d-90a1b2c3d4e5
-    status: experimental
-    description: >
-      A Python process spawned unexpected child processes (shell, curl,
-      wget) during model deserialization. Unsafe model loading functions
-      execute arbitrary code embedded in model files.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      category: process_creation
-      product: linux
-    detection:
-      selection_parent:
-        ParentImage|endswith:
-          - '/python'
-          - '/python3'
-        ParentCommandLine|contains:
-          - 'load_model'
-          - 'torch.load'
-          - 'joblib.load'
-      selection_child:
-        Image|endswith:
-          - '/sh'
-          - '/bash'
-          - '/curl'
-          - '/wget'
-          - '/nc'
-      condition: selection_parent and selection_child
-    fields:
-      - ParentCommandLine
-      - CommandLine
-      - DestinationIp
-      - User
-    falsepositives:
-      - ML frameworks that spawn subprocesses for GPU initialization
-    level: critical
-    tags:
-      - attack.supply_chain_compromise
-      - attack.t1195.002
-      - attack.execution
-      - attack.t1059.006
-      - attack.defense_evasion
-      - attack.t1480
-    ```
-
-    ### Dataset Poisoning: Training Data Integrity Drift
-
-    **Lab:** 6.2 Dataset Poisoning | **Log Source:** Data pipeline logs, file integrity monitoring
-
-    Detects modifications to training datasets after download or unexpected changes in label distribution.
-
-    ```yaml
-    title: Dataset Poisoning - Training Data Modified After Download
-    id: c3d4e5f6-6201-4c7d-a89e-01b2c3d4e5f6
-    status: experimental
-    description: >
-      A training dataset file was modified after its initial download
-      and integrity verification. Dataset poisoning attacks modify
-      training data to inject backdoor triggers.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      category: file_event
-      product: linux
-    detection:
-      selection:
-        TargetFilename|contains:
-          - '/datasets/'
-          - '/training_data/'
-          - '/data/train'
-        EventType: 'FileWrite'
-      filter_download:
-        Image|endswith:
-          - '/curl'
-          - '/wget'
-          - '/python'
-      filter_expected:
-        User:
-          - 'data-pipeline'
-          - 'ml-train'
-      condition: selection and not filter_download and not filter_expected
-    fields:
-      - TargetFilename
-      - Image
-      - User
-      - timestamp
-    falsepositives:
-      - Data preprocessing pipelines that transform data in place
-    level: high
-    tags:
-      - attack.impact
-      - attack.t1565.001
-      - attack.supply_chain_compromise
-      - attack.t1195.002
-    ```
+???+ note "Tier 6: Case Studies & Frontier Attacks (specialized patterns)"
 
     ### Firmware Supply Chain: Unauthorized Firmware Update
 
@@ -1635,7 +2071,7 @@ Rules are organized by tier and attack category. Each rule references the lab wh
 
     ### xz-utils (CVE-2024-3094): Backdoored liblzma Detection
 
-    **Lab:** 6.5 xz-utils | **Log Source:** Host inventory, SSH logs
+    **Lab:** 6.5 xz-utils | **Log Source:** Host inventory, vulnerability scanner
 
     Detects systems running the backdoored liblzma versions (5.6.0, 5.6.1) linked to sshd.
 
@@ -1678,43 +2114,11 @@ Rules are organized by tier and attack category. Each rule references the lab wh
       - attack.t1554
     ```
 
-    ### SolarWinds (SUNBURST): C2 Domain and Build Artifact Anomaly
+    ### SolarWinds: Build Artifact Anomaly
 
-    **Lab:** 6.6 SolarWinds | **Log Source:** DNS logs, build pipeline
+    **Lab:** 6.6 SolarWinds | **Log Source:** Build pipeline
 
-    Detects DNS queries to known SUNBURST C2 domains and, more generally, build artifacts with unexpected hash values indicating build-time compromise.
-
-    ```yaml
-    title: SolarWinds SUNBURST - C2 DNS Communication
-    id: a7b8c9d0-6601-4a1b-e23c-45f6a7b8c9d0
-    status: experimental
-    description: >
-      DNS queries to avsvmcloud.com, the SUNBURST C2 domain, or build
-      artifacts that do not match expected hashes from the same source
-      code. Build compromise attacks produce different binaries from
-      identical source.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      category: dns
-      product: dns_server
-    detection:
-      selection_sunburst:
-        query|endswith: '.avsvmcloud.com'
-      condition: selection_sunburst
-    fields:
-      - src_ip
-      - query
-      - timestamp
-    falsepositives:
-      - None. This domain is confirmed C2 infrastructure.
-    level: critical
-    tags:
-      - attack.supply_chain_compromise
-      - attack.t1195.002
-      - attack.command_and_control
-      - attack.t1071.004
-    ```
+    Detects build artifacts with unexpected hash values indicating build-time compromise.
 
     ```yaml
     title: Build Compromise - Artifact Hash Mismatch
@@ -1752,55 +2156,9 @@ Rules are organized by tier and attack category. Each rule references the lab wh
       - attack.t1027
     ```
 
-    ### Codecov: CI Script Tampering and Env Exfiltration
-
-    **Lab:** 6.7 Codecov | **Log Source:** CI runner network logs, file integrity monitoring
-
-    Detects CI runners downloading scripts whose hash does not match the known-good value, and subsequent POST requests exfiltrating environment variables.
-
-    ```yaml
-    title: Codecov-Style Attack - CI Script Hash Mismatch
-    id: c9d0e1f2-6701-4c3d-a45e-67b8c9d0e1f2
-    status: experimental
-    description: >
-      A CI pipeline downloaded a script via curl/wget and the file hash
-      does not match the expected value. This is the Codecov attack
-      pattern where the bash uploader was modified to exfiltrate secrets.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      category: process_creation
-      product: linux
-    detection:
-      selection_download:
-        CommandLine|contains:
-          - 'curl -s'
-          - 'curl -fsSL'
-          - 'wget -q'
-        CommandLine|contains:
-          - '| bash'
-          - '| sh'
-      condition: selection_download
-    fields:
-      - CommandLine
-      - ParentCommandLine
-      - DestinationIp
-      - User
-    falsepositives:
-      - Legitimate CI setup scripts (should be pinned by hash)
-    level: high
-    tags:
-      - attack.supply_chain_compromise
-      - attack.t1195.002
-      - attack.execution
-      - attack.t1059.004
-      - attack.exfiltration
-      - attack.t1020
-    ```
-
     ### event-stream: Maintainer Takeover and Malicious Update
 
-    **Lab:** 6.8 event-stream | **Log Source:** npm registry monitoring, EDR
+    **Lab:** 6.8 event-stream | **Log Source:** npm registry monitoring
 
     Detects maintainer changes in monitored packages followed by new transitive dependencies being added, the event-stream attack pattern.
 
@@ -1839,327 +2197,6 @@ Rules are organized by tier and attack category. Each rule references the lab wh
       - attack.t1195.002
       - attack.persistence
       - attack.t1098
-    ```
-
-    ### Log4Shell: JNDI Lookup Exploitation
-
-    **Lab:** 6.9 Log4Shell | **Log Source:** WAF logs, DNS logs, EDR
-
-    Detects JNDI lookup patterns in application input and outbound LDAP connections from Java processes, indicating Log4Shell exploitation.
-
-    ```yaml
-    title: Log4Shell - JNDI Lookup Pattern in Input
-    id: e1f2a3b4-6901-4e5f-c67a-89d0e1f2a3b4
-    status: experimental
-    description: >
-      Application input contains JNDI lookup patterns (${jndi:ldap://,
-      ${jndi:rmi://, ${jndi:dns://) including common obfuscation
-      techniques. This is the primary exploitation vector for
-      CVE-2021-44228.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      category: webserver
-      product: apache
-    detection:
-      selection:
-        cs-uri|contains:
-          - '${jndi:'
-          - '${${lower:j}ndi:'
-          - '${${::-j}${::-n}${::-d}${::-i}:'
-        cs-User-Agent|contains:
-          - '${jndi:'
-      selection_headers:
-        cs-Referer|contains: '${jndi:'
-        X-Forwarded-For|contains: '${jndi:'
-      condition: selection or selection_headers
-    fields:
-      - cs-uri
-      - cs-User-Agent
-      - c-ip
-      - timestamp
-    falsepositives:
-      - Security scanners testing for Log4Shell
-    level: critical
-    tags:
-      - attack.initial_access
-      - attack.t1190
-      - attack.execution
-      - attack.t1059
-    ```
-
-    ```yaml
-    title: Log4Shell - Outbound LDAP from Java Process
-    id: f2a3b4c5-6902-4f6a-d78b-90e1f2a3b4c5
-    status: experimental
-    description: >
-      A Java process initiated an outbound LDAP connection to a non-internal
-      server. This indicates successful Log4Shell exploitation where the
-      JNDI lookup connected to an attacker-controlled LDAP server.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      category: network_connection
-      product: linux
-    detection:
-      selection:
-        Image|endswith: '/java'
-        DestinationPort:
-          - 389
-          - 636
-          - 1099
-          - 1389
-      filter_internal:
-        DestinationIp|cidr:
-          - '10.0.0.0/8'
-          - '172.16.0.0/12'
-          - '192.168.0.0/16'
-      condition: selection and not filter_internal
-    fields:
-      - Image
-      - DestinationIp
-      - DestinationPort
-      - User
-      - timestamp
-    falsepositives:
-      - Applications that legitimately connect to external LDAP servers
-    level: critical
-    tags:
-      - attack.initial_access
-      - attack.t1190
-      - attack.execution
-      - attack.t1203
-    ```
-
-    ### Equifax (CVE-2017-5638): Struts OGNL Injection
-
-    **Lab:** 6.10 Equifax | **Log Source:** WAF logs, web server logs
-
-    Detects OGNL expression patterns in HTTP Content-Type headers, the exploitation vector for the Apache Struts vulnerability.
-
-    ```yaml
-    title: Equifax-Style - OGNL Expression in Content-Type Header
-    id: a3b4c5d6-6100-4a7b-e89c-01f2a3b4c5d6
-    status: experimental
-    description: >
-      An HTTP request contains OGNL expression patterns in the Content-Type
-      header, the signature of CVE-2017-5638 exploitation. This was the
-      vector used in the Equifax breach.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      category: webserver
-      product: apache
-    detection:
-      selection:
-        Content-Type|contains:
-          - 'OgnlContext'
-          - '#cmd='
-          - 'Runtime.getRuntime()'
-          - 'ProcessBuilder'
-          - 'multipart/form-data'
-        Content-Type|re: '#\w+\s*=\s*@'
-      condition: selection
-    fields:
-      - c-ip
-      - cs-uri
-      - Content-Type
-      - timestamp
-    falsepositives:
-      - None for OGNL patterns in Content-Type headers
-    level: critical
-    tags:
-      - attack.initial_access
-      - attack.t1190
-      - attack.execution
-      - attack.t1059
-    ```
-
-???+ note "Tier 9: Cloud Supply Chain"
-
-    ### Cloud Marketplace Poisoning: Backdoored AMI Deployment
-
-    **Lab:** 9.1 Marketplace Poisoning | **Log Source:** CloudTrail, VPC Flow Logs
-
-    Detects EC2 instances launched from AMIs by unknown publishers, with subsequent outbound connections to attacker infrastructure.
-
-    ```yaml
-    title: Cloud Marketplace Poisoning - AMI from Unknown Publisher
-    id: b4c5d6e7-9101-4b8c-f90d-12a3b4c5d6e7
-    status: experimental
-    description: >
-      An EC2 instance was launched from an AMI whose publisher is not on
-      the approved list. Cloud marketplace images can contain pre-installed
-      backdoors, SSH keys, and cryptocurrency miners.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      product: aws
-      service: cloudtrail
-    detection:
-      selection:
-        eventName: 'RunInstances'
-      filter_approved:
-        requestParameters.instancesSet.items.imageId|startswith:
-          - 'ami-approved-'
-        responseElements.instancesSet.items.imageId|in_approved_list: true
-      condition: selection and not filter_approved
-    fields:
-      - requestParameters.instancesSet.items.imageId
-      - userIdentity.arn
-      - sourceIPAddress
-      - awsRegion
-    falsepositives:
-      - New AMIs being evaluated in sandbox accounts
-    level: high
-    tags:
-      - attack.supply_chain_compromise
-      - attack.t1195.002
-      - attack.persistence
-      - attack.t1525
-      - attack.initial_access
-      - attack.t1078.004
-    ```
-
-    ### Serverless Supply Chain: Malicious Lambda Layer
-
-    **Lab:** 9.2 Serverless Supply Chain | **Log Source:** CloudTrail, CloudWatch
-
-    Detects Lambda function configuration changes that add layers from untrusted sources, or Lambda functions with unexpected execution duration increases.
-
-    ```yaml
-    title: Serverless Attack - Lambda Layer from Untrusted Source
-    id: c5d6e7f8-9201-4c9d-a01e-23b4c5d6e7f8
-    status: experimental
-    description: >
-      A Lambda function configuration was updated to include a layer from
-      an account not on the approved list. Malicious layers can inject
-      code that executes on every invocation without modifying the
-      function source.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      product: aws
-      service: cloudtrail
-    detection:
-      selection:
-        eventName:
-          - 'UpdateFunctionConfiguration20150331v2'
-          - 'CreateFunction20150331'
-        requestParameters.layers|contains: 'arn:aws:lambda:'
-      filter_approved:
-        requestParameters.layers|contains:
-          - ':123456789012:'   # your account
-          - ':aws:'            # AWS-managed layers
-      condition: selection and not filter_approved
-    fields:
-      - requestParameters.functionName
-      - requestParameters.layers
-      - userIdentity.arn
-      - sourceIPAddress
-    falsepositives:
-      - Approved third-party layers (add account IDs to filter)
-    level: high
-    tags:
-      - attack.supply_chain_compromise
-      - attack.t1195.002
-      - attack.resource_development
-      - attack.t1583.007
-      - attack.execution
-      - attack.t1059
-    ```
-
-    ### Cloud CI/CD Attacks: CodeBuild Privilege Escalation
-
-    **Lab:** 9.3 Cloud CI/CD Attacks | **Log Source:** CloudTrail
-
-    Detects CodeBuild projects assuming IAM roles outside their intended scope or accessing production SSM parameters.
-
-    ```yaml
-    title: Cloud CI/CD - CodeBuild Accessing Production Secrets
-    id: d6e7f8a9-9301-4d0e-b12f-34c5d6e7f8a9
-    status: experimental
-    description: >
-      An AWS CodeBuild project accessed SSM Parameter Store parameters
-      outside its designated path, or assumed an IAM role not intended
-      for build workloads. This indicates privilege escalation from
-      a compromised build environment.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      product: aws
-      service: cloudtrail
-    detection:
-      selection_ssm:
-        eventName: 'GetParameter'
-        requestParameters.name|startswith: '/prod/'
-        userIdentity.arn|contains: 'codebuild'
-      selection_escalation:
-        eventName: 'AssumeRole'
-        userIdentity.arn|contains: 'codebuild'
-        requestParameters.roleArn|not_contains: 'codebuild'
-      condition: selection_ssm or selection_escalation
-    fields:
-      - eventName
-      - requestParameters.name
-      - requestParameters.roleArn
-      - userIdentity.arn
-      - sourceIPAddress
-    falsepositives:
-      - Build pipelines that legitimately deploy to production (should use separate roles)
-    level: critical
-    tags:
-      - attack.supply_chain_compromise
-      - attack.t1195.002
-      - attack.credential_access
-      - attack.t1552.001
-      - attack.privilege_escalation
-      - attack.t1078
-    ```
-
-    ### IAM Chain Abuse: Rapid Cross-Account AssumeRole
-
-    **Lab:** 9.4 IAM Chain Abuse | **Log Source:** CloudTrail
-
-    Detects rapid cross-account AssumeRole chains that traverse multiple accounts in quick succession, indicating stolen credentials being used to traverse trust relationships.
-
-    ```yaml
-    title: IAM Chain Abuse - Rapid Cross-Account Role Traversal
-    id: e7f8a9b0-9401-4e1f-c23a-45d6e7f8a9b0
-    status: experimental
-    description: >
-      Multiple cross-account AssumeRole calls occurred within a short
-      timeframe from the same source, traversing different AWS accounts.
-      Legitimate cross-account access follows predictable patterns.
-      Rapid traversal across 3+ accounts indicates credential abuse.
-    author: WeakLink Labs
-    date: 2026/04/07
-    logsource:
-      product: aws
-      service: cloudtrail
-    detection:
-      selection:
-        eventName: 'AssumeRole'
-        resources.accountId|different_from: userIdentity.accountId
-      timeframe: 5m
-      condition: selection | count(resources.accountId) by userIdentity.arn > 2
-    fields:
-      - userIdentity.arn
-      - requestParameters.roleArn
-      - resources.accountId
-      - sourceIPAddress
-      - eventTime
-    falsepositives:
-      - Infrastructure-as-code tools that deploy across multiple accounts
-      - Centralized monitoring systems
-    level: critical
-    tags:
-      - attack.lateral_movement
-      - attack.t1078.004
-      - attack.credential_access
-      - attack.t1550.001
-      - attack.supply_chain_compromise
-      - attack.t1195.002
     ```
 
 ---
