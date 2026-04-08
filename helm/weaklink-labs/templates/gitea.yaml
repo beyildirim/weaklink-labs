@@ -7,6 +7,8 @@ metadata:
     {{- include "weaklink-labs.componentLabels" (dict "context" . "component" "gitea") | nindent 4 }}
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "gitea") | nindent 6 }}
@@ -44,6 +46,17 @@ spec:
               value: "false"
             - name: GITEA__actions__ENABLED
               value: "true"
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - sh
+                  - -c
+                  - |
+                    (
+                      while ! wget -qO /dev/null http://localhost:{{ .Values.gitea.port }}/api/v1/version 2>/dev/null; do sleep 2; done
+                      su-exec git gitea actions generate-runner-token > /data/runner-token 2>/dev/null
+                    ) &
           readinessProbe:
             httpGet:
               path: /api/v1/version
@@ -120,35 +133,35 @@ spec:
         {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "gitea-runner") | nindent 8 }}
     spec:
       initContainers:
-        - name: register-runner
-          image: curlimages/curl:latest
+        - name: wait-for-token
+          image: busybox:latest
           command:
             - sh
             - -c
             - |
-              echo "Waiting for Gitea..."
-              until curl -sf http://gitea:{{ .Values.gitea.port }}/api/v1/version >/dev/null 2>&1; do sleep 2; done
-              echo "Registering runner..."
-              TOKEN=$(curl -sf -X POST "http://gitea:{{ .Values.gitea.port }}/api/v1/admin/runners/registration-token" \
-                -u "{{ .Values.gitea.adminUser }}:{{ .Values.gitea.adminUser }}" \
-                -H "Content-Type: application/json" | grep -o '"token":"[^"]*"' | cut -d'"' -f4)
-              if [ -z "$TOKEN" ]; then
-                echo "Failed to get registration token, using fallback"
-                TOKEN="weaklink-runner-token"
-              fi
-              echo "$TOKEN" > /data/runner-token
-              echo "Runner token saved"
+              echo "Waiting for Gitea runner token..."
+              for i in $(seq 1 60); do
+                if [ -s /gitea-data/runner-token ]; then
+                  cp /gitea-data/runner-token /data/runner-token
+                  echo "Runner token ready"
+                  exit 0
+                fi
+                sleep 3
+              done
+              echo "ERROR: Timed out waiting for runner token"
+              exit 1
           volumeMounts:
             - name: runner-data
               mountPath: /data
+            - name: gitea-data
+              mountPath: /gitea-data
+              readOnly: true
       containers:
         - name: runner
           image: gitea/act_runner:latest
           env:
             - name: GITEA_INSTANCE_URL
               value: "http://gitea:{{ .Values.gitea.port }}"
-            - name: GITEA_RUNNER_REGISTRATION_TOKEN_FILE
-              value: "/data/runner-token"
             - name: GITEA_RUNNER_NAME
               value: "weaklink-runner"
             - name: GITEA_RUNNER_LABELS
@@ -157,13 +170,11 @@ spec:
             - sh
             - -c
             - |
-              if [ -f /data/runner-token ]; then
-                act_runner register --no-interactive \
-                  --instance "$GITEA_INSTANCE_URL" \
-                  --token "$(cat /data/runner-token)" \
-                  --name "$GITEA_RUNNER_NAME" \
-                  --labels "$GITEA_RUNNER_LABELS" 2>/dev/null || true
-              fi
+              act_runner register --no-interactive \
+                --instance "$GITEA_INSTANCE_URL" \
+                --token "$(cat /data/runner-token)" \
+                --name "$GITEA_RUNNER_NAME" \
+                --labels "$GITEA_RUNNER_LABELS"
               act_runner daemon
           volumeMounts:
             - name: runner-data
@@ -180,6 +191,9 @@ spec:
       volumes:
         - name: runner-data
           emptyDir: {}
+        - name: gitea-data
+          persistentVolumeClaim:
+            claimName: gitea-data
         - name: docker-sock
           hostPath:
             path: /var/run/docker.sock
