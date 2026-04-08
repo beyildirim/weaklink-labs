@@ -51,14 +51,18 @@ ok "Namespace deleted."
 
 # Optionally stop minikube
 echo ""
-read -p "Stop minikube too? [y/N] " -n 1 -r
-echo ""
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    log "Stopping minikube..."
-    minikube stop 2>&1 | sed 's/^/  /'
-    ok "minikube stopped."
+if [[ -t 0 ]]; then
+    read -p "Stop minikube too? [y/N] " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        log "Stopping minikube..."
+        minikube stop 2>&1 | sed 's/^/  /'
+        ok "minikube stopped."
+    else
+        ok "minikube left running."
+    fi
 else
-    ok "minikube left running."
+    ok "minikube left running (non-interactive mode)."
 fi
 
 echo ""

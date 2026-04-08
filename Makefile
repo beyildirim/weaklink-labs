@@ -67,16 +67,16 @@ lint: ## Lint the Helm chart
 .PHONY: compose-up compose-down compose-logs compose-build
 
 compose-up: ## Start the platform using Docker Compose
-	@docker-compose up -d
+	@docker compose up -d
 
 compose-down: ## Tear down the Docker Compose platform
-	@docker-compose down -v
+	@docker compose down -v
 
 compose-logs: ## View Docker Compose logs
-	@docker-compose logs -f
+	@docker compose logs -f
 
 compose-build: ## Build images using Docker Compose
-	@docker-compose build
+	@docker compose build
 
 # ──────────────────────────────────────────────
 # Observe
@@ -116,7 +116,7 @@ guide-dev: ## Serve the guide locally with hot-reload (no k8s needed)
 
 test: ## Run all lab verify scripts against the cluster
 	@WORKSTATION_POD=$$(kubectl get pod -n $(NAMESPACE) \
-		-l app.kubernetes.io/component=workstation \
+		-l app.kubernetes.io/name=workstation \
 		-o jsonpath='{.items[0].metadata.name}') && \
 	FAILED=0 && \
 	for verify_script in $$(find labs -name "verify.sh" -type f | sort); do \

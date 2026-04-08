@@ -40,6 +40,8 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/lib/registry
+          securityContext:
+            allowPrivilegeEscalation: false
           resources:
             {{- toYaml .Values.registry.resources | nindent 12 }}
       volumes:
