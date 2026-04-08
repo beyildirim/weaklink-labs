@@ -63,8 +63,9 @@ Look for files written to `/runner/_work/_tool/`, `/runner/hooks/`, or runner ho
 name: Runner Integrity Check
 
 on:
+  # List your workflow names explicitly - wildcards are not supported
   workflow_run:
-    workflows: ["*"]
+    workflows: ["CI", "Build", "Release"]
     types: [completed]
 
 jobs:
