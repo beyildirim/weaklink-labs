@@ -122,7 +122,7 @@ build_image() {
 
 build_image "weaklink-labs/guide:latest" \
     "${SCRIPT_DIR}/images/guide/Dockerfile" \
-    "${SCRIPT_DIR}" || true
+    "${SCRIPT_DIR}"
 
 build_image "weaklink-labs/workstation:latest" \
     "${SCRIPT_DIR}/images/workstation/Dockerfile" \

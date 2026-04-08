@@ -67,16 +67,16 @@ lint: ## Lint the Helm chart
 .PHONY: compose-up compose-down compose-logs compose-build
 
 compose-up: ## Start the platform using Docker Compose
-	@docker-compose up -d
+	@docker compose up -d
 
 compose-down: ## Tear down the Docker Compose platform
-	@docker-compose down -v
+	@docker compose down -v
 
 compose-logs: ## View Docker Compose logs
-	@docker-compose logs -f
+	@docker compose logs -f
 
 compose-build: ## Build images using Docker Compose
-	@docker-compose build
+	@docker compose build
 
 # ──────────────────────────────────────────────
 # Observe

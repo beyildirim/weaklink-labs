@@ -45,6 +45,8 @@ spec:
       labels:
         {{- include "weaklink-labs.selectorLabels" (dict "context" . "component" "verdaccio") | nindent 8 }}
     spec:
+      securityContext:
+        fsGroup: 10001
       containers:
         - name: verdaccio
           image: "{{ .Values.verdaccio.image }}:{{ .Values.verdaccio.tag }}"
@@ -73,6 +75,8 @@ spec:
               subPath: config.yaml
             - name: storage
               mountPath: /verdaccio/storage
+          securityContext:
+            allowPrivilegeEscalation: false
           resources:
             {{- toYaml .Values.verdaccio.resources | nindent 12 }}
       volumes:

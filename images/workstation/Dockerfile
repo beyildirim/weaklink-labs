@@ -45,11 +45,10 @@ RUN npm install -g depcheck
 # ttyd (web terminal)
 RUN ARCH=$(uname -m) && \
     case "$ARCH" in \
-        aarch64|arm64) TTYD_ARCH="aarch64" ;; \
-        *) TTYD_ARCH="x86_64" ;; \
+        aarch64|arm64) TTYD_ARCH=aarch64 ;; \
+        *) TTYD_ARCH=x86_64 ;; \
     esac && \
-    curl -fsSL -o /usr/local/bin/ttyd \
-        "https://github.com/tsl0922/ttyd/releases/download/1.7.7/ttyd.${TTYD_ARCH}" && \
+    curl -fsSL -o /usr/local/bin/ttyd "https://github.com/tsl0922/ttyd/releases/download/1.7.7/ttyd.${TTYD_ARCH}" && \
     chmod +x /usr/local/bin/ttyd
 
 # Docker CLI (connects to host runtime socket, mounted via Helm)
