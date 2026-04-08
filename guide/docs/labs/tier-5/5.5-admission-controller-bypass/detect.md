@@ -103,3 +103,5 @@ jobs:
 - [Kubernetes: Admission Controllers](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/)
 - [OPA Gatekeeper: Policy Library](https://open-policy-agent.github.io/gatekeeper-library/website/)
 - [Kyverno: Policy Reference](https://kyverno.io/policies/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

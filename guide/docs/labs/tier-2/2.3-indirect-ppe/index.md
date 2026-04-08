@@ -1,7 +1,7 @@
 # Lab 2.3: Indirect Poisoned Pipeline Execution
 
 <div class="lab-meta">
-  <span>~20 min hands-on | ~15 min reference</span>
+  <span>Understand: ~7 min | Break: ~7 min | Defend: ~6 min | Detect: ~15 min</span>
   <span class="difficulty intermediate">Intermediate</span>
   <span>Prerequisites: <a href="../2.2-direct-ppe/">Lab 2.2</a></span>
 </div>

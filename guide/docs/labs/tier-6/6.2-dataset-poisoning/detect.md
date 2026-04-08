@@ -51,3 +51,5 @@ Detection targets:
 - [Gu et al.: BadNets - Identifying Vulnerabilities in the ML Model Supply Chain](https://arxiv.org/abs/1708.06733)
 - [MITRE ATLAS: Machine Learning Threat Matrix](https://atlas.mitre.org/)
 - [DVC: Data Version Control](https://dvc.org/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

@@ -1,7 +1,7 @@
 # Lab 1.4: Lockfile Injection
 
 <div class="lab-meta">
-  <span>~25 min hands-on | ~10 min reference</span>
+  <span>Understand: ~8 min | Break: ~8 min | Defend: ~9 min | Detect: ~10 min</span>
   <span class="difficulty intermediate">Intermediate</span>
   <span>Prerequisites: <a href="../../tier-1/1.1-dependency-resolution/">Lab 1.1</a></span>
 </div>

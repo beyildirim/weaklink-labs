@@ -1,9 +1,21 @@
-# Lab 6.5: Case Study. xz-utils (CVE-2024-3094)
+# Lab 6.5: Case Study: xz-utils (CVE-2024-3094)
 
 <div class="lab-meta">
   <span>Understand: ~10 min | Analyze: ~10 min | Lessons: ~10 min | Detect: ~5 min</span>
   <span class="difficulty advanced">Advanced</span>
   <span>Prerequisites: <a href="../../tier-2/2.3-indirect-ppe/">Lab 2.3</a></span>
+</div>
+
+<div class="phase-stepper">
+  <span class="phase-step current">Overview</span>
+  <span class="phase-arrow">›</span>
+  <a href="understand/" class="phase-step upcoming">Understand</a>
+  <span class="phase-arrow">›</span>
+  <a href="analyze/" class="phase-step upcoming">Analyze</a>
+  <span class="phase-arrow">›</span>
+  <a href="lessons/" class="phase-step upcoming">Lessons</a>
+  <span class="phase-arrow">›</span>
+  <a href="detect/" class="phase-step upcoming">Detect</a>
 </div>
 
 On March 29, 2024, Andres Freund noticed SSH logins taking ~500ms longer than usual. His investigation uncovered the most sophisticated open source supply chain attack ever documented: a backdoor in xz-utils giving the attacker remote code execution through SSH. The attack was a **two-year social engineering campaign** targeting a burned-out sole maintainer. The attacker, "Jia Tan," built trust, took over maintenance, and injected a backdoor into the build system that was invisible in the source code.
@@ -27,15 +39,3 @@ graph LR
 | Build Scripts | `/app/xz-build/` | Reproductions of the malicious build system modifications |
 | Analysis Tools | `/app/analysis/` | Scripts for examining the backdoor mechanism |
 | Backdoor Samples | `/app/backdoor/` | Extracted and annotated backdoor components |
-
-<div class="phase-stepper">
-  <span class="phase-step current">Overview</span>
-  <span class="phase-arrow">›</span>
-  <a href="understand/" class="phase-step upcoming">Understand</a>
-  <span class="phase-arrow">›</span>
-  <a href="analyze/" class="phase-step upcoming">Analyze</a>
-  <span class="phase-arrow">›</span>
-  <a href="lessons/" class="phase-step upcoming">Lessons</a>
-  <span class="phase-arrow">›</span>
-  <a href="detect/" class="phase-step upcoming">Detect</a>
-</div>

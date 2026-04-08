@@ -1,7 +1,7 @@
 # Lab 4.7: SBOM Tampering
 
 <div class="lab-meta">
-  <span>~15 min hands-on | ~15 min reference</span>
+  <span>Understand: ~5 min | Break: ~5 min | Defend: ~5 min | Detect: ~15 min</span>
   <span class="difficulty intermediate">Intermediate</span>
   <span>Prerequisites: <a href="../4.1-sbom-contents/">Lab 4.1</a>, <a href="../4.3-signing-fundamentals/">Lab 4.3</a></span>
 </div>

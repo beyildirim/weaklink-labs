@@ -12,6 +12,8 @@
   <span class="phase-step current">Detect</span>
 </div>
 
+<div class="no-terminal-notice">Reference material. No terminal needed.</div>
+
 ## Finding Leaked Secrets in Production Images
 
 The key signal is **secrets found in container image layers or config metadata**, surfaced by image scanning or when an attacker uses a leaked credential.
@@ -109,3 +111,5 @@ jobs:
 - [BuildKit Dockerfile secrets](https://docs.docker.com/build/building/secrets/)
 - [Dive: exploring image layers](https://github.com/wagoodman/dive)
 - [Trivy secret scanning](https://aquasecurity.github.io/trivy/latest/docs/scanner/secret/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

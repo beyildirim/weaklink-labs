@@ -1,7 +1,7 @@
 # Lab 0.3: How Containers Work
 
 <div class="lab-meta">
-  <span>~25 min hands-on | ~5 min reference</span>
+  <span>Understand: ~8 min | Break: ~8 min | Defend: ~9 min | Detect: ~5 min</span>
   <span class="difficulty beginner">Beginner</span>
   <span>Prerequisites: <a href="../../tier-0/0.2-package-managers/">Lab 0.2</a></span>
 </div>

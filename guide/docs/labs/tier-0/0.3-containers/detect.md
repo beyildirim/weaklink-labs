@@ -113,3 +113,5 @@ jobs:
 - [Docker Image Digests Explained](https://docs.docker.com/engine/reference/commandline/pull/#pull-an-image-by-digest)
 - [Why You Should Pin Docker Image Digests](https://blog.chainguard.dev/pin-your-container-image-digests/)
 - [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

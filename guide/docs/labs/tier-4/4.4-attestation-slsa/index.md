@@ -1,7 +1,7 @@
 # Lab 4.4: Attestation & Provenance (SLSA)
 
 <div class="lab-meta">
-  <span>~20 min hands-on | ~15 min reference</span>
+  <span>Understand: ~7 min | Break: ~7 min | Defend: ~6 min | Detect: ~15 min</span>
   <span class="difficulty intermediate">Intermediate</span>
   <span>Prerequisites: <a href="../4.3-signing-fundamentals/">Lab 4.3</a></span>
 </div>

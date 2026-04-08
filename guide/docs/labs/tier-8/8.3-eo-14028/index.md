@@ -1,7 +1,7 @@
 # Lab 8.3: Executive Order 14028 Compliance
 
 <div class="lab-meta">
-  <span>Phase 1 ~5 min | Phase 2 ~10 min | Phase 3 ~10 min | Phase 4 ~10 min</span>
+  <span>Understand: ~5 min | Assess: ~10 min | Plan: ~10 min | Document: ~10 min</span>
   <span class="difficulty intermediate">Intermediate</span>
   <span>Prerequisites: <a href="../../tier-4/4.1-sbom-contents.md">Lab 4.1</a>, <a href="../8.2-ssdf-nist/">Lab 8.2</a></span>
 </div>

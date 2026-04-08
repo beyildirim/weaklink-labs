@@ -43,3 +43,5 @@ What to look for:
 - [pip documentation: Hash-checking mode](https://pip.pypa.io/en/stable/topics/secure-installs/)
 - [PEP 503: Simple Repository API](https://peps.python.org/pep-0503/)
 - [Codecov Supply Chain Attack (2021)](https://about.codecov.io/security-update/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

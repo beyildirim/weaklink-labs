@@ -1,9 +1,9 @@
 # Lab 5.3: Terraform Module and Provider Attacks
 
 <div class="lab-meta">
-  <span>Phase 1: ~10 min | Phase 2: ~10 min | Phase 3: ~10 min | Phase 4: ~5 min</span>
+  <span>Understand: ~10 min | Break: ~10 min | Defend: ~10 min | Detect: ~5 min</span>
   <span class="difficulty intermediate">Intermediate</span>
-  <span>Prerequisites: none</span>
+  <span>Prerequisites: None</span>
 </div>
 
 <div class="phase-stepper">

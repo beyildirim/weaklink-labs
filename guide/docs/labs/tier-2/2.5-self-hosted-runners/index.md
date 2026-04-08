@@ -1,7 +1,7 @@
 # Lab 2.5: Self-Hosted Runner Attacks
 
 <div class="lab-meta">
-  <span>~25 min hands-on | ~15 min reference</span>
+  <span>Understand: ~8 min | Break: ~8 min | Defend: ~9 min | Detect: ~15 min</span>
   <span class="difficulty advanced">Advanced</span>
   <span>Prerequisites: <a href="../2.1-cicd-fundamentals/">Lab 2.1</a></span>
 </div>

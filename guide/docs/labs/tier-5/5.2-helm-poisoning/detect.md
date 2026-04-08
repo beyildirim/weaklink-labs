@@ -96,3 +96,5 @@ jobs:
 - [Helm Documentation: Chart Hooks](https://helm.sh/docs/topics/charts_hooks/)
 - [Kyverno: Policy Examples](https://kyverno.io/policies/)
 - [Datadog: Helm Chart Security (2023 research)](https://securitylabs.datadoghq.com/articles/helm-chart-security/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

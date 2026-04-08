@@ -1,7 +1,7 @@
 # Lab 7.4: Supply Chain Security Tool Evaluation
 
 <div class="lab-meta">
-  <span>Phase 1 ~10 min | Phase 2 ~15 min | Phase 3 ~10 min | Phase 4 ~5 min</span>
+  <span>Understand: ~10 min | Investigate: ~15 min | Validate: ~10 min | Improve: ~5 min</span>
   <span class="difficulty intermediate">Intermediate</span>
   <span>Prerequisites: <a href="../../tier-1/1.1-dependency-resolution.md">Lab 1.1</a></span>
 </div>

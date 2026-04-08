@@ -1,7 +1,7 @@
 # Lab 9.3: Cloud CI/CD Attacks (Beyond GitHub Actions)
 
 <div class="lab-meta">
-  <span>Phase 1 ~10 min | Phase 2 ~15 min | Phase 3 ~10 min | Phase 4 ~5 min</span>
+  <span>Understand: ~10 min | Break: ~15 min | Defend: ~10 min | Detect: ~5 min</span>
   <span class="difficulty advanced">Advanced</span>
   <span>Prerequisites: <a href="../../tier-2/2.1-cicd-fundamentals.md">Lab 2.1</a></span>
 </div>

@@ -74,3 +74,5 @@ Signing proves approval. Provenance proves origin. A signed image could have bee
 - [SLSA Specification](https://slsa.dev/spec/v1.0/)
 - [in-toto Attestation Framework](https://github.com/in-toto/attestation)
 - [SLSA GitHub Generator](https://github.com/slsa-framework/slsa-github-generator)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)
