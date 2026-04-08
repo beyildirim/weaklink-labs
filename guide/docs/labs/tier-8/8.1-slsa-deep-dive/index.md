@@ -1,7 +1,7 @@
 # Lab 8.1: SLSA Framework Deep Dive
 
 <div class="lab-meta">
-  <span>Phase 1 ~10 min | Phase 2 ~10 min | Phase 3 ~15 min | Phase 4 ~5 min</span>
+  <span>Understand: ~10 min | Assess: ~10 min | Plan: ~15 min | Document: ~5 min</span>
   <span class="difficulty intermediate">Intermediate</span>
   <span>Prerequisites: <a href="../../tier-4/4.4-attestation-slsa/">Lab 4.4</a></span>
 </div>

@@ -147,3 +147,5 @@ See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI 
 - [SLSA: Supply-chain Levels for Software Artifacts](https://slsa.dev/)
 - [Sigstore: Cosign, Rekor, and Fulcio](https://sigstore.dev/)
 - [OpenSSF: Scorecard. Automated Security Checks](https://securityscorecards.dev/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

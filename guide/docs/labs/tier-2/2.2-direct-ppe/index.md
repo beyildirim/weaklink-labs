@@ -1,7 +1,7 @@
 # Lab 2.2: Direct Poisoned Pipeline Execution (PPE)
 
 <div class="lab-meta">
-  <span>~20 min hands-on | ~15 min reference</span>
+  <span>Understand: ~7 min | Break: ~7 min | Defend: ~6 min | Detect: ~15 min</span>
   <span class="difficulty intermediate">Intermediate</span>
   <span>Prerequisites: <a href="../2.1-cicd-fundamentals/">Lab 2.1</a></span>
 </div>

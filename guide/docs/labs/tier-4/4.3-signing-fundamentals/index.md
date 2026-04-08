@@ -1,7 +1,7 @@
 # Lab 4.3: Signing Fundamentals
 
 <div class="lab-meta">
-  <span>Phase 1 ~10min | Phase 2 ~8min | Phase 3 ~12min</span>
+  <span>Understand: ~10 min | Break: ~8 min | Defend: ~12 min | Detect: ~5 min</span>
   <span class="difficulty beginner">Beginner</span>
   <span>Prerequisites: <a href="../../tier-0/0.3-containers/">Lab 0.3</a></span>
 </div>

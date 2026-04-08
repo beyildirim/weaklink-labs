@@ -110,3 +110,5 @@ jobs:
 - [Ansible Galaxy Documentation](https://galaxy.ansible.com/docs/)
 - [Ansible Automation Hub: Private Content](https://www.ansible.com/products/automation-hub)
 - [MITRE ATT&CK: SSH Authorized Keys (T1098.004)](https://attack.mitre.org/techniques/T1098/004/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

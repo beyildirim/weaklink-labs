@@ -1,4 +1,4 @@
-# Lab 6.9: Case Study. Log4Shell (CVE-2021-44228)
+# Lab 6.9: Case Study: Log4Shell (CVE-2021-44228)
 
 <div class="phase-stepper">
   <a href="../" class="phase-step done">Overview</a>
@@ -147,3 +147,5 @@ See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI 
 - [Apache Log4j Security Vulnerabilities](https://logging.apache.org/log4j/2.x/security.html)
 - [CISA: Apache Log4j Vulnerability Guidance](https://www.cisa.gov/news-events/cybersecurity-advisories/aa21-356a)
 - [LunaSec: Log4Shell Explained](https://www.lunasec.io/docs/blog/log4j-zero-day/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

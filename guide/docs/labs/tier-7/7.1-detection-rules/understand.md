@@ -40,9 +40,9 @@ Timeline of a dependency confusion attack:
   t=7     Artifact deployed to production (DETECTABLE: runtime monitoring)
 
   Detection windows:
-  [t=2 to t=5] = minutes     -- SOC can catch this in near real-time
-  [t=5 to t=7] = minutes-hours -- containment still possible
-  [t=7+]       = too late     -- attacker has persistent access
+  [t=2 to t=5] = minutes       (SOC can catch this in near real-time)
+  [t=5 to t=7] = minutes-hours (containment still possible)
+  [t=7+]       = too late      (attacker has persistent access)
 ```
 
 Your rules must fire between t=2 and t=5.

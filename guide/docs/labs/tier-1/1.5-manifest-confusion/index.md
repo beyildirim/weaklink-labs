@@ -1,7 +1,7 @@
 # Lab 1.5: Manifest Confusion
 
 <div class="lab-meta">
-  <span>~25 min hands-on | ~10 min reference</span>
+  <span>Understand: ~8 min | Break: ~8 min | Defend: ~9 min | Detect: ~10 min</span>
   <span class="difficulty intermediate">Intermediate</span>
   <span>Prerequisites: <a href="../../tier-1/1.1-dependency-resolution/">Lab 1.1</a>, <a href="../../tier-1/1.2-dependency-confusion/">Lab 1.2</a>, <a href="../../tier-1/1.3-typosquatting/">Lab 1.3</a>, <a href="../../tier-1/1.4-lockfile-injection/">Lab 1.4</a></span>
 </div>

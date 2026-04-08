@@ -1,7 +1,7 @@
 # Lab 2.6: GitHub Actions Injection
 
 <div class="lab-meta">
-  <span>~15 min hands-on | ~15 min reference</span>
+  <span>Understand: ~5 min | Break: ~5 min | Defend: ~5 min | Detect: ~15 min</span>
   <span class="difficulty intermediate">Intermediate</span>
   <span>Prerequisites: <a href="../2.2-direct-ppe/">Lab 2.2</a></span>
 </div>

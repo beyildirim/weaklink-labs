@@ -1,9 +1,9 @@
 # Lab 5.4: Ansible Galaxy and Collection Attacks
 
 <div class="lab-meta">
-  <span>Phase 1: ~8 min | Phase 2: ~8 min | Phase 3: ~10 min | Phase 4: ~4 min</span>
+  <span>Understand: ~8 min | Break: ~8 min | Defend: ~10 min | Detect: ~4 min</span>
   <span class="difficulty intermediate">Intermediate</span>
-  <span>Prerequisites: none</span>
+  <span>Prerequisites: None</span>
 </div>
 
 <div class="phase-stepper">

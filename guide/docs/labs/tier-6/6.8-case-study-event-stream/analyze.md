@@ -1,4 +1,4 @@
-# Lab 6.8: Case Study. event-stream / ua-parser-js
+# Lab 6.8: Case Study: event-stream / ua-parser-js
 
 <div class="phase-stepper">
   <a href="../" class="phase-step done">Overview</a>

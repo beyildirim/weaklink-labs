@@ -1,4 +1,4 @@
-# Lab 6.5: Case Study. xz-utils (CVE-2024-3094)
+# Lab 6.5: Case Study: xz-utils (CVE-2024-3094)
 
 <div class="phase-stepper">
   <a href="../" class="phase-step done">Overview</a>
@@ -133,3 +133,5 @@ See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI 
 - [Andres Freund's Original Disclosure (oss-security)](https://www.openwall.com/lists/oss-security/2024/03/29/4)
 - [Evan Boehs: Everything I Know About the xz Backdoor](https://boehs.org/node/everything-i-know-about-the-xz-backdoor)
 - [OpenSSF: Lessons from the xz-utils Compromise](https://openssf.org/blog/2024/03/30/xz-backdoor-cve-2024-3094/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

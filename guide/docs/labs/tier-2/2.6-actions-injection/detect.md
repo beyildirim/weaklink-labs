@@ -12,6 +12,8 @@
   <span class="phase-step current">Detect</span>
 </div>
 
+<div class="no-terminal-notice">Reference material. No terminal needed.</div>
+
 ## Catching Expression Injection
 
 ### MITRE ATT&CK Mapping
@@ -101,3 +103,5 @@ jobs:
 - [GitHub Security Lab: Expression injection in Actions](https://securitylab.github.com/research/github-actions-untrusted-input/)
 - [GitHub: Security hardening. using expressions](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#understanding-the-risk-of-script-injections)
 - [Zizmor: GitHub Actions static analysis](https://github.com/woodruffw/zizmor)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

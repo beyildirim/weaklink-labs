@@ -141,3 +141,5 @@ See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI 
 - [NIST SP 800-193: Platform Firmware Resiliency Guidelines](https://csrc.nist.gov/publications/detail/sp/800-193/final)
 - [Binarly: UEFI Firmware Vulnerability Research](https://binarly.io/advisories)
 - [MITRE ATT&CK: Pre-OS Boot (T1542)](https://attack.mitre.org/techniques/T1542/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

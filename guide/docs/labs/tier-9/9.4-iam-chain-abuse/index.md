@@ -1,7 +1,7 @@
 # Lab 9.4: IAM Chain Abuse
 
 <div class="lab-meta">
-  <span>Phase 1 ~10 min | Phase 2 ~15 min | Phase 3 ~15 min | Phase 4 ~5 min</span>
+  <span>Understand: ~10 min | Break: ~15 min | Defend: ~15 min | Detect: ~5 min</span>
   <span class="difficulty advanced">Advanced</span>
   <span>Prerequisites: <a href="../../tier-2/2.4-secret-exfiltration/">Lab 2.4</a></span>
 </div>

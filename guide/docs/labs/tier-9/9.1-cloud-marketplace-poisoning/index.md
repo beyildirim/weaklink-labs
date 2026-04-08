@@ -1,7 +1,7 @@
 # Lab 9.1: Cloud Marketplace Poisoning
 
 <div class="lab-meta">
-  <span>Phase 1 ~5 min | Phase 2 ~10 min | Phase 3 ~10 min | Phase 4 ~10 min</span>
+  <span>Understand: ~5 min | Break: ~10 min | Defend: ~10 min | Detect: ~10 min</span>
   <span class="difficulty intermediate">Intermediate</span>
   <span>Prerequisites: <a href="../../tier-3/3.1-image-internals/">Lab 3.1</a></span>
 </div>

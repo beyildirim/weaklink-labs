@@ -72,7 +72,7 @@ Dependency confusion, typosquatting, lockfile injection, manifest confusion, and
 
 Poisoned Pipeline Execution, secret exfiltration, GitHub Actions injection, runner attacks, and build cache poisoning.
 
-<div class="lab-count">8 labs</div>
+<div class="lab-count">8 labs &middot; ~5 hours</div>
 </div>
 
 <div class="tier-card" markdown>
@@ -82,7 +82,7 @@ Poisoned Pipeline Execution, secret exfiltration, GitHub Actions injection, runn
 
 Tag mutability, base image poisoning, registry confusion, layer injection, and multi-stage build leaks.
 
-<div class="lab-count">6 labs</div>
+<div class="lab-count">6 labs &middot; ~3 hours</div>
 </div>
 
 <div class="tier-card" markdown>
@@ -92,7 +92,7 @@ Tag mutability, base image poisoning, registry confusion, layer injection, and m
 
 SBOMs, signing with Sigstore and GPG, SLSA provenance, attestation forgery, and SBOM tampering.
 
-<div class="lab-count">7 labs</div>
+<div class="lab-count">7 labs &middot; ~4 hours</div>
 </div>
 
 <div class="tier-card" markdown>
@@ -102,7 +102,7 @@ SBOMs, signing with Sigstore and GPG, SLSA provenance, attestation forgery, and 
 
 Helm poisoning, Terraform module attacks, Ansible Galaxy, and admission controller bypass.
 
-<div class="lab-count">5 labs</div>
+<div class="lab-count">5 labs &middot; ~3 hours</div>
 </div>
 
 <div class="tier-card" markdown>
@@ -112,7 +112,7 @@ Helm poisoning, Terraform module attacks, Ansible Galaxy, and admission controll
 
 AI/ML supply chain, firmware attacks, and case studies: xz-utils, SolarWinds, Log4Shell, and more.
 
-<div class="lab-count">10 labs</div>
+<div class="lab-count">10 labs &middot; ~6 hours</div>
 </div>
 
 <div class="tier-card" markdown>
@@ -122,7 +122,7 @@ AI/ML supply chain, firmware attacks, and case studies: xz-utils, SolarWinds, Lo
 
 Detection engineering, incident triage, IR playbooks, tool evaluation, and threat modeling.
 
-<div class="lab-count">5 labs</div>
+<div class="lab-count">5 labs &middot; ~4 hours</div>
 </div>
 
 <div class="tier-card" markdown>
@@ -132,7 +132,7 @@ Detection engineering, incident triage, IR playbooks, tool evaluation, and threa
 
 SLSA, SSDF, EO 14028, vendor assessment, and building a supply chain security program.
 
-<div class="lab-count">6 labs</div>
+<div class="lab-count">6 labs &middot; ~4 hours</div>
 </div>
 
 <div class="tier-card" markdown>
@@ -142,7 +142,7 @@ SLSA, SSDF, EO 14028, vendor assessment, and building a supply chain security pr
 
 Marketplace poisoning, serverless attacks, cloud CI/CD exploitation, and IAM chain abuse.
 
-<div class="lab-count">4 labs</div>
+<div class="lab-count">4 labs &middot; ~3 hours</div>
 </div>
 
 </div>

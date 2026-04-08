@@ -1,7 +1,7 @@
 # Lab 8.2: SSDF / NIST SP 800-218 Mapping
 
 <div class="lab-meta">
-  <span>Phase 1 ~5 min | Phase 2 ~15 min | Phase 3 ~10 min | Phase 4 ~10 min</span>
+  <span>Understand: ~5 min | Assess: ~15 min | Plan: ~10 min | Document: ~10 min</span>
   <span class="difficulty intermediate">Intermediate</span>
   <span>Prerequisites: <a href="../../tier-4/4.1-sbom-contents/">Lab 4.1</a></span>
 </div>

@@ -75,3 +75,5 @@ Without signing enforcement, an attacker with registry write access can push any
 - [Sigstore: cosign](https://docs.sigstore.dev/cosign/signing/signing_with_containers/)
 - [Sigstore Policy Controller](https://docs.sigstore.dev/policy-controller/overview/)
 - [SLSA: Verification](https://slsa.dev/spec/v1.0/verifying-artifacts)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

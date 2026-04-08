@@ -1,7 +1,7 @@
 # Lab 9.2: Serverless Supply Chain
 
 <div class="lab-meta">
-  <span>Phase 1 ~10 min | Phase 2 ~10 min | Phase 3 ~10 min | Phase 4 ~10 min</span>
+  <span>Understand: ~10 min | Break: ~10 min | Defend: ~10 min | Detect: ~10 min</span>
   <span class="difficulty advanced">Advanced</span>
   <span>Prerequisites: <a href="../../tier-1/1.2-dependency-confusion/">Lab 1.2</a></span>
 </div>

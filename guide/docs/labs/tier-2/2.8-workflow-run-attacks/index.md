@@ -1,7 +1,7 @@
 # Lab 2.8: Workflow Run & Cross-Workflow Attacks
 
 <div class="lab-meta">
-  <span>~25 min hands-on | ~15 min reference</span>
+  <span>Understand: ~8 min | Break: ~8 min | Defend: ~9 min | Detect: ~15 min</span>
   <span class="difficulty advanced">Advanced</span>
   <span>Prerequisites: <a href="../2.2-direct-ppe/">Lab 2.2</a>, <a href="../2.6-actions-injection/">Lab 2.6</a></span>
 </div>

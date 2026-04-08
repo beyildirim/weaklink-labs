@@ -25,7 +25,7 @@ tiers:
 
 # Network policy — opt-in zero-trust networking
 networkPolicies:
-  enabled: false
+  enabled: true
 # --- Component images and config ---
 
 guide:

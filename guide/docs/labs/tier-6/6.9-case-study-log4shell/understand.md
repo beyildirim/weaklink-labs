@@ -1,4 +1,4 @@
-# Lab 6.9: Case Study. Log4Shell (CVE-2021-44228)
+# Lab 6.9: Case Study: Log4Shell (CVE-2021-44228)
 
 <div class="phase-stepper">
   <a href="../" class="phase-step done">Overview</a>

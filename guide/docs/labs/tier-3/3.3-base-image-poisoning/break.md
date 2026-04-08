@@ -66,6 +66,6 @@ The backdoor binary at /usr/local/bin/backdoor was added in an extra layer.
 Every image built FROM this base inherits the backdoor.
 Clean base digest: <paste from clean-base-digest.txt>
 Poisoned base digest: <paste current digest>
-The app Dockerfile was NOT modified -- the compromise is entirely in the base.
+The app Dockerfile was NOT modified. The compromise is entirely in the base.
 EOF
 ```

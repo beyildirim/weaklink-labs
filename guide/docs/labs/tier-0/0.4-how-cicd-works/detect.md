@@ -108,3 +108,5 @@ See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI 
 - [OWASP Top 10 CI/CD Security Risks](https://owasp.org/www-project-top-10-ci-cd-security-risks/)
 - [Cider Security: Top 10 CI/CD Risks](https://www.cidersecurity.io/top-10-cicd-security-risks/)
 - [MITRE ATT&CK: T1195.002 Compromise Software Supply Chain](https://attack.mitre.org/techniques/T1195/002/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

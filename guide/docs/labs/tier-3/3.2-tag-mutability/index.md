@@ -1,7 +1,7 @@
 # Lab 3.2: Tag Mutability Attacks
 
 <div class="lab-meta">
-  <span>~20 min hands-on | ~10 min reference</span>
+  <span>Understand: ~7 min | Break: ~7 min | Defend: ~6 min | Detect: ~10 min</span>
   <span class="difficulty intermediate">Intermediate</span>
   <span>Prerequisites: <a href="../../tier-0/0.3-containers/">Lab 0.3</a></span>
 </div>

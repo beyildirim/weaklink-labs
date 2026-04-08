@@ -76,3 +76,5 @@ SBOM tampering is the supply chain equivalent of editing audit logs. The attacke
 - [CycloneDX Signing Specification](https://cyclonedx.org/capabilities/signing/)
 - [cosign attach sbom](https://docs.sigstore.dev/signing/other_types/#sboms)
 - [CISA SBOM Sharing Guidance](https://www.cisa.gov/sbom)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

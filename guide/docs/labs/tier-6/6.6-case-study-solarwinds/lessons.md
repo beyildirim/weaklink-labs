@@ -1,4 +1,4 @@
-# Lab 6.6: Case Study. SolarWinds (SUNBURST)
+# Lab 6.6: Case Study: SolarWinds (SUNBURST)
 
 <div class="phase-stepper">
   <a href="../" class="phase-step done">Overview</a>

@@ -1,7 +1,7 @@
 # Lab 8.4: Vendor Supply Chain Assessment
 
 <div class="lab-meta">
-  <span>Phase 1 ~5 min | Phase 2 ~15 min | Phase 3 ~10 min | Phase 4 ~5 min</span>
+  <span>Understand: ~5 min | Assess: ~15 min | Plan: ~10 min | Document: ~5 min</span>
   <span class="difficulty intermediate">Intermediate</span>
   <span>Prerequisites: <a href="../8.1-slsa-deep-dive/">Lab 8.1</a></span>
 </div>

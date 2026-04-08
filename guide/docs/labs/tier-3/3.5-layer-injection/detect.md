@@ -12,6 +12,8 @@
   <span class="phase-step current">Detect</span>
 </div>
 
+<div class="no-terminal-notice">Reference material. No terminal needed.</div>
+
 ## Catching Layer Injection in Production
 
 The primary signal is **manifest digest change without a corresponding CI build**, or **layer count exceeding the expected baseline**.
@@ -114,3 +116,5 @@ jobs:
 - [cosign: Signing OCI containers](https://github.com/sigstore/cosign)
 - [Notation (CNCF Notary Project)](https://notaryproject.dev/)
 - [OCI Distribution Specification](https://github.com/opencontainers/distribution-spec/blob/main/spec.md)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

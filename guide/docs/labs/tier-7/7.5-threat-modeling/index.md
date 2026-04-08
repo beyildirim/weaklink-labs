@@ -1,7 +1,7 @@
 # Lab 7.5: Threat Modeling for Software Supply Chains
 
 <div class="lab-meta">
-  <span>Phase 1 ~10 min | Phase 2 ~15 min | Phase 3 ~15 min | Phase 4 ~5 min</span>
+  <span>Understand: ~10 min | Investigate: ~15 min | Validate: ~15 min | Improve: ~5 min</span>
   <span class="difficulty advanced">Advanced</span>
   <span>Prerequisites: <a href="../7.1-detection-rules/">Lab 7.1</a></span>
 </div>

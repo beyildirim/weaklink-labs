@@ -103,3 +103,5 @@ jobs:
 - [Terraform Documentation: Provisioners](https://developer.hashicorp.com/terraform/language/resources/provisioners/syntax)
 - [Terraform Documentation: Provider Lock File](https://developer.hashicorp.com/terraform/language/files/dependency-lock)
 - [Alex Kaskasoli: Attacking Terraform Environments (2023)](https://blog.kaskasoli.com/2023/08/attacking-terraform-environments.html)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

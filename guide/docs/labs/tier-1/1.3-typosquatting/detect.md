@@ -199,3 +199,5 @@ jobs:
 - [PyPI Typosquatting Research (Phylum, 2023)](https://blog.phylum.io/pypi-malware-replaces-crypto-addresses-in-developers-clipboard)
 - [Typosquatting in Python Ecosystem (arxiv)](https://arxiv.org/abs/2005.09535)
 - [pip-audit](https://github.com/pypa/pip-audit)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

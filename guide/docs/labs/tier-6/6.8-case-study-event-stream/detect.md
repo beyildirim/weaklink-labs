@@ -1,4 +1,4 @@
-# Lab 6.8: Case Study. event-stream / ua-parser-js
+# Lab 6.8: Case Study: event-stream / ua-parser-js
 
 <div class="phase-stepper">
   <a href="../" class="phase-step done">Overview</a>
@@ -141,3 +141,5 @@ See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI 
 - [Dominic Tarr's Statement on event-stream](https://gist.github.com/dominictarr/9fd9c1024c94592bc7268d36b8d83b3a)
 - [GitHub Advisory: flatmap-stream (GHSA-7fhm-mqm4-2wp7)](https://github.com/advisories/GHSA-7fhm-mqm4-2wp7)
 - [CISA: ua-parser-js Compromise](https://www.cisa.gov/news-events/alerts/2021/10/22/malware-discovered-popular-npm-package-ua-parser-js)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

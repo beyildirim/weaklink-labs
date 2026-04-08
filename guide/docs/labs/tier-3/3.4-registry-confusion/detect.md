@@ -12,6 +12,8 @@
   <span class="phase-step current">Detect</span>
 </div>
 
+<div class="no-terminal-notice">Reference material. No terminal needed.</div>
+
 ## Catching Registry Confusion in the Wild
 
 The core signal is a **container image pulled from a registry not on your approved list**. This indicates either misconfiguration or an active attack.
@@ -103,3 +105,5 @@ jobs:
 - [Docker: Image Naming and Tagging](https://docs.docker.com/reference/cli/docker/image/tag/)
 - [containerd: Registry Configuration](https://github.com/containerd/containerd/blob/main/docs/hosts.md)
 - [Kyverno: Restrict Image Registries](https://kyverno.io/policies/best-practices/restrict-image-registries/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

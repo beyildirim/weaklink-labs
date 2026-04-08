@@ -12,6 +12,8 @@
   <span class="phase-step current">Detect</span>
 </div>
 
+<div class="no-terminal-notice">Reference material. No terminal needed.</div>
+
 ## Catching Cache Poisoning
 
 ### MITRE ATT&CK Mapping
@@ -110,3 +112,5 @@ jobs:
 - [GitHub: Caching dependencies to speed up workflows](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows)
 - [Legit Security: GitHub Actions Cache Poisoning](https://www.legitsecurity.com/blog/github-actions-cache-poisoning)
 - [Snyk: Build Cache Poisoning in CI/CD](https://snyk.io/blog/cache-poisoning-in-github-actions/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

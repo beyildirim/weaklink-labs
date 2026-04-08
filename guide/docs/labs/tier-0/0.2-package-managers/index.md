@@ -1,7 +1,7 @@
 # Lab 0.2: How Package Managers Work
 
 <div class="lab-meta">
-  <span>~20 min hands-on | ~5 min reference</span>
+  <span>Understand: ~7 min | Break: ~7 min | Defend: ~6 min | Detect: ~5 min</span>
   <span class="difficulty beginner">Beginner</span>
   <span>Prerequisites: <a href="../../tier-0/0.1-version-control/">Lab 0.1</a></span>
 </div>
