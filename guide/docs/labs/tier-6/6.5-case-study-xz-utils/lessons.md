@@ -1,4 +1,4 @@
-# Lab 6.5: Case Study. xz-utils (CVE-2024-3094)
+# Lab 6.5: Case Study: xz-utils (CVE-2024-3094)
 
 <div class="phase-stepper">
   <a href="../" class="phase-step done">Overview</a>

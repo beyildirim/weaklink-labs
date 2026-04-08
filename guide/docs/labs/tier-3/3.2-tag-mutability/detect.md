@@ -12,6 +12,8 @@
   <span class="phase-step current">Detect</span>
 </div>
 
+<div class="no-terminal-notice">Reference material. No terminal needed.</div>
+
 ## Finding Tag Overwrites in Production
 
 The core signal is a **tag push where the tag already existed with a different digest**. The secondary signal is a **deployment pulling a different digest than it previously ran**.
@@ -100,3 +102,5 @@ jobs:
 - [OCI Distribution Spec: Manifest](https://github.com/opencontainers/distribution-spec/blob/main/spec.md)
 - [Kyverno: Verify Image](https://kyverno.io/policies/best-practices/require-image-digest/)
 - [ECR: Image Tag Immutability](https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-tag-mutability.html)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

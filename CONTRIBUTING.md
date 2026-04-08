@@ -48,6 +48,7 @@ tags: ["relevant", "tags"]
 phase_understand: "What the learner explores in phase 1"
 phase_break: "What the learner attacks in phase 2"
 phase_defend: "What the learner fixes in phase 3"
+phase_detect: "What the learner detects in phase 4"
 ```
 
 ### 3. Write verify.sh
@@ -58,7 +59,7 @@ phase_defend: "What the learner fixes in phase 3"
 
 ### 4. Add the lab guide page
 
-Create `guide/docs/labs/tier-N/N.X-lab-name.md` using MkDocs Material format. The guide follows the 3-phase structure using admonitions to mark phase transitions:
+Create `guide/docs/labs/tier-N/N.X-lab-name.md` using MkDocs Material format. The guide follows the 4-phase structure using admonitions to mark phase transitions:
 
 ```markdown
 # Lab N.X: Title
@@ -174,13 +175,13 @@ If your lab's services should only deploy when the tier is enabled, use the appr
     ./weaklink verify <lab-id>
     ```
 
-5. Confirm all 3 phases work end-to-end: understand, break, defend.
+5. Confirm all 4 phases work end-to-end: understand, break, defend, detect.
 
 ## PR Process
 
 1. Fork the repo
 2. Create your lab following the steps above
-3. Test it locally: start the environment, complete all 3 phases, run verify
+3. Test it locally: start the environment, complete all 4 phases, run verify
 4. Submit a PR with:
     - What the lab teaches
     - Which tier/module it belongs to

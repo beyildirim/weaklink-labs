@@ -12,6 +12,8 @@
   <span class="phase-step current">Detect</span>
 </div>
 
+<div class="no-terminal-notice">Reference material. No terminal needed.</div>
+
 ## Finding Hidden Content in Production Images
 
 Images with more layers than expected, or layer history showing file additions followed by deletions, indicate hidden content. This pattern is abnormal in properly built images.
@@ -111,3 +113,5 @@ jobs:
 - [OCI Image Specification](https://github.com/opencontainers/image-spec/blob/main/spec.md)
 - [Dive: exploring container image layers](https://github.com/wagoodman/dive)
 - [Google crane tool](https://github.com/google/go-containerregistry/tree/main/cmd/crane)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

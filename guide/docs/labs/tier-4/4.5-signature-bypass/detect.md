@@ -90,3 +90,5 @@ This is the most dangerous variant. The image IS signed. Verification DID pass. 
 - [Sigstore Policy Controller](https://docs.sigstore.dev/policy-controller/overview/)
 - [Sigstore: Keyless Signing](https://docs.sigstore.dev/cosign/signing/signing_with_containers/#keyless-signing)
 - [The Update Framework (TUF)](https://theupdateframework.io/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

@@ -97,3 +97,5 @@ jobs:
 - [Lockfile Injection (Snyk Research)](https://snyk.io/blog/why-npm-lockfiles-can-be-a-security-blindspot-for-injecting-malicious-modules/)
 - [pip-compile documentation](https://pip-tools.readthedocs.io/)
 - [SLSA Build Requirements](https://slsa.dev/spec/v1.0/requirements)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

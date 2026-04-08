@@ -1,7 +1,7 @@
 # Lab 5.5: Kubernetes Admission Controller Bypass
 
 <div class="lab-meta">
-  <span>Phase 1: ~10 min | Phase 2: ~12 min | Phase 3: ~12 min | Phase 4: ~6 min</span>
+  <span>Understand: ~10 min | Break: ~12 min | Defend: ~12 min | Detect: ~6 min</span>
   <span class="difficulty advanced">Advanced</span>
   <span>Prerequisites: <a href="../5.2-helm-poisoning/">Lab 5.2</a></span>
 </div>

@@ -93,3 +93,5 @@ Attestation forgery bypasses the strongest verification controls. If your policy
 - [Sigstore: Software signing for everyone](https://www.sigstore.dev/)
 - [SLSA Provenance Specification](https://slsa.dev/provenance/v1)
 - [Rekor Transparency Log](https://docs.sigstore.dev/logging/overview/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

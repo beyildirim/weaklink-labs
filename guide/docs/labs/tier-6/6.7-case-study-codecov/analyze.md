@@ -1,4 +1,4 @@
-# Lab 6.7: Case Study. Codecov Bash Uploader
+# Lab 6.7: Case Study: Codecov Bash Uploader
 
 <div class="phase-stepper">
   <a href="../" class="phase-step done">Overview</a>

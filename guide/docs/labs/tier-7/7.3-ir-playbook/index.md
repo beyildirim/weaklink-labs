@@ -1,7 +1,7 @@
 # Lab 7.3: Incident Response Playbook
 
 <div class="lab-meta">
-  <span>Phase 1 ~10 min | Phase 2 ~15 min | Phase 3 ~10 min | Phase 4 ~10 min</span>
+  <span>Understand: ~10 min | Investigate: ~15 min | Validate: ~10 min | Improve: ~10 min</span>
   <span class="difficulty advanced">Advanced</span>
   <span>Prerequisites: <a href="../7.2-incident-triage/">Lab 7.2</a></span>
 </div>

@@ -1,7 +1,7 @@
 # Lab 5.1: How Helm Charts Resolve Dependencies
 
 <div class="lab-meta">
-  <span>Phase 1: ~10 min | Phase 2: ~10 min | Phase 3: ~10 min | Phase 4: ~5 min</span>
+  <span>Understand: ~10 min | Break: ~10 min | Defend: ~10 min | Detect: ~5 min</span>
   <span class="difficulty intermediate">Intermediate</span>
   <span>Prerequisites: <a href="../../tier-0/0.3-containers.md">Lab 0.3</a></span>
 </div>

@@ -1,7 +1,7 @@
 # Lab 2.1: CI/CD Fundamentals
 
 <div class="lab-meta">
-  <span>~15 min hands-on | ~15 min reference</span>
+  <span>Understand: ~5 min | Break: ~5 min | Defend: ~5 min | Detect: ~15 min</span>
   <span class="difficulty beginner">Beginner</span>
   <span>Prerequisites: <a href="../../tier-0/0.1-version-control.md">Lab 0.1</a></span>
 </div>

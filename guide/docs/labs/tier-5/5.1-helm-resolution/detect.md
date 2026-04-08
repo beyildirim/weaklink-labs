@@ -104,3 +104,5 @@ jobs:
 - [Helm Documentation: Chart Dependencies](https://helm.sh/docs/helm/helm_dependency/)
 - [Helm Documentation: Provenance and Integrity](https://helm.sh/docs/topics/provenance/)
 - [Helm Documentation: OCI Registries](https://helm.sh/docs/topics/registries/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

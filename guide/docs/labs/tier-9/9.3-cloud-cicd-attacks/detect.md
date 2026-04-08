@@ -12,6 +12,8 @@
   <span class="phase-step current">Detect</span>
 </div>
 
+<div class="no-terminal-notice">Reference material. No terminal needed.</div>
+
 **Goal:** Detect secret access, privilege escalation, and build config tampering.
 
 CloudTrail indicators:
@@ -43,3 +45,5 @@ CloudTrail indicators:
 - [AWS: CodeBuild Security Best Practices](https://docs.aws.amazon.com/codebuild/latest/userguide/security.html)
 - [GCP: Cloud Build Security](https://cloud.google.com/build/docs/securing-builds)
 - [MITRE ATT&CK: Unsecured Credentials (T1552)](https://attack.mitre.org/techniques/T1552/)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

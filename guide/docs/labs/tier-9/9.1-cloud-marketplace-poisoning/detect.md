@@ -12,6 +12,8 @@
   <span class="phase-step current">Detect</span>
 </div>
 
+<div class="no-terminal-notice">Reference material. No terminal needed.</div>
+
 **Goal:** Detect compromised marketplace images using cloud audit logs and host-based detection.
 
 Cloud audit indicators:
@@ -43,3 +45,5 @@ Cloud audit indicators:
 - [MITRE ATT&CK: Implant Internal Image (T1525)](https://attack.mitre.org/techniques/T1525/)
 - [AWS: AMI Best Practices](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html)
 - [Chainguard Images: Minimal Base Images](https://www.chainguard.dev/chainguard-images)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)

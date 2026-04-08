@@ -74,3 +74,5 @@ Most organizations treat the SBOM as compliance truth. If the SBOM says "no log4
 - [Anchore: Why SBOMs Are Not Enough](https://anchore.com/blog/why-sboms-are-not-enough/)
 - [OWASP Dependency-Track](https://dependencytrack.org/)
 - [Grype: A Vulnerability Scanner for Container Images](https://github.com/anchore/grype)
+
+See also: [Detection Rule Library](../../../resources/detection-rules.md) | [CI Security Snippets](../../../resources/ci-snippets.md)
