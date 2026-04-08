@@ -1,6 +1,6 @@
 # Placement Test
 
-Already familiar with Git, pip, and Docker? Take the placement test to skip Labs 0.1-0.3 and jump straight into the supply chain attack labs.
+Already familiar with Git, pip, and Docker? Take the placement test to skip Tier 0 (Labs 0.1-0.5) and jump straight into the supply chain attack labs.
 
 **10 questions, ~2 minutes.** Score 8/10 or higher to skip.
 
