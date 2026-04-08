@@ -77,7 +77,6 @@ Tier 8 labs use: UNDERSTAND/ASSESS/PLAN/DOCUMENT
 
 - `weaklink report` (pretty/--json/--csv/--team)
 - `weaklink assess` (10-question placement test, skip Tier 0 at 8/10)
-- `weaklink achieve` (planned, not yet implemented)
 - Progress stored in `~/.weaklink/`
 
 ## What NOT to Do
