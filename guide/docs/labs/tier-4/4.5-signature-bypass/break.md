@@ -12,11 +12,17 @@
   <a href="../detect/" class="phase-step upcoming">Detect</a>
 </div>
 
-## Three Bypass Techniques
+## Bypass via Key Confusion
 
-### Bypass 1: No Enforcement (the unsigned path)
+### Step 1: Generate an attacker key pair
 
-Push an unsigned image and deploy it:
+```bash
+cd /app
+cosign generate-key-pair --output-key-prefix attacker-cosign
+ls /app/attacker-cosign.*
+```
+
+### Step 2: Build and push a malicious image
 
 ```bash
 cat > /tmp/Dockerfile << 'EOF'
@@ -24,58 +30,38 @@ FROM alpine:3.18
 RUN echo "malicious payload" > /evil.txt
 CMD ["cat", "/evil.txt"]
 EOF
-docker build -t registry:5000/weaklink-app:backdoor /tmp/
-docker push registry:5000/weaklink-app:backdoor
-
-kubectl run bypass1 --image=registry:5000/weaklink-app:backdoor
-kubectl get pods bypass1
-kubectl logs bypass1
-```
-
-Unless an admission controller enforces signature verification, the unsigned image runs. Most clusters have no enforcement.
-
-```bash
-kubectl delete pod bypass1
-```
-
-### Bypass 2: Key Confusion (sign with attacker key)
-
-```bash
-cd /app && cosign generate-key-pair --output-key-prefix attacker-cosign
-
 docker build -t registry:5000/weaklink-app:attacker-signed /tmp/
 docker push registry:5000/weaklink-app:attacker-signed
+```
 
+### Step 3: Sign it with the attacker key
+
+```bash
 cosign sign --key /app/attacker-cosign.key registry:5000/weaklink-app:attacker-signed
 ```
 
-Verify with the attacker's public key:
+The image is now legitimately signed, just not by someone you trust.
+
+### Step 4: Verify with the wrong key
 
 ```bash
 cosign verify --key /app/attacker-cosign.pub registry:5000/weaklink-app:attacker-signed
 ```
 
-Passes. The image is "signed," but by someone you don't trust. If a policy uses `cosign verify` without specifying which key to trust, the attacker-signed image passes.
+This passes. Nothing is wrong with the cryptography. The failure is in the trust decision: the verifier accepted the attacker's key.
 
-Confirm it fails with the trusted key:
+### Step 5: Check that the trusted key rejects it
 
 ```bash
 cosign verify --key /app/cosign.pub registry:5000/weaklink-app:attacker-signed
 ```
 
-### Bypass 3: Signature Rollback / Replay
+That is the bypass: a system that checks only “is there a valid signature?” can accept a malicious artifact if it does not pin the trusted key or signer identity tightly enough.
 
-Attempt to reuse a valid signature from one image on a different image:
+!!! info "Related Variants"
+    Two other signature failure classes exist, but they are not the mainline attack in this lab:
 
-```bash
-SIGNED_DIGEST=$(crane digest registry:5000/weaklink-app:signed)
-MALICIOUS_DIGEST=$(crane digest registry:5000/weaklink-app:backdoor)
+    - **No enforcement:** an unsigned artifact runs because verification never happens. That is already covered in Lab 4.3.
+    - **Replay or rollback:** an old valid signature is reused against a new artifact. Digest-bound signatures like cosign reduce this risk.
 
-cosign copy registry:5000/weaklink-app:signed registry:5000/weaklink-app:backdoor 2>&1 || true
-
-cosign verify --key /app/cosign.pub registry:5000/weaklink-app:backdoor
-```
-
-With cosign, this fails because signatures are bound to the image digest. In systems that use detached signatures (GPG `.asc` files) without digest binding, old signatures can be replayed on new artifacts.
-
-> **Checkpoint:** You should have three images in the registry (`backdoor`, `attacker-signed`, `signed`) and understand why each bypass works. Run `cosign verify --key /app/cosign.pub` against all three to confirm which pass and which fail.
+> **Checkpoint:** You should have one malicious image, `registry:5000/weaklink-app:attacker-signed`, that verifies with `/app/attacker-cosign.pub` and fails with `/app/cosign.pub`.

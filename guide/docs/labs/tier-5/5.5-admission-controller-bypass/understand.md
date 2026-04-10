@@ -51,7 +51,7 @@ cat /app/gatekeeper-config/config.yaml
 ls /app/exploits/
 ```
 
-Notice the monitoring namespace exemption and the three exploit manifests the lab ships.
+Notice the monitoring namespace exemption. That is the primary gap this lab will exploit.
 
 ### Step 5: Check which namespaces are covered
 

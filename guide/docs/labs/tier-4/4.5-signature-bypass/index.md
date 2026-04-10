@@ -18,14 +18,14 @@
   <a href="detect/" class="phase-step upcoming">Detect</a>
 </div>
 
-Signing is only useful if verification is enforced, the right key is checked, and old signatures can't be replayed. This lab demonstrates three bypass techniques that defeat signing in practice.
+Signing is only useful if verification checks the right signer. This lab focuses on the most dangerous bypass in real deployments: key confusion. The artifact is signed, verification appears to pass, but the signature belongs to an attacker key instead of a trusted identity.
 
 ### Attack Flow
 
 ```mermaid
 graph LR
-    A[Push unsigned artifact] --> B[Verification not enforced]
-    B --> C[Deployed without integrity check]
+    A[Attacker signs malicious image] --> B[Verifier checks wrong key]
+    B --> C[Malicious image appears legitimate]
 ```
 
 ## Environment
@@ -41,3 +41,4 @@ graph LR
     - **Next:** [4.6 Attestation Forgery](../4.6-attestation-forgery/index.md) — Attestation forgery extends bypass attacks to provenance
     - **See also:** [4.7 SBOM Tampering](../4.7-sbom-tampering/index.md) — SBOM tampering bypasses integrity checks on metadata
     - **See also:** [5.5 Kubernetes Admission Controller Bypass](../../tier-5/5.5-admission-controller-bypass/index.md) — Admission controller bypass defeats signature enforcement
+    - **Variant, not mainline here:** unsigned-image deployment is already covered in [4.3 Signing Fundamentals](../4.3-signing-fundamentals/index.md)

@@ -14,14 +14,13 @@
 
 <div class="no-terminal-notice">Reference material. No terminal needed.</div>
 
-## Identifying Signature Bypass Attempts
+## Identifying Key Confusion Attempts
 
-| Indicator | Bypass Type | What It Means |
-|-----------|-------------|---------------|
-| Image deployed, no `.sig` tag exists | No enforcement | Signing requirement is not enforced |
-| `cosign verify` succeeds with unknown key fingerprint | Key confusion | Someone signed with an untrusted key |
-| Signature timestamp >> image push timestamp | Rollback | Old signature copied to new image |
-| `cosign generate-key-pair` in workstation logs | Key confusion prep | Someone generating keys to forge signatures |
+| Indicator | What It Means |
+|-----------|---------------|
+| `cosign verify` succeeds with an unknown key fingerprint | A malicious image may be signed by an untrusted key |
+| `cosign generate-key-pair` in workstation or CI logs | Someone may be preparing a rogue signer |
+| Verification policy checks only “has signature” and not signer identity | The environment is vulnerable to key confusion |
 
 ### CI Integration
 
@@ -62,7 +61,7 @@ jobs:
 
 | Technique | ID | Relevance |
 |-----------|-----|-----------|
-| **Subvert Trust Controls** | [T1553](https://attack.mitre.org/techniques/T1553/) | All three bypasses subvert the intended signature-based trust model |
+| **Subvert Trust Controls** | [T1553](https://attack.mitre.org/techniques/T1553/) | Key confusion subverts the intended signature-based trust model |
 | **Masquerading** | [T1036](https://attack.mitre.org/techniques/T1036/) | Attacker signs malicious artifacts to make them appear legitimate |
 
 **Alert:** "Image signature verification succeeded with unknown key"
@@ -81,9 +80,9 @@ This is the most dangerous variant. The image IS signed. Verification DID pass. 
 
 ## What You Learned
 
-1. **No enforcement = no security.** Signing without verification is security theater.
-2. **Key confusion is the most dangerous bypass.** A signed artifact isn't safe unless verified against a pinned trusted key or OIDC identity.
-3. **Digest-bound signatures (cosign) prevent replay.** Detached GPG signatures without digest binding remain vulnerable.
+1. **A valid signature is not enough.** The verifier must know exactly which signer is trusted.
+2. **Key confusion is dangerous because it looks legitimate.** The artifact is signed and verification can appear to pass.
+3. **Identity-pinned verification is the real defense.** Pin a trusted key or keyless OIDC identity, then enforce it consistently.
 
 ## Further Reading
 

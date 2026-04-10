@@ -6,6 +6,17 @@ Thanks for your interest in contributing! This guide explains how to add a new l
 
 The main contributor path uses `make start`, which brings up the Minikube + Helm environment. The Helm chart at `helm/weaklink-labs/` deploys everything: the workstation, lab services (Gitea, PyPI servers, Verdaccio, registry), the MkDocs guide, and a setup job that seeds lab content. Docker images are built locally from `images/`.
 
+## Architecture Gate
+
+Before adding a lab, feature, or service, check it against these rules:
+
+- Teach one primary trust failure. If a proposal tries to teach multiple attacks or unrelated lessons at once, split it or cut it down.
+- Preserve the learner flow: start the platform, open the guide in the browser, use the built-in terminal.
+- Keep the phase flow coherent. `UNDERSTAND`, `BREAK`, `DEFEND`, and `DETECT` or impact should all reinforce the same core lesson.
+- Prefer tightening existing labs over adding parallel experiences, extra workflow branches, or platform mechanics.
+- Add infrastructure only when it has a direct teaching payoff that cannot be achieved with the existing services.
+- Treat Tier `0` through Tier `5` as the core path. Changes for Tier `6` and Tier `7` should be deliberate, not default expansion.
+
 ## Lab Structure
 
 Every lab lives under `labs/tier-N-topic/N.X-lab-name/`:

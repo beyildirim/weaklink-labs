@@ -2,7 +2,7 @@ id: "5.3"
 title: "Terraform Module and Provider Attacks"
 tier: 5
 module: "iac-supply-chain"
-prerequisites: []
+prerequisites: ["5.2"]
 difficulty: intermediate
 estimated_time: 35m
 tags: ["terraform", "modules", "providers", "local-exec", "supply-chain", "credential-theft"]

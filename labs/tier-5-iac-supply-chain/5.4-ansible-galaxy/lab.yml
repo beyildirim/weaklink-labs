@@ -2,7 +2,7 @@ id: "5.4"
 title: "Ansible Galaxy and Collection Attacks"
 tier: 5
 module: "iac-supply-chain"
-prerequisites: []
+prerequisites: ["5.3"]
 difficulty: intermediate
 estimated_time: 30m
 tags: ["ansible", "galaxy", "collections", "roles", "ssh-backdoor", "supply-chain"]

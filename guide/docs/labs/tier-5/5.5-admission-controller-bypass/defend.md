@@ -12,9 +12,9 @@
   <a href="../detect/" class="phase-step upcoming">Detect</a>
 </div>
 
-## Closing Admission Controller Gaps
+## Close The Namespace Exemption Gap
 
-### Fix 1: Minimize namespace exemptions
+### Step 1: Remove the unnecessary exemption
 
 ```bash
 cat > /app/gatekeeper-config/config.yaml << 'EOF'
@@ -41,61 +41,25 @@ kubectl apply -f /app/gatekeeper-config/config.yaml
 
 Keep the system namespaces the lab already needs, but remove the monitoring exemption so attackers cannot hide there.
 
-### Fix 2: Cover the uncovered CRD path
+### Step 2: Delete the bypassed pod and retry the same attack
 
 ```bash
-cat > /app/policies/restrict-crds.yaml << 'EOF'
-apiVersion: templates.gatekeeper.sh/v1
-kind: ConstraintTemplate
-metadata:
-  name: k8srestrictcrd
-spec:
-  crd:
-    spec:
-      names:
-        kind: K8sRestrictCRD
-  targets:
-    - target: admission.k8s.gatekeeper.sh
-      rego: |
-        package k8srestrictcrd
-
-        violation[{"msg": msg}] {
-          input.review.object.kind == "CustomResourceDefinition"
-          msg := "CRD creation requires security review"
-        }
-EOF
-kubectl apply -f /app/policies/restrict-crds.yaml
+kubectl delete pod -n monitoring privileged-miner
+kubectl apply -f /app/exploits/exempt-namespace-pod.yaml
 ```
 
-The CRD constraint closes the custom-resource gap that the default Pod and Deployment coverage misses.
+The same manifest should now be rejected because the privileged pod no longer lands in an excluded namespace.
 
-### Fix 3: Detect post-admission drift
+### Step 3: Audit the excluded namespace list deliberately
 
 ```bash
-cat > /app/policies/audit-config.yaml << 'EOF'
-apiVersion: config.gatekeeper.sh/v1alpha1
-kind: Config
-metadata:
-  name: config
-spec:
-  sync:
-    syncOnly:
-      - group: ""
-        version: "v1"
-        kind: "Pod"
-      - group: "apps"
-        version: "v1"
-        kind: "Deployment"
-      - group: "batch"
-        version: "v1"
-        kind: "CronJob"
-EOF
-kubectl apply -f /app/policies/audit-config.yaml
+kubectl get config.config.gatekeeper.sh -n gatekeeper-system -o yaml 2>/dev/null
+kubectl get clusterpolicies -o yaml | grep -A 10 "exclude"
 ```
 
-Gatekeeper audit mode continuously checks running resources, catching resources that were compliant at creation but mutated afterward.
+Every excluded namespace is a policy exception. Keep that list short, explicit, and reviewed.
 
-### Fix 4: Write conftest tests
+### Step 4: Add a simple policy review check for config changes
 
 ```bash
 mkdir -p /app/policies/conftest
@@ -103,9 +67,11 @@ cat > /app/policies/conftest/test.rego << 'EOF'
 package main
 
 deny[msg] {
-  input.kind == "Pod"
-  input.spec.containers[_].securityContext.privileged == true
-  msg := "Privileged pods are not allowed"
+  input.kind == "Config"
+  input.spec.match[_].excludedNamespaces[_] == "monitoring"
+  msg := "monitoring must not be excluded from admission policy"
 }
 EOF
 ```
+
+This does not replace runtime policy. It just prevents the exemption from quietly creeping back in through config drift.

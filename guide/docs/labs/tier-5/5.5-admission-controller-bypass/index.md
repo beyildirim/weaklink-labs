@@ -20,7 +20,7 @@
 
 OPA Gatekeeper, Kyverno, and built-in admission webhooks intercept every API request and enforce policies: no root containers, only private registry images, no privileged pods. Violations get rejected.
 
-But admission controllers only see what passes through the API admission pipeline. Exempt namespaces bypass policy entirely. CRDs may not be covered. Post-admission mutations through controllers or operators are invisible to the webhook.
+This lab focuses on one common gap: exempt namespaces. Many clusters exclude monitoring or system namespaces from policy to avoid breaking platform components. That creates a safe harbor where a privileged workload can land without ever hitting the policy you thought protected the cluster.
 
 ### Attack Flow
 
@@ -44,3 +44,4 @@ graph LR
     - **See also:** [4.3 Signing Fundamentals](../../tier-4/4.3-signing-fundamentals/index.md) — Admission controllers verify the signatures covered here
     - **See also:** [4.4 Attestation & Provenance (SLSA)](../../tier-4/4.4-attestation-slsa/index.md) — Attestation policies are enforced by admission controllers
     - **See also:** [3.2 Tag Mutability Attacks](../../tier-3/3.2-tag-mutability/index.md) — Tag mutability is one of the risks admission controllers mitigate
+    - **Related variants, not mainline here:** uncovered CRDs and post-admission mutations are real gaps, but this lab keeps the main path on namespace exemptions
