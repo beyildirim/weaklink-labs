@@ -69,9 +69,11 @@ jobs:
       - name: Wait for all pods to be ready
         run: |
           echo "--- Waiting for deployments ---"
-          kubectl rollout status deployment --all \
-            --namespace "$NAMESPACE" \
-            --timeout=120s
+          for deployment in $(kubectl get deployments --namespace "$NAMESPACE" -o jsonpath='{.items[*].metadata.name}'); do
+            kubectl rollout status "deployment/${deployment}" \
+              --namespace "$NAMESPACE" \
+              --timeout=120s
+          done
 
           echo "--- Waiting for lab-setup job to complete ---"
           kubectl wait job \
