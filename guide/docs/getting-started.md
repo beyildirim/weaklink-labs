@@ -6,70 +6,98 @@ The software supply chain is everything between a developer writing code and tha
 
 Attackers know this. Instead of attacking your application directly, they compromise one of the tools or dependencies your application relies on. A poisoned npm package, a backdoored container base image, a tampered CI pipeline. These attacks bypass traditional application security entirely because the malicious code arrives through trusted channels.
 
-In WeakLink Labs, you will execute real supply chain attacks against isolated lab infrastructure, then build the defenses that stop them. You will work with Git repositories, package registries, container images, build pipelines, and signing systems across 62 hands-on labs organized into 10 progressive tiers.
+In WeakLink Labs, you will execute real supply chain attacks against isolated lab infrastructure, then build the defenses that stop them. You will work with Git repositories, package registries, container images, build pipelines, and signing systems across 50 hands-on labs organized into 8 tiers.
+
+The main goal is to help you understand how software supply chains work, where trust breaks down, and what good decisions look like from different roles. You do not need to become a detection engineer to get value from the platform.
 
 ---
 
 ## Choose Your Setup Path
 
-WeakLink Labs supports three ways to get started. Pick the one that fits your situation.
+WeakLink Labs supports two local paths plus Codespaces. Use `make` as the host-side interface.
 
-### Quick Start (Docker Compose)
+### Recommended Path
 
-The fastest way to start. Requires only Docker.
-
-| Tool | Minimum version | Install |
-|------|----------------|---------|
-| [Docker](https://docs.docker.com/get-docker/) | 20.10+ | `brew install --cask docker` |
-
-```bash
-docker compose up -d
-open http://localhost:8000
-```
-
-This pulls the pre-built images and starts all services. The guide is available at [http://localhost:8000](http://localhost:8000) and the workstation terminal at [http://localhost:7681](http://localhost:7681).
-
-### Full Experience (Kubernetes)
-
-Runs the platform on a local Kubernetes cluster. This gives you the full infrastructure (Helm charts, services, pods) and is closer to a production setup. Recommended if you want to explore Kubernetes-based supply chain attacks in later tiers.
+If you want the main local experience, use `make start`.
 
 | Tool | Minimum version | Install | What it does |
 |------|----------------|---------|--------------|
 | [Docker](https://docs.docker.com/get-docker/) | 20.10+ | `brew install --cask docker` | Container runtime |
 | [minikube](https://minikube.sigs.k8s.io/) | 1.30+ | `brew install minikube` | Runs a single-node Kubernetes cluster locally |
 | [kubectl](https://kubernetes.io/docs/tasks/tools/) | 1.27+ | `brew install kubectl` | CLI for interacting with Kubernetes clusters |
-| [Helm](https://helm.sh/) | 3.12+ | `brew install helm` | Kubernetes package manager for deploying the lab chart |
+| [Helm](https://helm.sh/) | 3.12+ | `brew install helm` | Deploys the lab chart |
 
 ```bash
-./start.sh
+make start
 ```
 
-This starts minikube, builds all images, and deploys the platform via Helm. When it finishes, open [http://localhost:8000](http://localhost:8000).
+When it finishes, open [http://localhost:8000](http://localhost:8000). For most learners, that is enough.
+
+### Docker-Only Alternative
+
+The fastest alternative. Requires only Docker.
+
+| Tool | Minimum version | Install |
+|------|----------------|---------|
+| [Docker](https://docs.docker.com/get-docker/) | 20.10+ | `brew install --cask docker` |
+
+```bash
+make compose-up
+open http://localhost:8000
+```
+
+This pulls the pre-built images and starts all services. The guide is available at [http://localhost:8000](http://localhost:8000) and the workstation terminal at [http://localhost:7681](http://localhost:7681).
 
 ### Zero Install (GitHub Codespaces)
 
 Open the repository in a GitHub Codespace. The devcontainer configuration handles all setup automatically. No local installation required.
 
+### Host-Side Commands
+
+Use `make` for routine host-side control:
+
+```bash
+make start
+make stop
+make restart
+make status
+make logs
+make shell
+make compose-up
+make compose-down
+```
+
+The top-level `start.sh` and `stop.sh` scripts back the Make targets and are kept as implementation details, not as the primary user interface.
+
 ---
 
 ## Connecting to the Lab Environment
 
-Labs run inside your Docker Compose or Kubernetes environment. You can connect in two ways:
+Labs run inside your Docker Compose or Kubernetes environment. The intended learner flow is simple:
 
-1. **Browser (recommended):** Open any lab in the guide. The embedded terminal initializes the lab automatically.
-2. **CLI:** Run `./cli/weaklink shell` to open a terminal, then run `lab-init <lab-id>` to set up the environment for a specific lab.
+1. Start the platform.
+2. Open the guide in your browser.
+3. Use the built-in terminal for the lab.
 
 !!! warning "Two Terminals, Two Purposes"
-    You have two terminals, and it matters which one you use:
+    After startup, most of your work happens in the browser terminal.
 
     1. **The browser terminal** at [localhost:7681](http://localhost:7681) is your **lab workstation**. This is where you run lab commands (clone repos, install packages, execute attacks and defenses).
-    2. **Your own Mac/Linux terminal** is where you run `weaklink verify`, `weaklink hint`, and other CLI commands that check your progress.
+    2. **Your own Mac/Linux terminal** is only for starting or stopping the platform.
 
     When a lab says "run this command", it means inside the browser terminal unless it explicitly says otherwise.
 
+!!! info "Address Rules"
+    The docs use two kinds of addresses:
+
+    1. **`localhost:*` addresses** are for your host browser. Examples: the guide at [http://localhost:8000](http://localhost:8000), the workstation terminal at [http://localhost:7681](http://localhost:7681), and Gitea at [http://localhost:3000](http://localhost:3000).
+    2. **Service names** like `gitea:3000`, `pypi-private:8080`, `verdaccio:4873`, and `registry:5000` are for commands you run *inside the workstation terminal*.
+
+    If a lab tells you to open a page in your browser, it should use a `localhost` URL. If it tells you to run `curl`, `pip`, `npm`, or `docker` commands, those usually target service names from inside the workstation.
+
 ### Workstation Terminal
 
-The terminal below connects directly to your workstation. You can run all lab commands here without leaving the browser.
+The workstation terminal is available at [http://localhost:7681](http://localhost:7681). Lab pages also open it in the split terminal panel so you can work without leaving the guide.
 
 <div class="terminal-embed">
   <iframe src="http://localhost:7681" title="WeakLink Workstation Terminal"></iframe>
@@ -107,22 +135,23 @@ From inside the workstation, these services are reachable:
 | Gitea | `gitea:3000` | Git hosting (like GitHub) |
 | Container Registry | `registry:5000` | Local Docker/OCI image registry |
 
-### Starting and Verifying Labs
+From your host browser, the main UI surfaces are:
 
-Each lab initializes automatically when you open it in the guide. If using the CLI directly, run `lab-init <lab-id>` to set up the environment. To verify your work after completing a lab:
+| Surface | URL | Purpose |
+|---------|-----|---------|
+| Guide | `http://localhost:8000` | Main learning interface |
+| Workstation terminal | `http://localhost:7681` | Browser access to the lab shell |
+| Gitea | `http://localhost:3000` | Git UI used in CI/CD and repo review labs |
 
-```bash
-# Run from OUTSIDE the workstation (your host terminal)
-weaklink verify <lab-id>
-```
+### Starting Labs
 
-For example: `weaklink verify 1.2` to verify the Dependency Confusion lab.
+Each lab initializes automatically when you open it in the guide. You do not need to manually start individual labs or jump back out to your host terminal to finish them.
 
 ---
 
-## The Four-Phase Structure
+## The Learning Flow
 
-Every lab follows the same progression:
+Most attack-focused labs use the same progression:
 
 <div class="phase-flow" markdown>
   <span class="phase-step understand">1. Understand</span>
@@ -162,9 +191,9 @@ Build the defenses that stop the attack you just performed. Configure branch pro
 
 <span class="phase-badge detect">DETECT</span>
 
-Learn what this attack looks like in logs, SIEM alerts, and CI output. Map the technique to MITRE ATT&CK and write detection rules you can use at work tomorrow.
+When it fits the topic, connect the attack to detection, triage, policy, or operational impact. Some labs stay hands-on and technical. Others shift toward case-study analysis or program design.
 
-**Detection is not a separate skill.** It is built into every lab so you learn to find attacks as you learn to execute them.
+**You do not need formal detection engineering knowledge to use the platform.** Detection is one perspective, not the only one.
 
 ---
 
@@ -174,7 +203,8 @@ If you are new to supply chain security, follow the tiers in order:
 
 1. **Tier 0: Foundations.** Understand Git, package managers, and containers before attacking them
 2. **Tier 1: Package Security.** The most common real-world attack surface
-3. **Tier 2+: Advanced.** Build pipelines, container supply chains, artifact integrity, and much more
+3. **Tier 2-5: Core path.** Build pipelines, container supply chains, artifact integrity, and infrastructure code
+4. **Tier 6-7: Optional advanced branches.** Case studies, incident response, and threat modeling
 
 If you already have experience, jump directly to the tier that matches your interest. Each lab lists its prerequisites at the top.
 
@@ -185,4 +215,4 @@ If you already have experience, jump directly to the tier that matches your inte
 - **Read the output.** When a command fails or produces unexpected results, that is often the point of the exercise.
 - **Don't skip Phase 1.** The "Understand" phase teaches you what normal looks like, which makes the attack in Phase 2 much more impactful.
 - **Take notes.** Each lab ends with a summary table. Use it as a reference when hardening your own systems.
-- **Verify your work.** Run `weaklink verify <lab-id>` after each lab to confirm you completed all phases.
+- **Stay in the flow.** Use the guide and built-in terminal as the main experience instead of bouncing between tools.
