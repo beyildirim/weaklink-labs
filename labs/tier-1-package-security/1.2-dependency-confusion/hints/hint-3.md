@@ -17,4 +17,4 @@ python app.py        # Should show no compromise
 cat /etc/pip.conf    # Should NOT contain extra-index-url
 ```
 
-Then exit and run `weaklink verify 1.2`.
+Then rerun the app and confirm the private package is the one being used.

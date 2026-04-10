@@ -1,5 +1,5 @@
 #!/bin/bash
-# Build and push the safe image to the local registry, tagged as "latest".
+# Reset the seeded safe image in the local registry so "latest" starts clean.
 # This simulates the initial state: you pull an image and it is safe.
 
 set -euo pipefail
@@ -15,16 +15,11 @@ for i in $(seq 1 30); do
     sleep 1
 done
 
-echo "[*] Building safe image..."
-cd /lab/src/app
-docker build -t "${REGISTRY}/webapp:latest" -t "${REGISTRY}/webapp:1.0.0" .
-
-echo "[*] Pushing safe image to local registry..."
-docker push "${REGISTRY}/webapp:latest"
-docker push "${REGISTRY}/webapp:1.0.0"
+echo "[*] Restoring safe image tags in the local registry..."
+crane --insecure copy "${REGISTRY}/webapp:1.0.0" "${REGISTRY}/webapp:latest" >/tmp/0.3-crane-copy.log 2>&1
 
 echo "[*] Recording safe image digest..."
-SAFE_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' "${REGISTRY}/webapp:latest" 2>/dev/null | cut -d@ -f2)
+SAFE_DIGEST=$(crane --insecure digest "${REGISTRY}/webapp:1.0.0" 2>/dev/null)
 echo "${SAFE_DIGEST}" > /lab/safe-digest.txt
 echo "[+] Safe image digest: ${SAFE_DIGEST}"
 

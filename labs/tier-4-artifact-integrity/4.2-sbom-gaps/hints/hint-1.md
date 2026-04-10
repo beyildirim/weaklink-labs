@@ -2,13 +2,13 @@ Run multiple SBOM generators on the target container image:
 
 ```
 # Using syft
-syft weaklink-app:latest -o cyclonedx-json > /app/sbom-syft.json
+syft registry:5000/weaklink-app:vulnerable -o cyclonedx-json > /app/sbom-syft.json
 
 # Using trivy
-trivy image --format cyclonedx weaklink-app:latest > /app/sbom-trivy.json
+trivy image --format cyclonedx registry:5000/weaklink-app:vulnerable > /app/sbom-trivy.json
 
 # Using cdxgen (if available)
-cdxgen -o /app/sbom-cdxgen.json weaklink-app:latest
+cdxgen -o /app/sbom-cdxgen.json registry:5000/weaklink-app:vulnerable
 ```
 
 Compare the component counts:

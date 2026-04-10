@@ -34,71 +34,19 @@ What to look for:
 
 ---
 
-### SOC Alert Rules
+## How to Think About Detection
 
-When you see **"Container image digest changed for tag"** or **"Container process spawned unexpected child process"**: someone pushed a new image to your registry using the same tag, replacing the legitimate image. Every subsequent deployment or pod restart pulled the attacker's image. The backdoored container looks identical from the outside but contains additional endpoints, reverse shells, or exfiltration logic. Compare the current image digest against your known-good digest and inspect layers with `docker history` and `docker inspect`.
+At this stage, the key habit is comparing what you expected to deploy with what actually ran.
 
-### CI Integration
+Ask:
 
-Add this GitHub Actions workflow to enforce digest pinning in Dockerfiles. Save as `.github/workflows/dockerfile-lint.yml`:
+- Did the same tag suddenly resolve to a different digest?
+- Was the image push performed by the expected pipeline or user?
+- Did the running container expose behavior that the original image did not have?
 
-```yaml
-name: Dockerfile Digest Pinning Check
+If you cannot answer those questions quickly, your image trust model is too weak.
 
-on:
-  pull_request:
-    paths:
-      - '**/Dockerfile*'
-      - '**/docker-compose*.yml'
-  push:
-    branches: [main]
-    paths:
-      - '**/Dockerfile*'
-      - '**/docker-compose*.yml'
-
-permissions:
-  contents: read
-
-jobs:
-  check-digest-pinning:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Check Dockerfiles for tag-only references
-        run: |
-          EXIT_CODE=0
-          echo "Scanning for Dockerfiles..."
-
-          while read -r dockerfile; do
-            echo "Checking: ${dockerfile}"
-
-            # Find FROM lines that use tags instead of digests
-            UNPINNED=$(grep -n '^FROM ' "$dockerfile" | grep -v '@sha256:' | grep -v 'scratch' || true)
-
-            if [ -n "$UNPINNED" ]; then
-              echo "::error file=${dockerfile}::Found unpinned base image(s):"
-              echo "$UNPINNED"
-              echo ""
-              echo "Fix: Replace tag references with digest pins."
-              echo "  Before: FROM python:3.11-slim"
-              echo "  After:  FROM python:3.11-slim@sha256:abc123..."
-              echo ""
-              echo "Get the digest with: docker pull python:3.11-slim && docker inspect --format='{{index .RepoDigests 0}}' python:3.11-slim"
-              EXIT_CODE=1
-            fi
-          done < <(find . -name 'Dockerfile*' -type f)
-
-          exit $EXIT_CODE
-
-      - name: Check for :latest tags
-        run: |
-          LATEST_REFS=$(grep -rn ':latest' --include='Dockerfile*' --include='docker-compose*.yml' . || true)
-          if [ -n "$LATEST_REFS" ]; then
-            echo "::warning::Found ':latest' tag references (these are mutable and unsafe):"
-            echo "$LATEST_REFS"
-          fi
-```
+If you want concrete rule examples or CI enforcement snippets later, use the shared resources linked at the bottom of the page.
 
 ---
 

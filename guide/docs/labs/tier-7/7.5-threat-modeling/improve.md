@@ -38,11 +38,6 @@
 | **Quarter 2** | Enforce commit signing | Unsigned commits | Medium |
 | **Quarter 2** | Migrate CI to OIDC credentials | Secret exfiltration risk | High |
 
-## Final verification
-
-```bash
-weaklink verify 7.5
-```
 
 ## What You Learned
 

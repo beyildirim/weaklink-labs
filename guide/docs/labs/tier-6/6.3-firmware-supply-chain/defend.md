@@ -82,9 +82,3 @@ Generates an SPDX-format SBOM for the firmware image, including SHA256 hash, ver
 cat /app/signing/verify_secureboot.sh
 /app/signing/verify_secureboot.sh
 ```
-
-### Verify the defense
-
-```bash
-weaklink verify 6.3
-```

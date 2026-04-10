@@ -48,9 +48,3 @@ cat /app/dependency-monitor.yml
 ```
 
 Automated scanning with ticket creation, owner assignment, SLA tracking, and escalation at 12, 24, and 36 hours for critical CVEs. The configuration maps `struts2-core` to a `critical_48h` SLA with automatic escalation to team lead, VP Engineering, and CISO.
-
-### Verify understanding
-
-```bash
-weaklink verify 6.10
-```

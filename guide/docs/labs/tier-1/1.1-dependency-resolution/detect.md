@@ -35,106 +35,19 @@ What to look for:
 
 ---
 
-### SOC Alert Rules
+## How to Think About Detection
 
-**Alert:** "Build server making outbound connections to pypi.org"
+At this stage, detection is mostly about noticing when dependency resolution is happening in places you did not intend.
 
-CI/CD runners should **never** contact public PyPI directly. If proxy logs show `pypi.org` requests from build infrastructure:
+Ask:
 
-1. **Misconfiguration**: someone added `--extra-index-url` to pip config (common, dangerous)
-2. **Active attack**: an attacker modified pip config to add a public fallback
+- Did a build system contact a public registry when it should use a private one?
+- Did the same package name suddenly resolve from a different source?
+- Did a harmless version constraint change cause a large version jump?
 
-Either way, high-signal alert. Remediation: switch to `--index-url` (single registry) and verify lockfiles exist.
+Those are often configuration failures before they become full attacks.
 
-**Triage steps:**
-
-1. Check which host made the request (CI runner? Developer workstation?)
-2. Pull the pip.conf. Does it have `extra-index-url`?
-3. Check what package was requested. Is it an internal package name on public PyPI?
-4. If yes: treat as potential dependency confusion and escalate immediately
-
-### CI Integration
-
-Add this to your GitHub Actions pipeline to catch `extra-index-url` misconfigurations and missing lockfiles before they reach production.
-
-**`.github/workflows/pip-config-check.yml`:**
-
-```yaml
-name: Dependency Resolution Safety Check
-
-on:
-  pull_request:
-    paths:
-      - "requirements*.txt"
-      - "setup.py"
-      - "setup.cfg"
-      - "pyproject.toml"
-      - "pip.conf"
-      - ".pip/**"
-
-jobs:
-  check-pip-config:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Reject extra-index-url in pip config
-        run: |
-          echo "--- Scanning for extra-index-url usage ---"
-          FOUND=0
-          for f in pip.conf .pip/pip.conf setup.cfg pyproject.toml; do
-            if [ -f "$f" ]; then
-              if grep -qi "extra-index-url" "$f"; then
-                echo "::error file=$f::BLOCKED: $f contains extra-index-url. Use --index-url instead."
-                FOUND=1
-              fi
-            fi
-          done
-          for f in requirements*.txt; do
-            if [ -f "$f" ]; then
-              if grep -qi "\-\-extra-index-url" "$f"; then
-                echo "::error file=$f::BLOCKED: $f contains --extra-index-url inline flag."
-                FOUND=1
-              fi
-            fi
-          done
-          if [ "$FOUND" -eq 1 ]; then
-            exit 1
-          fi
-          echo "PASS: No extra-index-url found."
-
-      - name: Verify lockfile exists
-        run: |
-          if [ -f "requirements.lock" ] || [ -f "requirements-lock.txt" ] || \
-             [ -f "poetry.lock" ] || [ -f "Pipfile.lock" ] || [ -f "pdm.lock" ]; then
-            echo "PASS: Lockfile found."
-          else
-            echo "::error::No lockfile found. Run 'pip freeze > requirements.lock' and commit it."
-            exit 1
-          fi
-
-      - name: Check version pins in requirements.txt
-        run: |
-          UNPINNED=0
-          for f in requirements*.txt; do
-            if [ -f "$f" ]; then
-              while IFS= read -r line; do
-                [[ "$line" =~ ^[[:space:]]*# ]] && continue
-                [[ "$line" =~ ^[[:space:]]*$ ]] && continue
-                [[ "$line" =~ ^- ]] && continue
-                if ! echo "$line" | grep -q "=="; then
-                  echo "::warning file=$f::Unpinned dependency: $line (use == for exact version)"
-                  UNPINNED=1
-                fi
-              done < "$f"
-            fi
-          done
-          if [ "$UNPINNED" -eq 1 ]; then
-            echo "WARNING: Some dependencies are not pinned to exact versions."
-          else
-            echo "PASS: All dependencies are pinned."
-          fi
-```
+If you want concrete rule examples or CI enforcement snippets later, use the shared resources linked at the bottom of the page.
 
 ---
 

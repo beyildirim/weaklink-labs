@@ -58,9 +58,3 @@ cosign verify --key /app/cosign.pub registry:5000/weaklink-app:signed | jq '.[].
 ```
 
 Rekor timestamps prove when a signature was created. You can reject signatures older than your policy allows.
-
-### Step 4: Verify the lab
-
-```bash
-weaklink verify 4.5
-```

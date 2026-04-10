@@ -63,9 +63,9 @@ git push origin feature/add-logging
 ### Step 4: Create a pull request
 
 ```bash
-curl -sf -X POST "http://gitea:3000/api/v1/repos/developer/wl-webapp/pulls" \
+curl -sf -X POST "http://gitea:3000/api/v1/repos/weaklink/wl-webapp/pulls" \
   -H "Content-Type: application/json" \
-  -u "developer:password" \
+  -u "weaklink:weaklink" \
   -d '{"title":"Add logging","base":"main","head":"feature/add-logging"}'
 ```
 

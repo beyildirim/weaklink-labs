@@ -19,6 +19,10 @@ for i in $(seq 1 60); do
 done
 
 # Create the repo via API
+echo "[*] Resetting repository '${REPO_NAME}'..."
+curl -sf -X DELETE "${GITEA_URL}/api/v1/repos/${ADMIN_USER}/${REPO_NAME}" \
+    -u "${ADMIN_USER}:${ADMIN_PASS}" > /dev/null 2>&1 || true
+
 echo "[*] Creating repository '${REPO_NAME}'..."
 curl -sf -X POST "${GITEA_URL}/api/v1/user/repos" \
     -H "Content-Type: application/json" \

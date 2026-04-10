@@ -16,9 +16,6 @@ jobs:
           path: ~/.cache/pip
           # PR cache is isolated from main -- cannot poison main's cache
           key: pip-pr-${{ github.event.pull_request.number }}-${{ hashFiles('requirements.txt') }}
-          # Can restore from main (read-only) but writes go to PR-scoped key
-          restore-keys: |
-            pip-${{ runner.os }}-
 
       - name: Install dependencies
         run: pip install -r requirements.txt

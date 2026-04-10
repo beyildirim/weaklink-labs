@@ -52,9 +52,3 @@ ENTRYPOINT ["/app/binary"]
 ```
 
 One layer. Nothing to hide in.
-
-### Step 5: Verify the lab
-
-```bash
-weaklink verify 3.1
-```

@@ -11,7 +11,7 @@ To fix:
 
 ```bash
 # 1. Remove unnecessary exemptions from gatekeeper config
-# Only kube-system should be exempt
+# Keep the system namespaces the lab already needs, but remove monitoring.
 
 # 2. Create an audit-config.yaml to detect drift
 cat > /app/policies/audit-config.yaml << 'EOF'
@@ -22,15 +22,15 @@ metadata:
 spec:
   sync:
     syncOnly:
-    - group: ""
-      version: "v1"
-      kind: "Pod"
-    - group: "apps"
-      version: "v1"
-      kind: "Deployment"
-    - group: "batch"
-      version: "v1"
-      kind: "CronJob"
+      - group: ""
+        version: "v1"
+        kind: "Pod"
+      - group: "apps"
+        version: "v1"
+        kind: "Deployment"
+      - group: "batch"
+        version: "v1"
+        kind: "CronJob"
 EOF
 
 # 3. Create policy for CRDs

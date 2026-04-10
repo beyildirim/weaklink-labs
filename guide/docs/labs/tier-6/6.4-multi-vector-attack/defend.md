@@ -112,9 +112,3 @@ spec:
 EOF
 kubectl apply -f /app/policies/verified-images-only.yaml
 ```
-
-### Verify the defense
-
-```bash
-weaklink verify 6.4
-```

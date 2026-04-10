@@ -12,7 +12,7 @@
   <a href="../improve/" class="phase-step upcoming">Improve</a>
 </div>
 
-**Goal:** Apply the playbook to the dependency confusion incident from [Lab 7.2](../7.2-incident-triage/).
+**Goal:** Apply the playbook to the dependency confusion incident from [Lab 7.2](../7.2-incident-triage/index.md).
 
 ## Step 1: Trace the incident through the playbook
 

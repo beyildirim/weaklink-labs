@@ -24,6 +24,63 @@ warn()    { echo -e "${YELLOW}[!]${NC} $*"; }
 err()     { echo -e "${RED}[-]${NC} $*"; }
 header()  { echo -e "\n${BOLD}$*${NC}"; }
 
+wait_for_http() {
+    local name="$1"
+    local url="$2"
+    local attempts="${3:-30}"
+
+    if ! command -v curl >/dev/null 2>&1; then
+        warn "curl not found. Skipping readiness check for ${name}."
+        return 0
+    fi
+
+    for ((i=1; i<=attempts; i++)); do
+        if curl -fsS "$url" >/dev/null 2>&1; then
+            ok "${name} is reachable at ${url}."
+            return 0
+        fi
+        sleep 1
+    done
+
+    err "${name} did not become reachable at ${url}."
+    return 1
+}
+
+start_port_forward() {
+    local name="$1"
+    local service="$2"
+    local local_port="$3"
+    local remote_port="$4"
+    local pidfile="$5"
+    local logfile="$6"
+    local healthcheck="${7:-}"
+
+    log "Starting port-forward for ${name} (localhost:${local_port})..."
+    nohup kubectl port-forward -n "${NAMESPACE}" "svc/${service}" "${local_port}:${remote_port}" > "${logfile}" 2>&1 &
+    local pf_pid=$!
+    echo "$pf_pid" > "${pidfile}"
+
+    for ((i=1; i<=15; i++)); do
+        if ! kill -0 "$pf_pid" 2>/dev/null; then
+            err "${name} port-forward exited early. Check ${logfile}."
+            return 1
+        fi
+
+        if grep -q "Forwarding from 127.0.0.1:${local_port}" "${logfile}" 2>/dev/null || \
+           grep -q "Forwarding from \\[::1\\]:${local_port}" "${logfile}" 2>/dev/null; then
+            break
+        fi
+
+        sleep 1
+    done
+
+    if [[ -n "${healthcheck}" ]]; then
+        wait_for_http "${name}" "${healthcheck}"
+    else
+        ok "${name} port-forward started (PID: ${pf_pid})."
+    fi
+}
+
 cleanup_on_failure() {
     local exit_code=$?
     if [[ $exit_code -ne 0 ]]; then
@@ -100,37 +157,12 @@ eval $(minikube docker-env)
 ok "Docker now targets minikube's daemon."
 
 # ============================================================
-# Step 4: Build all local images (skip if unchanged)
+# Step 4: Build all local images
 # ============================================================
 
 CURRENT_STEP="docker-build"
 header "Building Docker images..."
-
-build_image() {
-    local name="$1"
-    local dockerfile="$2"
-    local context="$3"
-
-    log "Building ${name}..."
-    if docker build -t "${name}" -f "${dockerfile}" "${context}" 2>&1 | tail -1; then
-        ok "${name} built."
-    else
-        err "Failed to build ${name}"
-        return 1
-    fi
-}
-
-build_image "weaklink-labs/guide:latest" \
-    "${SCRIPT_DIR}/images/guide/Dockerfile" \
-    "${SCRIPT_DIR}"
-
-build_image "weaklink-labs/workstation:latest" \
-    "${SCRIPT_DIR}/images/workstation/Dockerfile" \
-    "${SCRIPT_DIR}"
-
-build_image "weaklink-labs/lab-setup:latest" \
-    "${SCRIPT_DIR}/images/lab-setup/Dockerfile" \
-    "${SCRIPT_DIR}"
+"${SCRIPT_DIR}/scripts/build-images.sh"
 
 # ============================================================
 # Step 5: Deploy via Helm (upgrade --install is idempotent)
@@ -199,29 +231,25 @@ for pidfile in "${SCRIPT_DIR}/.weaklink-pf.pid" "${SCRIPT_DIR}/.weaklink-pf-ttyd
     fi
 done
 
-log "Starting port-forward for guide (localhost:8000)..."
-nohup kubectl port-forward -n "${NAMESPACE}" svc/guide 8000:8000 > "${SCRIPT_DIR}/.weaklink-pf-guide.log" 2>&1 &
-GUIDE_PF_PID=$!
-echo "$GUIDE_PF_PID" > "${SCRIPT_DIR}/.weaklink-pf.pid"
-ok "Guide port-forward started (PID: $GUIDE_PF_PID)."
+start_port_forward "guide" "guide" 8000 8000 \
+    "${SCRIPT_DIR}/.weaklink-pf.pid" \
+    "${SCRIPT_DIR}/.weaklink-pf-guide.log" \
+    "http://localhost:8000"
 
-log "Starting port-forward for web terminal (localhost:7681)..."
-nohup kubectl port-forward -n "${NAMESPACE}" svc/workstation 7681:7681 > "${SCRIPT_DIR}/.weaklink-pf-ttyd.log" 2>&1 &
-TTYD_PF_PID=$!
-echo "$TTYD_PF_PID" > "${SCRIPT_DIR}/.weaklink-pf-ttyd.pid"
-ok "Web terminal port-forward started (PID: $TTYD_PF_PID)."
+start_port_forward "web terminal" "workstation" 7681 7681 \
+    "${SCRIPT_DIR}/.weaklink-pf-ttyd.pid" \
+    "${SCRIPT_DIR}/.weaklink-pf-ttyd.log" \
+    "http://localhost:7681"
 
-log "Starting port-forward for verify API (localhost:7682)..."
-nohup kubectl port-forward -n "${NAMESPACE}" svc/workstation 7682:7682 > "${SCRIPT_DIR}/.weaklink-pf-verify.log" 2>&1 &
-VERIFY_PF_PID=$!
-echo "$VERIFY_PF_PID" > "${SCRIPT_DIR}/.weaklink-pf-verify.pid"
-ok "Verify API port-forward started (PID: $VERIFY_PF_PID)."
+start_port_forward "verify API" "workstation" 7682 7682 \
+    "${SCRIPT_DIR}/.weaklink-pf-verify.pid" \
+    "${SCRIPT_DIR}/.weaklink-pf-verify.log" \
+    "http://localhost:7682/healthz"
 
-log "Starting port-forward for Gitea (localhost:3000)..."
-nohup kubectl port-forward -n "${NAMESPACE}" svc/gitea 3000:3000 > "${SCRIPT_DIR}/.weaklink-pf-gitea.log" 2>&1 &
-GITEA_PF_PID=$!
-echo "$GITEA_PF_PID" > "${SCRIPT_DIR}/.weaklink-pf-gitea.pid"
-ok "Gitea port-forward started (PID: $GITEA_PF_PID)."
+start_port_forward "Gitea" "gitea" 3000 3000 \
+    "${SCRIPT_DIR}/.weaklink-pf-gitea.pid" \
+    "${SCRIPT_DIR}/.weaklink-pf-gitea.log" \
+    "http://localhost:3000"
 
 CURRENT_STEP="done"
 

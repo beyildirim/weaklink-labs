@@ -33,4 +33,4 @@ jobs:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
         run: |
           echo "Deploying with credentials..."
-          ./deploy.sh
+          bash deploy.sh

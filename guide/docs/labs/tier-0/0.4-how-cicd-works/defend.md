@@ -26,13 +26,13 @@ git revert HEAD --no-edit
 git push origin main
 ```
 
-Open the **Actions** tab in Gitea (`http://gitea:3000`) and confirm the pipeline runs cleanly without the exfiltration step.
+Open the **Actions** tab in Gitea (`http://localhost:3000`) and confirm the pipeline runs cleanly without the exfiltration step.
 
 ### Step 2: Enable branch protection in Gitea
 
 Now lock down `main` so nobody can push directly to it.
 
-1. Log in to Gitea at `http://gitea:3000` as `weaklink` / `weaklink`
+1. Log in to Gitea at `http://localhost:3000` as `weaklink` / `weaklink`
 2. Go to the repository: click on **weaklink/ci-demo**
 3. Click **Settings** (gear icon, top right of the repo page)
 4. Click **Branches** in the left sidebar
@@ -63,7 +63,7 @@ The push should be **rejected**. This means an attacker can no longer modify `.g
 
 ### Step 4: Verify workflow changes require review
 
-The safe path is through a pull request. Create a branch with a harmless change and submit a PR.
+The safe path is through a pull request. Create a branch with a harmless change, then open the PR in the Gitea UI.
 
 ```bash
 cd /workspace/ci-demo
@@ -74,18 +74,13 @@ git commit -m "Add comment via PR"
 git push origin feature/add-comment
 ```
 
-```bash
-curl -sf -X POST "http://gitea:3000/api/v1/repos/weaklink/ci-demo/pulls" \
-    -H "Content-Type: application/json" \
-    -u "weaklink:weaklink" \
-    -d '{
-        "title": "Add comment to app.py",
-        "body": "Safe change submitted through a pull request.",
-        "head": "feature/add-comment",
-        "base": "main"
-    }'
-```
+Then in Gitea:
 
+1. Open `weaklink/ci-demo`
+2. Go to **Pull Requests**
+3. Click **New Pull Request**
+4. Compare `feature/add-comment` into `main`
+5. Create the PR
 The PR cannot be merged without an approving review. If an attacker tried to sneak a pipeline modification into this PR, a reviewer would catch it before it reaches `main`.
 
 ### Step 5: Try the attack again
@@ -98,14 +93,14 @@ git checkout main
 git checkout -b attack/exfiltrate-secrets
 ```
 
-Edit `.gitea/workflows/ci.yml` and add the exfiltration step from the Break phase:
+Edit `.gitea/workflows/ci.yml` and add the exfiltration step from the Break phase inside the `deploy` job, right before `Deploy to staging`:
 
 ```yaml
       - name: Exfiltrate secrets
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
         run: |
-          echo "The secret is: $DEPLOY_KEY" > /tmp/stolen-secret.txt
+          echo "EXFILTRATED DEPLOY_KEY=$DEPLOY_KEY"
 ```
 
 ```bash
@@ -116,11 +111,6 @@ git push origin attack/exfiltrate-secrets
 
 The push to the *branch* succeeds (branch protection only covers `main`), but merging requires review. A reviewer would see the exfiltration step and reject the PR. The attack is blocked.
 
-### Step 6: Verify the lab
-
-```bash
-weaklink verify 0.4
-```
 
 ### Further Reading
 

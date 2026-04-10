@@ -82,11 +82,6 @@ grep -r -E '(curl|wget|nc |ncat|/dev/tcp)' /app/infra/ --include='*.tf'
 test -f /app/infra/.terraform.lock.hcl && echo "Lock file exists"
 ```
 
-### Step 5: Run verification
-
-```bash
-weaklink verify 5.3
-```
 
 ### Additional defenses
 

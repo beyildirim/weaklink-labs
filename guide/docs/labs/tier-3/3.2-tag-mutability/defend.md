@@ -83,9 +83,3 @@ spec:
             containers:
               - image: "*@sha256:*"
 ```
-
-### Step 5: Verify the lab
-
-```bash
-weaklink verify 3.2
-```

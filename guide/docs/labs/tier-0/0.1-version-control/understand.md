@@ -14,6 +14,8 @@
 
 ## Exploring a Git Repository
 
+Focus on two questions as you work through this phase: which files influence what gets built, and who is able to change them. Those trust boundaries matter more than memorizing Git commands.
+
 ### Step 1: Clone the repository
 
 ```bash

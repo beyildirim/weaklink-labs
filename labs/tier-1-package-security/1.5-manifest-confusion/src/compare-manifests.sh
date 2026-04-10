@@ -9,7 +9,7 @@
 set -euo pipefail
 
 PKG="${1:?Usage: $0 <package-name> [registry-url]}"
-REGISTRY="${2:-http://registry:4873}"
+REGISTRY="${2:-http://verdaccio:4873}"
 
 WORKDIR=$(mktemp -d)
 trap "rm -rf ${WORKDIR}" EXIT

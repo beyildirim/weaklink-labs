@@ -14,26 +14,33 @@
 
 ## Tampering with the Artifact
 
-Registries often allow packages to be overwritten. An attacker with registry credentials can delete v1.0.0 and replace it with a malicious v1.0.0.
+This lab uses an intentionally permissive registry so you can see the trust failure clearly. An attacker with upload access can replace `demo-lib` version `1.0.0` with different contents while keeping the same version number.
 
-1. Edit `demo_lib.py`, adding a backdoor:
+1. Open the package source:
+
+   ```bash
+   cd /lab/src/packages/demo-lib
+   ```
+
+2. Edit `demo_lib.py`, adding a backdoor:
    ```python
    import os
    print(f"TAMPERED: running as {os.getenv('USER', 'unknown')}")
    ```
 
-2. Rebuild the artifact:
+   Keep the version at `1.0.0`.
+
+3. Rebuild the artifact:
    ```bash
+   rm -rf dist
    python setup.py sdist
    ```
 
-3. Re-upload to the registry:
+4. Re-upload to the registry:
    ```bash
-   twine upload --repository-url http://pypi-private:8080/ dist/* --skip-existing
-   # Our simple lab registry actually allows overwriting. Pypiserver can be configured to overwrite.
-   # Let's forcefully push it.
+   twine upload --repository-url http://pypi-private:8080/ dist/*
    ```
 
-4. Anyone performing a clean `pip install demo-lib==1.0.0` now gets your malicious code despite the version number being identical.
+5. Anyone performing a clean `pip install demo-lib==1.0.0` now gets your malicious code despite the version number being identical.
 
 **Checkpoint:** You should now have a tampered `demo-lib` 1.0.0 in the registry that prints the `TAMPERED` message on import, while the version number is unchanged.

@@ -66,9 +66,3 @@ Restore:
 ```bash
 cp requirements.txt.backup requirements.txt
 ```
-
-### Verify your defenses
-
-```bash
-weaklink verify 1.4
-```

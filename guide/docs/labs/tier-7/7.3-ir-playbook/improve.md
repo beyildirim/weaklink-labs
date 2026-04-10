@@ -26,11 +26,6 @@ During the 3-hour window, the attacker pushed a commit adding a subtle backdoor 
 
 Instead of exfiltrating secrets, the package modifies its `authenticate()` function to accept a hardcoded password. No C2 traffic, no EDR alerts. Detection requires code review or runtime authentication anomaly monitoring.
 
-## Final verification
-
-```bash
-weaklink verify 7.3
-```
 
 ## What You Learned
 

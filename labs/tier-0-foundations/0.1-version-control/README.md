@@ -1,5 +1,7 @@
 # Lab 0.1: How Version Control Works
 
+> Legacy note: The canonical learner-facing version of this lab lives in the browser guide. Start the platform with `make start`, open the guide, and use the built-in terminal. Treat this README as a secondary local reference.
+
 **Time:** ~25 minutes | **Difficulty:** Beginner | **Prerequisites:** None
 
 Version control (Git) is the foundation of every software supply chain. Every piece of code, every configuration change, every build script lives in a Git repository. If you can compromise what goes into a repo, you control what gets built and deployed.
@@ -21,24 +23,11 @@ This lab runs a **Gitea** server (a lightweight Git hosting platform, similar to
 ## Starting the Lab
 
 ```bash
-weaklink start 0.1
+make start
 ```
 
-Wait about 15-20 seconds for setup to complete. Check that everything is running:
-
-```bash
-kubectl get pods -l lab=0.1
-```
-
-You should see `gitea` and `workstation` pods running.
-
-Now open a shell inside the workstation pod:
-
-```bash
-weaklink shell 0.1
-```
-
-You are now inside the workstation pod. All Git commands below run here.
+Then open the guide in your browser and use the built-in terminal for the lab.
+All Git commands below run there.
 
 ---
 

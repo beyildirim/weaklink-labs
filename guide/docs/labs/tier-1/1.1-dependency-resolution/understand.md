@@ -14,6 +14,8 @@
 
 ## How pip Resolves Dependencies
 
+Focus on the decision points in the resolver. The important lesson is not that `pip` has flags. It is that small configuration choices determine which source wins when the same package name exists in multiple places.
+
 ### Step 1: Look at your application
 
 ```bash

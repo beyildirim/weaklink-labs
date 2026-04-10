@@ -1,5 +1,7 @@
 # Lab 0.2: How Package Managers Work
 
+> Legacy note: The canonical learner-facing version of this lab lives in the browser guide. Start the platform with `make start`, open the guide, and use the built-in terminal. Treat this README as a secondary local reference.
+
 **Time:** ~25 minutes | **Difficulty:** Beginner | **Prerequisites:** Lab 0.1
 
 Every modern application is built from dozens or hundreds of third-party packages. When you run `pip install`, you are downloading and executing code written by strangers. Package managers make this convenient, but convenience is the enemy of security.
@@ -20,24 +22,11 @@ This lab runs a **local PyPI server** (a private package repository, like a mini
 ## Starting the Lab
 
 ```bash
-weaklink start 0.2
+make start
 ```
 
-Wait about 10-15 seconds for the packages to build. Check that everything is running:
-
-```bash
-kubectl get pods -l lab=0.2
-```
-
-You should see the `pypi` and `workstation` pods running.
-
-Open a shell inside the workstation pod:
-
-```bash
-weaklink shell 0.2
-```
-
-You are now inside the workstation pod. All commands below run here.
+Then open the guide in your browser and use the built-in terminal for the lab.
+All commands below run there.
 
 ---
 

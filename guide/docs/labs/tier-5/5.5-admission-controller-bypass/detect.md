@@ -20,7 +20,7 @@ Bypasses leave traces in Kubernetes audit logs. Key signals: resources in exempt
 
 **Key indicators:**
 
-- Pod creation in `kube-system` by non-system service accounts
+- Pod creation in `monitoring` by non-system service accounts
 - CRDs with privileged security contexts
 - Patch operations adding `privileged: true`, `hostNetwork`, or `hostPID`
 - Webhook failures (HTTP 500) with `failurePolicy: Ignore`
@@ -29,7 +29,7 @@ Bypasses leave traces in Kubernetes audit logs. Key signals: resources in exempt
 | Indicator | What It Means |
 |-----------|---------------|
 | Webhook endpoint returning 5xx errors | Admission controller failing, resources may bypass policy |
-| DNS query from `kube-system` pod to external domain | Workload in exempt namespace reaching attacker infrastructure |
+| DNS query from `monitoring` pod to external domain | Workload in exempt namespace reaching attacker infrastructure |
 | Privileged container making host-level network connections | Bypassed pod accessing node network stack |
 
 ### CI Integration
@@ -42,7 +42,8 @@ name: Admission Controller Policy Check
 on:
   pull_request:
     paths:
-      - "k8s/**"
+      - "gatekeeper-config/**"
+      - "exploits/**"
       - "policies/**"
 
 jobs:
@@ -58,7 +59,7 @@ jobs:
           sudo mv conftest /usr/local/bin/
 
       - name: Test OPA policies against manifests
-        run: conftest test k8s/ --policy policies/opa/ --all-namespaces
+        run: conftest test exploits/ --policy policies/ --all-namespaces
 
       - name: Verify webhook failurePolicy is Fail
         run: |
@@ -79,7 +80,7 @@ jobs:
 | **Deploy Container** | [T1610](https://attack.mitre.org/techniques/T1610/) | Primary. Deploying privileged containers via policy gaps (exempt namespaces, uncovered CRDs) |
 | **Exploitation for Privilege Escalation** | [T1068](https://attack.mitre.org/techniques/T1068/) | Post-admission mutations escalate workload privileges |
 
-**Alerts:** "Pod created in kube-system by non-system account" (audit log), "Admission webhook returning errors" (API server metrics), "Gatekeeper audit violation: privileged container detected" (policy engine).
+**Alerts:** "Pod created in monitoring by non-system account" (audit log), "Admission webhook returning errors" (API server metrics), "Gatekeeper audit violation: privileged container detected" (policy engine).
 
 **Triage steps:**
 

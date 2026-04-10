@@ -46,11 +46,15 @@ make compose-up
 
 Open **http://localhost:8000** in your browser. Images are pulled from GHCR.
 
+To pin a published release instead of `latest`, set `WEAKLINK_IMAGE_TAG=<release-tag>` before `make compose-up`.
+
 ### GitHub Codespaces (zero install)
 
 Click the **Open in GitHub Codespaces** badge above. Everything is pre-installed.
 
 For detailed setup, prerequisites, and host-side commands, see [guide/docs/getting-started.md](guide/docs/getting-started.md).
+
+For a strict docs/content validation pass, run `make docs-check`.
 
 ## What You'll Learn
 

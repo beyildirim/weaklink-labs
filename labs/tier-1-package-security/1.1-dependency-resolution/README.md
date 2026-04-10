@@ -1,5 +1,7 @@
 # Lab 1.1: How Dependency Resolution Works
 
+> Legacy note: The canonical learner-facing version of this lab lives in the browser guide. Start the platform with `make start`, open the guide, and use the built-in terminal. Treat this README as a secondary local reference.
+
 When you run `pip install`, pip doesn't just download one package. It resolves an entire dependency tree. Understanding how this works is essential because **every supply chain attack exploits something about this process**.
 
 This lab gives you a private PyPI registry, a public PyPI registry, and a Python app with dependencies. You'll see exactly how pip decides which package version to install and from which source.
@@ -17,10 +19,10 @@ This lab gives you a private PyPI registry, a public PyPI registry, and a Python
 | `pypi-private` | Corporate internal PyPI server with legitimate packages |
 | `pypi-public` | Simulated public PyPI (starts with a higher-version fake package) |
 
-Connect to the workstation:
+Use the built-in browser terminal:
 
 ```bash
-weaklink shell 1.1
+make start
 ```
 
 ## Phase 1: Understand
@@ -207,14 +209,7 @@ This lockfile captures the exact versions of every installed package. Commit thi
 ### Step 5: Verify the defense
 
 ```bash
-# Run the lab verification
-exit
-```
-
-Then run:
-
-```bash
-weaklink verify 1.1
+# Continue with the guide flow from the browser.
 ```
 
 ## What You Learned

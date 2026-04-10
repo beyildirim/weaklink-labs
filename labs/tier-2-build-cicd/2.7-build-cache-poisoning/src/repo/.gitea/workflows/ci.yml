@@ -16,8 +16,11 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          # VULNERABLE: static cache key shared across all branches
-          key: pip-cache-v1
+          # VULNERABLE: the broad restore-keys fallback can restore a poisoned
+          # cache created by another branch.
+          key: pip-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            pip-${{ runner.os }}-
 
       - name: Install dependencies
         run: pip install -r requirements.txt

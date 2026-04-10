@@ -16,6 +16,8 @@
 
 WeakLink Corp has an internal Python package called `wl-auth` on their private registry. Your job is to understand how pip resolves this package and where the danger lies.
 
+Focus on root cause as you go. The attacker does not win because the package name is clever. The attacker wins because the environment treats private and public sources as one version pool.
+
 ### Step 1: Explore the corporate app
 
 Look at what the app depends on and how it uses the internal package:

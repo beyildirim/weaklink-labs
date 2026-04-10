@@ -1,16 +1,17 @@
 # WeakLink Labs — Docker Compose
 # Quick start: docker compose up -d
 # Guide: http://localhost:8000 | Terminal: http://localhost:7681
+# Set WEAKLINK_IMAGE_TAG=<release-tag> to pin GHCR images.
 
 services:
   guide:
-    image: ghcr.io/beyildirim/weaklink-labs/guide:latest
+    image: ghcr.io/beyildirim/weaklink-labs/guide:${WEAKLINK_IMAGE_TAG:-latest}
     ports:
       - "8000:8000"
     restart: unless-stopped
 
   workstation:
-    image: ghcr.io/beyildirim/weaklink-labs/workstation:latest
+    image: ghcr.io/beyildirim/weaklink-labs/workstation:${WEAKLINK_IMAGE_TAG:-latest}
     ports:
       - "7681:7681"
       - "7682:7682"
@@ -42,6 +43,9 @@ services:
 
   gitea:
     image: gitea/gitea:1.22
+    ports:
+      - "3000:3000"
+      - "2222:2222"
     environment:
       - GITEA__security__INSTALL_LOCK=true
       - GITEA__database__DB_TYPE=sqlite3
@@ -57,7 +61,7 @@ services:
       - registry-data:/var/lib/registry
 
   lab-setup:
-    image: ghcr.io/beyildirim/weaklink-labs/lab-setup:latest
+    image: ghcr.io/beyildirim/weaklink-labs/lab-setup:${WEAKLINK_IMAGE_TAG:-latest}
     depends_on:
       - pypi-private
       - pypi-public

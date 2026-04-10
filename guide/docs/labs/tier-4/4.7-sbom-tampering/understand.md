@@ -14,16 +14,10 @@
 
 ## SBOMs Are Just JSON Files
 
-### Step 1: Generate an SBOM for the application
+### Step 1: Inspect the seeded SBOM
 
 ```bash
-syft /app -o cyclonedx-json > /app/sbom.json
-```
-
-### Step 2: Inspect the structure
-
-```bash
-cat /app/sbom.json | jq '{
+cat /app/sbom-original.json | jq '{
   bomFormat: .bomFormat,
   specVersion: .specVersion,
   serialNumber: .serialNumber,
@@ -31,12 +25,18 @@ cat /app/sbom.json | jq '{
 }'
 ```
 
+### Step 2: Inspect the structure
+
+```bash
+cat /app/sbom-original.json | jq '.components[] | {name, version, purl}'
+```
+
 A CycloneDX SBOM is a JSON document with a `components` array. Each component has a name, version, purl, and optional hashes. There is no signature, no MAC, no integrity field.
 
 ### Step 3: Find vulnerable components
 
 ```bash
-grype sbom:/app/sbom.json --output table
+grype sbom:/app/sbom-original.json --output table
 ```
 
 Note a component with a critical CVE.

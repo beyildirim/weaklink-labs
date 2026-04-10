@@ -40,9 +40,5 @@ spec:
               value: {{ .Values.tiers.tier6.enabled | quote }}
             - name: TIER7_ENABLED
               value: {{ .Values.tiers.tier7.enabled | quote }}
-            - name: TIER8_ENABLED
-              value: {{ .Values.tiers.tier8.enabled | quote }}
-            - name: TIER9_ENABLED
-              value: {{ .Values.tiers.tier9.enabled | quote }}
           resources:
             {{- toYaml .Values.labSetup.resources | nindent 12 }}

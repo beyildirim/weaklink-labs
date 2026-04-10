@@ -16,4 +16,4 @@ pip-compile --generate-hashes \
 bash verify-lockfile.sh requirements.in requirements.txt
 ```
 
-Run `weaklink verify 1.4` from your host machine to check.
+Then rerun `bash verify-lockfile.sh requirements.in requirements.txt` and make sure the compromise marker is gone.

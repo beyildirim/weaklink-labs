@@ -14,18 +14,20 @@
 
 ## What Phantom Dependencies Are
 
+Focus on the hidden dependency relationship, not just the Node.js behavior. The risk is that your code works only because of someone else's package layout, which means your trust boundary is already unclear.
+
 A phantom (or implicit) dependency is a package your code `require()`s that is NOT listed in your `package.json`. It exists in `node_modules/` only because another package depends on it, and npm hoists transitive dependencies to the root.
 
 ### Step 1: Look at your app
 
 ```bash
-cat /workspace/package.json
+cat /app/package.json
 ```
 
 Dependencies: only `wl-framework`. No `debug`.
 
 ```bash
-cat /workspace/app.js
+cat /app/app.js
 ```
 
 But the code does `require('debug')`.
@@ -33,7 +35,7 @@ But the code does `require('debug')`.
 ### Step 2: Install and run
 
 ```bash
-cd /workspace
+cd /app
 npm install
 node app.js
 ```
@@ -52,7 +54,7 @@ npm ls debug
 ### Step 4: Find phantom dependencies with depcheck
 
 ```bash
-depcheck /workspace
+depcheck /app
 ```
 
 `depcheck` reports `debug` as a missing dependency: used in code but not in `package.json`.

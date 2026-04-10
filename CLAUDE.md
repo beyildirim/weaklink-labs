@@ -1,6 +1,6 @@
 # WeakLink Labs
 
-Supply chain security training platform. 62 labs, 10 tiers, runs on minikube.
+Supply chain security training platform. 50 labs, 8 tiers, runs on minikube.
 
 ## Architecture
 
@@ -8,7 +8,7 @@ Supply chain security training platform. 62 labs, 10 tiers, runs on minikube.
 - **Guide:** MkDocs Material, served as a pod, accessed via port-forward at localhost:8000
 - **Terminal:** ttyd baked into workstation image, port 7681
 - **Registries:** pypi-private, pypi-public, verdaccio, gitea, OCI registry (all K8s services)
-- **Verify API:** verify-server.py on port 7682, called by verify-button.js in the guide UI
+- **Verify API:** verify-server.py on port 7682, called by the guide terminal panel
 - **CLI:** `cli/weaklink` (bash). Commands: shell, verify, hint, info, path, status, logs, report, assess, reset
 
 ## Key Directories
@@ -16,9 +16,9 @@ Supply chain security training platform. 62 labs, 10 tiers, runs on minikube.
 ```
 helm/weaklink-labs/          Helm chart (all K8s resources)
 guide/docs/                  MkDocs site content
-guide/docs/labs/tier-N/      Lab guide pages (62 total)
+guide/docs/labs/tier-N/      Lab guide pages (50 total)
 guide/docs/stylesheets/      CSS
-guide/docs/javascripts/      JS (tier-colors.js, verify-button.js)
+guide/docs/javascripts/      JS (tier-colors.js, terminal-panel.js)
 guide/mkdocs.yml             MkDocs config
 images/workstation/          Workstation Dockerfile (Python+Node+ttyd)
 images/lab-setup/            Lab seeder (setup-labs.sh)
@@ -43,8 +43,6 @@ All labs use the phase-per-page structure: `guide/docs/labs/tier-N/N.X-lab-name/
 
 Case study labs (6.5-6.10) use: UNDERSTAND/ANALYZE/LESSONS/DETECT
 Tier 7 labs use: UNDERSTAND/INVESTIGATE/VALIDATE/IMPROVE
-Tier 8 labs use: UNDERSTAND/ASSESS/PLAN/DOCUMENT
-
 ## Rules
 
 - Never use `--` as punctuation in prose. Use periods, commas, or restructure.
@@ -53,7 +51,7 @@ Tier 8 labs use: UNDERSTAND/ASSESS/PLAN/DOCUMENT
 - Admonitions: use `???+` (expanded) for phases 1-3, `???` (collapsed) for phase 4/SOC/CI.
 - Prerequisites in guide pages must be hyperlinked: `<a href="../../tier-1/1.2-dependency-confusion/">Lab 1.2</a>`
 - Mermaid diagrams: `graph LR`, simple, no classDef styling.
-- MkDocs nav: 3 tabs only (Home, Labs, Resources). Tiers nested under Labs in order 0-9.
+- MkDocs nav: 3 tabs only (Home, Labs, Resources). Tiers nested under Labs in order 0-7.
 - Target audience: SOC analysts, security engineers, DevSecOps, DevOps. Not just one persona.
 - The `fence_code_format` is correct for Mermaid in MkDocs Material (not fence_mermaid_format).
 

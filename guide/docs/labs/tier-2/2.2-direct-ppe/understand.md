@@ -32,8 +32,8 @@ The pipeline triggers on `push` and `pull_request` to `main`. When a PR is opene
 ### Step 3: Check what secrets exist
 
 ```bash
-curl -sf "http://gitea:3000/api/v1/repos/developer/wl-webapp/actions/secrets" \
-  -u "developer:password" | python -m json.tool
+curl -sf "http://gitea:3000/api/v1/repos/weaklink/wl-webapp/actions/secrets" \
+  -u "weaklink:weaklink" | python -m json.tool
 ```
 
 The pipeline has access to `DEPLOY_TOKEN`.

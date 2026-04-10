@@ -21,7 +21,7 @@ cd /repos/wl-webapp
 cat .gitea/workflows/ci.yml
 ```
 
-Cache configuration:
+The seeded vulnerable workflow uses a hashed key, but it also allows a broad fallback restore:
 
 ```yaml
 - uses: actions/cache@v4
@@ -32,23 +32,22 @@ Cache configuration:
       pip-${{ runner.os }}-
 ```
 
-### Step 2: Understand cache key resolution
+### Step 2: Understand the trust boundary
 
-Two-level lookup:
+The exact cache key is scoped to the dependency file, but the fallback is still broad enough to cross trust boundaries:
 
-1. **Exact match**. `pip-Linux-abc123` (hash of `requirements.txt`)
-2. **Prefix match** via `restore-keys`. `pip-Linux-` (matches ANY cache with this prefix)
-
-The `restore-keys` fallback is the vulnerability. If the exact hash does not match, the cache system falls back to the most recent cache with a matching prefix. A cache created by a different branch can be restored, and an attacker who writes to the cache under a matching prefix poisons future builds.
+1. A PR build can write poisoned dependencies under the shared `pip-Linux-...` prefix
+2. A later `main` build can restore that cache through `restore-keys`
+3. `requirements.txt` still looks normal in code review
+4. The compromise lives in cached bytes, not in protected source
 
 ### Step 3: Inspect the current cache contents
 
 ```bash
 ls -la ~/.cache/pip/wheels/ 2>/dev/null
 pip cache list 2>/dev/null
-ls -la /runner/_work/_cache/ 2>/dev/null
 ```
 
 ### Step 4: Understand the threat model
 
-Cache poisoning succeeds when: cache keys use weak prefixes (`restore-keys` matches broadly), PR caches are not isolated, cache contents are not verified, and lockfile hashes are not used as keys.
+Cache poisoning succeeds when `restore-keys` fall back across trust boundaries, PR caches are not isolated from `main`, and restored dependencies are not verified before use.

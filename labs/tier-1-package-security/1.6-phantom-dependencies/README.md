@@ -1,5 +1,7 @@
 # Lab 1.6: Phantom Dependencies
 
+> Legacy note: The canonical learner-facing version of this lab lives in the browser guide. Start the platform with `make start`, open the guide, and use the built-in terminal. Treat this README as a secondary local reference.
+
 Your code imports `debug`. It works. But `debug` isn't in your `package.json`. It's there because `wl-framework` depends on it, and npm hoists transitive dependencies to the root of `node_modules/`. You're relying on something you don't control, and one day, it will break. Or worse, an attacker will exploit the gap.
 
 This lab teaches you what phantom (implicit) dependencies are, how they silently break production, and how attackers weaponize them.
@@ -15,7 +17,7 @@ This lab teaches you what phantom (implicit) dependencies are, how they silently
 | Service | URL | Purpose |
 |---------|-----|---------|
 | **Verdaccio** | http://verdaccio:4873 | Local npm registry |
-| **workspace** | `weaklink shell 1.6` | Your working shell with the app |
+| **workspace** | Browser terminal | Your working shell with the app |
 
 The workspace contains:
 - An Express-like app (`app.js`) that uses `debug`, but `debug` is NOT in `package.json`
@@ -25,9 +27,10 @@ The workspace contains:
 ## Start the Lab
 
 ```bash
-weaklink start 1.6
-weaklink shell 1.6
+make start
 ```
+
+Then open the guide in your browser and use the built-in terminal.
 
 ---
 

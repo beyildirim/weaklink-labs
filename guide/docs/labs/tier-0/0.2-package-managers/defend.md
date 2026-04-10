@@ -80,9 +80,3 @@ ls -la /tmp/pwned 2>&1
 ```
 
 "No such file or directory". The malicious `setup.py` never ran.
-
-### Step 7: Verify the lab
-
-```bash
-weaklink verify 0.2
-```

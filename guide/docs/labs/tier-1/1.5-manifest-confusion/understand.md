@@ -14,6 +14,8 @@
 
 ## How npm Package Publishing Works
 
+Focus on the difference between what you review and what actually gets installed. This lab matters because many tools and humans trust registry metadata more than the artifact itself.
+
 When a developer publishes a package, two things happen:
 
 1. `npm pack` creates a `.tgz` tarball containing the code and `package.json`

@@ -14,6 +14,8 @@
 
 ## How pip install Works
 
+Focus on the trust decision, not just the command syntax: what does `pip` download, what does it execute, and how much of that process do you actually verify before running it.
+
 ### Step 1: Browse the local package server
 
 List all packages on the registry. The grep extracts package names from the HTML index page:

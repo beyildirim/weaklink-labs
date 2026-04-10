@@ -24,7 +24,7 @@ git push origin main
 
 ### Step 2: Enable branch protection in Gitea
 
-Open the Gitea UI at `http://gitea:3000`.
+Open the Gitea UI at `http://localhost:3000`.
 
 1. Log in as `weaklink` / `weaklink`
 2. Go to the repository: click on **weaklink/web-app**
@@ -74,9 +74,3 @@ curl -sf -X POST "http://gitea:3000/api/v1/repos/weaklink/web-app/pulls" \
 ```
 
 The PR cannot be merged without an approving review. **This is the defense:** no code enters main without review.
-
-### Step 5: Verify the lab
-
-```bash
-weaklink verify 0.1
-```

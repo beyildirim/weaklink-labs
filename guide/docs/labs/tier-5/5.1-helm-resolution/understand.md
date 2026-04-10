@@ -40,7 +40,7 @@ Both `untrusted-public` and `private-charts` are configured. Helm searches all c
 helm search repo untrusted-public/redis --versions
 helm search repo untrusted-public/postgresql --versions
 
-# What does the private registry have?
+# Helm repo aliases are searched separately from OCI registry URLs in Chart.yaml
 helm search repo private-charts/ --versions
 ```
 

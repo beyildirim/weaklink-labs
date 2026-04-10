@@ -17,7 +17,7 @@
 ### Step 1: Clean up
 
 ```bash
-cd /workspace
+cd /app
 rm -rf node_modules package-lock.json
 rm -f /tmp/phantom-dep-pwned
 ```
@@ -25,7 +25,7 @@ rm -f /tmp/phantom-dep-pwned
 ### Step 2: Find all phantom dependencies
 
 ```bash
-depcheck /workspace
+depcheck /app
 ```
 
 ### Step 3: Add debug as an explicit, pinned dependency
@@ -67,7 +67,7 @@ npm ci
 ### Step 6: Re-run depcheck
 
 ```bash
-depcheck /workspace
+depcheck /app
 ```
 
 No more phantom dependencies.
@@ -82,9 +82,3 @@ test ! -f /tmp/phantom-dep-pwned && echo "PASS: not compromised"
 ```
 
 Because `debug@4.3.4` is explicitly declared and pinned, `npm update` won't replace it with `99.0.0`.
-
-### Verify your defenses
-
-```bash
-weaklink verify 1.6
-```

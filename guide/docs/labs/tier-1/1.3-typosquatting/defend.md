@@ -50,9 +50,3 @@ pip-audit 2>/dev/null || echo "pip-audit found no known vulnerabilities"
 ```
 
 `pip-audit` catches packages with reported CVEs but may not catch brand-new typosquatting attacks. Defense-in-depth (allowlists + pinning + review) matters.
-
-### Verify your defenses
-
-```bash
-weaklink verify 1.3
-```

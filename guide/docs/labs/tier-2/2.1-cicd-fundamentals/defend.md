@@ -48,9 +48,3 @@ git push origin main
 1. **Short-lived OIDC tokens** instead of long-lived API keys
 2. **Environment protection rules**: require manual approval before deploy jobs access production secrets
 3. **Separate PR and push workflows**: PR builds should never have access to any secrets
-
-### Step 3: Final verification
-
-```bash
-weaklink verify 2.1
-```

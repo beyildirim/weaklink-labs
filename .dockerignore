@@ -1,5 +1,10 @@
 .git
 .github
+.agents
+.claude
+.venv
+venv
+guide/site
 docs
 helm
 shared
@@ -9,3 +14,4 @@ stop.sh
 README.md
 LICENSE
 CONTRIBUTING.md
+.weaklink-pf*

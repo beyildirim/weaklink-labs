@@ -1,0 +1,26 @@
+---
+# NTP Configuration Tasks
+
+- name: Install NTP packages
+  ansible.builtin.package:
+    name: "{{ ntp_package }}"
+    state: present
+
+- name: Configure NTP servers
+  ansible.builtin.template:
+    src: ntp.conf.j2
+    dest: /etc/ntp.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart NTP
+
+- name: Set timezone
+  ansible.builtin.timezone:
+    name: "{{ ntp_timezone }}"
+
+- name: Enable and start NTP service
+  ansible.builtin.service:
+    name: "{{ ntp_service }}"
+    state: started
+    enabled: true

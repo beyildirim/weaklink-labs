@@ -84,4 +84,4 @@ The build script silently stole the secret. In a real CI/CD pipeline, this runs 
 
 ### Step 5: See how it looks in Git
 
-Open `http://gitea:3000/weaklink/web-app/commits/branch/main` and click the latest commit. The malicious line is in the diff, buried among legitimate changes. In a PR with 500 changed lines, would you have caught it?
+Open `http://localhost:3000/weaklink/web-app/commits/branch/main` and click the latest commit. The malicious line is in the diff, buried among legitimate changes. In a PR with 500 changed lines, would you have caught it?

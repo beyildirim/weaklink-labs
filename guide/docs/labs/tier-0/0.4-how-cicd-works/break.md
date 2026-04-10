@@ -16,16 +16,22 @@
 
 Because the CI configuration lives *in the repository*, anyone with push access can change what the pipeline does. This is **Poisoned Pipeline Execution (PPE)**.
 
-1. Edit `.gitea/workflows/ci.yml`. Add a step to exfiltrate the secret (in reality, an attacker would `curl` it to their server):
+1. Open the repo in the workstation and edit the workflow:
+
+   ```bash
+   cd /workspace/ci-demo
+   ```
+
+   Edit `.gitea/workflows/ci.yml`. Add a step to exfiltrate the secret to the workflow logs. In a real attack, this would usually be a `curl` or DNS request to an attacker-controlled host.
 
    ```yaml
-         - name: Exfiltrate secrets
-           env:
-             DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-           run: |
-             echo "The secret is: $DEPLOY_KEY" > /tmp/stolen-secret.txt
+      - name: Exfiltrate secrets
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+        run: |
+          echo "EXFILTRATED DEPLOY_KEY=$DEPLOY_KEY"
    ```
-   *Place this step right after "Run tests". Keep the indentation aligned.*
+   Place this step inside the `deploy` job, right before `Deploy to staging`. Keep the indentation aligned with the existing deploy step.
 
 2. Commit and push:
    ```bash
@@ -34,6 +40,6 @@ Because the CI configuration lives *in the repository*, anyone with push access 
    git push
    ```
 
-3. Watch the Action run in Gitea. Once it finishes, verify the secret was stolen from the workstation.
+3. Watch the Action run in Gitea. Open the run logs for the `deploy` job and confirm the secret appears in the output.
 
-**Checkpoint:** You should now have a modified CI workflow that exfiltrates `DEPLOY_KEY` to `/tmp/stolen-secret.txt` on every push.
+**Checkpoint:** You should now have a modified CI workflow that prints `DEPLOY_KEY` in the `deploy` job logs on every push to `main`.

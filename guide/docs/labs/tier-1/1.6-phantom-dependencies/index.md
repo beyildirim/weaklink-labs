@@ -24,8 +24,8 @@ Your code imports `debug`. It works. But `debug` isn't in your `package.json`. I
 
 ```mermaid
 graph LR
-    A[App imports debug] --> B[Works via hoisting from express]
-    B --> C[Express v2 drops debug]
+    A[App imports debug] --> B[Works via hoisting from wl-framework]
+    B --> C[wl-framework v2 drops debug]
     C --> D[Attacker publishes debug@99]
     D --> E[Malicious code runs]
 ```

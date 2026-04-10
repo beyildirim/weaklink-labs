@@ -13,4 +13,4 @@ Already familiar with Git, pip, and Docker? Take the placement test to skip Tier
 <div id="placement-quiz"></div>
 
 !!! tip "Prefer the terminal?"
-    You can also run `weaklink assess` from the CLI for the same test.
+    Use the browser version of the placement test. The learner path does not depend on CLI helpers.

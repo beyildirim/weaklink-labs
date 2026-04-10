@@ -79,9 +79,3 @@ EOF
 ```bash
 trivy image --scanners secret registry:5000/myapp:latest
 ```
-
-### Step 5: Verify the lab
-
-```bash
-weaklink verify 3.6
-```

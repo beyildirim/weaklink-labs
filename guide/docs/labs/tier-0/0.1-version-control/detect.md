@@ -34,67 +34,19 @@ What to look for:
 
 ---
 
-### SOC Alert Rules
+## How to Think About Detection
 
-When you see **"Direct push to protected branch"** or **"CI build process spawned unexpected child process"** in your SIEM: someone pushed code directly to main, bypassing PR review. The malicious code executed during the next CI build. Investigate the commit diff immediately for changes to build scripts, CI configs, and lines referencing environment variables or network calls.
+At this stage, the important skill is not writing a full rule. It is recognizing when a repository change deserves escalation.
 
-### CI Integration
+Start with three questions:
 
-Add this GitHub Actions workflow to enforce branch protection checks programmatically. Save as `.github/workflows/branch-protection-check.yml`:
+- Did someone bypass the normal review path?
+- Did the change touch files that control builds or deployments?
+- Did the next build suddenly make network calls, spawn shells, or touch secrets?
 
-```yaml
-name: Branch Protection Enforcement
+If the answer to any of those is yes, investigate the commit diff before treating the build as trustworthy.
 
-on:
-  pull_request:
-    branches: [main]
-  push:
-    branches: [main]
-
-permissions:
-  contents: read
-  pull-requests: read
-
-jobs:
-  enforce-pr-review:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-    steps:
-      - name: Block direct pushes to main
-        run: |
-          echo "::error::Direct pushes to main are not allowed."
-          echo "All changes must go through a reviewed pull request."
-          exit 1
-
-  pr-checks:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Verify PR has required approvals
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const reviews = await github.rest.pulls.listReviews({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number,
-            });
-            const approvals = reviews.data.filter(r => r.state === 'APPROVED');
-            if (approvals.length < 1) {
-              core.setFailed('At least 1 approving review is required before merge.');
-            }
-
-      - name: Check for sensitive file changes
-        run: |
-          SENSITIVE_FILES=$(git diff --name-only origin/main...HEAD | \
-            grep -E '(build\.sh|Makefile|Jenkinsfile|\.github/workflows/|\.gitlab-ci)' || true)
-          if [ -n "$SENSITIVE_FILES" ]; then
-            echo "::warning::This PR modifies CI/build files -- requires extra scrutiny:"
-            echo "$SENSITIVE_FILES"
-          fi
-```
+If you want concrete rule examples or CI enforcement snippets later, use the shared resources linked at the bottom of the page.
 
 ---
 

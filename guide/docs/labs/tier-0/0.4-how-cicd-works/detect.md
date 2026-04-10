@@ -19,7 +19,7 @@
 What to look for:
 
 - Commits modifying `.gitea/workflows/`, `.github/workflows/`, `Jenkinsfile`, or other CI configs
-- Pipeline steps that access secrets not required by the build
+- Pipeline steps that access secrets not required by the job
 - Outbound network connections from CI runners during build
 - New or modified pipeline steps added outside normal PR review
 
@@ -33,63 +33,19 @@ What to look for:
 
 ---
 
-### CI Integration
+## How to Think About Detection
 
-Add this workflow to flag changes to CI configuration files and detect secret access in pipeline steps. Save as `.github/workflows/pipeline-audit.yml`:
+At this stage, the important habit is treating pipeline changes as high-risk code changes, not routine config edits.
 
-```yaml
-name: Pipeline Modification Audit
+Ask:
 
-on:
-  pull_request:
-    paths:
-      - ".github/workflows/**"
-      - ".gitea/workflows/**"
-      - "Jenkinsfile"
-      - ".gitlab-ci.yml"
+- Did someone change a workflow file, runner config, or secret usage?
+- Does the pipeline now make outbound requests or print environment data?
+- Would a normal reviewer immediately understand why the change is needed?
 
-permissions:
-  contents: read
+If the answer is no, stop treating the pipeline as trusted until the change is explained and reviewed.
 
-jobs:
-  audit-pipeline-changes:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Flag CI config modifications
-        run: |
-          echo "--- Scanning CI config changes in this PR ---"
-          CHANGED=$(git diff --name-only origin/main...HEAD -- \
-            '.github/workflows/' '.gitea/workflows/' \
-            '.gitlab-ci.yml' 'Jenkinsfile' \
-            '.circleci/' '.travis.yml')
-          if [ -z "$CHANGED" ]; then
-            echo "PASS: No CI config files modified."
-            exit 0
-          fi
-          echo "::warning::CI pipeline configs modified in this PR:"
-          echo "$CHANGED"
-
-      - name: Check for secret exfiltration patterns
-        run: |
-          EXIT_CODE=0
-          for f in $(git diff --name-only origin/main...HEAD -- \
-            '.github/workflows/' '.gitea/workflows/'); do
-            if [ -f "$f" ]; then
-              if grep -nE '(curl|wget|nc |ncat |base64|printenv|\$\{secrets\.)' "$f"; then
-                echo "::error file=$f::Potential secret exfiltration pattern detected."
-                EXIT_CODE=1
-              fi
-            fi
-          done
-          if [ "$EXIT_CODE" -eq 0 ]; then
-            echo "PASS: No suspicious patterns found in workflow changes."
-          fi
-          exit $EXIT_CODE
-```
+If you want concrete rule examples or CI enforcement snippets later, use the shared resources linked at the bottom of the page.
 
 ---
 

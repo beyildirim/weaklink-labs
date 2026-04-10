@@ -6,7 +6,7 @@ set -uo pipefail
 
 PASS=0
 FAIL=0
-WORKSPACE="/workspace"
+WORKSPACE="/app"
 
 echo "=== Lab 1.6: Phantom Dependencies — Verification ==="
 echo ""

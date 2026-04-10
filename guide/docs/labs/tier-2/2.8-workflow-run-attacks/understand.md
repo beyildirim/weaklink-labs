@@ -18,15 +18,15 @@
 
 ```bash
 cd /repos/wl-webapp
-cat .gitea/workflows/pr-build.yml
-cat .gitea/workflows/deploy-preview.yml
+cat .gitea/workflows/ci.yml
+cat .gitea/workflows/deploy.yml
 ```
 
-The first workflow (`pr-build.yml`) runs on `pull_request`, builds the PR, and uploads an artifact. The second (`deploy-preview.yml`) triggers on `workflow_run` and deploys the artifact with `bash dist/deploy.sh`.
+The first workflow (`ci.yml`) builds the PR and uploads an artifact. The second (`deploy.yml`) triggers on `workflow_run` and deploys the artifact with `bash dist/deploy.sh`.
 
 ### Step 2: Understand the privilege escalation
 
-| Property | PR Build | Deploy Preview (workflow_run) |
+| Property | PR Build | Deploy (workflow_run) |
 |----------|----------|-------------------------------|
 | Trigger | `pull_request` | `workflow_run` |
 | Runs on | PR branch | Default branch (`main`) |
@@ -46,10 +46,10 @@ Fork PR (untrusted)
   -> PR Build workflow (read-only, no secrets)
     -> Upload malicious artifact
       -> workflow_run triggers Deploy Preview
-        -> Deploy Preview (WRITE access, ALL secrets)
+        -> Deploy (WRITE access, ALL secrets)
           -> Downloads malicious artifact
             -> Executes it = RCE with secrets
 ```
 
 !!! note "Gitea limitation"
-    Gitea Actions does not support the `workflow_run` trigger. In this lab, you will construct the attack artifacts manually and understand how the privilege escalation chain would work in GitHub Actions. The defense steps are fully functional.
+    Gitea Actions does not support the `workflow_run` trigger. In this lab, you will manually construct the malicious artifact an untrusted PR build would upload, then compare it to the vulnerable `deploy.yml` workflow and harden that workflow for the GitHub Actions case.

@@ -1,6 +1,6 @@
 site_name: WeakLink Labs
 site_description: Hands-on supply chain security training
-site_url: http://localhost:8000
+site_url: !ENV [SITE_URL, ""]
 
 theme:
   name: material
@@ -34,7 +34,6 @@ extra_javascript:
   - javascripts/tier-colors.js
   - javascripts/terminal-panel.js
   - javascripts/sidebar-toggle.js
-  - javascripts/verify-button.js
   - javascripts/placement-quiz.js
 
 markdown_extensions:
@@ -359,13 +358,7 @@ nav:
         - Analyze: labs/tier-6/6.10-case-study-equifax/analyze.md
         - Lessons: labs/tier-6/6.10-case-study-equifax/lessons.md
         - Detect: labs/tier-6/6.10-case-study-equifax/detect.md
-    - Tier 7 Detection & Response:
-      - 7.1 Detection Rules:
-        - labs/tier-7/7.1-detection-rules/index.md
-        - Understand: labs/tier-7/7.1-detection-rules/understand.md
-        - Investigate: labs/tier-7/7.1-detection-rules/investigate.md
-        - Validate: labs/tier-7/7.1-detection-rules/validate.md
-        - Improve: labs/tier-7/7.1-detection-rules/improve.md
+    - Tier 7 Response & Threat Modeling:
       - 7.2 Incident Triage:
         - labs/tier-7/7.2-incident-triage/index.md
         - Understand: labs/tier-7/7.2-incident-triage/understand.md
@@ -378,80 +371,12 @@ nav:
         - Investigate: labs/tier-7/7.3-ir-playbook/investigate.md
         - Validate: labs/tier-7/7.3-ir-playbook/validate.md
         - Improve: labs/tier-7/7.3-ir-playbook/improve.md
-      - 7.4 Tool Evaluation:
-        - labs/tier-7/7.4-tool-evaluation/index.md
-        - Understand: labs/tier-7/7.4-tool-evaluation/understand.md
-        - Investigate: labs/tier-7/7.4-tool-evaluation/investigate.md
-        - Validate: labs/tier-7/7.4-tool-evaluation/validate.md
-        - Improve: labs/tier-7/7.4-tool-evaluation/improve.md
       - 7.5 Threat Modeling:
         - labs/tier-7/7.5-threat-modeling/index.md
         - Understand: labs/tier-7/7.5-threat-modeling/understand.md
         - Investigate: labs/tier-7/7.5-threat-modeling/investigate.md
         - Validate: labs/tier-7/7.5-threat-modeling/validate.md
         - Improve: labs/tier-7/7.5-threat-modeling/improve.md
-    - Tier 8 Policy & Program Building:
-      - 8.1 SLSA Deep Dive:
-        - labs/tier-8/8.1-slsa-deep-dive/index.md
-        - Understand: labs/tier-8/8.1-slsa-deep-dive/understand.md
-        - Assess: labs/tier-8/8.1-slsa-deep-dive/assess.md
-        - Plan: labs/tier-8/8.1-slsa-deep-dive/plan.md
-        - Document: labs/tier-8/8.1-slsa-deep-dive/document.md
-      - 8.2 SSDF / NIST:
-        - labs/tier-8/8.2-ssdf-nist/index.md
-        - Understand: labs/tier-8/8.2-ssdf-nist/understand.md
-        - Assess: labs/tier-8/8.2-ssdf-nist/assess.md
-        - Plan: labs/tier-8/8.2-ssdf-nist/plan.md
-        - Document: labs/tier-8/8.2-ssdf-nist/document.md
-      - 8.3 EO 14028:
-        - labs/tier-8/8.3-eo-14028/index.md
-        - Understand: labs/tier-8/8.3-eo-14028/understand.md
-        - Assess: labs/tier-8/8.3-eo-14028/assess.md
-        - Plan: labs/tier-8/8.3-eo-14028/plan.md
-        - Document: labs/tier-8/8.3-eo-14028/document.md
-      - 8.4 Vendor Assessment:
-        - labs/tier-8/8.4-vendor-assessment/index.md
-        - Understand: labs/tier-8/8.4-vendor-assessment/understand.md
-        - Assess: labs/tier-8/8.4-vendor-assessment/assess.md
-        - Plan: labs/tier-8/8.4-vendor-assessment/plan.md
-        - Document: labs/tier-8/8.4-vendor-assessment/document.md
-      - 8.5 Building a Program:
-        - labs/tier-8/8.5-building-a-program/index.md
-        - Understand: labs/tier-8/8.5-building-a-program/understand.md
-        - Assess: labs/tier-8/8.5-building-a-program/assess.md
-        - Plan: labs/tier-8/8.5-building-a-program/plan.md
-        - Document: labs/tier-8/8.5-building-a-program/document.md
-      - 8.6 SCVS Assessment:
-        - labs/tier-8/8.6-scvs-assessment/index.md
-        - Understand: labs/tier-8/8.6-scvs-assessment/understand.md
-        - Assess: labs/tier-8/8.6-scvs-assessment/assess.md
-        - Plan: labs/tier-8/8.6-scvs-assessment/plan.md
-        - Document: labs/tier-8/8.6-scvs-assessment/document.md
-    - Tier 9 Cloud Supply Chain:
-      - 9.1 Marketplace Poisoning:
-        - labs/tier-9/9.1-cloud-marketplace-poisoning/index.md
-        - Understand: labs/tier-9/9.1-cloud-marketplace-poisoning/understand.md
-        - Break: labs/tier-9/9.1-cloud-marketplace-poisoning/break.md
-        - Defend: labs/tier-9/9.1-cloud-marketplace-poisoning/defend.md
-        - Detect: labs/tier-9/9.1-cloud-marketplace-poisoning/detect.md
-      - 9.2 Serverless Supply Chain:
-        - labs/tier-9/9.2-serverless-supply-chain/index.md
-        - Understand: labs/tier-9/9.2-serverless-supply-chain/understand.md
-        - Break: labs/tier-9/9.2-serverless-supply-chain/break.md
-        - Defend: labs/tier-9/9.2-serverless-supply-chain/defend.md
-        - Detect: labs/tier-9/9.2-serverless-supply-chain/detect.md
-      - 9.3 Cloud CI/CD Attacks:
-        - labs/tier-9/9.3-cloud-cicd-attacks/index.md
-        - Understand: labs/tier-9/9.3-cloud-cicd-attacks/understand.md
-        - Break: labs/tier-9/9.3-cloud-cicd-attacks/break.md
-        - Defend: labs/tier-9/9.3-cloud-cicd-attacks/defend.md
-        - Detect: labs/tier-9/9.3-cloud-cicd-attacks/detect.md
-      - 9.4 IAM Chain Abuse:
-        - labs/tier-9/9.4-iam-chain-abuse/index.md
-        - Understand: labs/tier-9/9.4-iam-chain-abuse/understand.md
-        - Break: labs/tier-9/9.4-iam-chain-abuse/break.md
-        - Defend: labs/tier-9/9.4-iam-chain-abuse/defend.md
-        - Detect: labs/tier-9/9.4-iam-chain-abuse/detect.md
   - Resources:
     - Roadmap: roadmap.md
     - Detection Rule Library: resources/detection-rules.md

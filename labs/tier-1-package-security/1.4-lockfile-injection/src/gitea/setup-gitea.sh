@@ -12,7 +12,7 @@ GITEA_PASS="password123"
 GITEA_EMAIL="developer@lab.local"
 REPO_NAME="webapp"
 
-PYPI_URL="http://pypi:8080/simple/"
+PYPI_URL="http://pypi-private:8080/simple/"
 
 echo "[*] Waiting for Gitea to be ready..."
 for i in $(seq 1 60); do
@@ -80,7 +80,7 @@ cp /app/project/app.py .
 echo "[*] Generating legitimate lockfile with pip-compile..."
 pip-compile --generate-hashes \
     --index-url "$PYPI_URL" \
-    --trusted-host pypi \
+    --trusted-host pypi-private \
     requirements.in \
     --output-file requirements.txt 2>/dev/null
 

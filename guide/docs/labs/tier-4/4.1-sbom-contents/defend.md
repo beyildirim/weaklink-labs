@@ -82,11 +82,3 @@ Recommendation: Treat SBOM as a snapshot, not a guarantee. Complement
 with vulnerability scanning (grype, trivy) on the actual artifact.
 EOF
 ```
-
-### Step 5: Verify the lab
-
-Run the verification from your host terminal:
-
-```bash
-weaklink verify 4.1
-```

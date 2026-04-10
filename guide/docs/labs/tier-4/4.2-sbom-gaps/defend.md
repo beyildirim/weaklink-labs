@@ -64,9 +64,3 @@ compiled shared objects.
 - Flag any /vendor/ or /third-party/ directories for manual review
 ANALYSIS
 ```
-
-### Step 5: Verify the lab
-
-```bash
-weaklink verify 4.2
-```

@@ -6,7 +6,7 @@ set -uo pipefail
 
 PASS=0
 FAIL=0
-WORKSPACE="/workspace"
+WORKSPACE="/app"
 
 echo "=== Lab 1.5: Manifest Confusion — Verification ==="
 echo ""
@@ -48,11 +48,11 @@ fi
 
 # Check 4: Manifest comparison script exists and is executable
 echo -n "[Check 4] Manifest comparison tool available... "
-if command -v compare-manifests >/dev/null 2>&1 || [ -x "${WORKSPACE}/check-manifest.sh" ]; then
+if [ -x "${WORKSPACE}/compare-manifests.sh" ] || [ -x "${WORKSPACE}/check-manifest.sh" ]; then
     echo "PASS"
     PASS=$((PASS + 1))
 else
-    echo "FAIL — No manifest comparison tool found. Use the provided compare-manifests or write check-manifest.sh."
+    echo "FAIL — No manifest comparison tool found. Use /app/compare-manifests.sh or write check-manifest.sh."
     FAIL=$((FAIL + 1))
 fi
 

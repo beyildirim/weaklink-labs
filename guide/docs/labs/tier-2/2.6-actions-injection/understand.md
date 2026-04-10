@@ -18,7 +18,7 @@
 
 ```bash
 cd /repos/wl-webapp
-cat .gitea/workflows/issue-triage.yml
+cat .gitea/workflows/issue-handler.yml
 ```
 
 Look for `run:` blocks using `${{ }}` with event data:

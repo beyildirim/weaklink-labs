@@ -1,0 +1,20 @@
+name: PR Comment Handler (Injection-Safe)
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  handle-comment:
+    runs-on: ubuntu-latest
+    if: github.event.issue.pull_request
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Process PR comment
+        env:
+          COMMENT_AUTHOR: ${{ github.event.comment.user.login }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          echo "PR comment by ${COMMENT_AUTHOR}:"
+          echo "${COMMENT_BODY}"

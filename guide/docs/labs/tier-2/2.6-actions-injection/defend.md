@@ -44,54 +44,20 @@ The malicious content is treated as a string value, not a shell command.
 ### Fix 2: Apply the fix to the workflow
 
 ```bash
-cat > .gitea/workflows/issue-triage.yml << 'EOF'
-name: Issue Triage
+cp /lab/src/repo/.gitea/workflows/issue-handler-safe.yml .gitea/workflows/issue-handler.yml
+cp /lab/src/repo/.gitea/workflows/pr-handler-safe.yml .gitea/workflows/pr-handler.yml
 
-on:
-  issues:
-    types: [opened]
-
-permissions:
-  issues: write
-
-jobs:
-  triage:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Process issue
-        env:
-          ISSUE_TITLE: ${{ github.event.issue.title }}
-          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
-          ISSUE_BODY: ${{ github.event.issue.body }}
-        run: |
-          echo "Processing issue: $ISSUE_TITLE"
-          echo "Author: $ISSUE_AUTHOR"
-
-          if echo "$ISSUE_TITLE" | grep -qi "bug"; then
-            echo "Labeling as bug"
-          fi
-
-      - name: Add label
-        if: contains(github.event.issue.labels.*.name, 'needs-triage')
-        uses: actions/github-script@v7
-        with:
-          script: |
-            await github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: ['triaged']
-            })
-EOF
+cat .gitea/workflows/issue-handler.yml
+cat .gitea/workflows/pr-handler.yml
 ```
 
 ### Fix 3: Audit all workflows for injection
 
 ```bash
-grep -rn '\${{.*github\.event\.' .gitea/workflows/ | grep 'run:'
+grep -rn '\${{.*github\.event\.' .gitea/workflows/ | grep 'run:' || true
 
 grep -rn '\${{.*\(issue\|pull_request\|comment\|discussion\|head_ref\|commits\)' \
-  .gitea/workflows/ | grep -v 'env:' | grep -v '#'
+  .gitea/workflows/ | grep -v 'env:' | grep -v '#' || true
 ```
 
 ### Fix 4: Commit and push
@@ -107,9 +73,3 @@ git push origin main
 1. **Use `actions/github-script`** for GitHub API interactions. inputs passed as JavaScript strings, not shell commands
 2. **Restrict workflow permissions** via `permissions:`
 3. **Use CodeQL or Zizmor** to scan workflows for expression injection patterns
-
-### Step 5: Final verification
-
-```bash
-weaklink verify 2.6
-```

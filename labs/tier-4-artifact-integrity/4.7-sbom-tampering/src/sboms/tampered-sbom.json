@@ -2,8 +2,7 @@
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
   "components": [
-    {"type": "library", "name": "flask", "version": "3.0.0", "purl": "pkg:pypi/flask@3.0.0"},
-    {"type": "library", "name": "requests", "version": "2.31.0", "purl": "pkg:pypi/requests@2.31.0"}
+    {"type": "library", "name": "flask", "version": "3.0.0", "purl": "pkg:pypi/flask@3.0.0"}
   ],
-  "_weaklink_note": "backdoor-pkg has been removed from the SBOM to hide its presence in the image"
+  "_weaklink_note": "requests has been removed from the SBOM to hide its presence in the image"
 }

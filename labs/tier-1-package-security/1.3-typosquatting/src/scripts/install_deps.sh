@@ -7,5 +7,5 @@
 #
 
 echo "[*] Installing project dependencies..."
-pip install --index-url http://pypi:8080/simple/ --trusted-host pypi reqeusts
+pip install --index-url http://pypi-private:8080/simple/ --trusted-host pypi-private reqeusts
 echo "[*] Dependencies installed successfully!"

@@ -16,21 +16,17 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          # SECURE: cache key tied to lockfile content
+          # SECURE: exact cache key tied to dependency file content
           key: pip-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            pip-${{ runner.os }}-
 
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          # Verify installed packages match expected hashes
           pip install pip-audit
           pip-audit --strict
 
       - name: Verify dependency integrity
         run: |
-          # Check that installed packages match the lockfile
           pip freeze > /tmp/installed.txt
           echo "Installed packages:"
           cat /tmp/installed.txt

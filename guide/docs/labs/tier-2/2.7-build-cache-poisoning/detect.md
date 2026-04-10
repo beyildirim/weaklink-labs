@@ -23,28 +23,28 @@
 | **Supply Chain Compromise: Compromise Software Supply Chain** | [T1195.002](https://attack.mitre.org/techniques/T1195/002/) | Poisoning the build cache to inject malicious dependencies |
 | **Hijack Execution Flow** | [T1574](https://attack.mitre.org/techniques/T1574/) | Replacing a legitimate cached dependency with a malicious one |
 
-Cache poisoning is stealthy because builds appear to function normally. Detection focuses on cache key anomalies, unexpected cache restores, and hash mismatches.
+Cache poisoning is stealthy because builds appear to function normally. Detection focuses on shared cache keys, shared cache namespaces across trust boundaries, and integrity mismatches.
 
-Look for cache restores using `restore-keys` (prefix match) instead of exact key matches, cache key collisions across branches, package hash verification failures, cache size changes that do not correlate with lockfile changes, and PR-created caches being restored by default branch builds.
+Look for shared cache keys used by both PR and default-branch workflows, unexpected cache restores after untrusted builds, package hash verification failures, cache size changes that do not correlate with dependency changes, and PR-created caches being restored by default branch builds.
 
 ---
 
 **Alerts you will see:**
 
-- "Cache restored from prefix match on default branch" (CI audit)
+- "Shared cache key restored on default branch after PR run" (CI audit)
 - "Package hash verification failed during build" (build log monitoring)
 - "Cache key collision detected across branches" (cache audit)
 
 **Triage workflow:**
 
-1. **Check the cache restore log**. exact key match or prefix fallback?
+1. **Check the cache restore log**. exact key, shared static key, or a fallback path?
 2. **Identify the cache source**. which workflow run created the restored cache?
 3. **Compare cache contents** against known-good versions from the package registry
 4. **Check lockfile hashes**. do cached wheels match the hashes in the lockfile?
 5. **If confirmed: invalidate all caches** and rebuild from scratch
 6. **Audit downstream artifacts**. any build using the poisoned cache is compromised
 
-**False positive rate:** Low for hash verification failures. Medium for prefix match restores (normal but should be rare on default branch).
+**False positive rate:** Low for hash verification failures. Medium for shared-cache restores if your CI intentionally reuses the same key across branches.
 
 ---
 
@@ -60,7 +60,6 @@ on:
     branches: [main]
     paths:
       - "requirements.txt"
-      - "requirements-lock.txt"
       - "package-lock.json"
 
 jobs:
@@ -74,17 +73,13 @@ jobs:
         id: cache
         with:
           path: ~/.cache/pip
-          key: pip-${{ runner.os }}-${{ hashFiles('requirements-lock.txt') }}
+          key: pip-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
 
       - name: Verify cached package integrity
         if: steps.cache.outputs.cache-hit == 'true'
         run: |
           echo "Cache was restored -- verifying integrity..."
-          pip install --require-hashes \
-            --no-deps \
-            --no-index \
-            --find-links ~/.cache/pip/wheels/ \
-            -r requirements-lock.txt 2>&1 | tee /tmp/verify.log
+          pip install --dry-run -r requirements.txt 2>&1 | tee /tmp/verify.log
 
           if grep -q "hash mismatch\|HASH MISMATCH" /tmp/verify.log; then
             echo "::error::Cache integrity check FAILED"
@@ -96,15 +91,15 @@ jobs:
       - name: Fresh install on cache miss
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          pip install --require-hashes -r requirements-lock.txt
+          pip install -r requirements.txt
 ```
 
 ---
 
 ## What You Learned
 
-1. **`restore-keys` enables prefix matching** that can restore stale or poisoned caches. Omit it on main.
-2. **Lockfile hashes are the defense**. `--require-hashes` ensures cached packages match expected digests.
+1. **Shared cache keys are the core trust failure**. default branch and PRs must not restore the same writable cache.
+2. **Exact cache keys plus integrity checks are the defense**. restored bytes must be both scoped and verified.
 3. **PR caches must be isolated from main**. use PR-specific cache keys to prevent cross-branch poisoning.
 
 ## Further Reading
