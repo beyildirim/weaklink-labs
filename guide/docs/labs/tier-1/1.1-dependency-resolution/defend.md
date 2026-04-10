@@ -47,9 +47,3 @@ cat requirements.lock
 ```
 
 Commit this to version control. It ensures every developer and CI system installs the same versions.
-
-### Step 5: Verify the lab
-
-```bash
-weaklink verify 1.1
-```

@@ -38,11 +38,15 @@ check "SPDX format SBOM exists" \
 check "CycloneDX format SBOM exists" \
     "test -f /app/sbom-cdx.json && grep -q 'bomFormat' /app/sbom-cdx.json"
 
-# Check 3: User created an enriched SBOM that includes vendored components
+# Check 3: cdxgen SBOM was generated
+check "cdxgen SBOM exists" \
+    "test -f /app/sbom-cdxgen.json && grep -q 'bomFormat\|components' /app/sbom-cdxgen.json"
+
+# Check 4: User created an enriched SBOM that includes vendored components
 check "Enriched SBOM includes vendored component (libcurl)" \
     "test -f /app/sbom-enriched.json && grep -qi 'libcurl\|vendored\|manual' /app/sbom-enriched.json"
 
-# Check 4: User documented SBOM gaps in a gaps file
+# Check 5: User documented SBOM gaps in a gaps file
 check "SBOM gaps documented (gaps.txt or gaps.md exists)" \
     "test -f /app/gaps.txt || test -f /app/gaps.md"
 

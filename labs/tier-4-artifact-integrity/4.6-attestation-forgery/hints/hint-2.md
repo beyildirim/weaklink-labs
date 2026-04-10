@@ -3,7 +3,7 @@ Verify the forged attestation. It passes because the signature is valid:
 ```
 cosign verify-attestation --key /app/cosign.pub \
   --type slsaprovenance \
-  registry:5000/weaklink-app:malicious
+  registry:5000/webapp:backdoor
 ```
 
 This works. The attestation says "built by trusted CI" but you forged it.
@@ -25,7 +25,7 @@ spec:
         url: https://fulcio.sigstore.dev
         identities:
           - issuer: https://token.actions.githubusercontent.com
-            subject: https://github.com/weaklink-labs/app/.github/workflows/build.yml@refs/heads/main
+            subject: https://github.com/org/webapp/.github/workflows/build.yml@refs/heads/main
 ```
 
 With keyless signing, the attestation includes the signer's OIDC identity

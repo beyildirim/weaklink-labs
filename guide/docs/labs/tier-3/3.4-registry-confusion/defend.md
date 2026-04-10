@@ -82,9 +82,3 @@ image: registry:5000/myapp@sha256:<digest>
 ```
 
 Eliminates both registry confusion and tag mutability.
-
-### Step 5: Verify the lab
-
-```bash
-weaklink verify 3.4
-```

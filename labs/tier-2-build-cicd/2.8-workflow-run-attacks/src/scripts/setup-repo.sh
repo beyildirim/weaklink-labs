@@ -25,6 +25,12 @@ git commit -m "Initial commit: webapp with workflow_run deployment"
 git remote add origin "${GITEA_URL}/weaklink/${REPO_NAME}.git"
 git push -u origin main
 
+# Create attacker account for any manual PR simulation steps
+curl -sf -X POST "${GITEA_URL}/api/v1/admin/users" \
+  -H "Content-Type: application/json" \
+  -u "weaklink:weaklink" \
+  -d '{"username":"attacker","password":"password","email":"attacker@evil.com","must_change_password":false}' || true
+
 for secret in DEPLOY_TOKEN AWS_SECRET_ACCESS_KEY; do
   curl -sf -X PUT "${GITEA_URL}/api/v1/repos/weaklink/${REPO_NAME}/actions/secrets/${secret}" \
     -H "Content-Type: application/json" \

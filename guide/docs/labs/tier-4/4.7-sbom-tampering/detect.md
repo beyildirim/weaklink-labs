@@ -19,7 +19,7 @@
 | Indicator | What It Means |
 |-----------|---------------|
 | Vuln scanner finds CVE in `requests==2.25.0` but SBOM lists `requests==2.31.0` | Version was tampered |
-| SBOM lists 15 components but `pip list` in container shows 22 | Components were removed from the SBOM |
+| `sbom-tampered.json` has fewer components than `sbom-original.json` | A component was removed from the SBOM |
 | SBOM signature verification fails | Modified after signing |
 | `serialNumber` or `metadata.timestamp` doesn't match CI pipeline records | SBOM may have been replaced |
 
@@ -29,17 +29,17 @@ Generate, sign, and cross-validate in the same pipeline:
 
 ```yaml
 - name: Generate SBOM from built image
-  run: syft $IMAGE -o cyclonedx-json > sbom.json
+  run: syft $IMAGE -o cyclonedx-json > sbom-original.json
 
 - name: Sign and attach SBOM as attestation
-  run: cosign attest --predicate sbom.json --type cyclonedx $IMAGE
+  run: cosign attest --predicate sbom-original.json --type cyclonedx $IMAGE
 
 - name: Cross-validate SBOM against vulnerability scan
   run: |
     grype $IMAGE --output json > scan-results.json
     SCAN_PKGS=$(jq -r '.matches[].artifact.name' scan-results.json | sort -u)
     for pkg in $SCAN_PKGS; do
-      if ! jq -e ".components[] | select(.name == \"$pkg\")" sbom.json > /dev/null 2>&1; then
+      if ! jq -e ".components[] | select(.name == \"$pkg\")" sbom-original.json > /dev/null 2>&1; then
         echo "::error::Vulnerable component '$pkg' found by scanner but missing from SBOM"
       fi
     done

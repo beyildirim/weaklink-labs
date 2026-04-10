@@ -1,0 +1,22 @@
+---
+galaxy_info:
+  author: "Community Contributors"
+  description: "Configure NTP on Linux servers"
+  license: MIT
+  min_ansible_version: "2.14"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - focal
+        - jammy
+    - name: EL
+      versions:
+        - "8"
+        - "9"
+  galaxy_tags:
+    - ntp
+    - time
+    - synchronization
+    - system
+
+dependencies: []

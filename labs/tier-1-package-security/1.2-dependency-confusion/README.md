@@ -1,5 +1,7 @@
 # Lab 1.2: Dependency Confusion
 
+> Legacy note: The canonical learner-facing version of this lab lives in the browser guide. Start the platform with `make start`, open the guide, and use the built-in terminal. Treat this README as a secondary local reference.
+
 In February 2021, security researcher Alex Birsan published a technique that allowed him to execute code inside Microsoft, Apple, PayPal, Tesla, Uber, and dozens of other companies simply by publishing packages to public PyPI with the same names as their internal packages.
 
 The attack is simple: if a company uses an internal package called `wl-auth` from their private registry but also has `--extra-index-url https://pypi.org/simple/` in their pip config, an attacker can publish `wl-auth==99.0.0` to public PyPI. Pip picks the higher version, runs the attacker's `setup.py`, and the company is compromised.
@@ -19,10 +21,10 @@ In this lab, you are a developer at WeakLink Corp. You will see the attack happe
 | `pypi-private` | WeakLink Corp private PyPI server with `wl-auth==1.0.0` |
 | `pypi-public` | Simulated public PyPI with attacker's `wl-auth==99.0.0` |
 
-Connect to the workstation:
+Use the built-in browser terminal:
 
 ```bash
-weaklink shell 1.2
+make start
 ```
 
 ## Phase 1: Understand
@@ -214,13 +216,13 @@ Beyond switching to `--index-url`, organizations should also:
 
 4. **Scope packages**: Some ecosystems support scoped packages (npm's `@company/auth`). Python doesn't have native namespaces, but naming conventions with a company prefix help.
 
-### Step 4: Final verification
+### Step 4: Continue the lab
 
-Exit the workstation and verify:
+Stay in the workstation and keep going with the guide flow:
 
 ```bash
-exit
-weaklink verify 1.2
+python app.py
+cat /etc/pip.conf
 ```
 
 ## What You Learned

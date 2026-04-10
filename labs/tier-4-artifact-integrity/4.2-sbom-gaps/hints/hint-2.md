@@ -5,7 +5,7 @@ by a package manager.
 Run a vulnerability scan to catch what SBOMs miss:
 
 ```
-grype weaklink-app:latest -o table > /app/vuln-scan.txt
+grype registry:5000/weaklink-app:vulnerable -o table > /app/vuln-scan.txt
 ```
 
 Then manually check the vendored library:

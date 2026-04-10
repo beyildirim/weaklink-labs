@@ -35,9 +35,9 @@ graph LR
 | Component | Path | Description |
 |-----------|------|-------------|
 | Kubernetes Cluster | `kubectl` | Kind cluster with OPA Gatekeeper and Kyverno installed |
-| Policies | `/app/policies/` | Gatekeeper ConstraintTemplates and Kyverno ClusterPolicies |
-| Attack Manifests | `/app/attacks/` | Kubernetes manifests that bypass admission controllers |
-| Workloads | `/app/workloads/` | Legitimate application manifests for testing |
+| Gatekeeper Config | `/app/gatekeeper-config/` | Gatekeeper config and constraint templates |
+| Exploit Manifests | `/app/exploits/` | Kubernetes manifests that bypass admission controllers |
+| Policies | `/app/policies/` | Remediation policies and conftest tests you create |
 
 !!! tip "Related Labs"
     - **Prerequisite:** [5.2 Helm Chart Poisoning](../5.2-helm-poisoning/index.md) — Understanding Helm chart poisoning gives context for what admission controllers block

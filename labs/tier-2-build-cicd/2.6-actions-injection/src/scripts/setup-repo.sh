@@ -24,6 +24,12 @@ git commit -m "Initial commit: webapp with issue/PR automation"
 git remote add origin "${GITEA_URL}/weaklink/${REPO_NAME}.git"
 git push -u origin main
 
+# Create attacker account used to open issues in the guide steps
+curl -sf -X POST "${GITEA_URL}/api/v1/admin/users" \
+  -H "Content-Type: application/json" \
+  -u "weaklink:weaklink" \
+  -d '{"username":"attacker","password":"password","email":"attacker@evil.com","must_change_password":false}' || true
+
 curl -sf -X PUT "${GITEA_URL}/api/v1/repos/weaklink/${REPO_NAME}/actions/secrets/SLACK_WEBHOOK" \
   -H "Content-Type: application/json" \
   -u "weaklink:weaklink" \

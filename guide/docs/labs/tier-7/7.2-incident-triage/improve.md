@@ -65,11 +65,6 @@ NEXT STEPS:
 | Broad CI secrets exposure | Least-privilege: each pipeline only has the secrets it needs |
 | No artifact provenance | Implement SLSA Level 2+ to prevent compromised artifact deployment |
 
-## Final verification
-
-```bash
-weaklink verify 7.2
-```
 
 ## What You Learned
 

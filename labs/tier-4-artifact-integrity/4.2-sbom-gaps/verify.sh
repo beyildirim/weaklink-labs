@@ -37,6 +37,9 @@ check "SBOM from syft exists" \
 check "SBOM from trivy exists" \
     "test -f /app/sbom-trivy.json && (grep -q 'spdxVersion\|bomFormat' /app/sbom-trivy.json)"
 
+check "SBOM from cdxgen exists" \
+    "test -f /app/sbom-cdxgen.json && (grep -q 'spdxVersion\|bomFormat' /app/sbom-cdxgen.json)"
+
 # Check 2: Vulnerability scan was run
 check "Vulnerability scan output exists (grype or trivy)" \
     "test -f /app/vuln-scan.txt || test -f /app/vuln-scan.json"
@@ -44,10 +47,6 @@ check "Vulnerability scan output exists (grype or trivy)" \
 # Check 3: User documented the vendored CVE that SBOMs missed
 check "Gap analysis documents the missed vendored CVE" \
     "test -f /app/gap-analysis.md && grep -qi 'CVE\|vendored\|missed\|gap' /app/gap-analysis.md"
-
-# Check 4: Comparison report exists
-check "SBOM comparison report exists" \
-    "test -f /app/comparison.md || test -f /app/comparison.txt"
 
 echo ""
 echo "  Results: ${PASS} passed, ${FAIL} failed"

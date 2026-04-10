@@ -62,9 +62,3 @@ cat /app/layer-baseline.txt
 ```
 
 Store alongside build artifacts. Any drift means tampering.
-
-### Step 5: Verify the lab
-
-```bash
-weaklink verify 3.5
-```

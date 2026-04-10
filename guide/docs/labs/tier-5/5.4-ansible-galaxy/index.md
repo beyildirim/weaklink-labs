@@ -18,14 +18,14 @@
   <a href="detect/" class="phase-step upcoming">Detect</a>
 </div>
 
-`ansible-galaxy install` downloads roles and collections from Ansible Galaxy, a public registry where anyone can publish. These roles execute with playbook privileges, which typically means full root on every managed host. No review process, no code signing, no sandboxing. If a role adds a line to `authorized_keys`, Ansible faithfully executes it across your entire inventory.
+Ansible Galaxy distributes roles and collections from a public registry where anyone can publish. Those roles execute with playbook privileges, which typically means full root on every managed host. No review process, no code signing, no sandboxing. If a role adds a line to `authorized_keys`, Ansible faithfully executes it across your entire inventory. This lab seeds both the suspicious role and a reviewed local copy so you can inspect the difference and replace the bad role without leaving the workstation.
 
 ### Attack Flow
 
 ```mermaid
 graph LR
-    A[ansible-galaxy install] --> B[Downloads role]
-    B --> C[Role has hidden task]
+    A[Public role is pulled into repo] --> B[Role has hidden task]
+    B --> C[Playbook trusts role content]
     C --> D[Plants SSH key in authorized_keys]
 ```
 
@@ -34,7 +34,7 @@ graph LR
 | Component | Path | Description |
 |-----------|------|-------------|
 | Playbooks | `/app/playbooks/` | Ansible playbooks that consume Galaxy roles |
-| Galaxy Server | `galaxy-server:8080` | Simulated Ansible Galaxy with legitimate and malicious roles |
+| Reviewed role copy | `/app/vetted/ntp_config/` | Clean local role used to simulate an internal reviewed mirror |
 | Managed Hosts | `target-host-1`, `target-host-2` | Target hosts managed by Ansible |
 | Requirements | `/app/requirements.yml` | Galaxy role and collection requirements file |
 

@@ -28,8 +28,8 @@ echo "[*] Regenerating lockfile from ${REQ_IN}..."
 
 TMPFILE=$(mktemp)
 pip-compile --generate-hashes \
-    --index-url http://pypi:8080/simple/ \
-    --trusted-host pypi \
+    --index-url http://pypi-private:8080/simple/ \
+    --trusted-host pypi-private \
     --quiet \
     "$REQ_IN" \
     --output-file "$TMPFILE" 2>/dev/null

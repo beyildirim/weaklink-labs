@@ -11,7 +11,7 @@
 
 set -euo pipefail
 
-REGISTRY="http://registry:4873"
+REGISTRY="http://verdaccio:4873"
 PACKAGES_DIR="/lab/src/packages"
 
 echo "=== Publishing attack packages ==="
@@ -21,7 +21,7 @@ TOKEN=$(curl -sf -X PUT "${REGISTRY}/-/user/org.couchdb.user:labuser" \
     -H "Content-Type: application/json" \
     -d '{"name":"labuser","password":"labpass123"}' | node -pe "JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).token")
 
-echo "//registry:4873/:_authToken=${TOKEN}" > ~/.npmrc
+echo "//verdaccio:4873/:_authToken=${TOKEN}" > ~/.npmrc
 echo "registry=${REGISTRY}/" >> ~/.npmrc
 
 # Publish wl-framework@2.0.0 (no debug dependency)

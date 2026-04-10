@@ -14,6 +14,8 @@
 
 ## How Typosquatting Works
 
+Focus on the human failure, not just the package difference. The important question is why a package can look normal enough to install, work normally enough to pass tests, and still be malicious.
+
 ### Step 1: Explore the PyPI registry
 
 ```bash

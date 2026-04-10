@@ -64,9 +64,3 @@ You should see version 1.0.0 installed and no compromise detected.
 1. **`--require-hashes`**: Pin packages to SHA256 hashes. Even if an attacker publishes the same name+version, the hash won't match.
 2. **Register internal names on public PyPI**: Claim the namespace with an empty `0.0.1` package.
 3. **Repository manager** (Artifactory, Nexus): Proxy public PyPI and prefer private packages by name pattern.
-
-### Final verification
-
-```bash
-weaklink verify 1.2
-```

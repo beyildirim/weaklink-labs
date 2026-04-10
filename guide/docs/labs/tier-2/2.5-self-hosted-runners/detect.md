@@ -23,14 +23,14 @@
 | **Supply Chain Compromise: Compromise Software Supply Chain** | [T1195.002](https://attack.mitre.org/techniques/T1195/002/) | Attacker modifies build infrastructure to compromise future builds |
 | **Scheduled Task/Job** | [T1053](https://attack.mitre.org/techniques/T1053/) | Persistence via cron jobs or shell profiles on the runner |
 
-The key signal is filesystem modifications outside the workspace directory during a PR build.
+The key signal is filesystem modifications outside the repository checkout on a runner that is reused between jobs.
 
-Look for files written to `/runner/_work/_tool/`, `/runner/hooks/`, or runner home directories during PR jobs. Watch for new cron jobs, systemd services, or shell profile modifications. Monitor outbound network connections from the runner between jobs, process trees with children outliving the workflow job, and runner tool cache hash changes.
+Look for files written to `/runner/_work/_tool/`, `/runner/hooks/`, or runner profile files such as `/runner/workspace/.bashrc` during PR jobs. Watch for new cron jobs, systemd services, or shell profile modifications. Monitor outbound network connections from the runner between jobs, process trees with children outliving the workflow job, and runner tool cache hash changes.
 
 | Indicator | Type | Description |
 |-----------|------|-------------|
 | Files in `/runner/_work/_tool/.hidden/` | File | Hidden persistence directory in tool cache |
-| Modified `/runner/.bash_profile` | File | Shell profile backdoor |
+| Modified `/runner/workspace/.bashrc` | File | Shell profile backdoor in the simulated runner |
 | New entries in `crontab` | Persistence | Scheduled task persistence |
 | Processes surviving job completion | Process | Orphaned malicious processes |
 | Outbound connections between jobs | Network | C2 or exfiltration from idle runner |
@@ -41,7 +41,7 @@ Look for files written to `/runner/_work/_tool/`, `/runner/hooks/`, or runner ho
 
 - "Runner filesystem modified outside workspace during PR build" (runner audit)
 - "New cron job detected on CI runner" (endpoint monitoring)
-- "Runner state hash mismatch before job start" (pre-job hook)
+- "Runner cleanup hook found leftover persistence before job start" (pre-job hook)
 
 **Triage workflow:**
 
@@ -92,7 +92,7 @@ jobs:
           fi
 
           echo "--- Checking shell profiles ---"
-          for f in ~/.bash_profile ~/.bashrc ~/.profile; do
+          for f in /runner/workspace/.bashrc ~/.profile; do
             if [ -f "$f" ]; then
               HASH=$(sha256sum "$f" | cut -d' ' -f1)
               EXPECTED=$(cat "/runner/.baseline/$(basename $f).hash" 2>/dev/null)

@@ -34,63 +34,19 @@ What to look for:
 
 ---
 
-### SOC Alert Rules
+## How to Think About Detection
 
-When you see **"Unexpected outbound connection during build"** or **"Process spawned by pip/setup.py writing to /tmp"**: a `pip install` ran a package with a malicious `setup.py`. The payload executed immediately during installation with the full privileges of the installing user (often root in CI containers). Correlate the timestamp with pip install logs to identify which package triggered it, then inspect that package's `setup.py`.
+At this stage, focus on noticing install-time behavior that should never feel normal.
 
-### CI Integration
+Ask:
 
-Add this GitHub Actions workflow to enforce hash-verified installs in CI. Save as `.github/workflows/dependency-check.yml`:
+- Did installation execute code outside the package directory?
+- Did the installer contact anything other than the package index?
+- Did it create files in `/tmp`, home directories, or startup locations?
 
-```yaml
-name: Dependency Hash Verification
+If that happens during `pip install`, treat the package as hostile until proven otherwise.
 
-on:
-  pull_request:
-    paths:
-      - 'requirements*.txt'
-      - 'setup.py'
-      - 'setup.cfg'
-      - 'pyproject.toml'
-  push:
-    branches: [main]
-
-permissions:
-  contents: read
-
-jobs:
-  verify-hashes:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Verify requirements.txt has hashes
-        run: |
-          if [ -f requirements.txt ]; then
-            if ! grep -q -- '--hash=sha256:' requirements.txt; then
-              echo "::error::requirements.txt must use --hash=sha256: for all packages."
-              echo "Generate hashes with: pip-compile --generate-hashes requirements.in"
-              exit 1
-            fi
-          fi
-
-      - name: Install with --require-hashes
-        run: |
-          pip install --require-hashes -r requirements.txt
-        env:
-          PIP_NO_CACHE_DIR: "1"
-
-      - name: Verify no unexpected packages
-        run: |
-          # List installed packages and compare to requirements
-          pip freeze > /tmp/installed.txt
-          echo "Installed packages:"
-          cat /tmp/installed.txt
-```
+If you want concrete rule examples or CI enforcement snippets later, use the shared resources linked at the bottom of the page.
 
 ---
 

@@ -36,7 +36,7 @@ echo "[*] Checking Gitea is accessible..."
 if curl -sf "${GITEA_URL}/api/v1/version" > /dev/null 2>&1; then
     check "Gitea server is running" 0
 else
-    echo "  FAIL: Gitea server is not reachable at ${GITEA_URL}. Start the lab first: weaklink start 0.1"
+    echo "  FAIL: Gitea server is not reachable at ${GITEA_URL}. Start the platform with 'make start' and open the lab in the guide."
     exit 1
 fi
 

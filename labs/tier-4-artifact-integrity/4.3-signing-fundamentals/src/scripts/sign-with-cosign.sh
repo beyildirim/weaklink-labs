@@ -1,10 +1,10 @@
 #!/bin/bash
 set -euo pipefail
-IMAGE="${1:-registry:5000/webapp:1.0.0}"
+IMAGE="${1:-registry:5000/weaklink-app:signed}"
 echo "[*] Generating a cosign key pair..."
-cosign generate-key-pair --output-key-prefix=weaklink
+cosign generate-key-pair
 echo "[*] Signing image: $IMAGE"
-cosign sign --key=weaklink.key "$IMAGE"
+cosign sign --key=cosign.key "$IMAGE"
 echo "[*] Verifying signature..."
-cosign verify --key=weaklink.pub "$IMAGE"
+cosign verify --key=cosign.pub "$IMAGE"
 echo "[+] Image signature verified successfully."

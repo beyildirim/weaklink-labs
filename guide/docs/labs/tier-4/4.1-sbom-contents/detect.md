@@ -63,7 +63,7 @@ When your vulnerability scanner reports a finding for a component not in your SB
 
 1. **SBOM tool missed it**: vendored, dynamically loaded, or unrecognized format
 2. **SBOM is stale**: dependency added after last generation
-3. **SBOM was tampered with**: component deliberately removed (see [Lab 4.7](../4.7-sbom-tampering/))
+3. **SBOM was tampered with**: component deliberately removed (see [Lab 4.7](../4.7-sbom-tampering/index.md))
 
 **Triage steps:**
 

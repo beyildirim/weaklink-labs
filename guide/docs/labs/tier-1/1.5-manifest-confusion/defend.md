@@ -17,7 +17,7 @@
 ### Step 1: Clean up
 
 ```bash
-cd /workspace
+cd /app
 rm -rf node_modules package-lock.json
 rm -f /tmp/manifest-confusion-pwned
 ```
@@ -25,13 +25,13 @@ rm -f /tmp/manifest-confusion-pwned
 ### Step 2: Use the manifest comparison tool
 
 ```bash
-compare-manifests crafted-widget
+bash /app/compare-manifests.sh crafted-widget
 ```
 
 Should show `[MISMATCH]`.
 
 ```bash
-compare-manifests safe-utils
+bash /app/compare-manifests.sh safe-utils
 ```
 
 Should show `[CLEAN]`.
@@ -50,7 +50,7 @@ The hidden `evil-pkg` dependency and `postinstall` script are visible.
 ### Step 4: Install from a verified lockfile with integrity hashes
 
 ```bash
-cd /workspace
+cd /app
 rm -rf node_modules package-lock.json
 
 cat > package.json << 'EOF'
@@ -87,11 +87,5 @@ npm ci
 ls node_modules/evil-pkg 2>/dev/null && echo "FAIL: evil-pkg found" || echo "PASS: no evil-pkg"
 test -f /tmp/manifest-confusion-pwned && echo "FAIL: pwned" || echo "PASS: not pwned"
 grep -q '"integrity"' package-lock.json && echo "PASS: lockfile has integrity hashes" || echo "FAIL: no integrity"
-which compare-manifests && echo "PASS: comparison tool available" || echo "FAIL: no tool"
-```
-
-### Verify your defenses
-
-```bash
-weaklink verify 1.5
+test -x /app/compare-manifests.sh && echo "PASS: comparison tool available" || echo "FAIL: no tool"
 ```

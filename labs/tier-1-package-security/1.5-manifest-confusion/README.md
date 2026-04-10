@@ -1,5 +1,7 @@
 # Lab 1.5: Manifest Confusion
 
+> Legacy note: The canonical learner-facing version of this lab lives in the browser guide. Start the platform with `make start`, open the guide, and use the built-in terminal. Treat this README as a secondary local reference.
+
 In 2023, security researcher Darcy Clarke discovered a fundamental flaw in the npm ecosystem: the package metadata that `npm view` shows you can differ from what's actually inside the tarball you install. Auditing tools, security scanners, and developers all trusted the registry API, but the registry was lying.
 
 This lab teaches you how npm packages are published, how registry metadata can be manipulated, and how to detect and defend against manifest confusion attacks.
@@ -15,7 +17,7 @@ This lab teaches you how npm packages are published, how registry metadata can b
 | Service | URL | Purpose |
 |---------|-----|---------|
 | **Verdaccio** | http://verdaccio:4873 | Local npm registry with crafted packages |
-| **workspace** | `weaklink shell 1.5` | Your working shell |
+| **workspace** | Browser terminal | Your working shell |
 
 Packages pre-loaded on the registry:
 - `safe-utils@1.0.0`: a normal, legitimate package
@@ -25,9 +27,10 @@ Packages pre-loaded on the registry:
 ## Start the Lab
 
 ```bash
-weaklink start 1.5
-weaklink shell 1.5
+make start
 ```
+
+Then open the guide in your browser and use the built-in terminal.
 
 ---
 

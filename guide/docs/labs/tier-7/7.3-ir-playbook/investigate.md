@@ -31,7 +31,7 @@ PREPARATION CHECKLIST
 =====================
 
 [ ] CI secrets inventory exists and is current (last updated: ____)
-[ ] Detection rules deployed (Lab 7.1)
+[ ] Triage workflow practiced and ready to use
 [ ] Package manager hardening
     - --index-url (not --extra-index-url) in all pip configs
     - npm registry locked to corporate registry

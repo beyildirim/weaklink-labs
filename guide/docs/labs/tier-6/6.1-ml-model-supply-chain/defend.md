@@ -49,9 +49,3 @@ python3 /app/safe_loader.py /app/models/model.safetensors
 python3 /app/safe_loader.py /app/models/malicious_model.pt 2>&1 || true
 test ! -f /tmp/ml-model-pwned && echo "CLEAN: No compromise detected"
 ```
-
-### Final verification
-
-```bash
-weaklink verify 6.1
-```

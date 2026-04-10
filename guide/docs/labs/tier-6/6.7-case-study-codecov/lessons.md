@@ -92,9 +92,3 @@ YMLEOF
 ```
 
 Scans all workflow files and shell scripts for `curl | bash` and `wget | bash` patterns. Any match requires immediate review and replacement with a pinned alternative.
-
-### Verify understanding
-
-```bash
-weaklink verify 6.7
-```

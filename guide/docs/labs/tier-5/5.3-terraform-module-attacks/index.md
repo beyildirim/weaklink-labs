@@ -41,4 +41,3 @@ graph LR
     - **Next:** [5.4 Ansible Galaxy and Collection Attacks](../5.4-ansible-galaxy/index.md) — Ansible Galaxy attacks apply similar patterns to another IaC tool
     - **See also:** [5.1 How Helm Charts Resolve Dependencies](../5.1-helm-resolution/index.md) — Helm resolution faces the same dependency trust challenges
     - **See also:** [1.2 Dependency Confusion](../../tier-1/1.2-dependency-confusion/index.md) — Module registry confusion mirrors dependency confusion
-    - **See also:** [9.1 Cloud Marketplace Poisoning](../../tier-9/9.1-cloud-marketplace-poisoning/index.md) — Cloud marketplace poisoning extends IaC attacks to cloud

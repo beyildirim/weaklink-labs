@@ -58,9 +58,3 @@ slsa-verifier verify-image registry:5000/webapp:latest \
 ```
 
 Validates the entire provenance chain: builder identity, source repository, source ref, and build configuration.
-
-### Step 5: Verify the lab
-
-```bash
-weaklink verify 4.6
-```

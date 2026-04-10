@@ -3,7 +3,7 @@
 <div class="lab-meta">
   <span>Understand: ~5 min | Investigate: ~15 min | Validate: ~10 min | Improve: ~10 min</span>
   <span class="difficulty advanced">Advanced</span>
-  <span>Prerequisites: <a href="../../tier-1/1.2-dependency-confusion/">Lab 1.2</a>, <a href="../7.1-detection-rules/">Lab 7.1</a></span>
+  <span>Prerequisites: <a href="../../tier-1/1.2-dependency-confusion/">Lab 1.2</a></span>
 </div>
 
 <div class="phase-stepper">
@@ -35,7 +35,6 @@ graph LR
 ```
 
 !!! tip "Related Labs"
-    - **Prerequisite:** [7.1 Building Detection Rules](../7.1-detection-rules/index.md) — Detection rules trigger the incidents you triage here
     - **Next:** [7.3 Incident Response Playbook](../7.3-ir-playbook/index.md) — IR playbooks formalize the triage process into response procedures
     - **See also:** [6.7 Case Study: Codecov Bash Uploader](../../tier-6/6.7-case-study-codecov/index.md) — Codecov is a real-world triage scenario for CI supply chain breaches
     - **See also:** [6.10 Case Study: Equifax Breach](../../tier-6/6.10-case-study-equifax/index.md) — Equifax shows consequences of poor incident triage

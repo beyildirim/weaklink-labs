@@ -41,9 +41,3 @@ for comp in sbom.get('components', []):
 ### Lesson 3: First patches may be incomplete
 
 Log4Shell required FOUR patches over three weeks. Build processes that can redeploy quickly matter. Pin exact versions. Override transitive dependency versions (`<dependencyManagement>` in Maven, `overrides` in npm).
-
-### Verify understanding
-
-```bash
-weaklink verify 6.9
-```

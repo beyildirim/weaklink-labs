@@ -36,7 +36,7 @@ A signature proves:
 2. **Authenticity**: someone with the private key approved this artifact
 3. **Non-repudiation**: the signer can't deny signing it (if key management is solid)
 
-A signature does NOT prove the artifact is safe, does what it claims, or was built from specific source code (that's attestation: [Lab 4.4](../4.4-attestation-slsa/)).
+A signature does NOT prove the artifact is safe, does what it claims, or was built from specific source code (that's attestation: [Lab 4.4](../4.4-attestation-slsa/index.md)).
 
 ### Step 3: Explore the registry
 

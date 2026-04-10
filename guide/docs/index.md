@@ -3,7 +3,7 @@
 # WeakLink Labs
 
 <p class="tagline">You're only as strong as your weakest link.</p>
-<p class="subtitle">Hands-on supply chain security training. Understand how attacks work. Execute them. Then build the defenses.</p>
+<p class="subtitle">Hands-on supply chain security training for people who need to understand how software supply chains work, break, and get defended.</p>
 
 [Get Started](getting-started.md){ .cta-button }
 
@@ -13,7 +13,7 @@
 
 ## What is WeakLink Labs?
 
-WeakLink Labs is a self-contained training environment for learning **software supply chain security** by doing. Every lab follows four phases:
+WeakLink Labs is a self-contained training environment for learning **software supply chain security** by doing. Most attack-focused labs follow a simple pattern:
 
 <div class="phase-flow" markdown>
   <span class="phase-step understand">1. Understand</span>
@@ -25,7 +25,14 @@ WeakLink Labs is a self-contained training environment for learning **software s
   <span class="phase-step detect">4. Detect</span>
 </div>
 
-You don't learn security by reading about it. You learn by **exploiting real vulnerabilities** in a safe environment, building the defenses that stop them, and writing the detection rules that catch them.
+You do not learn supply chain security by memorizing terms. You learn by seeing how normal systems work, breaking them in a safe environment, and understanding what reduces risk in practice. Some labs add detection, triage, or case-study analysis, but the core goal is judgment.
+
+### Core values
+
+- **Teach judgment first.** Focus on what the learner should notice, ask, and decide.
+- **Keep the path simple.** Start the platform, open the browser, use the terminal.
+- **Teach across roles.** The same risk should make sense to SOC, engineering, operations, and leadership.
+- **Prefer realism over platform mechanics.** The labs matter more than achievements, ceremony, or workflow overhead.
 
 ### Who is this for?
 
@@ -37,11 +44,17 @@ You don't learn security by reading about it. You learn by **exploiting real vul
 
 ### What's inside?
 
-62 labs across 10 tiers. All labs run inside a Kubernetes cluster on your machine. Every registry, Git server, and build tool is local. Nothing touches the internet. You get a full workstation with all the tools pre-installed.
+50 labs across 8 tiers. The main experience runs locally with a full workstation, private registries, a Git server, and supporting services. Most of the environment is local to your machine. Some setup paths pull prebuilt images to get you started faster.
+
+The recommended mainline is **Tier 0 through Tier 5**. That path stays closest to the browser-first, hands-on supply chain learning model. **Tier 6 and Tier 7** are better treated as optional advanced branches: case studies, incident response, and threat modeling.
 
 ---
 
 ## Training Tiers
+
+**Core learning path:** Tier `0` through Tier `5`
+
+**Advanced branches:** Tier `6` and Tier `7`
 
 <div class="tier-grid" markdown>
 
@@ -110,7 +123,7 @@ Helm poisoning, Terraform module attacks, Ansible Galaxy, and admission controll
 
 ### [Case Studies & Frontier Attacks](labs/tier-6/6.1-ml-model-supply-chain/index.md)
 
-AI/ML supply chain, firmware attacks, and case studies: xz-utils, SolarWinds, Log4Shell, and more.
+AI/ML supply chain, firmware attacks, and major case studies. Advanced branch, not the default next step for every learner.
 
 <div class="lab-count">10 labs &middot; ~6 hours</div>
 </div>
@@ -118,31 +131,11 @@ AI/ML supply chain, firmware attacks, and case studies: xz-utils, SolarWinds, Lo
 <div class="tier-card" markdown>
 <span class="tier-number">TIER 7</span>
 
-### [Detection & Response](labs/tier-7/7.1-detection-rules/index.md)
+### [Response & Threat Modeling](labs/tier-7/7.2-incident-triage/index.md)
 
-Detection engineering, incident triage, IR playbooks, tool evaluation, and threat modeling.
+Incident triage, IR playbooks, and threat modeling. Advanced branch for SOC and response-oriented learners.
 
-<div class="lab-count">5 labs &middot; ~4 hours</div>
-</div>
-
-<div class="tier-card" markdown>
-<span class="tier-number">TIER 8</span>
-
-### [Policy & Program Building](labs/tier-8/8.1-slsa-deep-dive/index.md)
-
-SLSA, SSDF, EO 14028, vendor assessment, and building a supply chain security program.
-
-<div class="lab-count">6 labs &middot; ~4 hours</div>
-</div>
-
-<div class="tier-card" markdown>
-<span class="tier-number">TIER 9</span>
-
-### [Cloud Supply Chain](labs/tier-9/9.1-cloud-marketplace-poisoning/index.md)
-
-Marketplace poisoning, serverless attacks, cloud CI/CD exploitation, and IAM chain abuse.
-
-<div class="lab-count">4 labs &middot; ~3 hours</div>
+<div class="lab-count">3 labs &middot; ~2 hours</div>
 </div>
 
 </div>

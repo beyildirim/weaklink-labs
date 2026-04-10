@@ -36,7 +36,8 @@ graph LR
 |-----------|------|-------------|
 | Webapp Chart | `/app/webapp/` | Application Helm chart with dependencies |
 | Malicious Chart | `/app/malicious-redis-chart/` | Attacker's redis chart v99.0.0 with exfil hook |
-| Private Registry | `private-registry:5000` | Trusted OCI-based chart registry |
+| Private Helm Repo | `private-charts` | Trusted Helm repo alias used for chart resolution |
+| Private OCI Registry | `private-registry:5000` | Trusted OCI-based chart registry used by `oci://` URLs |
 | Public Repo | `untrusted-public` | Simulated public Helm repository |
 
 !!! tip "Related Labs"

@@ -41,9 +41,3 @@ The ua-parser-js attack would have been prevented if the maintainer had 2FA enab
 ### Lesson 4: Use provenance attestation
 
 npm provenance (since npm 9.5.0): packages built on GitHub Actions include provenance attestation. `npm audit signatures` verifies packages were published from known CI systems. Even with stolen credentials, the attacker cannot generate valid provenance.
-
-### Verify understanding
-
-```bash
-weaklink verify 6.8
-```

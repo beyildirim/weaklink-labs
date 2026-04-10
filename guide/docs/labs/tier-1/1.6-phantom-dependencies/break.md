@@ -14,14 +14,16 @@
 
 ## When the Phantom Disappears (or Gets Replaced)
 
+Focus on the hidden trust boundary here. Your app is relying on someone else's dependency choice, so an upstream change can become either an outage or an attack without your code changing at all.
+
 ### Part A: The reliability failure
 
 #### Step 1: Publish the updated wl-framework
 
-This command publishes a malicious version of wl-framework to the npm registry, simulating an attacker who claims an unclaimed transitive dependency:
+This command simulates the upstream change and the attacker follow-up together:
 
 ```bash
-publish-attack
+bash /app/publish-attack.sh
 ```
 
 Publishes `wl-framework@2.0.0` (no longer depends on `debug`) and a malicious `debug@99.0.0`.
@@ -29,7 +31,7 @@ Publishes `wl-framework@2.0.0` (no longer depends on `debug`) and a malicious `d
 #### Step 2: Update your dependencies
 
 ```bash
-cd /workspace
+cd /app
 npm update
 ```
 

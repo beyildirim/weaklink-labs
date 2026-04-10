@@ -17,7 +17,7 @@
 ### Step 1: Identify the target component
 
 ```bash
-grype sbom:/app/sbom.json --output json | jq -r '
+grype sbom:/app/sbom-original.json --output json | jq -r '
   .matches[]
   | select(.vulnerability.severity == "Critical")
   | "\(.artifact.name) \(.artifact.version) - \(.vulnerability.id)"
@@ -27,11 +27,11 @@ grype sbom:/app/sbom.json --output json | jq -r '
 ### Step 2: Create the tampered SBOM
 
 ```bash
-cat /app/sbom.json | jq '
+cat /app/sbom-original.json | jq '
   .components = [.components[] | select(.name != "requests")]
 ' > /app/sbom-tampered.json
 
-echo "Original components: $(jq '.components | length' /app/sbom.json)"
+echo "Original components: $(jq '.components | length' /app/sbom-original.json)"
 echo "Tampered components: $(jq '.components | length' /app/sbom-tampered.json)"
 ```
 
@@ -41,7 +41,7 @@ One line of `jq`.
 
 ```bash
 echo "=== Original SBOM ==="
-grype sbom:/app/sbom.json --output table --only-fixed 2>&1 | head -20
+grype sbom:/app/sbom-original.json --output table --only-fixed 2>&1 | head -20
 
 echo "=== Tampered SBOM ==="
 grype sbom:/app/sbom-tampered.json --output table --only-fixed 2>&1 | head -20
@@ -54,7 +54,7 @@ The tampered SBOM produces a clean compliance report. The vulnerability still ex
 Removal is obvious if someone compares component counts. A subtler attack:
 
 ```bash
-cat /app/sbom.json | jq '
+cat /app/sbom-original.json | jq '
   .components = [.components[] |
     if .name == "requests" and .version == "2.25.0"
     then .version = "2.31.0" | .purl = (.purl | gsub("2.25.0"; "2.31.0"))
@@ -68,4 +68,4 @@ grype sbom:/app/sbom-version-tampered.json --output table 2>&1 | grep -i request
 
 Same component count, but the CVE no longer matches. The actual deployed artifact still runs `requests==2.25.0`.
 
-> **Checkpoint:** You should have `sbom.json`, `sbom-tampered.json`, and `sbom-version-tampered.json`. Run grype against all three and confirm the original flags the CVE while the tampered versions don't.
+> **Checkpoint:** You should have `sbom-original.json`, `sbom-tampered.json`, and `sbom-version-tampered.json`. Run grype against all three and confirm the original flags the CVE while the tampered versions don't.

@@ -77,8 +77,6 @@ TIER4="${TIER4_ENABLED:-true}"
 TIER5="${TIER5_ENABLED:-true}"
 TIER6="${TIER6_ENABLED:-true}"
 TIER7="${TIER7_ENABLED:-true}"
-TIER8="${TIER8_ENABLED:-true}"
-TIER9="${TIER9_ENABLED:-true}"
 
 tier_enabled() {
     local tier_var="TIER${1}"
@@ -95,7 +93,7 @@ echo -e "${BOLD}  WeakLink Labs — Setup${NC}"
 echo -e "${BOLD}========================================${NC}"
 echo ""
 
-echo -e "  Enabled tiers: $(for t in 0 1 2 3 4 5 6 7 8 9; do tier_enabled $t && printf "$t "; done)"
+echo -e "  Enabled tiers: $(for t in 0 1 2 3 4 5 6 7; do tier_enabled $t && printf "$t "; done)"
 echo ""
 
 wait_for_service "PyPI Private" "http://pypi-private:8080/simple/"

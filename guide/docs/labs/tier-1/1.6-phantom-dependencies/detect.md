@@ -35,92 +35,19 @@ What to look for:
 
 ---
 
-### SOC Alert Rules
+## How to Think About Detection
 
-- **Proactive detection**: Run `depcheck` in CI and feed results to your SIEM. Any `require()` without a corresponding `package.json` entry is a phantom dependency. This is your pre-attack detection.
-- **Version anomaly alerting**: Alert on package installs where the major version jumps by more than 10. Attackers use high version numbers to win resolution.
-- **npm install vs npm ci**: If CI uses `npm install` instead of `npm ci`, it can modify the lockfile and resolve new versions at build time. `npm ci` strictly follows the lockfile.
-- **Post-incident forensics**: Compare `ls node_modules/` against `package.json`. Every package not declared (directly or transitively via `npm ls --all`) is either hoisted or a substitution attack.
+At this stage, detection is mostly about spotting code that relies on a package nobody explicitly declared.
 
-### CI Integration
+Ask:
 
-`.github/workflows/phantom-deps.yml`:
+- Does your code import a package that is not in `package.json`?
+- Did an update suddenly remove or replace a transitive package your app quietly depended on?
+- Are you using `npm ci` and explicit declarations, or trusting hoisting to keep things working?
 
-```yaml
-name: Detect Phantom Dependencies
-on:
-  pull_request:
-    paths:
-      - '**.js'
-      - '**.ts'
-      - 'package.json'
-      - 'package-lock.json'
-  push:
-    branches: [main]
+If your app depends on undeclared packages, you are already carrying hidden risk before an attacker shows up.
 
-jobs:
-  depcheck:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Install dependencies with npm ci
-        run: |
-          if ! npm ci; then
-            echo "::error::npm ci failed. Lockfile may be out of sync with package.json."
-            exit 1
-          fi
-      - name: Install depcheck
-        run: npm install -g depcheck
-      - name: Run depcheck for phantom dependencies
-        run: |
-          set -euo pipefail
-          OUTPUT=$(depcheck . --json 2>/dev/null || true)
-          MISSING=$(echo "$OUTPUT" | node -e "
-            const data = JSON.parse(require('fs').readFileSync('/dev/stdin', 'utf8'));
-            const missing = Object.keys(data.missing || {});
-            if (missing.length > 0) {
-              console.log('PHANTOM DEPENDENCIES FOUND:');
-              missing.forEach(dep => {
-                const files = data.missing[dep];
-                console.log('  ' + dep + ' (used in: ' + files.join(', ') + ')');
-              });
-              process.exit(1);
-            } else {
-              console.log('No phantom dependencies detected.');
-            }
-          ")
-          echo "$OUTPUT"
-      - name: Check for high-version anomalies
-        run: |
-          node -e "
-            const lockfile = require('./package-lock.json');
-            const packages = lockfile.packages || {};
-            let found = false;
-            for (const [path, info] of Object.entries(packages)) {
-              if (!path || !info.version) continue;
-              const major = parseInt(info.version.split('.')[0]);
-              if (major > 50) {
-                console.log('WARNING: ' + path + ' has version ' + info.version + ' (suspiciously high)');
-                found = true;
-              }
-            }
-            if (found) process.exit(1);
-            console.log('No version anomalies detected.');
-          "
-
-  enforce-npm-ci:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Verify no npm install in scripts
-        run: |
-          if grep -rn 'npm install' .github/ Dockerfile* Makefile 2>/dev/null | grep -v 'npm install -g' | grep -v '#'; then
-            echo "::warning::Found 'npm install' in CI/build files. Use 'npm ci' for reproducible builds."
-          fi
-```
+If you want concrete rule examples or CI enforcement snippets later, use the shared resources linked at the bottom of the page.
 
 ---
 

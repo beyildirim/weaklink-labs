@@ -73,9 +73,3 @@ kubectl run test-unsigned --image=registry:5000/weaklink-app:unsigned
 ```
 
 The unsigned image is now rejected at admission time.
-
-### Step 5: Verify the lab
-
-```bash
-weaklink verify 4.3
-```

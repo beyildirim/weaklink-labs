@@ -36,11 +36,10 @@ graph LR
 | Service | Address | Description |
 |---------|---------|-------------|
 | Gitea | `gitea:3000` | Git server hosting `wl-webapp` with CI runner |
-| Runner | `runner:8080` | Self-hosted runner with persistent filesystem |
+| Runner | `/runner` | Simulated self-hosted runner filesystem exposed inside the workstation |
 | Workstation | (your shell) | Development environment |
 
 !!! tip "Related Labs"
     - **Prerequisite:** [2.1 CI/CD Fundamentals](../2.1-cicd-fundamentals/index.md) — Understanding CI/CD basics including hosted vs. self-hosted runners
     - **Next:** [2.7 Build Cache Poisoning](../2.7-build-cache-poisoning/index.md) — Build cache poisoning targets persistent state on shared runners
     - **See also:** [2.4 Secret Exfiltration from CI](../2.4-secret-exfiltration/index.md) — Self-hosted runners expose more secrets than cloud runners
-    - **See also:** [9.3 Cloud CI/CD Attacks](../../tier-9/9.3-cloud-cicd-attacks/index.md) — Cloud CI/CD attacks extend these concepts to managed services

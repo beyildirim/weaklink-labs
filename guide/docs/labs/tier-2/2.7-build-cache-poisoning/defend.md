@@ -14,103 +14,43 @@
 
 ## Secure Cache Configuration
 
-### Fix 1: Use lockfile hash as the only cache key
+The core lesson in this lab is not "write clever cache YAML." It is "treat cache state like untrusted input unless the key, scope, and integrity checks are all tight."
+
+### Fix 1: Restore the hardened main workflow
 
 ```bash
 cd /repos/wl-webapp
 git checkout main
+cp /lab/src/repo/.gitea/workflows/ci-safe-cache.yml .gitea/workflows/ci.yml
+cat .gitea/workflows/ci.yml
 ```
+
+The important properties are:
+
+1. the main workflow only runs on `push`
+2. the cache key depends on file hashes, not a static string
+3. the workflow verifies what got installed instead of blindly trusting cache contents
+
+### Fix 2: Restore isolated PR validation
 
 ```bash
-cat > .gitea/workflows/ci.yml << 'EOF'
-name: WeakLink Webapp CI
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: pip-${{ runner.os }}-${{ hashFiles('requirements.txt', 'requirements-lock.txt') }}
-          # NO restore-keys -- never fall back to a stale cache
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Verify installed packages
-        run: |
-          pip install pip-audit
-          pip-audit --require-hashes -r requirements-lock.txt
-
-      - name: Run tests
-        run: python test_app.py
-EOF
+cp /lab/src/repo/.gitea/workflows/pr-ci.yml .gitea/workflows/pr-ci.yml
+cat .gitea/workflows/pr-ci.yml
 ```
 
-### Fix 2: Generate a lockfile with hashes
+The PR workflow uses a PR-scoped cache key so an untrusted branch does not write into the same cache namespace as `main`.
 
-```bash
-pip install pip-tools
-pip-compile --generate-hashes requirements.txt -o requirements-lock.txt
-cat requirements-lock.txt
-```
-
-When `pip install --require-hashes` is used, pip verifies the downloaded wheel matches the hash. A poisoned wheel is rejected.
-
-### Fix 3: Isolate PR caches from main
-
-```bash
-cat > .gitea/workflows/pr-ci.yml << 'EOF'
-name: PR Validation
-
-on:
-  pull_request:
-    branches: [main]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: pip-pr-${{ github.event.pull_request.number }}-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            pip-pr-${{ github.event.pull_request.number }}-
-
-      - name: Install and test
-        run: |
-          pip install -r requirements.txt
-          python test_app.py
-EOF
-```
-
-### Fix 4: Commit and push
+### Fix 3: Commit and push
 
 ```bash
 git add -A
-git commit -m "Secure CI cache: strict keys, hash verification, PR isolation"
+git commit -m "Harden CI cache keys and isolate PR cache"
 git push origin main
 ```
 
 ### Key defenses
 
-1. **Lockfile hashes as cache keys**. cache only matches when exact lockfile content matches
-2. **No `restore-keys` on main**. never fall back to a stale cache
-3. **Verify package hashes**. `pip install --require-hashes`, `npm ci`, `go mod verify`
-4. **Isolate PR caches**. PR-specific keys that main branch builds cannot restore
-
-### Step 5: Final verification
-
-```bash
-weaklink verify 2.7
-```
+1. **Hashed cache keys** prevent cross-build reuse of unrelated state
+2. **No broad fallback on main** means stale or poisoned caches are not silently restored
+3. **Integrity checks** make the cache prove what it restored
+4. **Separate PR cache scope** keeps untrusted branches out of the main cache namespace

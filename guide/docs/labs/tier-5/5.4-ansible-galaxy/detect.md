@@ -21,13 +21,13 @@ The core signal is Ansible tasks performing actions outside the role's stated pu
 **Key indicators:**
 
 - Roles containing `authorized_key`, `user`, or `shell` modules unrelated to their stated purpose
-- `ansible-galaxy install` pulling from public Galaxy instead of private hub
+- Role requirements pointing to public Galaxy names instead of reviewed internal sources
 - SSH keys appearing on managed hosts outside your key management system
 - Playbook runs modifying `/root/.ssh/`, `/etc/sudoers`, or `/etc/cron.d/`
 
 | Indicator | What It Means |
 |-----------|---------------|
-| HTTP GET to `galaxy.ansible.com` from CI runners | Roles pulled from public Galaxy |
+| Requirements file points to public role names | Roles are being trusted from an unreviewed public source |
 | SSH connection from managed host to unknown IP after Ansible run | Planted SSH key in use |
 | New `authorized_keys` entries after Ansible run | Backdoor planted |
 
@@ -61,6 +61,9 @@ jobs:
               for item in reqs.get(section, []):
                   if "version" not in item:
                       errors.append(f"{section}: {item.get('name', 'unknown')} missing version pin")
+          for item in reqs.get("roles", []):
+              if "src" not in item:
+                  errors.append(f"roles: {item.get('name', 'unknown')} missing source URL")
           if errors:
               for e in errors:
                   print(f"::error::{e}")
@@ -103,7 +106,7 @@ jobs:
 
 - **Galaxy roles execute with root privileges** across your entire fleet. No review process, no signing, no sandboxing.
 - **Trojanized roles blend in.** An NTP role that also plants an SSH key looks nearly identical to a legitimate one.
-- **Version pinning and private hubs are essential.** Without them, every `ansible-galaxy install` is a supply chain compromise opportunity.
+- **Reviewed internal sources matter.** If teams trust public role names directly, every role update becomes a supply chain compromise opportunity.
 
 ## Further Reading
 

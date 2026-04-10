@@ -108,9 +108,3 @@ EOF
 ```
 
 This policy requires both a valid signature AND a SLSA provenance attestation from a trusted builder.
-
-### Step 6: Verify the lab
-
-```bash
-weaklink verify 4.4
-```

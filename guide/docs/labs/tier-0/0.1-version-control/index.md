@@ -34,7 +34,7 @@ graph LR
 
 | Service     | Address                             |
 |-------------|-------------------------------------|
-| Gitea UI    | `gitea:3000`                        |
+| Gitea UI    | `localhost:3000`                    |
 | Login       | `weaklink` / `weaklink`     |
 | Repository  | `weaklink/web-app`                  |
 

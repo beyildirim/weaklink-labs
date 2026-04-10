@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Solution for Lab 1.3: Typosquatting
-# Run inside the workstation pod: weaklink shell 1.3 < solution/solve.sh
+# Run inside the workstation environment.
 #
 
 set -e
@@ -20,4 +20,4 @@ cat > /app/requirements.txt << 'EOF'
 requests==2.31.0
 EOF
 
-echo "[+] Done. Run 'weaklink verify 1.3' to confirm."
+echo "[+] Done. Confirm with 'pip show requests' and inspect /app/requirements.txt."

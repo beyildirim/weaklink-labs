@@ -45,7 +45,7 @@ Pip installed version **99.0.0** from the public registry. Why:
 2. Pip picks the **highest version** across all sources
 3. 99.0.0 > 1.0.0, so the public (attacker-controlled) version wins
 
-This is the foundational issue behind **dependency confusion attacks** (covered in [Lab 1.2](../1.2-dependency-confusion/)).
+This is the foundational issue behind **dependency confusion attacks** (covered in [Lab 1.2](../1.2-dependency-confusion/index.md)).
 
 ### Step 4: Understand the root cause
 

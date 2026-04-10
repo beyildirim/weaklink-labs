@@ -54,9 +54,3 @@ cat /app/scan-results.txt
 3. **Automate base image scanning** on a schedule, not just at app build time
 4. **Use signed base images** verified with cosign before building
 5. **Monitor upstream updates.** Scan new versions before updating your digest pin
-
-### Step 6: Verify the lab
-
-```bash
-weaklink verify 3.3
-```

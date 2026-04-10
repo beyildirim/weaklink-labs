@@ -6,6 +6,6 @@ prerequisites: []
 difficulty: intermediate
 estimated_time: 30m
 tags: ["ansible", "galaxy", "collections", "roles", "ssh-backdoor", "supply-chain"]
-phase_understand: "Explore Ansible Galaxy collections and roles -- how ansible-galaxy install downloads third-party automation"
+phase_understand: "Explore how third-party Ansible roles enter the repo and why public role names become trust boundaries"
 phase_break: "Find a Galaxy role that claims to configure NTP but secretly plants an SSH key in authorized_keys"
-phase_defend: "Pin collection versions with checksums, review roles before installing, use private Galaxy servers"
+phase_defend: "Pin the reviewed local role copy, review tasks before use, and replace the trojanized role with the vetted copy"

@@ -41,9 +41,9 @@ check "No cache poisoning marker exists" \
 check "Cache key uses hashFiles for lockfile" \
     "grep -q 'hashFiles' ${CI}"
 
-# Check 3: Cache key is not a static string
-check "Cache key is not a static string" \
-    "! grep -q 'key: pip-cache-v1' ${CI}"
+# Check 3: Main CI does not use restore-keys fallback
+check "Main CI does not use restore-keys fallback" \
+    "! grep -q 'restore-keys:' ${CI}"
 
 # Check 4: PR builds have isolated cache (separate workflow or scoped key)
 check "PR builds use isolated cache" \

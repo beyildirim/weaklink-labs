@@ -998,11 +998,13 @@ The rules in this section use standard Sigma log sources. Convert them with `sig
       - attack.t1059
     ```
 
-???+ note "Tier 9: Cloud Supply Chain"
+???+ note "Cloud-Specific Example"
+
+    These cloud scenarios are reference detections in the library. They are not current WeakLink Labs tiers.
 
     ### Cloud Marketplace Poisoning: Backdoored AMI Deployment
 
-    **Lab:** 9.1 Marketplace Poisoning | **Log Source:** CloudTrail
+    **Reference Scenario:** Marketplace Poisoning | **Log Source:** CloudTrail
 
     Detects EC2 instances launched from AMIs by unknown publishers, with subsequent outbound connections to attacker infrastructure.
 
@@ -1046,7 +1048,7 @@ The rules in this section use standard Sigma log sources. Convert them with `sig
 
     ### Serverless Supply Chain: Malicious Lambda Layer
 
-    **Lab:** 9.2 Serverless Supply Chain | **Log Source:** CloudTrail
+    **Reference Scenario:** Serverless Supply Chain | **Log Source:** CloudTrail
 
     Detects Lambda function configuration changes that add layers from untrusted sources, or Lambda functions with unexpected execution duration increases.
 
@@ -1094,7 +1096,7 @@ The rules in this section use standard Sigma log sources. Convert them with `sig
 
     ### Cloud CI/CD Attacks: CodeBuild Privilege Escalation
 
-    **Lab:** 9.3 Cloud CI/CD Attacks | **Log Source:** CloudTrail
+    **Reference Scenario:** Cloud CI/CD Attacks | **Log Source:** CloudTrail
 
     Detects CodeBuild projects assuming IAM roles outside their intended scope or accessing production SSM parameters.
 
@@ -1142,7 +1144,7 @@ The rules in this section use standard Sigma log sources. Convert them with `sig
 
     ### IAM Chain Abuse: Rapid Cross-Account AssumeRole
 
-    **Lab:** 9.4 IAM Chain Abuse | **Log Source:** CloudTrail
+    **Reference Scenario:** IAM Chain Abuse | **Log Source:** CloudTrail
 
     Detects rapid cross-account AssumeRole chains that traverse multiple accounts in quick succession, indicating stolen credentials being used to traverse trust relationships.
 
@@ -2205,13 +2207,13 @@ The rules in this section use standard Sigma log sources. Convert them with `sig
 
 All techniques referenced by the detection rules in this library:
 
-| Technique | ID | Tiers | Rules |
+| Technique | ID | Coverage | Rules |
 |-----------|-----|-------|-------|
-| Supply Chain Compromise: Software Supply Chain | [T1195.002](https://attack.mitre.org/techniques/T1195/002/) | 1, 2, 3, 4, 5, 6, 9 | Dependency confusion, PPE, base image poisoning, Helm poisoning, Terraform modules, SUNBURST, marketplace poisoning, IAM chain abuse |
+| Supply Chain Compromise: Software Supply Chain | [T1195.002](https://attack.mitre.org/techniques/T1195/002/) | Tiers 1, 2, 3, 4, 5, 6 plus cloud reference scenarios | Dependency confusion, PPE, base image poisoning, Helm poisoning, Terraform modules, SUNBURST, marketplace poisoning, IAM chain abuse |
 | Supply Chain Compromise: Software Dependencies | [T1195.001](https://attack.mitre.org/techniques/T1195/001/) | 1 | Phantom dependencies |
 | Command and Scripting Interpreter: Python | [T1059.006](https://attack.mitre.org/techniques/T1059/006/) | 1, 6 | setup.py execution, ML model deserialization |
 | Command and Scripting Interpreter: Unix Shell | [T1059.004](https://attack.mitre.org/techniques/T1059/004/) | 2, 6 | Indirect PPE, Codecov script tampering |
-| Command and Scripting Interpreter | [T1059](https://attack.mitre.org/techniques/T1059/) | 2, 3, 5, 6, 9 | Direct PPE, Actions injection, layer injection, Terraform, Log4Shell, serverless |
+| Command and Scripting Interpreter | [T1059](https://attack.mitre.org/techniques/T1059/) | Tiers 2, 3, 5, 6 plus cloud reference scenarios | Direct PPE, Actions injection, layer injection, Terraform, Log4Shell, serverless |
 | Automated Exfiltration | [T1020](https://attack.mitre.org/techniques/T1020/) | 1, 2, 5 | Dependency confusion, secret exfiltration, DNS tunneling, Terraform |
 | User Execution: Malicious File | [T1204.002](https://attack.mitre.org/techniques/T1204/002/) | 1 | Typosquatting |
 | Masquerading | [T1036](https://attack.mitre.org/techniques/T1036/) | 1, 3, 4 | Typosquatting, image internals, SBOM gap |
@@ -2220,14 +2222,14 @@ All techniques referenced by the detection rules in this library:
 | Subvert Trust Controls | [T1553](https://attack.mitre.org/techniques/T1553/) | 1, 4, 6 | Lockfile injection, signature bypass, attestation forgery, firmware |
 | Phishing via Code Review | [T1566.001](https://attack.mitre.org/techniques/T1566/001/) | 1 | Lockfile injection |
 | Hijack Execution Flow | [T1574](https://attack.mitre.org/techniques/T1574/) | 1, 2 | Manifest confusion, phantom dependencies, cache poisoning, workflow run |
-| Implant Internal Image | [T1525](https://attack.mitre.org/techniques/T1525/) | 3, 6, 9 | Image internals, tag mutability, base image poisoning, layer injection, multi-stage leaks, marketplace poisoning |
+| Implant Internal Image | [T1525](https://attack.mitre.org/techniques/T1525/) | Tiers 3, 6 plus cloud reference scenarios | Image internals, tag mutability, base image poisoning, layer injection, multi-stage leaks, marketplace poisoning |
 | Deploy Container | [T1610](https://attack.mitre.org/techniques/T1610/) | 3 | Tag mutability (K8s auto-pull) |
-| Unsecured Credentials: Credentials in Files | [T1552.001](https://attack.mitre.org/techniques/T1552/001/) | 2, 3, 9 | Secret exfiltration, multi-stage leaks, cloud CI/CD |
+| Unsecured Credentials: Credentials in Files | [T1552.001](https://attack.mitre.org/techniques/T1552/001/) | Tiers 2, 3 plus cloud reference scenarios | Secret exfiltration, multi-stage leaks, cloud CI/CD |
 | Scheduled Task/Job | [T1053](https://attack.mitre.org/techniques/T1053/) | 2 | Self-hosted runner persistence |
 | Exploit Public-Facing Application | [T1190](https://attack.mitre.org/techniques/T1190/) | 2, 6 | Actions injection, Log4Shell, Equifax |
-| Valid Accounts: Cloud Accounts | [T1078.004](https://attack.mitre.org/techniques/T1078/004/) | 9 | Marketplace poisoning, IAM chain abuse |
-| Use Alternate Authentication Material | [T1550.001](https://attack.mitre.org/techniques/T1550/001/) | 9 | IAM chain abuse (STS token chaining) |
-| Acquire Infrastructure: Serverless | [T1583.007](https://attack.mitre.org/techniques/T1583/007/) | 9 | Serverless C2/exfil |
+| Valid Accounts: Cloud Accounts | [T1078.004](https://attack.mitre.org/techniques/T1078/004/) | Cloud reference scenarios | Marketplace poisoning, IAM chain abuse |
+| Use Alternate Authentication Material | [T1550.001](https://attack.mitre.org/techniques/T1550/001/) | Cloud reference scenarios | IAM chain abuse (STS token chaining) |
+| Acquire Infrastructure: Serverless | [T1583.007](https://attack.mitre.org/techniques/T1583/007/) | Cloud reference scenarios | Serverless C2/exfil |
 | Data Manipulation: Stored Data | [T1565.001](https://attack.mitre.org/techniques/T1565/001/) | 6 | Dataset poisoning |
 | Execution Guardrails | [T1480](https://attack.mitre.org/techniques/T1480/) | 6 | ML model conditional payload |
 | Pre-OS Boot | [T1542](https://attack.mitre.org/techniques/T1542/) | 6 | Firmware persistence |

@@ -1,5 +1,7 @@
 # Lab 1.4: Lockfile Injection
 
+> Legacy note: The canonical learner-facing version of this lab lives in the browser guide. Start the platform with `make start`, open the guide, and use the built-in terminal. Treat this README as a secondary local reference.
+
 A pull request titled "chore: update flask-utils to latest version" looks routine. The PR only changes the lockfile. Auto-generated, thousands of lines, nobody reads it carefully. But hidden in the diff, one hash has been swapped. The new hash points to a backdoored package. This lab teaches you how lockfile tampering works and how to catch it.
 
 ## Prerequisites
@@ -18,13 +20,13 @@ A pull request titled "chore: update flask-utils to latest version" looks routin
 Start the lab:
 
 ```bash
-weaklink start 1.4
+make start
 ```
 
-Connect to the workstation:
+Use the built-in browser terminal:
 
 ```bash
-weaklink shell 1.4
+make start
 ```
 
 Open Gitea in your browser: [http://gitea:3000](http://gitea:3000) (login: `developer` / `password123`)
@@ -291,17 +293,12 @@ jobs:
 
 This check runs on every PR. If someone submits a lockfile that doesn't match a fresh `pip-compile` output, the CI fails.
 
-### Verify your defenses
+### Continue the lab
 
 ```bash
-# From your host machine (not inside the container):
-weaklink verify 1.4
+bash verify-lockfile.sh requirements.in requirements.txt
+test ! -f /tmp/lockfile-pwned && echo clean
 ```
-
-The verification checks:
-1. `/tmp/lockfile-pwned` does NOT exist
-2. `verify-lockfile.sh` exists and is executable
-3. The lockfile matches a fresh `pip-compile` output
 
 ---
 

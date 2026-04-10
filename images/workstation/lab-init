@@ -18,6 +18,7 @@ cp -a "$GOLDEN" "$LAB_WORK"
 
 # Clean previous state
 rm -rf /app/* /lab/src /repos/* 2>/dev/null
+find /workspace -mindepth 1 -maxdepth 1 -exec rm -rf {} + 2>/dev/null || true
 ln -sfn "$LAB_WORK" /lab/src
 
 # Copy everything to /app/ (the universal student working directory)

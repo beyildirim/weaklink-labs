@@ -14,101 +14,63 @@
 
 ## Ephemeral Runners and Isolation
 
-### Fix 1: Use ephemeral (just-in-time) runners
+The key lesson in this lab is simpler than the runner internals: untrusted PR code should not be allowed to leave persistent state behind on a shared machine. The concrete defenses here are:
+
+1. clean the runner before each job
+2. keep the CI workflow on the hardened path shipped with the lab
+3. avoid running untrusted PR code on a long-lived host without isolation
+
+### Fix 1: Restore a clean runner profile
+
+```bash
+cat > /runner/workspace/.bashrc << 'EOF'
+# Clean runner profile
+EOF
+```
+
+This removes the attacker-added startup hook from the Break phase.
+
+### Fix 2: Install the shipped pre-job cleanup hook
+
+```bash
+cp /lab/src/scripts/pre-job-cleanup.sh /runner/hooks/pre-job.sh
+chmod +x /runner/hooks/pre-job.sh
+```
+
+Open it and read the important parts:
+
+```bash
+cat /runner/hooks/pre-job.sh
+```
+
+This hook removes compromise markers, resets the runner profile, and cleans workspace state before the next job starts.
+
+### Fix 3: Restore the hardened CI workflow
 
 ```bash
 cd /repos/wl-webapp
 git checkout main
+cp /lab/src/repo/.gitea/workflows/ci-ephemeral.yml .gitea/workflows/ci.yml
+cat .gitea/workflows/ci.yml
 ```
 
-```bash
-cat > /runner/config.yaml << 'EOF'
-ephemeral: true
-replace_existing: true
+The important changes are:
 
-container:
-  image: "ubuntu:22.04"
-  options: "--rm --network=none"
-  workdir: "/workspace"
-EOF
-```
-
-### Fix 2: Apply workflow hardening
-
-```bash
-cat > .gitea/workflows/ci.yml << 'EOF'
-name: WeakLink Webapp CI
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  test:
-    runs-on: self-hosted
-    container:
-      image: node:20-slim
-      options: --rm --read-only --tmpfs /tmp
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run tests
-        run: python test_app.py
-
-  pr-test:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest  # Ephemeral GitHub-hosted runner for PRs
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run tests
-        run: python test_app.py
-EOF
-```
-
-### Fix 3: Add state verification between jobs
-
-```bash
-cat > /runner/hooks/pre-run.sh << 'CHECKEOF'
-#!/bin/bash
-EXPECTED_HASH="$(cat /runner/.state-hash 2>/dev/null)"
-CURRENT_HASH="$(find /runner/_work/_tool -type f -exec sha256sum {} \; | sort | sha256sum | cut -d' ' -f1)"
-
-if [ "$EXPECTED_HASH" != "$CURRENT_HASH" ]; then
-  echo "::error::Runner state has been tampered with!"
-  exit 1
-fi
-
-if crontab -l 2>/dev/null | grep -v '^#' | grep -q .; then
-  echo "::error::Unexpected cron jobs detected on runner!"
-  exit 1
-fi
-
-SUSPICIOUS=$(ps aux | grep -E '(curl|wget|nc|ncat)' | grep -v grep)
-if [ -n "$SUSPICIOUS" ]; then
-  echo "::error::Suspicious processes detected on runner!"
-  exit 1
-fi
-CHECKEOF
-
-chmod +x /runner/hooks/pre-run.sh
-```
+1. PR-triggered execution is gone from the main workflow
+2. jobs run in a disposable container
+3. the workflow verifies clean state before building
 
 ### Fix 4: Commit and push
 
 ```bash
 git add -A
-git commit -m "Harden runner: ephemeral mode, container isolation, state verification"
+git commit -m "Harden self-hosted runner workflow and cleanup hook"
 git push origin main
 ```
 
 ### Key defenses
 
-1. **Ephemeral runners** (`--ephemeral`). runner exits after one job, no persistence
-2. **Container isolation**. each job runs in a disposable container with `--rm`
-3. **Never run untrusted PRs on self-hosted runners**. use GitHub-hosted for PR workflows
-4. **State verification hooks**. hash the tool cache and check for tampering before each job
-
-### Step 5: Final verification
-
-```bash
-weaklink verify 2.5
-```
+1. **Pre-job cleanup hooks** remove attacker state before the next build
+2. **Container isolation** limits what a build can persist on the host
+3. **Main CI should not run untrusted PR code on the long-lived runner**
+4. **Ephemeral or disposable execution is the operational goal**, even if this lab simulates it with cleanup plus isolation

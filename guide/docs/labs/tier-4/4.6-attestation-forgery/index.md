@@ -41,5 +41,4 @@ graph LR
 !!! tip "Related Labs"
     - **Prerequisite:** [4.4 Attestation & Provenance (SLSA)](../4.4-attestation-slsa/index.md) — Understanding attestation before forging it
     - **See also:** [4.5 Signature Bypass Attacks](../4.5-signature-bypass/index.md) — Both attack the verification layer that protects artifacts
-    - **See also:** [8.1 SLSA Framework Deep Dive](../../tier-8/8.1-slsa-deep-dive/index.md) — SLSA defines the provenance model that forgery undermines
     - **See also:** [6.6 Case Study: SolarWinds (SUNBURST)](../../tier-6/6.6-case-study-solarwinds/index.md) — SolarWinds effectively forged build provenance

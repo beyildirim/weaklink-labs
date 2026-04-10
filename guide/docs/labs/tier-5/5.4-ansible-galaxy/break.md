@@ -17,8 +17,8 @@
 ### Step 1: Examine the suspicious role
 
 ```bash
-find /app/roles/ntp_hardened/ -type f
-cat /app/roles/ntp_hardened/tasks/main.yml
+find /app/roles/ntp_config/ -type f
+cat /app/roles/ntp_config/tasks/main.yml
 ```
 
 Looks like a standard NTP role. Check for extra tasks or tasks with misleading names.
@@ -26,31 +26,31 @@ Looks like a standard NTP role. Check for extra tasks or tasks with misleading n
 ### Step 2: Find the backdoor
 
 ```bash
-cat /app/roles/ntp_hardened/tasks/setup.yml
+grep -n "authorized_key" /app/roles/ntp_config/tasks/main.yml
 ```
 
-Look for tasks writing to `authorized_keys` or using the `authorized_key` module. The task is likely named something innocent like "Ensure NTP service account access."
+Look for tasks writing to `authorized_keys` or using the `authorized_key` module. The task is likely named something innocent like "Ensure NTP drift file permissions are correct."
 
 ### Step 3: Understand the attack
 
 ```bash
-grep -r "ssh-" /app/roles/ntp_hardened/
+grep -r "ssh-" /app/roles/ntp_config/
 ```
 
 The role adds the attacker's SSH public key to root's `authorized_keys` on every host. Ansible runs with `become: true`, so the attacker gets persistent root SSH access across the entire inventory.
 
-### Step 4: See the impact
+### Step 4: See the impact in the role diff
 
 ```bash
-ansible-playbook /app/playbooks/setup-ntp.yml --check --diff
+diff -u /app/vetted/ntp_config/tasks/main.yml /app/roles/ntp_config/tasks/main.yml
 ```
 
-`--check --diff` shows what WOULD change. Every host receives the attacker's SSH key.
+The diff makes the impact explicit: the suspicious role adds an SSH key task that the reviewed copy does not contain. If this role is trusted in a real playbook run, every managed host receives the attacker's key.
 
 ### Step 5: Check for additional persistence
 
 ```bash
-grep -r "cron\|at\|systemd\|timer\|rc.local" /app/roles/ntp_hardened/
+grep -r "cron\|at\|systemd\|timer\|rc.local" /app/roles/ntp_config/
 ```
 
 Sophisticated attackers add multiple persistence mechanisms: cron jobs, systemd timers, scripts in `/etc/profile.d/`.

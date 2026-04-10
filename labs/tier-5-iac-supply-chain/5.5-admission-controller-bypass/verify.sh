@@ -30,9 +30,9 @@ echo "  Verifying Lab 5.5: Kubernetes Admission Controller Bypass"
 echo "  ==========================================================="
 echo ""
 
-# Check 1: No exempt namespaces in Gatekeeper config (except kube-system)
-check "No unnecessary namespace exemptions in Gatekeeper config" \
-    "! grep -r 'exemptNamespaces' /app/gatekeeper-config/ | grep -v 'kube-system' | grep -q '.'"
+# Check 1: monitoring is no longer exempted in Gatekeeper config
+check "Gatekeeper config no longer exempts monitoring" \
+    "grep -q 'excludedNamespaces' /app/gatekeeper-config/config.yaml && ! awk '/excludedNamespaces:/,/processes:/' /app/gatekeeper-config/config.yaml | grep -q 'monitoring'"
 
 # Check 2: CRD policy exists to cover custom resources
 check "Policy covers custom resource definitions" \
@@ -40,7 +40,7 @@ check "Policy covers custom resource definitions" \
 
 # Check 3: Audit mode policy exists for post-admission drift
 check "Audit policy exists for detecting policy drift" \
-    "test -f /app/policies/audit-config.yaml"
+    "test -f /app/policies/audit-config.yaml && grep -q 'syncOnly' /app/policies/audit-config.yaml"
 
 # Check 4: conftest tests exist for policy validation
 check "Conftest test files exist for policy testing" \

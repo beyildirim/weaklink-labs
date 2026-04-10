@@ -54,9 +54,3 @@ cat /app/analysis/check-dependency.sh
 ```
 
 When CVE-2024-3094 dropped, organizations with SBOMs queried "do we use liblzma 5.6.0 or 5.6.1?" in minutes. Those without audited every server manually.
-
-### Verify understanding
-
-```bash
-weaklink verify 6.5
-```

@@ -7,13 +7,29 @@ on:
       - 'labs/**'
       - 'helm/**'
       - 'images/**'
-      - 'guide/**'
+      - 'scripts/**'
+      - '.dockerignore'
+      - 'Makefile'
+      - 'docker-compose.yml'
+      - 'start.sh'
+      - 'stop.sh'
+      - 'guide/docs/javascripts/**'
+      - 'guide/docs/stylesheets/**'
+      - 'guide/mkdocs.yml'
   pull_request:
     paths:
       - 'labs/**'
       - 'helm/**'
       - 'images/**'
-      - 'guide/**'
+      - 'scripts/**'
+      - '.dockerignore'
+      - 'Makefile'
+      - 'docker-compose.yml'
+      - 'start.sh'
+      - 'stop.sh'
+      - 'guide/docs/javascripts/**'
+      - 'guide/docs/stylesheets/**'
+      - 'guide/mkdocs.yml'
 
 permissions:
   contents: read
@@ -40,19 +56,11 @@ jobs:
       - name: Build local Docker images
         run: |
           eval $(minikube docker-env)
-
-          echo "--- Building guide image ---"
-          docker build -f images/guide/Dockerfile -t weaklink-labs/guide:latest .
-
-          echo "--- Building workstation image ---"
-          docker build -f images/workstation/Dockerfile -t weaklink-labs/workstation:latest .
-
-          echo "--- Building lab-setup image ---"
-          docker build -f images/lab-setup/Dockerfile -t weaklink-labs/lab-setup:latest .
+          ./scripts/build-images.sh
 
       - name: Deploy Helm chart
         run: |
-          helm install weaklink-labs helm/weaklink-labs \
+          helm upgrade --install weaklink-labs helm/weaklink-labs \
             --namespace "$NAMESPACE" \
             --create-namespace \
             --wait \
@@ -75,48 +83,9 @@ jobs:
           echo "--- Pod status ---"
           kubectl get pods --namespace "$NAMESPACE"
 
-      - name: Run lab verifications
+      - name: Run lab smoke tests
         run: |
-          WORKSTATION_POD=$(kubectl get pod \
-            --namespace "$NAMESPACE" \
-            -l app.kubernetes.io/name=workstation \
-            -o jsonpath='{.items[0].metadata.name}')
-
-          echo "Using workstation pod: ${WORKSTATION_POD}"
-
-          FAILED=0
-          PASSED=0
-          for verify_script in $(find labs -name "verify.sh" -type f | sort); do
-            LAB_DIR=$(dirname "$verify_script")
-            LAB_NAME=$(basename "$LAB_DIR")
-
-            echo ""
-            echo "========================================"
-            echo "  Verifying: ${LAB_NAME}"
-            echo "========================================"
-
-            kubectl cp "$verify_script" \
-              "${NAMESPACE}/${WORKSTATION_POD}:/tmp/verify.sh"
-
-            if kubectl exec "$WORKSTATION_POD" \
-              --namespace "$NAMESPACE" \
-              -- bash /tmp/verify.sh; then
-              echo "  >>> ${LAB_NAME}: PASSED"
-              PASSED=$((PASSED + 1))
-            else
-              echo "  >>> ${LAB_NAME}: FAILED"
-              FAILED=$((FAILED + 1))
-            fi
-          done
-
-          echo ""
-          echo "========================================"
-          echo "  Verification Summary: ${PASSED} passed, ${FAILED} failed"
-          echo "========================================"
-          if [ "$FAILED" -gt 0 ]; then
-            echo "  ${FAILED} lab(s) failed verification."
-            exit 1
-          fi
+          NAMESPACE="$NAMESPACE" ./scripts/run-verify-suite.sh
 
       - name: Debug info on failure
         if: failure()

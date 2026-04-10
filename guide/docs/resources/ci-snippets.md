@@ -886,8 +886,6 @@ A collection of ready-to-use GitHub Actions workflows for supply chain security.
 
     ### Cloud CI/CD Build Role Auditor
 
-    **Related lab:** <a href="../labs/tier-9/9.3-cloud-cicd-attacks/">Lab 9.3</a>
-
     Validates that CI/CD build roles (CodeBuild, Cloud Build) follow least privilege and cannot access production secrets or assume admin roles. Use this in AWS/GCP environments where build pipelines have IAM role access.
 
     `.github/workflows/cloud-cicd-audit.yml`:
@@ -1789,8 +1787,6 @@ A collection of ready-to-use GitHub Actions workflows for supply chain security.
 
     ### Cloud Marketplace Image Verification
 
-    **Related lab:** <a href="../labs/tier-9/9.1-cloud-marketplace-poisoning/">Lab 9.1</a>
-
     Validates that AMIs and VM images used in Terraform or CloudFormation come from approved publishers and checks for hardcoded SSH keys. Use this in any cloud environment that launches instances from marketplace images.
 
     `.github/workflows/marketplace-image-check.yml`:
@@ -1849,8 +1845,6 @@ A collection of ready-to-use GitHub Actions workflows for supply chain security.
     ---
 
     ### Serverless Dependency Scanner
-
-    **Related lab:** <a href="../labs/tier-9/9.2-serverless-supply-chain/">Lab 9.2</a>
 
     Audits Lambda/Cloud Function deployments for public registry usage, validates Lambda Layer ARNs against an allowlist, and checks for `sitecustomize.py` injection points. Use this on serverless projects to prevent layer poisoning.
 
@@ -1916,8 +1910,6 @@ A collection of ready-to-use GitHub Actions workflows for supply chain security.
     ---
 
     ### IAM Trust Chain Auditor
-
-    **Related lab:** <a href="../labs/tier-9/9.4-iam-chain-abuse/">Lab 9.4</a>
 
     Scans Terraform IAM resources for overly broad trust policies, wildcard AssumeRole permissions, and missing external ID conditions. Prevents transitive IAM chain exploitation. Use this on repositories managing AWS IAM.
 

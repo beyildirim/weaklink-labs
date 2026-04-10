@@ -36,71 +36,19 @@ What to look for:
 
 ---
 
-### SOC Alert Rules
+## How to Think About Detection
 
-- **Blind spot in existing tooling**: Most dependency scanners historically relied on registry API metadata. If the registry lies, your scanner lies. Confirm your scanner checks tarball contents.
-- **High-value detection**: Alert on any `postinstall` script execution from packages not on your known-good allowlist. A short allowlist (husky, esbuild, sharp, node-gyp, puppeteer) covers 90% of legitimate cases.
-- **Pre-install audit**: `npm pack <package> && tar xzf <package>.tgz && diff <(npm view <package> dependencies) <(node -e "console.log(JSON.stringify(require('./package/package.json').dependencies))")`. If they differ, escalate.
+At this stage, the important lesson is simple: what the registry says and what you install may not be the same thing.
 
-### CI Integration
+Ask:
 
-`.github/workflows/manifest-verify.yml`:
+- Did the tarball contents match the metadata you reviewed?
+- Did install-time behavior introduce packages or scripts you never saw in the API?
+- Are your security tools checking what gets installed, or only what the registry claims?
 
-```yaml
-name: Detect Manifest Confusion
-on:
-  pull_request:
-    paths:
-      - 'package.json'
-      - 'package-lock.json'
+If you only inspect metadata, you are trusting an intermediary instead of the artifact itself.
 
-jobs:
-  check-manifests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Compare registry metadata vs tarball contents
-        run: |
-          set -euo pipefail
-          FAILED=0
-          DEPS=$(node -e "
-            const pkg = require('./package.json');
-            const deps = {...(pkg.dependencies || {}), ...(pkg.devDependencies || {})};
-            console.log(Object.keys(deps).join('\n'));
-          ")
-          mkdir -p /tmp/manifest-check
-          cd /tmp/manifest-check
-          for dep in $DEPS; do
-            echo "Checking $dep..."
-            REGISTRY_DEPS=$(npm view "$dep" dependencies --json 2>/dev/null || echo "{}")
-            REGISTRY_SCRIPTS=$(npm view "$dep" scripts --json 2>/dev/null || echo "{}")
-            npm pack "$dep" --quiet 2>/dev/null
-            TARBALL=$(ls -t *.tgz | head -1)
-            tar xzf "$TARBALL"
-            TARBALL_DEPS=$(node -e "console.log(JSON.stringify(require('./package/package.json').dependencies || {}))")
-            TARBALL_SCRIPTS=$(node -e "console.log(JSON.stringify(require('./package/package.json').scripts || {}))")
-            if [ "$REGISTRY_DEPS" != "$TARBALL_DEPS" ]; then
-              echo "::error::MANIFEST CONFUSION in $dep: registry dependencies differ from tarball"
-              FAILED=1
-            fi
-            if echo "$TARBALL_SCRIPTS" | grep -q "postinstall\|preinstall\|install" && \
-               ! echo "$REGISTRY_SCRIPTS" | grep -q "postinstall\|preinstall\|install"; then
-              echo "::error::HIDDEN INSTALL SCRIPT in $dep: tarball has install hooks not shown in registry"
-              FAILED=1
-            fi
-            rm -rf package "$TARBALL"
-          done
-          if [ "$FAILED" -eq 1 ]; then
-            exit 1
-          fi
-          echo "All package manifests verified."
-
-      - name: Enforce npm ci over npm install
-        run: npm ci
-```
+If you want concrete rule examples or CI enforcement snippets later, use the shared resources linked at the bottom of the page.
 
 ---
 

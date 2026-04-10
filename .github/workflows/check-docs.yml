@@ -1,0 +1,32 @@
+name: Check Docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'guide/**'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'scripts/check-docs.sh'
+      - '.github/workflows/check-docs.yml'
+  pull_request:
+    paths:
+      - 'guide/**'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'scripts/check-docs.sh'
+      - '.github/workflows/check-docs.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Build docs strictly
+        run: ./scripts/check-docs.sh

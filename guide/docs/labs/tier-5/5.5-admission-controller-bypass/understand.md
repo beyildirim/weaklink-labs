@@ -38,20 +38,20 @@ kubectl get policies --all-namespaces
 ### Step 3: See what the policies enforce
 
 ```bash
-kubectl get constraint no-privileged-containers -o yaml
-kubectl get clusterpolicy require-trusted-registry -o yaml
+kubectl get constrainttemplates k8srequirenonprivileged -o yaml
+kubectl get config.config.gatekeeper.sh -n gatekeeper-system -o yaml
 ```
 
-These block privileged containers, untrusted registry images, root containers, and hostPath mounts.
+The Gatekeeper config syncs only Pods and Deployments, so CRDs and post-admission drift are not covered yet.
 
-### Step 4: Test that policies work
+### Step 4: Map the coverage gap
 
 ```bash
-kubectl apply -f /app/workloads/privileged-pod.yaml 2>&1
-kubectl apply -f /app/workloads/untrusted-image.yaml 2>&1
+cat /app/gatekeeper-config/config.yaml
+ls /app/exploits/
 ```
 
-Both should fail with policy violation messages.
+Notice the monitoring namespace exemption and the three exploit manifests the lab ships.
 
 ### Step 5: Check which namespaces are covered
 

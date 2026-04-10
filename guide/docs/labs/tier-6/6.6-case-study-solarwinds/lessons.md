@@ -44,9 +44,3 @@ Binary transparency logs (Sigstore's Rekor) create a public, append-only record 
 ### Lesson 4: Two-person integrity for releases
 
 No single person or process should modify the build pipeline AND sign the release. Separating them requires the attacker to compromise two independent systems.
-
-### Verify understanding
-
-```bash
-weaklink verify 6.6
-```

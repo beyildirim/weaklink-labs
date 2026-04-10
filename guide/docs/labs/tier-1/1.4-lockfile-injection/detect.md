@@ -36,53 +36,19 @@ What to look for:
 
 ---
 
-### SOC Alert Rules
+## How to Think About Detection
 
-- **Triage signal**: A PR that modifies *only* lockfiles from a non-bot account is a high-confidence indicator. Normal dependency updates always touch the manifest too. Low false-positive alert.
-- **Build pipeline monitoring**: Alert on `pip install` downloading packages from URLs that don't match configured registries.
-- **Incident response**: Regenerate the lockfile from the manifest and diff against the committed version. Any mismatch is confirmed tampering.
-- **Correlation**: Lockfile-only PR + outbound connections from build runner to unusual IP = strong attack chain indicator.
+At this stage, detection is mostly about spotting a dependency change that looks routine but should raise review suspicion.
 
-### CI Integration
+Ask:
 
-**GitHub Actions: Lockfile integrity check on every PR**
+- Did the PR change only the lockfile and nothing upstream of it?
+- Does the lockfile claim to be regenerated even though the manifest did not change?
+- Did the build install something you cannot explain from the manifest alone?
 
-`.github/workflows/lockfile-verify.yml`:
+If the lockfile is the only thing that changed, treat it as source code, not build noise.
 
-```yaml
-name: Verify Lockfile Integrity
-on:
-  pull_request:
-    paths:
-      - 'requirements.txt'
-      - 'requirements.in'
-
-jobs:
-  verify-python-lockfile:
-    runs-on: ubuntu-latest
-    if: hashFiles('requirements.in') != ''
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install pip-tools
-        run: pip install pip-tools
-      - name: Regenerate lockfile from source
-        run: |
-          pip-compile --generate-hashes \
-            requirements.in \
-            --output-file /tmp/regenerated-requirements.txt
-      - name: Compare against committed lockfile
-        run: |
-          grep -v '^#' requirements.txt > /tmp/committed.txt
-          grep -v '^#' /tmp/regenerated-requirements.txt > /tmp/fresh.txt
-          if ! diff /tmp/committed.txt /tmp/fresh.txt; then
-            echo "::error::Lockfile mismatch! Regenerate with: pip-compile --generate-hashes requirements.in"
-            exit 1
-          fi
-          echo "Lockfile integrity verified."
-```
+If you want concrete rule examples or CI enforcement snippets later, use the shared resources linked at the bottom of the page.
 
 ---
 

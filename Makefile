@@ -32,15 +32,15 @@ build: build-guide build-workstation build-lab-setup ## Build all Docker images
 
 build-guide: ## Build the guide image
 	@eval $$(minikube docker-env) && \
-		docker build -t weaklink-labs/guide:latest -f images/guide/Dockerfile .
+		./scripts/build-images.sh guide
 
 build-workstation: ## Build the workstation image
 	@eval $$(minikube docker-env) && \
-		docker build -t weaklink-labs/workstation:latest -f images/workstation/Dockerfile .
+		./scripts/build-images.sh workstation
 
 build-lab-setup: ## Build the lab-setup image
 	@eval $$(minikube docker-env) && \
-		docker build -t weaklink-labs/lab-setup:latest -f images/lab-setup/Dockerfile .
+		./scripts/build-images.sh lab-setup
 
 # ──────────────────────────────────────────────
 # Deploy
@@ -66,7 +66,7 @@ lint: ## Lint the Helm chart
 
 .PHONY: compose-up compose-down compose-logs compose-build
 
-compose-up: ## Start the platform using Docker Compose
+compose-up: ## Start the platform using Docker Compose. Set WEAKLINK_IMAGE_TAG to pin a GHCR release.
 	@docker compose up -d
 
 compose-down: ## Tear down the Docker Compose platform
@@ -106,7 +106,7 @@ events: ## Show recent cluster events
 # Development
 # ──────────────────────────────────────────────
 
-.PHONY: shell guide-dev test test-tier verify
+.PHONY: shell guide-dev docs-check test test-tier verify
 
 shell: ## Open a shell in the workstation pod
 	@./cli/weaklink shell
@@ -114,27 +114,11 @@ shell: ## Open a shell in the workstation pod
 guide-dev: ## Serve the guide locally with hot-reload (no k8s needed)
 	@cd guide && mkdocs serve -a 0.0.0.0:8000
 
-test: ## Run all lab verify scripts against the cluster
-	@WORKSTATION_POD=$$(kubectl get pod -n $(NAMESPACE) \
-		-l app.kubernetes.io/name=workstation \
-		-o jsonpath='{.items[0].metadata.name}') && \
-	FAILED=0 && \
-	for verify_script in $$(find labs -name "verify.sh" -type f | sort); do \
-		LAB_NAME=$$(basename $$(dirname "$$verify_script")) && \
-		kubectl cp "$$verify_script" "$(NAMESPACE)/$$WORKSTATION_POD:/tmp/verify.sh" && \
-		if kubectl exec "$$WORKSTATION_POD" -n $(NAMESPACE) -- bash /tmp/verify.sh; then \
-			echo "  ✓ $$LAB_NAME"; \
-		else \
-			echo "  ✗ $$LAB_NAME"; \
-			FAILED=$$((FAILED + 1)); \
-		fi; \
-	done && \
-	echo "" && \
-	if [ "$$FAILED" -gt 0 ]; then \
-		echo "$$FAILED lab(s) failed." && exit 1; \
-	else \
-		echo "All labs passed."; \
-	fi
+docs-check: ## Build the guide strictly and fail on broken relative links
+	@./scripts/check-docs.sh
+
+test: ## Smoke test all lab environments against the cluster
+	@NAMESPACE=$(NAMESPACE) ./scripts/run-verify-suite.sh
 
 verify: test ## Alias for test
 

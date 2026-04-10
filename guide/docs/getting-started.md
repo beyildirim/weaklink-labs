@@ -48,6 +48,8 @@ open http://localhost:8000
 
 This pulls the pre-built images and starts all services. The guide is available at [http://localhost:8000](http://localhost:8000) and the workstation terminal at [http://localhost:7681](http://localhost:7681).
 
+To pin a published release instead of `latest`, run `WEAKLINK_IMAGE_TAG=<release-tag> make compose-up`.
+
 ### Zero Install (GitHub Codespaces)
 
 Open the repository in a GitHub Codespace. The devcontainer configuration handles all setup automatically. No local installation required.
@@ -65,6 +67,7 @@ make logs
 make shell
 make compose-up
 make compose-down
+make docs-check
 ```
 
 The top-level `start.sh` and `stop.sh` scripts back the Make targets and are kept as implementation details, not as the primary user interface.

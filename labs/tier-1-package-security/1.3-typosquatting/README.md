@@ -1,5 +1,7 @@
 # Lab 1.3: Typosquatting
 
+> Legacy note: The canonical learner-facing version of this lab lives in the browser guide. Start the platform with `make start`, open the guide, and use the built-in terminal. Treat this README as a secondary local reference.
+
 A developer installs `reqeusts` instead of `requests`. The package works perfectly, but it also steals their secrets. This lab demonstrates one of the most common and effective supply chain attacks: typosquatting.
 
 ## Prerequisites
@@ -17,13 +19,13 @@ A developer installs `reqeusts` instead of `requests`. The package works perfect
 Start the lab:
 
 ```bash
-weaklink start 1.3
+make start
 ```
 
-Connect to the workstation:
+Use the built-in browser terminal:
 
 ```bash
-weaklink shell 1.3
+make start
 ```
 
 ---
@@ -231,20 +233,15 @@ pip-audit 2>/dev/null || echo "pip-audit found no known vulnerabilities"
 
 Note: `pip-audit` checks against known vulnerability databases. It catches packages with reported CVEs but may not catch brand-new typosquatting attacks. That is why defense-in-depth (allowlists + pinning + review) matters.
 
-### Verify your defenses
+### Continue the lab
 
-Confirm the lab is complete:
+Stay in the workstation and confirm the fix directly:
 
 ```bash
-# From your host machine (not inside the container):
-weaklink verify 1.3
+pip show requests
+test ! -f /tmp/typosquat-exfil && echo clean
+cat /app/requirements.txt
 ```
-
-The verification checks:
-1. `reqeusts` (typosquatted) is NOT installed
-2. `requests` (legitimate) IS installed
-3. `/tmp/typosquat-exfil` does NOT exist
-4. `/app/requirements.txt` has pinned versions
 
 ---
 

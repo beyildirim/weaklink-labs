@@ -17,82 +17,95 @@
 ### Fix 1: Minimize namespace exemptions
 
 ```bash
-cat > /app/policies/gatekeeper-config.yaml << 'EOF'
+cat > /app/gatekeeper-config/config.yaml << 'EOF'
 apiVersion: config.gatekeeper.sh/v1alpha1
 kind: Config
 metadata:
   name: config
   namespace: gatekeeper-system
 spec:
+  sync:
+    syncOnly:
+      - group: ""
+        version: "v1"
+        kind: "Pod"
+      - group: "apps"
+        version: "v1"
+        kind: "Deployment"
   match:
-    - excludedNamespaces: ["gatekeeper-system"]
+    - excludedNamespaces: ["kube-system", "gatekeeper-system"]
       processes: ["*"]
 EOF
-kubectl apply -f /app/policies/gatekeeper-config.yaml
+kubectl apply -f /app/gatekeeper-config/config.yaml
 ```
 
-Only exempt the admission controller's own namespace. Use targeted exceptions for specific system workloads instead of blanket namespace exemptions.
+Keep the system namespaces the lab already needs, but remove the monitoring exemption so attackers cannot hide there.
 
-### Fix 2: Cover all resource types
+### Fix 2: Cover the uncovered CRD path
 
 ```bash
-cat > /app/policies/catch-all-webhook.yaml << 'EOF'
-apiVersion: admissionregistration.k8s.io/v1
-kind: ValidatingWebhookConfiguration
+cat > /app/policies/restrict-crds.yaml << 'EOF'
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
 metadata:
-  name: catch-all-policy
-webhooks:
-  - name: catch-all.policy.example.com
-    rules:
-      - apiGroups: ["*"]
-        apiVersions: ["*"]
-        operations: ["CREATE", "UPDATE"]
-        resources: ["*"]
-        scope: "Namespaced"
-    clientConfig:
-      service:
-        name: gatekeeper-webhook-service
-        namespace: gatekeeper-system
-        path: /v1/admit
-    failurePolicy: Fail
-    sideEffects: None
-    admissionReviewVersions: ["v1"]
+  name: k8srestrictcrd
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRestrictCRD
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8srestrictcrd
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "CustomResourceDefinition"
+          msg := "CRD creation requires security review"
+        }
 EOF
-kubectl apply -f /app/policies/catch-all-webhook.yaml
+kubectl apply -f /app/policies/restrict-crds.yaml
 ```
 
-`failurePolicy: Fail` means unreachable webhook blocks resources rather than allowing them through. `resources: ["*"]` catches CRDs.
+The CRD constraint closes the custom-resource gap that the default Pod and Deployment coverage misses.
 
 ### Fix 3: Detect post-admission drift
 
 ```bash
-cat > /app/policies/audit-privileged.yaml << 'EOF'
-apiVersion: constraints.gatekeeper.sh/v1beta1
-kind: K8sDisallowedCapabilities
+cat > /app/policies/audit-config.yaml << 'EOF'
+apiVersion: config.gatekeeper.sh/v1alpha1
+kind: Config
 metadata:
-  name: audit-privileged-containers
+  name: config
 spec:
-  enforcementAction: warn
-  match:
-    kinds:
-      - apiGroups: [""]
-        kinds: ["Pod"]
-  parameters:
-    disallowedCapabilities: ["ALL"]
+  sync:
+    syncOnly:
+      - group: ""
+        version: "v1"
+        kind: "Pod"
+      - group: "apps"
+        version: "v1"
+        kind: "Deployment"
+      - group: "batch"
+        version: "v1"
+        kind: "CronJob"
 EOF
-kubectl apply -f /app/policies/audit-privileged.yaml
-
-kubectl get constraint audit-privileged-containers -o yaml | grep -A 20 "violations"
+kubectl apply -f /app/policies/audit-config.yaml
 ```
 
 Gatekeeper audit mode continuously checks running resources, catching resources that were compliant at creation but mutated afterward.
 
-### Verify the defense
+### Fix 4: Write conftest tests
 
 ```bash
-kubectl delete pod -n kube-system malicious-debug-pod --ignore-not-found
-kubectl delete -f /app/attacks/uncovered-crd.yaml --ignore-not-found
-kubectl delete -f /app/attacks/post-admission-mutation.yaml --ignore-not-found
+mkdir -p /app/policies/conftest
+cat > /app/policies/conftest/test.rego << 'EOF'
+package main
 
-weaklink verify 5.5
+deny[msg] {
+  input.kind == "Pod"
+  input.spec.containers[_].securityContext.privileged == true
+  msg := "Privileged pods are not allowed"
+}
+EOF
 ```

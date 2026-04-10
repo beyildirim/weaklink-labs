@@ -14,8 +14,8 @@ print(f"    Version: {reqeusts.__version__}")
 
 # This works because reqeusts wraps the real requests package
 try:
-    resp = reqeusts.get("http://pypi:8080/simple/")
-    print(f"    GET http://pypi:8080/simple/ -> {resp.status_code}")
+    resp = reqeusts.get("http://pypi-private:8080/simple/")
+    print(f"    GET http://pypi-private:8080/simple/ -> {resp.status_code}")
     print("[+] All tests passed!")
 except Exception as e:
     print(f"[-] Test failed: {e}")

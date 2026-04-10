@@ -32,6 +32,7 @@ RUN mkdir -p /etc/apt/keyrings \
 
 # Python tools
 RUN pip install --no-cache-dir \
+    ansible-core \
     pip-audit \
     pipdeptree \
     pip-tools \

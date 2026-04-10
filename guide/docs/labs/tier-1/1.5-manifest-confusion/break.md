@@ -17,7 +17,7 @@
 ### Step 1: Clean the environment
 
 ```bash
-cd /workspace
+cd /app
 rm -rf node_modules package.json package-lock.json
 rm -f /tmp/manifest-confusion-pwned
 ```

@@ -36,104 +36,19 @@ Dependency confusion has a distinctive signature: **a build system installs a pa
 
 ---
 
-### SOC Alert Rules
+## How to Think About Detection
 
-**"Internal package name resolved from public PyPI"** (proxy/DNS logs)
+At this stage, detection is about recognizing a package install that clearly crossed a trust boundary.
 
-**"setup.py spawning curl/wget on build server"** (EDR)
+Ask:
 
-**"Outbound POST from pip child process to external host"** (firewall)
+- Did an internal package name resolve from a public source?
+- Did the installed version jump to something obviously abnormal?
+- Did installation immediately spawn child processes, file drops, or outbound traffic?
 
-Dependency confusion is not theoretical. It produced $130,000+ in bug bounties from Microsoft, Apple, and PayPal in a single disclosure. The attack requires zero authentication, zero network access to the target, and zero interaction from the victim.
+If those line up, treat it as a high-confidence compromise, not a routine dependency issue.
 
-### Triage Workflow
-
-1. **Package name**: matches an internal namespace (`wl-*`, `internal-*`, `company-*`)? Escalate immediately.
-2. **Version**: `99.0.0`, `999.0.0`, or any unusually high version are classic indicators.
-3. **Process tree**: did `setup.py` spawn child processes? Legitimate packages almost never run `curl`, `wget`, or shell commands during installation.
-4. **Exfiltration**: outbound connections to unfamiliar hosts, DNS queries with encoded subdomains, files created in `/tmp`.
-5. **Blast radius**: every CI run that used `--extra-index-url` in the same timeframe may be compromised. Rotate all secrets.
-
----
-
-### CI Integration
-
-Add this workflow to block `--extra-index-url` usage and detect public package names that collide with internal namespaces. Save as `.github/workflows/dependency-confusion-check.yml`:
-
-```yaml
-name: Dependency Confusion Prevention
-
-on:
-  pull_request:
-    paths:
-      - "requirements*.txt"
-      - "setup.py"
-      - "setup.cfg"
-      - "pyproject.toml"
-      - "pip.conf"
-      - ".pip/**"
-
-permissions:
-  contents: read
-
-jobs:
-  check-dependency-confusion:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Block extra-index-url usage
-        run: |
-          EXIT_CODE=0
-          for f in pip.conf .pip/pip.conf setup.cfg pyproject.toml; do
-            if [ -f "$f" ]; then
-              if grep -qi "extra-index-url" "$f"; then
-                echo "::error file=$f::BLOCKED: $f contains extra-index-url."
-                echo "Use --index-url with a single private registry that proxies public packages."
-                EXIT_CODE=1
-              fi
-            fi
-          done
-          for f in requirements*.txt; do
-            if [ -f "$f" ]; then
-              if grep -qi "\-\-extra-index-url" "$f"; then
-                echo "::error file=$f::BLOCKED: $f contains --extra-index-url inline flag."
-                EXIT_CODE=1
-              fi
-            fi
-          done
-          if [ "$EXIT_CODE" -eq 0 ]; then
-            echo "PASS: No extra-index-url usage found."
-          fi
-          exit $EXIT_CODE
-
-      - name: Check for internal namespace on public PyPI
-        run: |
-          INTERNAL_PREFIXES="wl- internal- company-"
-          EXIT_CODE=0
-          for f in requirements*.txt; do
-            if [ -f "$f" ]; then
-              while IFS= read -r line; do
-                [[ "$line" =~ ^[[:space:]]*# ]] && continue
-                [[ "$line" =~ ^[[:space:]]*$ ]] && continue
-                [[ "$line" =~ ^- ]] && continue
-                pkg=$(echo "$line" | sed 's/[>=<!=;\[].*//' | xargs | tr '[:upper:]' '[:lower:]' | tr '_' '-')
-                [ -z "$pkg" ] && continue
-                for prefix in $INTERNAL_PREFIXES; do
-                  if [[ "$pkg" == ${prefix}* ]]; then
-                    echo "::error file=$f::Package '$pkg' matches internal namespace prefix '$prefix'."
-                    echo "Ensure this is installed from your private registry only."
-                    EXIT_CODE=1
-                  fi
-                done
-              done < "$f"
-            fi
-          done
-          if [ "$EXIT_CODE" -eq 0 ]; then
-            echo "PASS: No internal namespace collisions detected."
-          fi
-          exit $EXIT_CODE
-```
+If you want concrete rule examples or CI enforcement snippets later, use the shared resources linked at the bottom of the page.
 
 ---
 

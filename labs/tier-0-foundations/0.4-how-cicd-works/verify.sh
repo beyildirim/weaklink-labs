@@ -3,9 +3,9 @@
 set -uo pipefail
 
 GITEA_URL="http://gitea:3000"
-ADMIN_USER="labadmin"
-ADMIN_PASS="SupplyChainLab1!"
-REPO="labadmin/ci-demo"
+ADMIN_USER="weaklink"
+ADMIN_PASS="weaklink"
+REPO="weaklink/ci-demo"
 
 PASS=0
 FAIL=0
@@ -51,6 +51,25 @@ if [ "${MAIN_PROTECTED}" -gt 0 ]; then
     check "Branch protection enabled on main" 0
 else
     check "Branch protection enabled on main" 1
+fi
+
+# Check 4: A pull request exists for the repo
+PRS=$(curl -sf "${GITEA_URL}/api/v1/repos/${REPO}/pulls?state=all" \
+    -u "${ADMIN_USER}:${ADMIN_PASS}" 2>/dev/null)
+PR_COUNT=$(echo "${PRS}" | grep -c '"id":' || true)
+if [ "${PR_COUNT}" -gt 0 ]; then
+    check "At least one pull request exists for ci-demo" 0
+else
+    check "At least one pull request exists for ci-demo" 1
+fi
+
+# Check 5: main no longer contains the exfiltration step
+WORKFLOW_RAW=$(curl -sf "${GITEA_URL}/api/v1/repos/${REPO}/raw/.gitea/workflows/ci.yml?ref=main" \
+    -u "${ADMIN_USER}:${ADMIN_PASS}" 2>/dev/null || true)
+if echo "${WORKFLOW_RAW}" | grep -q "EXFILTRATED DEPLOY_KEY="; then
+    check "Exfiltration step has been removed from main" 1
+else
+    check "Exfiltration step has been removed from main" 0
 fi
 
 echo ""

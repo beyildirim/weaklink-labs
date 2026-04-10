@@ -16,13 +16,24 @@
     return match ? match[1] : null;
   }
 
+  function isLocalHost() {
+    return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  }
+
+  function buildServiceUrl(port, path) {
+    if (!isLocalHost()) return null;
+    return window.location.protocol + '//' + window.location.hostname + ':' + port + path;
+  }
+
   function buildTerminalUrl() {
-    return 'http://localhost:7681';
+    return buildServiceUrl('7681', '');
   }
 
   function initLab(labId) {
     if (!labId) return;
-    fetch('http://localhost:7682/set-lab/' + labId).catch(function() {});
+    var verifyUrl = buildServiceUrl('7682', '/set-lab/' + labId);
+    if (!verifyUrl) return;
+    fetch(verifyUrl).catch(function() {});
   }
 
   function createPanel() {
@@ -90,12 +101,14 @@
     if (splitBtn) splitBtn.style.display = 'none';
 
     var labId = getLabId();
+    var terminalUrl = buildTerminalUrl();
+    if (!terminalUrl) return;
     if (!iframeLoaded && iframe) {
       currentLabId = labId;
       initLab(labId);
       // Delay iframe load to let lab-init finish
       setTimeout(function() {
-        iframe.src = buildTerminalUrl();
+        iframe.src = terminalUrl;
         iframeLoaded = true;
       }, 1500);
     } else if (labId && labId !== currentLabId && iframe) {
@@ -105,7 +118,7 @@
       iframeLoaded = false;
       iframe.src = '';
       setTimeout(function() {
-        iframe.src = buildTerminalUrl();
+        iframe.src = terminalUrl;
         iframeLoaded = true;
       }, 1500);
     }
@@ -120,20 +133,23 @@
   }
 
   function popout() {
-    window.open(buildTerminalUrl(), '_blank');
+    var terminalUrl = buildTerminalUrl();
+    if (!terminalUrl) return;
+    window.open(terminalUrl, '_blank');
     collapse();
   }
 
   function resetLab() {
     var labId = getLabId();
+    var terminalUrl = buildTerminalUrl();
     currentLabId = labId;
     initLab(labId);
     // Also reload the iframe to get a fresh shell
-    if (iframe) {
+    if (iframe && terminalUrl) {
       iframeLoaded = false;
       iframe.src = '';
       setTimeout(function() {
-        iframe.src = buildTerminalUrl();
+        iframe.src = terminalUrl;
         iframeLoaded = true;
       }, 500);
     }
@@ -151,20 +167,21 @@
     var path = window.location.pathname;
     var isLabPage = path.includes('/labs/');
     var isReferencePage = path.match(/\/detect\/?$/);
-    var showTerminal = isLabPage && !isReferencePage;
+    var showTerminal = isLocalHost() && isLabPage && !isReferencePage;
 
     if (showTerminal && !panel) {
       createPanel();
     } else if (showTerminal && panel && isOpen) {
       // Lab changed during navigation: re-init and reload terminal
       var labId = getLabId();
-      if (labId && labId !== currentLabId && iframe) {
+      var terminalUrl = buildTerminalUrl();
+      if (labId && labId !== currentLabId && iframe && terminalUrl) {
         currentLabId = labId;
         initLab(labId);
         iframeLoaded = false;
         iframe.src = '';
         setTimeout(function() {
-          iframe.src = buildTerminalUrl();
+          iframe.src = terminalUrl;
           iframeLoaded = true;
         }, 1500);
       }

@@ -40,4 +40,3 @@ graph LR
     - **Prerequisite:** [1.1 How Dependency Resolution Works](../../tier-1/1.1-dependency-resolution/index.md) — Understanding dependency resolution is essential before tracking deps in SBOMs
     - **Next:** [4.2 SBOM Gaps in Practice](../4.2-sbom-gaps/index.md) — Exploring what SBOMs miss in practice
     - **See also:** [4.7 SBOM Tampering](../4.7-sbom-tampering/index.md) — SBOM tampering attacks the integrity of what you learn here
-    - **See also:** [8.2 SSDF / NIST SP 800-218 Mapping](../../tier-8/8.2-ssdf-nist/index.md) — SSDF/NIST requires SBOM generation as a compliance control

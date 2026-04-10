@@ -14,9 +14,11 @@
 
 ## Publishing and Downloading
 
+Focus on the trust question behind the steps: once an artifact is published, how does anyone else know they are installing the same bytes you intended to publish?
+
 1. Navigate to the demo library source code:
    ```bash
-   cd /labs/tier-0-foundations/0.5-artifacts-registries/src/packages/demo-lib
+   cd /lab/src/packages/demo-lib
    ```
 
 2. Inspect `setup.py` and `demo_lib.py`. The version is `1.0.0`.
@@ -29,9 +31,10 @@
 4. Publish to the private PyPI registry:
    ```bash
    pip install twine
-   twine upload --repository-url http://pypi-private:8080/ dist/*
-   # Enter blank or any credentials, the lab registry accepts anything.
+   twine upload --skip-existing --repository-url http://pypi-private:8080/ dist/*
    ```
+
+   For this lab, the registry is intentionally permissive so you can see the integrity problem clearly. If prompted for credentials, any username and password will work. `--skip-existing` keeps this step repeatable if the good artifact is already present.
 
 5. Verify the package is available:
    ```bash

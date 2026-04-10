@@ -51,9 +51,3 @@ git push origin main
 2. **DNS monitoring on runners**: watch for long/encoded subdomains from CI infrastructure
 3. **Artifact scanning**: scan uploaded artifacts for secret patterns before making them available
 4. **Short-lived OIDC credentials** instead of long-lived secrets
-
-### Step 4: Final verification
-
-```bash
-weaklink verify 2.4
-```

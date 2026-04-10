@@ -68,9 +68,3 @@ docker stop check-defended && docker rm check-defended
 ```
 
 `backdoor: false`. The Dockerfile is pinned to the safe digest regardless of what `latest` points to.
-
-### Step 6: Verify the lab
-
-```bash
-weaklink verify 0.3
-```

@@ -56,9 +56,3 @@ git push origin main
 1. **Fork-based PRs**: run with even more restrictions (no secrets, restricted permissions)
 2. **Token scoping**: use `GITHUB_TOKEN` with minimal permissions (`contents: read`) for PR workflows
 3. **Branch protection**: require CI to pass before merge, but don't give PR builds secrets
-
-### Step 3: Final verification
-
-```bash
-weaklink verify 2.2
-```

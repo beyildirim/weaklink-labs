@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 echo "[*] Checking provenance authenticity..."
-PROV="${1:-exploits/forged-provenance.json}"
+PROV="${1:-src/exploits/forged-provenance.json}"
 BUILDER=$(jq -r '.predicate.builder.id' "$PROV")
 echo "    Builder claims: $BUILDER"
 echo "[!] To detect forgery:"

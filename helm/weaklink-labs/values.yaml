@@ -18,10 +18,6 @@ tiers:
     enabled: true
   tier7:
     enabled: true
-  tier8:
-    enabled: true
-  tier9:
-    enabled: true
 
 # Network policy — opt-in zero-trust networking
 networkPolicies:

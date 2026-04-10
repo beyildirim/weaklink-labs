@@ -69,6 +69,7 @@ Tags `latest` and `1.0.0` both point to the same safe image.
 ### Step 6: Pull and note the digest
 
 ```bash
+# The lab init prepared this file for you from the known-good registry image.
 docker pull registry:5000/webapp:latest
 cat /workspace/safe-digest.txt
 ```

@@ -32,71 +32,19 @@ What to look for:
 
 ---
 
-### CI Integration
+## How to Think About Detection
 
-Add this workflow to verify that all package installs use hash pinning. Save as `.github/workflows/artifact-integrity.yml`:
+At this stage, detection is mostly about noticing integrity mismatches early instead of trusting version numbers.
 
-```yaml
-name: Artifact Integrity Check
+Ask:
 
-on:
-  pull_request:
-    paths:
-      - "requirements*.txt"
-      - "package-lock.json"
-      - "yarn.lock"
-      - "pyproject.toml"
-  push:
-    branches: [main]
-    paths:
-      - "requirements*.txt"
+- Did the same version suddenly produce a different hash?
+- Did the package come from the registry you expected?
+- Are your install logs and lockfiles enough to prove what was actually installed?
 
-permissions:
-  contents: read
+If you cannot answer those confidently, you do not yet have artifact trust. You only have artifact convenience.
 
-jobs:
-  check-hash-pinning:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Verify requirements.txt uses hashes
-        run: |
-          EXIT_CODE=0
-          for f in requirements*.txt; do
-            if [ -f "$f" ]; then
-              # Skip empty or comment-only files
-              DEPS=$(grep -v '^\s*#' "$f" | grep -v '^\s*$' | grep -v '^\s*-' || true)
-              if [ -n "$DEPS" ]; then
-                if ! grep -q -- '--hash=sha256:' "$f"; then
-                  echo "::error file=$f::$f does not use --hash=sha256: pinning."
-                  echo "Generate hashes with: pip-compile --generate-hashes"
-                  EXIT_CODE=1
-                fi
-              fi
-            fi
-          done
-          if [ "$EXIT_CODE" -eq 0 ]; then
-            echo "PASS: All requirements files use hash pinning."
-          fi
-          exit $EXIT_CODE
-
-      - name: Check for registry URL overrides
-        run: |
-          EXIT_CODE=0
-          for f in requirements*.txt pip.conf .pip/pip.conf; do
-            if [ -f "$f" ]; then
-              if grep -qi "extra-index-url" "$f"; then
-                echo "::error file=$f::Found extra-index-url. Use --index-url only."
-                EXIT_CODE=1
-              fi
-            fi
-          done
-          if [ "$EXIT_CODE" -eq 0 ]; then
-            echo "PASS: No extra-index-url overrides found."
-          fi
-          exit $EXIT_CODE
-```
+If you want concrete rule examples or CI enforcement snippets later, use the shared resources linked at the bottom of the page.
 
 ---
 

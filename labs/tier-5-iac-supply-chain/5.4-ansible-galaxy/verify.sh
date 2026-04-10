@@ -30,13 +30,13 @@ echo "  Verifying Lab 5.4: Ansible Galaxy and Collection Attacks"
 echo "  ========================================================="
 echo ""
 
-# Check 1: Malicious authorized_keys task removed from role
+# Check 1: requirements.yml pins the reviewed local role source
+check "requirements.yml pins the reviewed ntp_config source" \
+    "grep -q 'src: /app/vetted/ntp_config' /app/requirements.yml"
+
+# Check 2: Malicious authorized_keys task removed from role
 check "No SSH key injection in ntp role tasks" \
     "! grep -r 'authorized_keys' /app/roles/ntp_config/tasks/"
-
-# Check 2: requirements.yml uses version pins
-check "requirements.yml pins role versions" \
-    "grep -q 'version:' /app/requirements.yml"
 
 # Check 3: No backdoor SSH key present
 check "No attacker SSH key in authorized_keys tasks" \

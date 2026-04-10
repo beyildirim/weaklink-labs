@@ -65,11 +65,6 @@ EOF
 
 This blocks any ClusterRoleBinding referencing `cluster-admin`, even if a chart slips through code review.
 
-### Step 5: Run verification
-
-```bash
-weaklink verify 5.2
-```
 
 ### Additional defenses
 

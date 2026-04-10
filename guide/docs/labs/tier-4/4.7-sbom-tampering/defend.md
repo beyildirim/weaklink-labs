@@ -19,13 +19,13 @@
 ```bash
 cosign generate-key-pair
 
-cosign sign-blob --key cosign.key /app/sbom.json --output-signature /app/sbom.json.sig
+cosign sign-blob --key cosign.key /app/sbom-original.json --output-signature /app/sbom-original.json.sig
 ```
 
 Verify before consuming:
 
 ```bash
-cosign verify-blob --key cosign.pub --signature /app/sbom.json.sig /app/sbom.json
+cosign verify-blob --key cosign.pub --signature /app/sbom-original.json.sig /app/sbom-original.json
 ```
 
 If the SBOM was modified after signing, verification fails.
@@ -33,7 +33,7 @@ If the SBOM was modified after signing, verification fails.
 ### Defense 2: Attach the SBOM to the container image
 
 ```bash
-cosign attach sbom --sbom /app/sbom.json registry:5000/webapp:latest
+cosign attach sbom --sbom /app/sbom-original.json registry:5000/webapp:latest
 
 cosign verify-attestation --key cosign.pub registry:5000/webapp:latest --type cyclonedx
 ```
@@ -46,11 +46,11 @@ The SBOM should be generated in the same CI pipeline that builds the artifact, s
 
 ```yaml
 - name: Generate SBOM
-  run: syft $IMAGE -o cyclonedx-json > sbom.json
+  run: syft $IMAGE -o cyclonedx-json > sbom-original.json
 
 - name: Sign and attach SBOM
   run: |
-    cosign attest --predicate sbom.json --type cyclonedx $IMAGE
+    cosign attest --predicate sbom-original.json --type cyclonedx $IMAGE
 ```
 
 ### Defense 4: Cross-validate SBOM against the artifact
@@ -58,14 +58,8 @@ The SBOM should be generated in the same CI pipeline that builds the artifact, s
 ```bash
 syft registry:5000/webapp:latest -o cyclonedx-json > /app/sbom-fresh.json
 
-diff <(jq -r '.components[].purl' /app/sbom.json | sort) \
+diff <(jq -r '.components[].purl' /app/sbom-original.json | sort) \
      <(jq -r '.components[].purl' /app/sbom-fresh.json | sort)
 ```
 
 If they disagree, the stored SBOM was tampered with or is stale.
-
-### Step 5: Verify the lab
-
-```bash
-weaklink verify 4.7
-```

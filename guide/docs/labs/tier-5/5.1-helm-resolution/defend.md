@@ -62,11 +62,6 @@ helm dependency list /app/webapp/
 grep 'digest:' /app/webapp/Chart.lock
 ```
 
-### Step 5: Run verification
-
-```bash
-weaklink verify 5.1
-```
 
 ### Additional defenses
 

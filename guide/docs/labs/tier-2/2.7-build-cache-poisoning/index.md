@@ -34,7 +34,7 @@ graph LR
 | Service | Address | Description |
 |---------|---------|-------------|
 | Gitea | `gitea:3000` | Git server hosting `wl-webapp` with CI caching |
-| Registry | `registry:5000` | Local package registry |
+| Cache | `~/.cache/pip` | Shared pip cache inside the workstation and CI workflow |
 | Workstation | (your shell) | Development environment |
 
 !!! tip "Related Labs"

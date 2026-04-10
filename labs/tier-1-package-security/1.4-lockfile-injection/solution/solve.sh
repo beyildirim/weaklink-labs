@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Solution for Lab 1.4: Lockfile Injection
-# Run inside the workstation pod: weaklink shell 1.4 < solution/solve.sh
+# Run inside the workstation environment.
 #
 
 set -e
@@ -20,4 +20,4 @@ pip-compile --generate-hashes \
 echo "[*] Verifying lockfile integrity..."
 bash verify-lockfile.sh requirements.in requirements.txt
 
-echo "[+] Done. Run 'weaklink verify 1.4' to confirm."
+echo "[+] Done. Rerun 'bash verify-lockfile.sh requirements.in requirements.txt' to confirm the lockfile is clean."

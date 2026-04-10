@@ -14,6 +14,8 @@
 
 ## What Lockfiles Are and Why They Matter
 
+Focus on the trust model as you go. A lockfile is not just dependency metadata. It is an integrity promise that CI and developers are expected to trust without re-reading every package.
+
 ### Step 1: What is a lockfile?
 
 A lockfile captures the **exact** versions and **cryptographic hashes** of every dependency. It turns a loose dependency spec into a reproducible build.

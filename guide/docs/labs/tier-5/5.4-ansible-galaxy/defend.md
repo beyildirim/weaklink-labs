@@ -12,32 +12,20 @@
   <a href="../detect/" class="phase-step upcoming">Detect</a>
 </div>
 
-## Pinning, Reviewing, and Privatizing Galaxy Content
+## Pinning, Reviewing, and Replacing with a Reviewed Local Copy
 
-### Fix 1: Pin exact versions with checksums
+### Fix 1: Pin the reviewed local copy
 
 ```bash
 cat > /app/requirements.yml << 'EOF'
 ---
 roles:
   - name: ntp_config
-    version: "2.1.0"
-    src: http://galaxy-server:8080/download/ntp_config-2.1.0.tar.gz
-
-collections:
-  - name: community.general
-    version: "8.3.0"
+    src: /app/vetted/ntp_config
 EOF
 ```
 
-### Fix 2: Generate and verify checksums
-
-```bash
-find /app/roles/ -name "*.tar.gz" -exec sha256sum {} \; > /app/roles/checksums.sha256
-sha256sum -c /app/roles/checksums.sha256
-```
-
-### Fix 3: Review roles before installation
+### Fix 2: Review roles before installation
 
 ```bash
 cat > /app/review_role.sh << 'SHELLEOF'
@@ -61,33 +49,14 @@ echo -e "\n=== Review complete ==="
 SHELLEOF
 chmod +x /app/review_role.sh
 
-/app/review_role.sh /app/roles/ntp_hardened/
+/app/review_role.sh /app/vetted/ntp_config/
 ```
 
-### Fix 4: Use a private Automation Hub
+### Fix 3: Replace the trojanized role with the reviewed copy
 
 ```bash
-cat > /app/ansible.cfg << 'EOF'
-[galaxy]
-server_list = private_hub
-
-[galaxy_server.private_hub]
-url=http://galaxy-server:8080/
-validate_certs=True
-EOF
+rm -rf /app/roles/ntp_config/
+cp -R /app/vetted/ntp_config /app/roles/ntp_config
 ```
 
-Removes public Galaxy from the server list. All roles must be vetted and uploaded to the private hub.
-
-### Fix 5: Remove the trojanized role
-
-```bash
-rm -rf /app/roles/ntp_hardened/
-ansible-galaxy install -r /app/requirements.yml -p /app/roles/ --force
-```
-
-### Verify the defense
-
-```bash
-weaklink verify 5.4
-```
+This keeps the workflow simple for the lab: you review a clean local copy and replace the bad role with that reviewed source. In a real environment, the same idea would usually be implemented with an internal Galaxy mirror or artifact repository.

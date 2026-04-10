@@ -35,9 +35,9 @@ graph LR
 | Service | Address | Description |
 |---------|---------|-------------|
 | PyPI | `pypi-private:8080` | A private PyPI server hosting the legitimate `flask-utils` package |
-| Gitea | `gitea:3000` | A Gitea instance with a repo containing a malicious PR |
+| Gitea | `localhost:3000` if exposed on your host | A Gitea instance with a repo containing a malicious PR |
 
-Login: `weaklink` / `weaklink`
+Login if you open Gitea separately: `developer` / `password123`
 
 !!! tip "Related Labs"
     - **Prerequisite:** [1.1 How Dependency Resolution Works](../1.1-dependency-resolution/index.md) — Lockfiles record resolution decisions, which this attack modifies

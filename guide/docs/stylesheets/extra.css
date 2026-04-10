@@ -407,7 +407,7 @@
   z-index: 1;
 }
 .terminal-panel-body::after {
-  content: "Terminal not connected. Run ./weaklink shell to start.";
+  content: "Terminal not connected. Reload the page or open localhost:7681 directly.";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -609,8 +609,6 @@ body.tier-4 .md-typeset h1 { border-bottom: 3px solid #2ecc71; padding-bottom: 0
 body.tier-5 .md-typeset h1 { border-bottom: 3px solid #9b59b6; padding-bottom: 0.5rem; }
 body.tier-6 .md-typeset h1 { border-bottom: 3px solid #e74c3c; padding-bottom: 0.5rem; }
 body.tier-7 .md-typeset h1 { border-bottom: 3px solid #e67e22; padding-bottom: 0.5rem; }
-body.tier-8 .md-typeset h1 { border-bottom: 3px solid #1abc9c; padding-bottom: 0.5rem; }
-body.tier-9 .md-typeset h1 { border-bottom: 3px solid #f39c12; padding-bottom: 0.5rem; }
 
 /* --- Difficulty dots in lab-meta ------------------------- */
 .lab-meta .difficulty::before {
@@ -751,4 +749,3 @@ body.sidebar-hidden .sidebar-restore-btn {
     padding-bottom: 42vh;
   }
 }
-
