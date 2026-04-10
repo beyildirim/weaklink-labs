@@ -81,7 +81,7 @@ get_workstation_pod() {
 check_cluster() {
     if ! kubectl get namespace "$NAMESPACE" &>/dev/null; then
         echo -e "${RED}Error: WeakLink Labs is not running.${NC}"
-        echo -e "Run '${BOLD}./start.sh${NC}' to start the platform."
+        echo -e "Run '${BOLD}make start${NC}' to start the platform."
         exit 1
     fi
 }

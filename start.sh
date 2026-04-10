@@ -36,8 +36,8 @@ cleanup_on_failure() {
         echo -e "    kubectl describe pods -n ${NAMESPACE}"
         echo -e "    kubectl logs -n ${NAMESPACE} job/lab-setup"
         echo ""
-        echo -e "  ${DIM}To retry: ./start.sh${NC}"
-        echo -e "  ${DIM}To tear down: ./stop.sh${NC}"
+        echo -e "  ${DIM}To retry: make start${NC}"
+        echo -e "  ${DIM}To tear down: make stop${NC}"
     fi
 }
 trap cleanup_on_failure EXIT
@@ -189,7 +189,7 @@ fi
 CURRENT_STEP="port-forward"
 
 # Kill any existing port-forwards from a previous run
-for pidfile in "${SCRIPT_DIR}/.weaklink-pf.pid" "${SCRIPT_DIR}/.weaklink-pf-ttyd.pid" "${SCRIPT_DIR}/.weaklink-pf-verify.pid"; do
+for pidfile in "${SCRIPT_DIR}/.weaklink-pf.pid" "${SCRIPT_DIR}/.weaklink-pf-ttyd.pid" "${SCRIPT_DIR}/.weaklink-pf-verify.pid" "${SCRIPT_DIR}/.weaklink-pf-gitea.pid"; do
     if [[ -f "$pidfile" ]]; then
         old_pid=$(cat "$pidfile" 2>/dev/null || true)
         if [[ -n "$old_pid" ]] && kill -0 "$old_pid" 2>/dev/null; then
@@ -200,22 +200,28 @@ for pidfile in "${SCRIPT_DIR}/.weaklink-pf.pid" "${SCRIPT_DIR}/.weaklink-pf-ttyd
 done
 
 log "Starting port-forward for guide (localhost:8000)..."
-kubectl port-forward -n "${NAMESPACE}" svc/guide 8000:8000 &>/dev/null &
+nohup kubectl port-forward -n "${NAMESPACE}" svc/guide 8000:8000 > "${SCRIPT_DIR}/.weaklink-pf-guide.log" 2>&1 &
 GUIDE_PF_PID=$!
 echo "$GUIDE_PF_PID" > "${SCRIPT_DIR}/.weaklink-pf.pid"
 ok "Guide port-forward started (PID: $GUIDE_PF_PID)."
 
 log "Starting port-forward for web terminal (localhost:7681)..."
-kubectl port-forward -n "${NAMESPACE}" svc/workstation 7681:7681 &>/dev/null &
+nohup kubectl port-forward -n "${NAMESPACE}" svc/workstation 7681:7681 > "${SCRIPT_DIR}/.weaklink-pf-ttyd.log" 2>&1 &
 TTYD_PF_PID=$!
 echo "$TTYD_PF_PID" > "${SCRIPT_DIR}/.weaklink-pf-ttyd.pid"
 ok "Web terminal port-forward started (PID: $TTYD_PF_PID)."
 
 log "Starting port-forward for verify API (localhost:7682)..."
-kubectl port-forward -n "${NAMESPACE}" svc/workstation 7682:7682 &>/dev/null &
+nohup kubectl port-forward -n "${NAMESPACE}" svc/workstation 7682:7682 > "${SCRIPT_DIR}/.weaklink-pf-verify.log" 2>&1 &
 VERIFY_PF_PID=$!
 echo "$VERIFY_PF_PID" > "${SCRIPT_DIR}/.weaklink-pf-verify.pid"
 ok "Verify API port-forward started (PID: $VERIFY_PF_PID)."
+
+log "Starting port-forward for Gitea (localhost:3000)..."
+nohup kubectl port-forward -n "${NAMESPACE}" svc/gitea 3000:3000 > "${SCRIPT_DIR}/.weaklink-pf-gitea.log" 2>&1 &
+GITEA_PF_PID=$!
+echo "$GITEA_PF_PID" > "${SCRIPT_DIR}/.weaklink-pf-gitea.pid"
+ok "Gitea port-forward started (PID: $GITEA_PF_PID)."
 
 CURRENT_STEP="done"
 
@@ -225,13 +231,11 @@ echo -e "${GREEN}${BOLD}  WeakLink Labs is ready!${NC}"
 echo -e "${BOLD}========================================${NC}"
 echo ""
 echo -e "  Guide:       ${CYAN}http://localhost:8000${NC}"
-echo -e "  Terminal:    ${CYAN}http://localhost:7681${NC}"
-echo -e "  Workstation: ${CYAN}./cli/weaklink shell${NC}"
+echo -e "  Terminal:    ${CYAN}Use the split terminal inside the guide${NC}"
+echo -e "  Gitea:       ${CYAN}http://localhost:3000${NC}"
 echo ""
 echo -e "  ${DIM}Useful commands:${NC}"
-echo -e "    ${BOLD}./cli/weaklink shell${NC}     Open a shell in the workstation"
-echo -e "    ${BOLD}./cli/weaklink path${NC}      Show the learning roadmap"
-echo -e "    ${BOLD}./cli/weaklink status${NC}    Check pod status"
-echo -e "    ${BOLD}./cli/weaklink logs${NC}      View setup job logs"
-echo -e "    ${BOLD}./stop.sh${NC}                Tear everything down"
+echo -e "    ${BOLD}make stop${NC}               Tear everything down"
+echo -e "    ${BOLD}make status${NC}             Show pod status"
+echo -e "    ${BOLD}make shell${NC}              Open a workstation shell"
 echo ""

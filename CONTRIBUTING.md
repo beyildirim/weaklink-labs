@@ -4,7 +4,7 @@ Thanks for your interest in contributing! This guide explains how to add a new l
 
 ## Architecture Overview
 
-WeakLink Labs runs on Minikube. The Helm chart at `helm/weaklink-labs/` deploys everything: the workstation, lab services (Gitea, PyPI servers, Verdaccio, registry), the MkDocs guide, and a setup job that seeds lab content. Docker images are built locally from `images/`.
+The main contributor path uses `make start`, which brings up the Minikube + Helm environment. The Helm chart at `helm/weaklink-labs/` deploys everything: the workstation, lab services (Gitea, PyPI servers, Verdaccio, registry), the MkDocs guide, and a setup job that seeds lab content. Docker images are built locally from `images/`.
 
 ## Lab Structure
 
@@ -22,7 +22,7 @@ labs/tier-1-package-security/1.2-dependency-confusion/
 └── solution/            # Reference solution
 ```
 
-Each lab also has a corresponding guide page at `guide/docs/labs/tier-N/N.X-lab-name.md`.
+Each lab also has a corresponding guide section under `guide/docs/labs/tier-N/N.X-lab-name/`.
 
 ## Adding a New Lab
 
@@ -59,7 +59,7 @@ phase_detect: "What the learner detects in phase 4"
 
 ### 4. Add the lab guide page
 
-Create `guide/docs/labs/tier-N/N.X-lab-name.md` using MkDocs Material format. The guide follows the 4-phase structure using admonitions to mark phase transitions:
+Create the lab guide under `guide/docs/labs/tier-N/N.X-lab-name/`. Most labs use `index.md`, `understand.md`, `break.md`, `defend.md`, and `detect.md`. The guide follows the 4-phase structure using admonitions to mark phase transitions:
 
 ```markdown
 # Lab N.X: Title
@@ -84,7 +84,7 @@ Brief description of what this lab teaches and why it matters.
 ## Connect to the Workstation
 
 ```bash
-./weaklink shell
+make shell
 ```
 
 ---
@@ -160,19 +160,19 @@ If your lab's services should only deploy when the tier is enabled, use the appr
 1. Start the environment:
 
     ```bash
-    ./weaklink start
+    make start
     ```
 
     This builds the Docker images, starts Minikube, and deploys the Helm chart.
 
-2. Open the guide in your browser (served on `localhost:30080`).
+2. Open the guide in your browser (served on `http://localhost:8000`).
 
 3. Work through your lab following the guide.
 
 4. Verify completion:
 
     ```bash
-    ./weaklink verify <lab-id>
+    ./cli/weaklink verify <lab-id>
     ```
 
 5. Confirm all 4 phases work end-to-end: understand, break, defend, detect.

@@ -1,21 +1,28 @@
 # WeakLink Labs Roadmap
 
-**Hands-on supply chain security training — 62 labs across 10 tiers.**
+**Hands-on supply chain security training — 50 labs across 8 tiers.**
 
 All labs run locally on minikube. No cloud accounts required.
+
+**Current emphasis:** tighten **Tier 0 through Tier 5** as the core learner path. **Tier 6 and Tier 7** are optional advanced branches and should not be assumed to be the default continuation for every learner.
 
 ---
 
 ## How Every Lab Works
 
-Every lab follows four phases:
+Most hands-on attack labs follow four phases:
 
 1. **UNDERSTAND** — See the system working normally. Know what it does.
 2. **BREAK** — Execute a real attack. See the impact firsthand.
 3. **DEFEND** — Apply the fix. Re-run the attack. It fails. You know why.
-4. **DETECT** — Learn what this attack looks like in your SIEM, EDR, and CI logs. Get detection rules you can use at work tomorrow.
+4. **DETECT** — When the topic supports it, connect the attack to detection, triage, or operational impact.
 
-Detection is not a separate skill you learn later — it is built into every lab from Tier 0 onward. Each lab ships with portable Sigma detection rules, MITRE ATT&CK mappings, and a SOC triage workflow. By the time you reach Tier 7, you will have already built detection coverage for every attack technique in the curriculum.
+Some tiers use different labels because they focus on case studies, incident response, or threat modeling rather than direct attack execution. Detection content is part of the platform, but it is not the only teaching goal and not every lab needs formal Sigma output.
+
+The current curriculum shape is:
+
+- **Core path:** Tier `0` through Tier `5`
+- **Advanced branches:** Tier `6` and Tier `7`
 
 ---
 
@@ -86,7 +93,7 @@ Detection is not a separate skill you learn later — it is built into every lab
 - [x] **5.4 Ansible Galaxy** — Attacking role and collection distribution channels
 - [x] **5.5 K8s Admission Bypass** — Circumventing admission controllers and policy enforcement
 
-## Tier 6 — Case Studies & Frontier Attacks
+## Tier 6 — Advanced Domains & Case Studies
 
 *Frontier attacks and real-world case studies.*
 
@@ -101,39 +108,17 @@ Detection is not a separate skill you learn later — it is built into every lab
 - [x] **6.9 Case Study: Log4Shell** — Remote code execution through logging library dependency (CVE-2021-44228)
 - [x] **6.10 Case Study: Equifax** — Unpatched dependency exploitation at enterprise scale (CVE-2017-5638)
 
-## Tier 7 — Detection & Response
+## Tier 7 — Response & Threat Modeling
 
-*Find it, triage it, fix it.*
+*Triage incidents, respond cleanly, and model the next failure before it happens.*
 
-- [x] **7.1 Detection Rules** — Writing signatures and heuristics for supply chain attacks
 - [x] **7.2 Incident Triage** — Rapid scoping and impact assessment for package compromises
 - [x] **7.3 IR Playbook** — Step-by-step incident response for supply chain breaches
-- [x] **7.4 Tool Evaluation** — Assessing SCA, SAST, and supply chain security tools
 - [x] **7.5 Threat Modeling** — Mapping supply chain threats with structured methodologies
-
-## Tier 8 — Policy & Program Building
-
-*Policy, compliance, and program building.*
-
-- [x] **8.1 SLSA Deep Dive** — Implementing SLSA levels in real build systems
-- [x] **8.2 SSDF & NIST** — Applying NIST SP 800-218 Secure Software Development Framework
-- [x] **8.3 Executive Order 14028** — Understanding federal supply chain security requirements
-- [x] **8.4 Vendor Assessment** — Evaluating third-party software supply chain practices
-- [x] **8.5 Building a Program** — Standing up an organizational supply chain security program
-- [x] **8.6 SCVS Assessment** — Applying the Software Component Verification Standard
-
-## Tier 9 — Cloud Supply Chain
-
-*Supply chain attacks in cloud-native environments.*
-
-- [x] **9.1 Cloud Marketplace Poisoning** — Publishing malicious listings in cloud marketplaces
-- [x] **9.2 Serverless Supply Chain** — Attacking serverless function dependencies and layers
-- [x] **9.3 Cloud CI/CD Attacks** — Exploiting cloud-native CI/CD services and trust boundaries
-- [x] **9.4 IAM Chain Abuse** — Leveraging IAM role chains to escalate through supply chain trust
 
 ---
 
-**62 labs across 10 tiers** — Deployment status below.
+**50 labs across 8 tiers** — Deployment status below.
 
 | Tier | Topic | Labs | Content | Helm Enabled | CI Tested |
 |------|-------|------|---------|-------------|----------|
@@ -144,9 +129,7 @@ Detection is not a separate skill you learn later — it is built into every lab
 | 4 | SBOM & Signing | 7 | ✅ Complete | ✅ Enabled | ✅ |
 | 5 | IaC Supply Chain | 5 | ✅ Complete | ✅ Enabled | ✅ |
 | 6 | Case Studies & Frontier Attacks | 10 | ✅ Complete | ✅ Enabled | ✅ |
-| 7 | Detection & Response | 5 | ✅ Complete | ✅ Enabled | ✅ |
-| 8 | Policy & Program Building | 6 | ✅ Complete | ✅ Enabled | ✅ |
-| 9 | Cloud Supply Chain | 4 | ✅ Complete | ✅ Enabled | ✅ |
+| 7 | Response & Threat Modeling | 3 | ✅ Complete | ✅ Enabled | ✅ |
 
 ### What "Deployed" Means
 
@@ -160,9 +143,8 @@ Infrastructure and quality improvements driven by professional feedback from SOC
 
 ### Deployment
 
-- [x] **Enable Tier 2-9 in Helm** — Add tier feature flags, seeder phases, and Helm templates for all remaining tiers
-- [x] **Add Tier 9 flag to values.yaml** — Tier 9 has no Helm feature flag yet
-- [x] **CI coverage for Tiers 2-9** — Extend `test-labs.yml` to deploy and verify all tiers
+- [x] **Enable Tier 2-7 in Helm** — Add tier feature flags, seeder phases, and Helm templates for the retained advanced tiers
+- [x] **CI coverage for Tiers 2-7** — Extend `test-labs.yml` to deploy and verify the retained tiers
 
 ### Detection Engineering
 
@@ -175,9 +157,11 @@ Infrastructure and quality improvements driven by professional feedback from SOC
 - [x] **Idempotent start.sh** — Graceful failure handling, port-forward cleanup, and safe re-runs
 - [x] **Makefile** — Structured lifecycle targets: `build`, `deploy`, `teardown`, `logs`, `shell`, `test`
 - [x] **Docker Compose mode** — Alternative for teams without Kubernetes experience or resources
-- [ ] **Minimal mode** — `./start.sh --minimal` for laptops that can't spare 4GB for minikube
+- [ ] **Minimal mode** — A lighter local startup path for laptops that can't spare 4GB for minikube
 
 ### Content Quality
+
+The highest-value content work now is the **core path**: Tiers `3-5`. Tier `6+` should be tightened only if you want to invest in those advanced branches deliberately.
 
 - [x] **Tier 3-4 src content** — Container Security and Artifact Integrity tiers have guide docs and verify scripts but need attack/defend source packages built out
 - [x] **Tier 6 src content** — Most Advanced & Emerging labs need source packages (only Log4Shell and Equifax have them)
