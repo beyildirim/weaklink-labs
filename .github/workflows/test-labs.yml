@@ -16,6 +16,7 @@ on:
       - 'guide/docs/javascripts/**'
       - 'guide/docs/stylesheets/**'
       - 'guide/mkdocs.yml'
+  workflow_dispatch:
   pull_request:
     paths:
       - 'labs/**'
