@@ -20,15 +20,29 @@ def validate_lab_id(lab_id):
     return lab_id
 
 
+def load_lab_paths():
+    lab_paths = {}
+    for candidate in LABS_ROOT.iterdir():
+        if not candidate.is_dir():
+            continue
+        if not LAB_ID_PATTERN.fullmatch(candidate.name):
+            continue
+
+        resolved = candidate.resolve()
+        if resolved.parent != LABS_ROOT:
+            continue
+        lab_paths[candidate.name] = resolved
+    return lab_paths
+
+
+LAB_PATHS = load_lab_paths()
+
+
 def resolve_lab_path(lab_id):
     valid_lab_id = validate_lab_id(lab_id)
     if not valid_lab_id:
         return None
-
-    lab_dir = (LABS_ROOT / valid_lab_id).resolve()
-    if lab_dir.parent != LABS_ROOT:
-        return None
-    return lab_dir
+    return LAB_PATHS.get(valid_lab_id)
 
 
 class VerifyHandler(BaseHTTPRequestHandler):
