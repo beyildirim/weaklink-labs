@@ -14,23 +14,21 @@
 
 <div class="no-terminal-notice">Reference material. No terminal needed.</div>
 
-## Catching Admission Controller Bypasses
+## Catching Exempt-Namespace Bypasses
 
-Bypasses leave traces in Kubernetes audit logs. Key signals: resources in exempt namespaces, uncovered resource types, and mutations changing security-sensitive fields.
+Exempt namespaces leave a simpler signal than most webhook failures: the risky workload lands in a namespace you intentionally excluded from policy.
 
 **Key indicators:**
 
 - Pod creation in `monitoring` by non-system service accounts
-- CRDs with privileged security contexts
-- Patch operations adding `privileged: true`, `hostNetwork`, or `hostPID`
-- Webhook failures (HTTP 500) with `failurePolicy: Ignore`
-- Gatekeeper/Kyverno audit violations not caught at admission time
+- Privileged containers running in namespaces that appear on the exclusion list
+- Drift between the documented exemption list and the live Gatekeeper/Kyverno config
 
 | Indicator | What It Means |
 |-----------|---------------|
-| Webhook endpoint returning 5xx errors | Admission controller failing, resources may bypass policy |
-| DNS query from `monitoring` pod to external domain | Workload in exempt namespace reaching attacker infrastructure |
-| Privileged container making host-level network connections | Bypassed pod accessing node network stack |
+| Privileged pod created in `monitoring` | A workload landed in a namespace the policy does not cover |
+| Non-system service account creating resources in an excluded namespace | Policy-safe harbor is being used by regular workloads |
+| Exclusion list growing without review | The admission boundary is weakening over time |
 
 ### CI Integration
 
@@ -58,15 +56,12 @@ jobs:
           tar xzf conftest_Linux_x86_64.tar.gz
           sudo mv conftest /usr/local/bin/
 
-      - name: Test OPA policies against manifests
-        run: conftest test exploits/ --policy policies/ --all-namespaces
-
-      - name: Verify webhook failurePolicy is Fail
+      - name: Test policy config against forbidden namespace exemptions
         run: |
-          for f in $(find . -name "*.yaml" -o -name "*.yml"); do
-            if grep -q "ValidatingWebhookConfiguration\|MutatingWebhookConfiguration" "$f" 2>/dev/null; then
-              if grep -q "failurePolicy: Ignore" "$f"; then
-                echo "::error file=$f::failurePolicy: Ignore allows bypass. Use Fail."
+          for f in $(find gatekeeper-config policies -name "*.yaml" -o -name "*.yml" 2>/dev/null); do
+            if grep -q "excludedNamespaces" "$f" 2>/dev/null; then
+              if grep -q "monitoring" "$f"; then
+                echo "::error file=$f::monitoring exemption reintroduced"
                 exit 1
               fi
             fi
@@ -77,26 +72,25 @@ jobs:
 
 | Technique | ID | Relevance |
 |-----------|-----|-----------|
-| **Deploy Container** | [T1610](https://attack.mitre.org/techniques/T1610/) | Primary. Deploying privileged containers via policy gaps (exempt namespaces, uncovered CRDs) |
-| **Exploitation for Privilege Escalation** | [T1068](https://attack.mitre.org/techniques/T1068/) | Post-admission mutations escalate workload privileges |
+| **Deploy Container** | [T1610](https://attack.mitre.org/techniques/T1610/) | Primary. A privileged container is deployed through an exempt namespace |
+| **Subvert Trust Controls** | [T1553](https://attack.mitre.org/techniques/T1553/) | Admission policy exists, but the trust boundary is weakened by exception handling |
 
-**Alerts:** "Pod created in monitoring by non-system account" (audit log), "Admission webhook returning errors" (API server metrics), "Gatekeeper audit violation: privileged container detected" (policy engine).
+**Alert:** "Privileged pod created in excluded namespace by non-system account"
 
 **Triage steps:**
 
-1. Check audit log for resource creation in exempt namespaces by unexpected service accounts
-2. Review Gatekeeper/Kyverno audit results (not just admission results)
-3. List all pods with `privileged: true` or `hostNetwork: true` across all namespaces
-4. Compare webhook `rules.resources` against all CRDs in the cluster
-5. If confirmed: check what the workload accessed (tokens, secrets, host filesystem)
+1. Check audit log for resource creation in excluded namespaces by unexpected service accounts
+2. List all privileged pods across all excluded namespaces
+3. Compare the live exclusion list to the reviewed policy baseline
+4. If confirmed: inspect what the workload accessed and whether the exemption is still needed
 
 ---
 
 ## What You Learned
 
-- **Namespace exemptions are the most common bypass.** System namespaces excluded by default give attackers a safe harbor. Minimize exemptions; use targeted exceptions.
-- **CRD coverage gaps are invisible.** Webhooks matching only Pods/Deployments miss custom workload types entirely. Use `resources: ["*"]`.
-- **Post-admission mutations evade all admission control.** Webhooks fire on CREATE/UPDATE only. Gatekeeper audit mode catches drift.
+- **Namespace exemptions are enough to break the guarantee.** One excluded namespace can nullify an otherwise strong policy.
+- **Policy exceptions deserve the same scrutiny as policy rules.** Review them, minimize them, and test them in CI.
+- **A green policy dashboard can still hide risk.** If the namespace is exempt, the workload never hits the controller at all.
 
 ## Further Reading
 

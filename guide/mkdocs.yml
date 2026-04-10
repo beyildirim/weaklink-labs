@@ -378,6 +378,5 @@ nav:
         - Validate: labs/tier-7/7.5-threat-modeling/validate.md
         - Improve: labs/tier-7/7.5-threat-modeling/improve.md
   - Resources:
-    - Roadmap: roadmap.md
     - Detection Rule Library: resources/detection-rules.md
     - CI Security Snippets: resources/ci-snippets.md

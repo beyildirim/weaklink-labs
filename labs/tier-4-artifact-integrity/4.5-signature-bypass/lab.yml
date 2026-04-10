@@ -5,7 +5,7 @@ module: "artifact-integrity"
 prerequisites: ["4.3"]
 difficulty: advanced
 estimated_time: 35m
-tags: ["cosign", "signature-bypass", "key-confusion", "rollback", "enforcement"]
-phase_understand: "Learn that signing without enforcement is security theater"
-phase_break: "Three bypass techniques: no enforcement, untrusted key, signature rollback"
-phase_defend: "Enforce verification, pin trusted identities, and include timestamps"
+tags: ["cosign", "signature-bypass", "key-confusion", "trusted-keys", "verification"]
+phase_understand: "Understand that signatures only help if verification is anchored to the trusted signer"
+phase_break: "Sign a malicious image with an attacker key and show how loose verification accepts the wrong signer"
+phase_defend: "Pin trusted keys or OIDC identities and enforce that trust policy consistently"

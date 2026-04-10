@@ -3,7 +3,7 @@
 <div class="lab-meta">
   <span>Understand: ~8 min | Break: ~8 min | Defend: ~10 min | Detect: ~4 min</span>
   <span class="difficulty intermediate">Intermediate</span>
-  <span>Prerequisites: None</span>
+  <span>Prerequisites: <a href="../5.3-terraform-module-attacks/">Lab 5.3</a></span>
 </div>
 
 <div class="phase-stepper">
@@ -39,6 +39,7 @@ graph LR
 | Requirements | `/app/requirements.yml` | Galaxy role and collection requirements file |
 
 !!! tip "Related Labs"
+    - **Prerequisite:** [5.3 Terraform Module and Provider Attacks](../5.3-terraform-module-attacks/index.md) — Continue the IaC dependency trust model before switching tools
     - **Next:** [5.5 Kubernetes Admission Controller Bypass](../5.5-admission-controller-bypass/index.md) — Admission controllers can enforce policy on Ansible-deployed resources
     - **See also:** [5.3 Terraform Module and Provider Attacks](../5.3-terraform-module-attacks/index.md) — Terraform module attacks target a parallel IaC ecosystem
     - **See also:** [1.3 Typosquatting](../../tier-1/1.3-typosquatting/index.md) — Galaxy role typosquatting mirrors package typosquatting

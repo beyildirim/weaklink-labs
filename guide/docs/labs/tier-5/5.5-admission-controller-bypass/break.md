@@ -12,9 +12,9 @@
   <a href="../detect/" class="phase-step upcoming">Detect</a>
 </div>
 
-## Three Ways to Bypass Admission Controllers
+## Bypass via Exempt Namespace
 
-### Bypass 1: Exempt namespaces
+### Step 1: Deploy the privileged pod into an exempt namespace
 
 ```bash
 cat /app/exploits/exempt-namespace-pod.yaml
@@ -29,38 +29,24 @@ kubectl exec -n monitoring privileged-miner -- whoami
 kubectl exec -n monitoring privileged-miner -- cat /proc/1/status | head -5
 ```
 
-### Bypass 2: Uncovered Custom Resource Definitions
+### Step 2: Confirm why it worked
 
 ```bash
-cat /app/exploits/uncovered-crd.yaml
-kubectl apply -f /app/exploits/uncovered-crd.yaml
+kubectl get config.config.gatekeeper.sh -n gatekeeper-system -o yaml 2>/dev/null
+kubectl get validatingwebhookconfigurations -o yaml | grep -A 5 "namespaceSelector"
 ```
 
-A custom resource type creates a workload functionally equivalent to a privileged pod, but no admission policy covers it. The webhook configuration only matches specific resource types.
+The policy is not weak in general. It simply never ran for the exempt namespace.
+
+### Impact
 
 ```bash
-kubectl get validatingwebhookconfigurations -o yaml | grep -A 3 "resources:"
+kubectl get pods --all-namespaces -o wide | grep privileged-miner
 ```
 
-### Bypass 3: Post-admission mutations
+One privileged workload is enough. Once a supposedly protected cluster has even one exempt namespace, the policy guarantee is gone.
 
-```bash
-cat /app/exploits/post-admission-mutation.yaml
-kubectl apply -f /app/exploits/post-admission-mutation.yaml
-```
+!!! info "Related Variants"
+    Other admission-controller gaps exist, including uncovered CRDs and post-admission mutations. They matter, but they are not the mainline attack in this lab.
 
-A CronJob patches existing deployments to add privileged security contexts. The initial deployment passes admission. The CronJob mutates it afterward. Admission controllers do not re-validate running workloads.
-
-```bash
-kubectl get pods -w --output-watch-events
-```
-
-### Combined impact
-
-```bash
-kubectl get pods --all-namespaces -o wide | grep -E "privileged-miner|backdoor-db|metrics-updater"
-```
-
-Three privileged workloads running, all invisible to the admission controller dashboard showing "100% compliance."
-
-> **Checkpoint:** You should have three bypassed workloads running: one in an exempt namespace, one via uncovered CRD, one via post-admission mutation.
+> **Checkpoint:** You should have one privileged pod, `privileged-miner`, running in the exempt `monitoring` namespace.

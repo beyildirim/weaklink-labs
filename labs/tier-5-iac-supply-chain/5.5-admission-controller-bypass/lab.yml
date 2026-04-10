@@ -7,5 +7,5 @@ difficulty: advanced
 estimated_time: 40m
 tags: ["kubernetes", "admission-controllers", "opa", "gatekeeper", "kyverno", "policy-bypass"]
 phase_understand: "Explore admission controllers (OPA Gatekeeper, Kyverno) and how they enforce policies on K8s resources"
-phase_break: "Bypass admission controllers using exempt namespaces, post-admission mutations, and uncovered CRDs"
-phase_defend: "Audit admission controller coverage, test policies with conftest, monitor for policy drift"
+phase_break: "Deploy a privileged workload through an exempt namespace that the admission policy never evaluates"
+phase_defend: "Remove unnecessary namespace exemptions, retry the same exploit, and add checks to prevent the exemption from creeping back"

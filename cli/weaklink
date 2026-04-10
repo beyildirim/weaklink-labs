@@ -4,7 +4,6 @@
 #
 # Usage:
 #   weaklink assess            Placement test to skip Tier 0
-#   weaklink path              Show the learning roadmap and progress
 #   weaklink shell             Open a shell in the workstation pod
 #   weaklink verify <lab-id>   Check if you completed the lab
 #   weaklink hint <lab-id>     Get a progressive hint
@@ -123,85 +122,6 @@ cmd_shell() {
     kubectl exec -it -n "$NAMESPACE" "$pod" -- /bin/bash -l
 }
 
-cmd_path() {
-    echo ""
-    echo -e "${BOLD}  WEAKLINK LABS${NC}"
-    echo -e "  ══════════════"
-    echo ""
-
-    for tier_dir in "$LABS_ROOT"/tier-*/; do
-        [[ -d "$tier_dir" ]] || continue
-
-        local tier_name
-        tier_name=$(basename "$tier_dir" | sed 's/tier-[0-9]*-//' | tr '-' ' ' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1')
-        local tier_num
-        tier_num=$(basename "$tier_dir" | grep -o 'tier-[0-9]*' | grep -o '[0-9]*')
-
-        # Check if tier has any labs
-        local dir_count
-        dir_count=$(find "$tier_dir" -maxdepth 1 -type d ! -name "$(basename "$tier_dir")" 2>/dev/null | wc -l)
-
-        echo -e "  ${BOLD}Tier ${tier_num}: ${tier_name}${NC}"
-
-        if [[ $dir_count -eq 0 ]]; then
-            echo -e "    ${DIM}-- Coming soon${NC}"
-            echo ""
-            continue
-        fi
-
-        for lab_dir in "$tier_dir"/*/; do
-            [[ -d "$lab_dir" ]] || continue
-            [[ -f "${lab_dir}/lab.yml" ]] || continue
-
-            local lab_id
-            lab_id=$(read_lab_yml "$lab_dir" "id")
-            local title
-            title=$(read_lab_yml "$lab_dir" "title")
-            local difficulty
-            difficulty=$(read_lab_yml "$lab_dir" "difficulty")
-
-            local icon
-            if is_completed "$lab_id"; then
-                icon="${GREEN}[done]${NC}"
-            else
-                # Check prerequisites
-                local prereqs
-                prereqs=$(read_lab_yml "$lab_dir" "prerequisites")
-                if [[ -n "$prereqs" && "$prereqs" != "none" && "$prereqs" != "[]" ]]; then
-                    local all_met=true
-                    for prereq in $(echo "$prereqs" | tr -d '[]"' | tr ',' '\n' | tr -d ' '); do
-                        if [[ -n "$prereq" ]] && ! is_completed "$prereq"; then
-                            all_met=false
-                            break
-                        fi
-                    done
-                    if $all_met; then
-                        icon="[    ]"
-                    else
-                        icon="${DIM}[lock]${NC}"
-                    fi
-                else
-                    icon="[    ]"
-                fi
-            fi
-
-            local diff_badge=""
-            case "$difficulty" in
-                beginner)     diff_badge="${GREEN}*${NC}" ;;
-                intermediate) diff_badge="${YELLOW}**${NC}" ;;
-                advanced)     diff_badge="${RED}***${NC}" ;;
-            esac
-
-            printf "    %b  %-4s %-45s %b\n" "$icon" "$lab_id" "$title" "$diff_badge"
-        done
-        echo ""
-    done
-
-    echo -e "  ${DIM}Legend: [done] completed  [    ] available  [lock] locked${NC}"
-    echo -e "  ${DIM}Difficulty: ${GREEN}*${NC}${DIM} beginner  ${YELLOW}**${NC}${DIM} intermediate  ${RED}***${NC}${DIM} advanced${NC}"
-    echo ""
-}
-
 cmd_verify() {
     local lab_id="$1"
 
@@ -212,7 +132,7 @@ cmd_verify() {
 
     if [[ -z "$lab_dir" ]]; then
         echo -e "${RED}Error: Lab ${lab_id} not found.${NC}"
-        echo "Run 'weaklink path' to see available labs."
+        echo "Open the guide in your browser to see available labs."
         exit 1
     fi
 
@@ -457,7 +377,7 @@ cmd_assess() {
         echo -e "  ${GREEN}${BOLD}Tier 0 skipped. You're ready for Tier 1!${NC}"
         echo ""
         echo -e "  ${DIM}Tier 0 (Labs 0.1-0.5) marked as completed.${NC}"
-        echo -e "  ${DIM}Run 'weaklink path' to see your updated roadmap.${NC}"
+        echo -e "  ${DIM}Next step: weaklink info 1.1${NC}"
     else
         echo -e "  ${YELLOW}We recommend completing Tier 0 labs.${NC}"
         if [[ ${#wrong_topics[@]} -gt 0 ]]; then
@@ -467,7 +387,7 @@ cmd_assess() {
             echo -e "  ${DIM}Areas to review: ${areas}${NC}"
         fi
         echo ""
-        echo -e "  ${DIM}Run 'weaklink path' to get started with Tier 0.${NC}"
+        echo -e "  ${DIM}Next step: weaklink info 0.1${NC}"
     fi
     echo ""
 }
@@ -812,9 +732,6 @@ case "${1:-}" in
     shell)
         cmd_shell
         ;;
-    path)
-        cmd_path
-        ;;
     verify)
         [[ -z "${2:-}" ]] && { echo "Usage: weaklink verify <lab-id>"; exit 1; }
         cmd_verify "$2"
@@ -857,7 +774,6 @@ case "${1:-}" in
         echo "  Usage:"
         echo "    weaklink assess            Placement test to skip Tier 0"
         echo "    weaklink shell             Open workstation shell"
-        echo "    weaklink path              Show the learning roadmap"
         echo "    weaklink verify <lab-id>   Check lab completion"
         echo "    weaklink hint <lab-id>     Get a hint"
         echo "    weaklink info <lab-id>     Show lab details"

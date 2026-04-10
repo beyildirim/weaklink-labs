@@ -110,7 +110,6 @@ Most learners can ignore the CLI after startup and work directly in the browser.
 weaklink shell             # Open a shell in the workstation
 weaklink info <lab-id>     # Show lab metadata
 weaklink hint <lab-id>     # Get a hint if you are stuck
-weaklink path              # Show the roadmap
 ```
 
 ## Prerequisites
