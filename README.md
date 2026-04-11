@@ -9,24 +9,38 @@
 [![Signed with Cosign](https://img.shields.io/badge/Signed_with-Cosign-blueviolet?logo=sigstore)](https://github.com/beyildirim/weaklink-labs/releases)
 [![SBOM](https://img.shields.io/badge/SBOM-CycloneDX-lightgrey?logo=owasp)](https://github.com/beyildirim/weaklink-labs/releases)
 
-## The Problem
+WeakLink Labs is a browser-first training platform for software supply chain security. It brings up a local workstation plus the surrounding systems attackers actually target: Git hosting, private and public package registries, an OCI registry, CI/CD-style repos, container images, SBOMs, signatures, and attestations. Learners run real attacks in isolated infrastructure, then apply the controls that stop them.
 
-Supply chain attacks have increased 742% since 2019. Most security training covers the theory but never lets you touch a poisoned package, hijack a CI pipeline, or forge an attestation. WeakLink Labs gives you 50 hands-on labs where you exploit real attack techniques in a safe, isolated environment, then learn exactly how to stop them.
+<p align="center">
+  <a href="guide/docs/getting-started.md"><strong>Getting Started</strong></a> ·
+  <a href="guide/docs/index.md"><strong>Browse Labs</strong></a> ·
+  <a href="guide/docs/placement-test.md"><strong>Placement Test</strong></a> ·
+  <a href="CONTRIBUTING.md"><strong>Contributing</strong></a>
+</p>
 
-## What WeakLink Labs Is
+## At a Glance
 
-WeakLink Labs is a practical learning environment for people who do not yet have a clear mental model of software supply chain security. It is designed to make complex attacks understandable by showing how systems work, how they fail, and what reduces risk in the real world. The goal is not to turn every learner into a detection engineer or tool specialist. The goal is to build judgment across multiple roles, including SOC analysts, developers, DevOps, DevSecOps, and managers. The platform should feel simple to start, realistic to use, and focused on the security decisions that matter.
+- **50 hands-on labs across 8 tiers** covering packages, CI/CD, containers, artifact integrity, IaC, case studies, and response.
+- **Browser-first workflow** with the guide at `http://localhost:8000` and the workstation terminal at `http://localhost:7681`.
+- **Two local paths**: a full `minikube` path for the main experience and a faster Docker Compose path that pulls prebuilt images.
+- **`make` is the only supported host-side interface.** Startup, teardown, logs, smoke tests, and helper actions all go through the `Makefile`.
+- **Published images include supply chain metadata**: signing, SBOMs, and provenance-related attestations.
 
-## Core Values
+> Main path: run `make start`, open `http://localhost:8000`, and do the lab work in the browser terminal at `http://localhost:7681`.
 
-- **Teach judgment first.** Help learners understand what is happening, why it matters, and when human decisions are required.
-- **Keep setup simple.** The main path should be easy to start and easy to explain.
-- **Show multiple perspectives.** Supply chain security affects SOC, engineering, operations, and leadership, not just one team.
-- **Prefer realism over mechanics.** Labs should feel like real systems, not like a game platform full of extra workflow.
+## Choose a Setup Path
+
+| Path | Command | Requirements | Use when |
+|------|---------|--------------|----------|
+| **Recommended local** | `make start` | Docker, minikube, kubectl, Helm, Python 3.11+ | You want the full local platform and the main supported path |
+| **Fastest local** | `make compose-up` | Docker | You want to start quickly with prebuilt GHCR images |
+| **Zero install** | Codespaces badge above | GitHub account | You do not want to install local dependencies |
+
+For full setup details and prerequisites, see [guide/docs/getting-started.md](guide/docs/getting-started.md).
 
 ## Quick Start
 
-### Recommended Path
+### Recommended Local Path
 
 ```bash
 git clone https://github.com/beyildirim/weaklink-labs.git
@@ -34,9 +48,12 @@ cd weaklink-labs
 make start
 ```
 
-Open **http://localhost:8000** in your browser and use the built-in terminal. That is the main experience. Stop it with `make stop`.
+Open **http://localhost:8000** in your browser. That is the main experience.
 
-### Docker-Only Alternative
+- `make stop` tears down the platform but leaves `minikube` running.
+- `make clean` tears down the platform and deletes the `minikube` cluster.
+
+### Docker Compose Path
 
 ```bash
 git clone https://github.com/beyildirim/weaklink-labs.git
@@ -44,17 +61,46 @@ cd weaklink-labs
 make compose-up
 ```
 
-Open **http://localhost:8000** in your browser. Images are pulled from GHCR.
+Open **http://localhost:8000** in your browser. This path pulls published images from GHCR instead of building them locally.
 
-To pin a published release instead of `latest`, set `WEAKLINK_IMAGE_TAG=<release-tag>` before `make compose-up`.
+To pin a published release instead of `latest`, run:
 
-### GitHub Codespaces (zero install)
+```bash
+WEAKLINK_IMAGE_TAG=<release-tag> make compose-up
+```
 
-Click the **Open in GitHub Codespaces** badge above. Everything is pre-installed.
+## Most Useful Commands
 
-For detailed setup, prerequisites, and host-side commands, see [guide/docs/getting-started.md](guide/docs/getting-started.md).
+| Command | Purpose |
+|---------|---------|
+| `make start` | Start the full local platform |
+| `make stop` | Tear down the platform and leave `minikube` running |
+| `make clean` | Tear down the platform and delete the `minikube` cluster |
+| `make status` | Show current pod status |
+| `make logs` | Show recent logs from platform pods |
+| `make shell` | Open a shell in the workstation |
+| `make compose-up` | Start the Docker Compose path |
+| `make compose-down` | Tear down the Docker Compose path |
+| `make docs-check` | Run strict docs validation |
+| `make test` | Run the lab smoke test against the cluster |
 
-For a strict docs/content validation pass, run `make docs-check`.
+The host terminal is only for `make` commands. Lab work happens inside the browser terminal.
+
+## What Opens Where
+
+| Surface | URL | Purpose |
+|---------|-----|---------|
+| Guide | `http://localhost:8000` | Main learning interface |
+| Workstation terminal | `http://localhost:7681` | Browser access to the lab shell |
+| Gitea | `http://localhost:3000` | Git UI used in repo and CI/CD labs |
+
+## Split of Responsibilities
+
+| Where you are | What you do there |
+|---------------|-------------------|
+| **Host terminal** | Start, stop, inspect, and test the platform with `make` |
+| **Browser guide** | Read the lab flow, context, and defense steps |
+| **Browser terminal** | Run the actual lab commands against the isolated environment |
 
 ## What You'll Learn
 
@@ -73,15 +119,15 @@ For a strict docs/content validation pass, run `make docs-check`.
 
 **Advanced branches:** Tiers `6-7`. They are useful, but they shift into case studies and response-oriented work instead of staying on the default browser-first attack path.
 
-## Who Is This For?
+## Start at the Right Depth
 
 | You are a... | Start here | Focus on |
 |--------------|-----------|----------|
 | **SOC Analyst** | Tier 0 | Core path first, then optional Tier 7 |
-| **Security Engineer** | Take the [placement test](guide/docs/placement-test.md), likely Tier 1 | Mainline through Tiers 1-5, then optional Tiers 6-7 |
-| **DevSecOps** | Tier 2 | CI integration sections, Tiers 4-5 |
+| **Security Engineer** | [Placement test](guide/docs/placement-test.md), likely Tier 1 | Mainline through Tiers 1-5, then optional Tiers 6-7 |
+| **DevSecOps** | Tier 2 | CI integration, artifact integrity, and IaC controls |
 | **DevOps Engineer** | Tier 0 | Defend phases, Tiers 2-3 and 5 |
-| **Team Lead / Manager** | Tier 0 | Core path through Tier 5, then Tier 7.3 and 7.5 if you want response planning |
+| **Team Lead / Manager** | Tier 0 | Core path through Tier 5, then Tier 7.3 and 7.5 for response planning |
 
 ## How Every Lab Works
 
@@ -95,36 +141,27 @@ Most hands-on labs follow a simple teaching flow:
 
 **4. Detect or Discuss Impact** — Some labs add detection, triage, or case study analysis when it helps learners connect the attack to real work. Not every lab requires formal detection content.
 
-## Highlights
+## Published Images and Security Metadata
 
-- **6 real-world case studies** dissecting SolarWinds, Log4Shell, xz-utils, Codecov, event-stream, and Equifax
-- **Multiple perspectives** across SOC, engineering, operations, and leadership
-- **Placement test** to skip what you already know
-- **Full isolation** with private registries (PyPI, npm, OCI), Gitea, and a pre-configured workstation
+Tagged releases publish multi-architecture images for `guide`, `workstation`, and `lab-setup`.
 
-## Optional CLI Commands
+- Images are built in GitHub Actions and pushed to GHCR.
+- Cosign keyless signing is applied during publish.
+- Build provenance is enabled during image build.
+- CycloneDX SBOMs are generated with Syft.
+- SBOMs are uploaded as release assets and attached as attestations during publish.
 
-Most learners can ignore the CLI after startup and work directly in the browser. If you want helper commands from the repo checkout, use:
+This matters for the content too: Tier 4 covers SBOMs, signatures, provenance, attestation verification, and ways those controls can fail.
+
+## Optional Helper CLI
+
+Most learners can ignore the helper CLI after startup and work directly in the browser. If you want repo-local convenience commands, use:
 
 ```bash
 make shell                         # Open a shell in the workstation
 ./cli/weaklink info <lab-id>      # Show lab metadata
 ./cli/weaklink hint <lab-id>      # Get a hint if you are stuck
 ```
-
-## Prerequisites
-
-**Docker Compose path:** Only Docker is required.
-
-**Kubernetes path:**
-
-| Tool | Minimum version | Install |
-|------|----------------|---------|
-| [Docker](https://docs.docker.com/get-docker/) | 20.10+ | `brew install --cask docker` |
-| [minikube](https://minikube.sigs.k8s.io/) | 1.30+ | `brew install minikube` |
-| [kubectl](https://kubernetes.io/docs/tasks/tools/) | 1.27+ | `brew install kubectl` |
-| [Helm](https://helm.sh/) | 3.12+ | `brew install helm` |
-| [Python](https://www.python.org/downloads/) | 3.11+ | `brew install python@3.11` |
 
 ## Contributing
 
