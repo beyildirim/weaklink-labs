@@ -1,52 +1,7 @@
-#!/bin/bash
-# Prepare the workstation for a specific lab.
-# Copies golden files from /opt/labs/<id> to /home/labs/<id>,
-# creates standard symlinks, then runs per-lab init if present.
-LAB_ID="${1:-}"
-[ -z "$LAB_ID" ] && { echo "Usage: lab-init <lab-id>"; exit 1; }
+#!/usr/bin/env python3
 
-GOLDEN="/opt/labs/${LAB_ID}"
-[ -d "$GOLDEN" ] || { echo "Lab ${LAB_ID}: no source files found."; exit 0; }
+from weaklink_platform.workstation import main_lab_init
 
-# Clean previous lab env vars
-rm -f /tmp/.weaklink-env
 
-# Copy golden files to writable workspace
-LAB_WORK="/home/labs/${LAB_ID}"
-rm -rf "$LAB_WORK" 2>/dev/null
-cp -a "$GOLDEN" "$LAB_WORK"
-
-# Clean previous state
-rm -rf /app/* /lab/src /repos/* 2>/dev/null
-find /workspace -mindepth 1 -maxdepth 1 -exec rm -rf {} + 2>/dev/null || true
-ln -sfn "$LAB_WORK" /lab/src
-
-# Copy everything to /app/ (the universal student working directory)
-cp -a "${LAB_WORK}"/* /app/ 2>/dev/null || true
-
-# If lab had an app/ subfolder, flatten it (move contents up, remove wrapper)
-if [ -d /app/app ]; then
-    cp -a /app/app/* /app/ 2>/dev/null || true
-    rm -rf /app/app
-fi
-
-WORKDIR="/app"
-
-# Run per-lab init if present (custom setup: /etc/pip.conf, git clones, etc.)
-if [ -x "${LAB_WORK}/lab-init.sh" ]; then
-    source "${LAB_WORK}/lab-init.sh"
-fi
-
-# Source per-lab environment variables if set by lab-init.sh
-if [ -f /tmp/.weaklink-env ]; then
-    source /tmp/.weaklink-env
-fi
-
-# Remove build infrastructure files the student doesn't need from /app/
-rm -rf /app/Dockerfile.* /app/build-packages.sh /app/entrypoint.sh /app/lab-init.sh /app/packages 2>/dev/null
-
-# Track current lab and working directory
-echo "$LAB_ID" > /tmp/.weaklink-current-lab
-echo "$WORKDIR" > /tmp/.weaklink-workdir
-
-echo "Lab ${LAB_ID} initialized."
+if __name__ == "__main__":
+    raise SystemExit(main_lab_init())

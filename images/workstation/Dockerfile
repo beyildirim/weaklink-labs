@@ -40,6 +40,9 @@ RUN pip install --no-cache-dir \
     wheel \
     twine
 
+COPY weaklink_platform /opt/weaklink_platform/weaklink_platform
+ENV PYTHONPATH=/opt/weaklink_platform
+
 # npm tools
 RUN npm install -g depcheck
 

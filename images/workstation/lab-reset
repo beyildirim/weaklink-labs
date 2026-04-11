@@ -1,5 +1,7 @@
-#!/bin/bash
-# Reset the current (or specified) lab to its initial state.
-LAB_ID="${1:-$(cat /tmp/.weaklink-current-lab 2>/dev/null)}"
-[ -z "$LAB_ID" ] && { echo "Usage: lab-reset [lab-id]"; exit 1; }
-lab-init "$LAB_ID"
+#!/usr/bin/env python3
+
+from weaklink_platform.workstation import main_lab_reset
+
+
+if __name__ == "__main__":
+    raise SystemExit(main_lab_reset())

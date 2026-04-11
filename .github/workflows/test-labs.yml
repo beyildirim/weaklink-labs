@@ -7,12 +7,13 @@ on:
       - 'labs/**'
       - 'helm/**'
       - 'images/**'
-      - 'scripts/**'
+      - 'weaklink_platform/**'
+      - 'tests/platform/**'
+      - 'pyproject.toml'
       - '.dockerignore'
       - 'Makefile'
+      - 'cli/weaklink'
       - 'docker-compose.yml'
-      - 'start.sh'
-      - 'stop.sh'
       - 'guide/docs/javascripts/**'
       - 'guide/docs/stylesheets/**'
       - 'guide/mkdocs.yml'
@@ -22,12 +23,13 @@ on:
       - 'labs/**'
       - 'helm/**'
       - 'images/**'
-      - 'scripts/**'
+      - 'weaklink_platform/**'
+      - 'tests/platform/**'
+      - 'pyproject.toml'
       - '.dockerignore'
       - 'Makefile'
+      - 'cli/weaklink'
       - 'docker-compose.yml'
-      - 'start.sh'
-      - 'stop.sh'
       - 'guide/docs/javascripts/**'
       - 'guide/docs/stylesheets/**'
       - 'guide/mkdocs.yml'
@@ -39,7 +41,26 @@ env:
   NAMESPACE: weaklink
 
 jobs:
+  platform-unit-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install platform dev dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install .[dev]
+
+      - name: Lint and run unit tests
+        run: |
+          python3 -m ruff check weaklink_platform tests/platform
+          python3 -m pytest tests/platform
+
   test-labs:
+    needs: platform-unit-tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -56,16 +77,11 @@ jobs:
 
       - name: Build local Docker images
         run: |
-          eval $(minikube docker-env)
-          ./scripts/build-images.sh
+          python3 -m weaklink_platform.cli build-images
 
       - name: Deploy Helm chart
         run: |
-          helm upgrade --install weaklink-labs helm/weaklink-labs \
-            --namespace "$NAMESPACE" \
-            --create-namespace \
-            --wait \
-            --timeout 10m
+          python3 -m weaklink_platform.cli deploy
 
       - name: Wait for all pods to be ready
         run: |
@@ -88,7 +104,7 @@ jobs:
 
       - name: Run lab smoke tests
         run: |
-          NAMESPACE="$NAMESPACE" ./scripts/run-verify-suite.sh
+          python3 -m weaklink_platform.cli smoke-test --namespace "$NAMESPACE"
 
       - name: Debug info on failure
         if: failure()

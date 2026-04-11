@@ -104,12 +104,12 @@ Most hands-on labs follow a simple teaching flow:
 
 ## Optional CLI Commands
 
-Most learners can ignore the CLI after startup and work directly in the browser. If you want host-side helper commands, `weaklink` provides these:
+Most learners can ignore the CLI after startup and work directly in the browser. If you want helper commands from the repo checkout, use:
 
 ```bash
-weaklink shell             # Open a shell in the workstation
-weaklink info <lab-id>     # Show lab metadata
-weaklink hint <lab-id>     # Get a hint if you are stuck
+make shell                         # Open a shell in the workstation
+./cli/weaklink info <lab-id>      # Show lab metadata
+./cli/weaklink hint <lab-id>      # Get a hint if you are stuck
 ```
 
 ## Prerequisites
@@ -124,6 +124,7 @@ weaklink hint <lab-id>     # Get a hint if you are stuck
 | [minikube](https://minikube.sigs.k8s.io/) | 1.30+ | `brew install minikube` |
 | [kubectl](https://kubernetes.io/docs/tasks/tools/) | 1.27+ | `brew install kubectl` |
 | [Helm](https://helm.sh/) | 3.12+ | `brew install helm` |
+| [Python](https://www.python.org/downloads/) | 3.11+ | `brew install python@3.11` |
 
 ## Contributing
 

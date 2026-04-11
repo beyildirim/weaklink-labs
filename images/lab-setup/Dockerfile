@@ -28,14 +28,16 @@ RUN pip install --no-cache-dir setuptools wheel pip-tools
 # Copy ALL lab source packages into the image
 # Build context is the repo root, so labs/ is available
 COPY labs/ /labs/
+COPY weaklink_platform /opt/weaklink_platform/weaklink_platform
+ENV PYTHONPATH=/opt/weaklink_platform
 
 # Copy the entrypoint script
-COPY images/lab-setup/setup-labs.sh /setup-labs.sh
-RUN chmod +x /setup-labs.sh
+COPY images/lab-setup/setup-labs.py /setup-labs.py
+RUN chmod +x /setup-labs.py
 
 # Git config for repo seeding
 RUN git config --global user.email "admin@weaklink.local" \
     && git config --global user.name "WeakLink Admin" \
     && git config --global init.defaultBranch main
 
-ENTRYPOINT ["/setup-labs.sh"]
+ENTRYPOINT ["/setup-labs.py"]
