@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import shlex
 import shutil
 import subprocess
 from dataclasses import dataclass
@@ -49,14 +50,23 @@ def _run_lab_hook(lab_work: Path, app_root: Path, env_file: Path) -> str:
     if not hook.exists() or not os.access(hook, os.X_OK):
         return str(app_root)
     env_file.unlink(missing_ok=True)
+    sentinel = "__WEAKLINK_WORKDIR__="
+    quoted_hook = shlex.quote(str(hook))
+    quoted_env_file = shlex.quote(str(env_file))
     command = (
-        "set -euo pipefail\n"
-        f"WORKDIR={str(app_root)!r}\n"
-        f"source {str(hook)!r}\n"
-        'printf "%s" "${WORKDIR:-/app}"\n'
+        f"WORKDIR={shlex.quote(str(app_root))}\n"
+        f"source {quoted_hook} >&2\n"
+        f"if [ -f {quoted_env_file} ]; then\n"
+        f"  source {quoted_env_file}\n"
+        "fi\n"
+        f'printf "{sentinel}%s\\n" "${{WORKDIR:-/app}}"\n'
     )
-    result = subprocess.run(["bash", "-lc", command], capture_output=True, text=True, check=True)
-    return (result.stdout.strip() or str(app_root))
+    result = subprocess.run(["bash", "-lc", command], capture_output=True, text=True, check=False)
+    for line in reversed(result.stdout.splitlines()):
+        if line.startswith(sentinel):
+            workdir = line.removeprefix(sentinel).strip()
+            return workdir or str(app_root)
+    return str(app_root)
 
 
 def initialize_lab(lab_id: str, *, paths: WorkstationPaths = WorkstationPaths()) -> int:

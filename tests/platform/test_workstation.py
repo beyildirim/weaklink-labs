@@ -58,3 +58,23 @@ def test_reset_lab_uses_current_lab_file_when_no_argument(tmp_path: Path) -> Non
 
     assert exit_code == 0
     assert (paths.app_root / "note.txt").read_text() == "hi\n"
+
+
+def test_initialize_lab_tolerates_nonzero_hook_and_uses_env_workdir(tmp_path: Path) -> None:
+    paths = _make_paths(tmp_path)
+    golden_lab = paths.golden_root / "2.1"
+    golden_lab.mkdir(parents=True)
+    hook = golden_lab / "lab-init.sh"
+    hook.write_text(
+        f"""#!/bin/bash
+echo "[setup] creating repo"
+echo 'export WORKDIR="{paths.workspace_root / "repo"}"' > "{paths.env_file}"
+bash -lc 'exit 1'
+"""
+    )
+    hook.chmod(0o755)
+
+    exit_code = initialize_lab("2.1", paths=paths)
+
+    assert exit_code == 0
+    assert paths.workdir_file.read_text() == str(paths.workspace_root / "repo")
