@@ -2,6 +2,7 @@
 # Structured lifecycle management for the training platform.
 
 SHELL := /bin/bash
+PYTHON ?= python3
 NAMESPACE := weaklink
 HELM_RELEASE := weaklink-labs
 HELM_CHART := helm/weaklink-labs
@@ -15,10 +16,10 @@ HELM_CHART := helm/weaklink-labs
 .PHONY: start stop restart status
 
 start: ## Start the entire platform (idempotent)
-	@./start.sh
+	@$(PYTHON) -m weaklink_platform.cli start
 
 stop: ## Tear down the platform
-	@./stop.sh
+	@$(PYTHON) -m weaklink_platform.cli stop
 
 restart: stop start ## Full restart (stop + start)
 
@@ -31,16 +32,13 @@ restart: stop start ## Full restart (stop + start)
 build: build-guide build-workstation build-lab-setup ## Build all Docker images
 
 build-guide: ## Build the guide image
-	@eval $$(minikube docker-env) && \
-		./scripts/build-images.sh guide
+	@$(PYTHON) -m weaklink_platform.cli build-images guide
 
 build-workstation: ## Build the workstation image
-	@eval $$(minikube docker-env) && \
-		./scripts/build-images.sh workstation
+	@$(PYTHON) -m weaklink_platform.cli build-images workstation
 
 build-lab-setup: ## Build the lab-setup image
-	@eval $$(minikube docker-env) && \
-		./scripts/build-images.sh lab-setup
+	@$(PYTHON) -m weaklink_platform.cli build-images lab-setup
 
 # ──────────────────────────────────────────────
 # Deploy
@@ -49,10 +47,7 @@ build-lab-setup: ## Build the lab-setup image
 .PHONY: deploy deploy-dry-run lint
 
 deploy: build ## Build images and deploy via Helm
-	@eval $$(minikube docker-env) && \
-		helm upgrade --install $(HELM_RELEASE) $(HELM_CHART) \
-			-n $(NAMESPACE) --create-namespace \
-			--wait --timeout 5m
+	@$(PYTHON) -m weaklink_platform.cli deploy
 
 deploy-dry-run: ## Preview what Helm would deploy
 	@helm template $(HELM_RELEASE) $(HELM_CHART)
@@ -85,16 +80,12 @@ compose-build: ## Build images using Docker Compose
 .PHONY: status pods logs logs-setup events
 
 status: ## Show pod status
-	@kubectl get pods -n $(NAMESPACE) -o wide
+	@$(PYTHON) -m weaklink_platform.cli status
 
 pods: status ## Alias for status
 
 logs: ## Tail logs for all pods
-	@for pod in $$(kubectl get pods -n $(NAMESPACE) -o jsonpath='{.items[*].metadata.name}'); do \
-		echo ""; \
-		echo "--- $$pod ---"; \
-		kubectl logs "$$pod" -n $(NAMESPACE) --all-containers --tail=20 2>&1 || true; \
-	done
+	@$(PYTHON) -m weaklink_platform.cli logs
 
 logs-setup: ## View lab-setup job logs
 	@kubectl logs -n $(NAMESPACE) job/lab-setup --all-containers 2>&1 || echo "No lab-setup job found."
@@ -115,10 +106,10 @@ guide-dev: ## Serve the guide locally with hot-reload (no k8s needed)
 	@cd guide && mkdocs serve -a 0.0.0.0:8000
 
 docs-check: ## Build the guide strictly and fail on broken relative links
-	@./scripts/check-docs.sh
+	@$(PYTHON) -m weaklink_platform.cli docs-check
 
 test: ## Smoke test all lab environments against the cluster
-	@NAMESPACE=$(NAMESPACE) ./scripts/run-verify-suite.sh
+	@$(PYTHON) -m weaklink_platform.cli smoke-test --namespace $(NAMESPACE)
 
 verify: test ## Alias for test
 
@@ -131,13 +122,18 @@ verify: test ## Alias for test
 teardown: stop ## Alias for stop
 
 clean: stop ## Stop platform and delete minikube cluster
-	@minikube delete 2>/dev/null || true
-	@echo "Cluster deleted."
+	@$(PYTHON) -m weaklink_platform.cli clean
 
 clean-images: ## Remove all weaklink Docker images from minikube
-	@eval $$(minikube docker-env) && \
-		docker images --filter=reference='weaklink-labs/*' -q | xargs -r docker rmi -f
-	@echo "Images cleaned."
+	@$(PYTHON) -m weaklink_platform.cli clean-images
+
+.PHONY: sign sign-keyless
+
+sign: ## Sign local Docker images with Cosign using a local key
+	@$(PYTHON) -m weaklink_platform.cli sign-images
+
+sign-keyless: ## Sign local Docker images with Cosign keyless OIDC flow
+	@$(PYTHON) -m weaklink_platform.cli sign-images --keyless
 
 # ──────────────────────────────────────────────
 # Help

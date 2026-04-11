@@ -26,6 +26,7 @@ If you want the main local experience, use `make start`.
 | [minikube](https://minikube.sigs.k8s.io/) | 1.30+ | `brew install minikube` | Runs a single-node Kubernetes cluster locally |
 | [kubectl](https://kubernetes.io/docs/tasks/tools/) | 1.27+ | `brew install kubectl` | CLI for interacting with Kubernetes clusters |
 | [Helm](https://helm.sh/) | 3.12+ | `brew install helm` | Deploys the lab chart |
+| [Python](https://www.python.org/downloads/) | 3.11+ | `brew install python@3.11` | Runs the host-side WeakLink automation behind `make` |
 
 ```bash
 make start
@@ -70,7 +71,7 @@ make compose-down
 make docs-check
 ```
 
-The top-level `start.sh` and `stop.sh` scripts back the Make targets and are kept as implementation details, not as the primary user interface.
+`make` is the only supported host-side interface. The legacy top-level start and stop scripts are gone.
 
 ---
 

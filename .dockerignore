@@ -9,8 +9,7 @@ docs
 helm
 shared
 cli
-start.sh
-stop.sh
+.weaklink
 README.md
 LICENSE
 CONTRIBUTING.md
