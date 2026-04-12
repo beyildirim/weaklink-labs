@@ -78,7 +78,7 @@ The app works. No compromise. The exact version pin (`==1.0.0`) protects you, fo
 ### Step 6: Verify no compromise
 
 ```bash
-bash /app/scripts/check-compromise.sh
+python3 /app/scripts/check_compromise.py
 ```
 
 Clean. But the danger is lurking.
@@ -131,7 +131,7 @@ The app detects the compromise. The malicious package also replaces the `authent
 ### Step 5: Verify with the check script
 
 ```bash
-bash /app/scripts/check-compromise.sh
+python3 /app/scripts/check_compromise.py
 ```
 
 ### Step 6: Understand why it worked
@@ -188,7 +188,7 @@ pip show wl-auth
 python app.py
 
 # Check for compromise
-bash /app/scripts/check-compromise.sh
+python3 /app/scripts/check_compromise.py
 ```
 
 You should see:

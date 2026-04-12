@@ -15,8 +15,9 @@ def run(context: InitContext) -> InitResult:
     shutil.copy2(pip_configs / 'pip.conf.vulnerable', Path('/etc/pip.conf'))
     scripts_dir = context.lab_root / 'scripts'
     if scripts_dir.exists():
-        for script in scripts_dir.glob('*.sh'):
-            script.chmod(script.stat().st_mode | 0o111)
+        for pattern in ('*.sh', '*.py'):
+            for script in scripts_dir.glob(pattern):
+                script.chmod(script.stat().st_mode | 0o111)
     target = context.app_root / 'scripts'
     target.unlink(missing_ok=True)
     if target.exists() and target.is_dir():

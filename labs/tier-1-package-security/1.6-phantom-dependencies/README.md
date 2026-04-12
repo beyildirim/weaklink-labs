@@ -99,7 +99,7 @@ What happens when the upstream dependency drops `debug`?
 #### Step 1: Publish the updated wl-framework
 
 ```bash
-publish-attack
+python3 /app/publish_attack.py
 ```
 
 This publishes `wl-framework@2.0.0` (which no longer depends on `debug`) and a malicious `debug@99.0.0` to the registry.

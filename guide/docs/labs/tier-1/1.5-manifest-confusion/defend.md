@@ -25,13 +25,13 @@ rm -f /tmp/manifest-confusion-pwned
 ### Step 2: Use the manifest comparison tool
 
 ```bash
-bash /app/compare-manifests.sh crafted-widget
+python3 /app/compare_manifests.py crafted-widget
 ```
 
 Should show `[MISMATCH]`.
 
 ```bash
-bash /app/compare-manifests.sh safe-utils
+python3 /app/compare_manifests.py safe-utils
 ```
 
 Should show `[CLEAN]`.
@@ -87,5 +87,5 @@ npm ci
 ls node_modules/evil-pkg 2>/dev/null && echo "FAIL: evil-pkg found" || echo "PASS: no evil-pkg"
 test -f /tmp/manifest-confusion-pwned && echo "FAIL: pwned" || echo "PASS: not pwned"
 grep -q '"integrity"' package-lock.json && echo "PASS: lockfile has integrity hashes" || echo "FAIL: no integrity"
-test -x /app/compare-manifests.sh && echo "PASS: comparison tool available" || echo "FAIL: no tool"
+test -f /app/compare_manifests.py && echo "PASS: comparison tool available" || echo "FAIL: no tool"
 ```

@@ -71,7 +71,7 @@ python app.py
 ### Step 6: Verify no compromise
 
 ```bash
-bash /app/scripts/check-compromise.sh
+python3 /app/scripts/check_compromise.py
 ```
 
 Clean. But the danger is lurking. The version pin is the only thing between you and a full compromise. In the next phase, you will see what happens when that pin is loosened.

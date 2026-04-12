@@ -220,7 +220,7 @@ In production, you would also add hashes for full integrity verification:
 Check installed packages against an approved list:
 
 ```bash
-bash /app/scripts/validate_packages.sh /app/allowlist.txt
+python3 /app/scripts/validate_packages.py /app/allowlist.txt
 ```
 
 If any unauthorized package is installed, this script flags it.

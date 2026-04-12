@@ -15,7 +15,7 @@ def run(context: InitContext) -> InitResult:
             shutil.copytree(item, target, dirs_exist_ok=True)
         else:
             shutil.copy2(item, target)
-            if item.suffix == '.sh':
+            if item.suffix in {'.sh', '.py'}:
                 target.chmod(target.stat().st_mode | 0o111)
     for name in ('allowlist.txt', 'requirements.txt.secure'):
         source = context.lab_root / name

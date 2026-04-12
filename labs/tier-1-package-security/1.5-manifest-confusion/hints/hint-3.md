@@ -29,8 +29,8 @@ ls node_modules/evil-pkg 2>/dev/null || echo "Clean: no evil-pkg"
 # Verify: no pwned marker
 test ! -f /tmp/manifest-confusion-pwned && echo "Clean: not pwned"
 
-# The compare-manifests tool is already installed at /usr/local/bin/compare-manifests
+# The comparison helper is available at /app/compare_manifests.py
 # Test it:
-compare-manifests safe-utils     # Should show CLEAN
-compare-manifests crafted-widget # Should show MISMATCH
+python3 /app/compare_manifests.py safe-utils
+python3 /app/compare_manifests.py crafted-widget
 ```

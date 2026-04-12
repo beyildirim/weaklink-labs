@@ -54,7 +54,7 @@ pip install -r requirements.txt
 ```bash
 pip show wl-auth
 python app.py
-bash /app/scripts/check-compromise.sh
+python3 /app/scripts/check_compromise.py
 ```
 
 You should see version 1.0.0 installed and no compromise detected.

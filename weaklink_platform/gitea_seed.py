@@ -80,6 +80,52 @@ def set_repo_secret(repo_name: str, secret_name: str, value: str, *, owner: str 
     _request_json("PUT", f"/api/v1/repos/{owner}/{repo_name}/actions/secrets/{secret_name}", payload=payload)
 
 
+def init_git_repo(
+    repo_dir: Path,
+    *,
+    branch: str = "main",
+    user_name: str = "Hacker",
+    user_email: str = "hacker@weaklink.local",
+) -> None:
+    run(["git", "init"], cwd=repo_dir)
+    run(["git", "config", "user.name", user_name], cwd=repo_dir)
+    run(["git", "config", "user.email", user_email], cwd=repo_dir)
+    run(["git", "checkout", "-B", branch], cwd=repo_dir)
+
+
+def commit_all(repo_dir: Path, subject: str, *, body: str | None = None) -> None:
+    run(["git", "add", "-A"], cwd=repo_dir)
+    command = ["git", "commit", "-m", subject]
+    if body:
+        command.extend(["-m", body])
+    run(command, cwd=repo_dir)
+
+
+def checkout_git_branch(repo_dir: Path, branch: str, *, create: bool = False) -> None:
+    command = ["git", "checkout"]
+    if create:
+        command.append("-b")
+    command.append(branch)
+    run(command, cwd=repo_dir)
+
+
+def push_git_branch(
+    repo_dir: Path,
+    repo_name: str,
+    branch: str,
+    *,
+    set_upstream: bool = False,
+) -> None:
+    remote = gitea_repo_url(repo_name)
+    run(["git", "remote", "remove", "origin"], cwd=repo_dir, check=False)
+    run(["git", "remote", "add", "origin", remote], cwd=repo_dir)
+    command = ["git", "push"]
+    if set_upstream:
+        command.append("-u")
+    command.extend(["origin", branch])
+    run(command, cwd=repo_dir)
+
+
 def replace_dir_contents(destination: Path, source: Path) -> None:
     if destination.exists():
         shutil.rmtree(destination)
@@ -106,10 +152,8 @@ def seed_git_repo_from_source(
     if git_dir.exists():
         shutil.rmtree(git_dir)
 
-    run(["git", "init"], cwd=repo_dir)
-    run(["git", "checkout", "-B", branch], cwd=repo_dir)
-    run(["git", "add", "-A"], cwd=repo_dir)
-    run(["git", "commit", "-m", commit_message], cwd=repo_dir)
+    init_git_repo(repo_dir, branch=branch)
+    commit_all(repo_dir, commit_message)
     run(["git", "remote", "remove", "origin"], cwd=repo_dir, check=False)
     run(["git", "remote", "add", "origin", gitea_repo_url(repo_name)], cwd=repo_dir)
 

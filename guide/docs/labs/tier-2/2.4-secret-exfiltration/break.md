@@ -14,7 +14,7 @@
 
 ## Three Exfiltration Techniques
 
-The CI pipeline already has `DEPLOY_TOKEN`, `DB_PASSWORD`, and `API_KEY` configured as Gitea action secrets (set by the lab's setup-repo.sh script). The attack modifies the CI workflow to exfiltrate them during a build.
+The CI pipeline already has `DEPLOY_TOKEN`, `DB_PASSWORD`, and `API_KEY` configured as Gitea action secrets during lab initialization. The attack modifies the CI workflow to exfiltrate them during a build.
 
 ### Technique 1: Build log leakage
 

@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-import subprocess
-
 from weaklink_platform.gitea_seed import create_gitea_user, reset_gitea_repo, seed_git_repo_from_source
 from weaklink_platform.lab_runtime import InitContext, InitResult, main_init
+from weaklink_platform.runner_seed import create_simulated_runner
 
 
 def run(context: InitContext) -> InitResult:
@@ -17,7 +16,7 @@ def run(context: InitContext) -> InitResult:
         force_push=True,
     )
     create_gitea_user("attacker", "password", "attacker@evil.com")
-    subprocess.run(["bash", str(context.lab_root / "scripts" / "simulate-runner.sh")], check=False)
+    create_simulated_runner()
     return InitResult(workdir=context.default_workdir)
 
 

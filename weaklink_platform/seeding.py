@@ -325,43 +325,9 @@ def seed_verdaccio() -> None:
         )
         _npm_publish(lodash_dir)
 
-        debug_dir = Path(temp_dir) / "debug"
-        debug_dir.mkdir()
-        _write_file(
-            debug_dir / "package.json",
-            json.dumps(
-                {
-                    "name": "debug",
-                    "version": "4.3.4",
-                    "description": "Lightweight debugging utility",
-                    "main": "index.js",
-                },
-                indent=2,
-            )
-            + "\n",
-        )
-        _write_file(
-            debug_dir / "index.js",
-            """module.exports = function createDebug(namespace) {
-  const fn = function(...args) {
-    if (process.env.DEBUG) {
-      console.log(`[${namespace}]`, ...args);
-    }
-  };
-  fn.enabled = !!process.env.DEBUG;
-  fn.namespace = namespace;
-  return fn;
-};
-""",
-        )
-        _npm_publish(debug_dir)
-
     _npm_publish(LABS_ROOT / "tier-1-package-security/1.5-manifest-confusion/src/packages/safe-utils")
     _npm_publish(LABS_ROOT / "tier-1-package-security/1.5-manifest-confusion/src/packages/evil-pkg")
     _publish_crafted_widget(token)
-    _npm_publish(LABS_ROOT / "tier-1-package-security/1.6-phantom-dependencies/src/packages/wl-framework/v1")
-    _npm_publish(LABS_ROOT / "tier-1-package-security/1.6-phantom-dependencies/src/packages/wl-framework/v2")
-    _npm_publish(LABS_ROOT / "tier-1-package-security/1.6-phantom-dependencies/src/packages/debug-malicious")
     ok("Verdaccio seeded.")
     print()
 
@@ -803,7 +769,7 @@ def main(argv: list[str] | None = None) -> int:
     print()
     print("  PyPI Private: 7 legitimate packages")
     print("  PyPI Public:  5 malicious packages")
-    print("  Verdaccio:    7+ npm packages (incl. manifest confusion)")
+    print("  Verdaccio:    4 npm packages (manifest confusion base set)")
     print("  Gitea:        2 repos (web-app, secure-app with malicious PR)")
     print("  OCI Registry: webapp:latest (backdoored via tag poisoning)")
     print()

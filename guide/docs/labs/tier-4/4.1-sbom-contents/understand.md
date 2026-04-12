@@ -72,10 +72,6 @@ For each package, the SBOM captured:
 - **Hashes**: SHA256 of the package archive
 - **Supplier**: who published the package (when available)
 
-### Step 6: Verify no compromise
+### Step 6: Notice the gap
 
-```bash
-bash /app/scripts/check-compromise.sh
-```
-
-Clean. The next phase reveals what the SBOM missed entirely.
+At this point the SBOM files are clean inventory snapshots. They still do not tell you what code ran during installation or what behavior would happen at runtime. The next phase focuses on what the SBOM missed entirely.

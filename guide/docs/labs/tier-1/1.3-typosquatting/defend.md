@@ -40,7 +40,7 @@ EOF
 ### Defense 4: Validate against an allowlist
 
 ```bash
-bash /app/scripts/validate_packages.sh /app/allowlist.txt
+python3 /app/scripts/validate_packages.py /app/allowlist.txt
 ```
 
 ### Defense 5: Run pip-audit

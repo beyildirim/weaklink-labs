@@ -54,7 +54,7 @@ The malicious package replaced the `authenticate()` function with one that logs 
 ### Step 5: Verify with the check script
 
 ```bash
-bash /app/scripts/check-compromise.sh
+python3 /app/scripts/check_compromise.py
 ```
 
 ### Step 6: Understand why it worked

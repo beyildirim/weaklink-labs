@@ -23,7 +23,7 @@ Focus on the hidden trust boundary here. Your app is relying on someone else's d
 This command simulates the upstream change and the attacker follow-up together:
 
 ```bash
-bash /app/publish-attack.sh
+python3 /app/publish_attack.py
 ```
 
 Publishes `wl-framework@2.0.0` (no longer depends on `debug`) and a malicious `debug@99.0.0`.

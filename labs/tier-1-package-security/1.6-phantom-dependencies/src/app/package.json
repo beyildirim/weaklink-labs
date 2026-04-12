@@ -7,6 +7,6 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "wl-framework": "^1.0.0"
+    "wl-framework": "*"
   }
 }

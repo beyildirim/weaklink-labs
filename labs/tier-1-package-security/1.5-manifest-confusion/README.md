@@ -181,18 +181,18 @@ rm -f /tmp/manifest-confusion-pwned
 
 ### Step 2: Use the manifest comparison tool
 
-The lab includes a `compare-manifests` script that checks for mismatches:
+The lab includes a Python comparison helper that checks for mismatches:
 
 ```bash
 # Check the crafted package
-compare-manifests crafted-widget
+python3 /app/compare_manifests.py crafted-widget
 ```
 
 This should show a `[MISMATCH]` result with the differences between registry and tarball.
 
 ```bash
 # Compare with a normal package
-compare-manifests safe-utils
+python3 /app/compare_manifests.py safe-utils
 ```
 
 This should show `[CLEAN]`.
@@ -261,19 +261,19 @@ test -f /tmp/manifest-confusion-pwned && echo "FAIL: pwned" || echo "PASS: not p
 grep -q '"integrity"' package-lock.json && echo "PASS: lockfile has integrity hashes" || echo "FAIL: no integrity"
 
 # Comparison script exists
-which compare-manifests && echo "PASS: comparison tool available" || echo "FAIL: no tool"
+test -f /app/compare_manifests.py && echo "PASS: comparison tool available" || echo "FAIL: no tool"
 ```
 
 ### Step 6: Write your own comparison script (optional challenge)
 
-Create `/workspace/check-manifest.sh` that:
+Create `/workspace/check_manifest.py` that:
 1. Takes a package name as argument
 2. Fetches registry metadata via `curl`
 3. Downloads and extracts the tarball
 4. Compares the two `package.json` files
 5. Exits non-zero if they differ
 
-You can reference `/lab/src/compare-manifests.sh` as a starting point.
+You can reference `/lab/src/compare_manifests.py` as a starting point.
 
 ---
 

@@ -24,9 +24,9 @@ def run(context: VerificationContext):
         if lockfile.exists() and '"integrity"' in lockfile.read_text()
         else fail_check("package-lock.json exists with integrity hashes")
     )
-    compare_script = workspace / "compare-manifests.sh"
-    check_script = workspace / "check-manifest.sh"
-    available = any(path.exists() and path.stat().st_mode & 0o111 for path in (compare_script, check_script))
+    compare_script = workspace / "compare_manifests.py"
+    check_script = workspace / "check_manifest.py"
+    available = any(path.exists() for path in (compare_script, check_script))
     checks.append(
         pass_check("Manifest comparison tool available")
         if available
