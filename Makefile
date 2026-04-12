@@ -44,7 +44,7 @@ build-lab-setup: ## Build the lab-setup image
 # Deploy
 # ──────────────────────────────────────────────
 
-.PHONY: deploy deploy-dry-run lint
+.PHONY: deploy deploy-dry-run lint labs-lint
 
 deploy: build ## Build images and deploy via Helm
 	@$(PYTHON) -m weaklink_platform.cli deploy
@@ -54,6 +54,9 @@ deploy-dry-run: ## Preview what Helm would deploy
 
 lint: ## Lint the Helm chart
 	@helm lint $(HELM_CHART)
+
+labs-lint: ## Validate lab manifests and guide mappings
+	@$(PYTHON) -m weaklink_platform.cli labs-lint
 
 # ──────────────────────────────────────────────
 # Docker Compose (Alternative to Minikube)

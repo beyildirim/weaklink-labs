@@ -36,6 +36,7 @@ RUN pip install --no-cache-dir \
     pip-audit \
     pipdeptree \
     pip-tools \
+    PyYAML \
     setuptools \
     wheel \
     twine
@@ -98,14 +99,30 @@ RUN chmod +x /usr/local/bin/weaklink-help
 # Copy all lab source files as read-only golden copies, then flatten
 # /opt/labs-raw/tier-1-package-security/1.2-dependency-confusion/src/ -> /opt/labs/1.2/
 COPY labs/ /opt/labs-raw/
-RUN mkdir -p /opt/labs && \
-    for lab_dir in /opt/labs-raw/tier-*/*/; do \
-        lab_id=$(grep '^id:' "${lab_dir}/lab.yml" 2>/dev/null | sed 's/id: *"//;s/"//g' | tr -d ' '); \
-        if [ -n "$lab_id" ] && [ -d "${lab_dir}/src" ]; then \
-            cp -a "${lab_dir}/src" "/opt/labs/${lab_id}"; \
-            [ -f "${lab_dir}/verify.sh" ] && cp "${lab_dir}/verify.sh" "/opt/labs/${lab_id}/verify.sh"; \
-        fi; \
-    done && rm -rf /opt/labs-raw
+RUN mkdir -p /opt/labs && python3 - <<'PY'
+from pathlib import Path
+import shutil
+
+from weaklink_platform.manifest import load_lab_manifest
+
+raw_root = Path("/opt/labs-raw")
+target_root = Path("/opt/labs")
+
+for lab_dir in sorted(raw_root.glob("tier-*/*")):
+    if not lab_dir.is_dir() or not (lab_dir / "lab.yml").exists():
+        continue
+    manifest = load_lab_manifest(lab_dir)
+    src_dir = lab_dir / "src"
+    if not src_dir.exists():
+        continue
+    target_dir = target_root / manifest.id
+    shutil.copytree(src_dir, target_dir, dirs_exist_ok=True)
+    for entrypoint in ("verify.sh", "verify.py"):
+        source = lab_dir / entrypoint
+        if source.exists():
+            shutil.copy2(source, target_dir / entrypoint)
+shutil.rmtree(raw_root)
+PY
 
 # Lab init/reset scripts
 COPY images/workstation/lab-init /usr/local/bin/lab-init

@@ -78,3 +78,39 @@ bash -lc 'exit 1'
 
     assert exit_code == 0
     assert paths.workdir_file.read_text() == str(paths.workspace_root / "repo")
+
+
+def test_initialize_lab_prefers_python_hook_over_shell(tmp_path: Path) -> None:
+    paths = _make_paths(tmp_path)
+    golden_lab = paths.golden_root / "3.0"
+    golden_lab.mkdir(parents=True)
+    (golden_lab / "lab_init.py").write_text(
+        """
+from weaklink_platform.lab_runtime import InitContext, InitResult, main_init
+
+
+def run(context: InitContext) -> InitResult:
+    return InitResult(
+        workdir=context.workspace_root / "python-hook",
+        env={"FROM_PYTHON": "yes"},
+    )
+
+
+if __name__ == "__main__":
+    raise SystemExit(main_init(run))
+"""
+    )
+    hook = golden_lab / "lab-init.sh"
+    hook.write_text(
+        f"""#!/bin/bash
+echo 'export FROM_SHELL=yes' > "{paths.env_file}"
+WORKDIR="{paths.workspace_root / 'shell-hook'}"
+"""
+    )
+    hook.chmod(0o755)
+
+    exit_code = initialize_lab("3.0", paths=paths)
+
+    assert exit_code == 0
+    assert paths.workdir_file.read_text() == str(paths.workspace_root / "python-hook")
+    assert "FROM_PYTHON" in paths.env_file.read_text()

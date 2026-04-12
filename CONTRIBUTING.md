@@ -24,7 +24,8 @@ Every lab lives under `labs/tier-N-topic/N.X-lab-name/`:
 ```
 labs/tier-1-package-security/1.2-dependency-confusion/
 ├── lab.yml              # Metadata (required)
-├── verify.sh            # Completion check (required)
+├── verify.sh            # Completion check (required fallback)
+├── verify.py            # Preferred Python verifier for platform-owned checks
 ├── hints/               # Progressive hints
 │   ├── hint-1.md
 │   ├── hint-2.md
@@ -43,7 +44,7 @@ Each lab also has a corresponding guide section under `guide/docs/labs/tier-N/N.
 mkdir -p labs/tier-N-topic/N.X-lab-name/{src,hints,solution}
 ```
 
-Create the required files: `lab.yml`, `verify.sh`, `hints/hint-1.md` through `hint-3.md`.
+Create the required files: `lab.yml`, one verifier entrypoint (`verify.py` preferred, `verify.sh` supported), and `hints/hint-1.md` through `hint-3.md`.
 
 ### 2. Write lab.yml
 
@@ -62,13 +63,21 @@ phase_defend: "What the learner fixes in phase 3"
 phase_detect: "What the learner detects in phase 4"
 ```
 
-### 3. Write verify.sh
+### 3. Write verification
 
-- Must return exit code 0 on success, non-zero on failure
+- Prefer `verify.py` for platform-owned validation logic
+- Keep `verify.sh` when the shell is part of the lesson or you need compatibility with older labs
+- Either verifier must return exit code 0 on success and non-zero on failure
 - Print clear messages about what passed and what failed
 - Check the **defense**, not just the attack (the user should have fixed the issue)
 
-### 4. Add the lab guide page
+### 4. Optional lab initialization hook
+
+- Prefer `src/lab_init.py` for behind-the-scenes setup logic
+- Keep `src/lab-init.sh` when you need compatibility or the setup is intentionally shell-based
+- Learner-visible scripts under `src/scripts/` should stay in the language that teaches the lesson best
+
+### 5. Add the lab guide page
 
 Create the lab guide under `guide/docs/labs/tier-N/N.X-lab-name/`. Most labs use `index.md`, `understand.md`, `break.md`, `defend.md`, and `detect.md`. The guide follows the 4-phase structure using admonitions to mark phase transitions:
 
@@ -135,13 +144,13 @@ Summary mapping to real-world relevance.
 
 Then add the page to the nav in `guide/mkdocs.yml`.
 
-### 5. Seed lab content (if needed)
+### 6. Seed lab content (if needed)
 
 If your lab needs packages, repos, or other content pre-loaded into the lab services, add the seeding logic to the lab-setup image. The setup job runs as a Kubernetes Job during Helm install and populates Gitea, PyPI servers, Verdaccio, and the container registry with lab content.
 
 The lab-setup image copies everything from `labs/` into the image at build time (see `images/lab-setup/Dockerfile`), so your `src/` directory contents are available inside the job.
 
-### 6. Add a new service (if needed)
+### 7. Add a new service (if needed)
 
 If your lab requires a service that doesn't already exist in the Helm chart (Gitea, PyPI, Verdaccio, registry):
 
@@ -149,7 +158,7 @@ If your lab requires a service that doesn't already exist in the Helm chart (Git
 2. Create deployment + service templates in `helm/weaklink-labs/templates/`
 3. Gate it behind a tier feature flag if it's tier-specific
 
-### 7. Tier feature flags
+### 8. Tier feature flags
 
 The Helm chart has tier toggles in `values.yaml`:
 

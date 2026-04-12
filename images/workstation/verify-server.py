@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Tiny HTTP server that runs lab verify.sh scripts and returns JSON results."""
-from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
-import os
 import re
 import subprocess
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 from urllib.parse import urlparse
+
+from weaklink_platform.lab_runtime import execute_lab_verifier
 
 
 LAB_ID_PATTERN = re.compile(r"^\d+\.\d+$")
@@ -81,42 +81,12 @@ class VerifyHandler(BaseHTTPRequestHandler):
             return
         lab_dir = resolve_lab_path(lab_id)
         verify_script = lab_dir / "verify.sh" if lab_dir else None
-
-        if not verify_script or not verify_script.is_file():
-            self._respond({"passed": False, "checks": [], "error": f"No verify.sh for lab {lab_id}"})
+        if not lab_dir or not lab_dir.exists():
+            self._respond({"passed": False, "checks": [], "error": f"No verifier for lab {lab_id}"})
             return
 
-        try:
-            result = subprocess.run(
-                ["bash", str(verify_script)],
-                capture_output=True, text=True, timeout=30,
-                env={**os.environ, "LAB_ID": lab_id}
-            )
-            checks = self._parse_output(result.stdout)
-            self._respond({
-                "passed": result.returncode == 0,
-                "checks": checks,
-                "error": result.stderr.strip() if result.returncode != 0 else None
-            })
-        except subprocess.TimeoutExpired:
-            self._respond({"passed": False, "checks": [], "error": "Verification timed out"})
-        except Exception as e:
-            self._respond({"passed": False, "checks": [], "error": str(e)})
-
-    def _parse_output(self, stdout):
-        """Parse verify.sh output into structured checks."""
-        checks = []
-        for line in stdout.strip().splitlines():
-            line = line.strip()
-            if not line:
-                continue
-            if "PASS" in line or "✓" in line or "✅" in line:
-                checks.append({"status": "pass", "message": line})
-            elif "FAIL" in line or "✗" in line or "❌" in line:
-                checks.append({"status": "fail", "message": line})
-            else:
-                checks.append({"status": "info", "message": line})
-        return checks
+        result = execute_lab_verifier(lab_id, lab_dir=lab_dir)
+        self._respond(result.to_payload())
 
     def _respond(self, data):
         self.send_response(200)

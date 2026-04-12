@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from weaklink_platform.console import Style, colorize
+from weaklink_platform.lab_runtime import VerificationCheck, VerificationResult
 from weaklink_platform.labs import Lab, find_lab, iter_labs, parse_estimated_minutes, phase_entries
 from weaklink_platform.paths import LABS_ROOT, PROGRESS_DIR, ensure_progress_dir
 from weaklink_platform.progress import completed_at, increment_hint, is_completed, mark_completed, reset_progress
@@ -88,8 +89,7 @@ def cmd_shell(_: argparse.Namespace) -> int:
 def cmd_verify(args: argparse.Namespace) -> int:
     _check_cluster()
     lab = _require_lab(args.lab_id)
-    verify_script = lab.lab_dir / "verify.sh"
-    if not verify_script.exists():
+    if not (lab.lab_dir / "verify.sh").exists() and not (lab.lab_dir / "verify.py").exists():
         print(colorize(f"No verification script for lab {lab.lab_id}.", Style.YELLOW))
         return 1
     pod = _get_workstation_pod()
@@ -98,14 +98,31 @@ def cmd_verify(args: argparse.Namespace) -> int:
         return 1
     print(f"  {colorize(f'Verifying lab {lab.lab_id}...', Style.CYAN)}")
     print()
-    run(["kubectl", "cp", str(verify_script), f"{NAMESPACE}/{pod}:/tmp/verify-{lab.lab_id}.sh"], check=False)
-    result = run(["kubectl", "exec", "-n", NAMESPACE, pod, "--", "bash", f"/tmp/verify-{lab.lab_id}.sh"], check=False)
-    if result.returncode != 0:
+    result = run(
+        [
+            "kubectl",
+            "exec",
+            "-n",
+            NAMESPACE,
+            pod,
+            "--",
+            "python3",
+            "-m",
+            "weaklink_platform.lab_runtime",
+            lab.lab_id,
+            "--json",
+        ],
+        capture_output=True,
+        check=False,
+    )
+    payload = _parse_verification_payload(result)
+    _print_verification_payload(payload)
+    if not payload.passed:
         print()
         print(f"  {colorize('Not quite -- check the output above and try again.', Style.RED)}")
         hint_text = f"Run './cli/weaklink hint {lab.lab_id}' if you are stuck."
         print(f"  {colorize(hint_text, Style.DIM)}")
-        return result.returncode
+        return 1
     mark_completed(lab.lab_id)
     print()
     print(f"  {colorize(f'Lab {lab.lab_id} completed!', Style.GREEN + Style.BOLD)}")
@@ -119,6 +136,32 @@ def cmd_verify(args: argparse.Namespace) -> int:
     if next_lab:
         print(f"  Next lab: {colorize(f'./cli/weaklink info {next_lab.lab_id}', Style.BOLD)}")
     return 0
+
+
+def _parse_verification_payload(result) -> VerificationResult:
+    if result.stdout.strip():
+        payload = json.loads(result.stdout.strip().splitlines()[-1])
+        return VerificationResult(
+            passed=bool(payload.get("passed")),
+            checks=tuple(
+                VerificationCheck(status=str(item["status"]), message=str(item["message"]))
+                for item in payload.get("checks", [])
+            ),
+            error=str(payload.get("error")) if payload.get("error") else None,
+        )
+    return VerificationResult(passed=False, checks=tuple(), error=result.stderr.strip() or "Verification failed")
+
+
+def _print_verification_payload(result: VerificationResult) -> None:
+    labels = {
+        "pass": colorize("[PASS]", Style.GREEN),
+        "fail": colorize("[FAIL]", Style.RED),
+        "info": colorize("[INFO]", Style.DIM),
+    }
+    for check in result.checks:
+        print(f"  {labels.get(check.status, labels['info'])} {check.message}")
+    if result.error:
+        print(f"  {colorize(result.error, Style.RED)}")
 
 
 def cmd_hint(args: argparse.Namespace) -> int:

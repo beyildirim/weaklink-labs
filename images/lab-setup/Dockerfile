@@ -23,7 +23,7 @@ RUN mkdir -p /etc/apt/keyrings \
     && rm -rf /var/lib/apt/lists/*
 
 # Python build tools
-RUN pip install --no-cache-dir setuptools wheel pip-tools
+RUN pip install --no-cache-dir PyYAML setuptools wheel pip-tools
 
 # Copy ALL lab source packages into the image
 # Build context is the repo root, so labs/ is available

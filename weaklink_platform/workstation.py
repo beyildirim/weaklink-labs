@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 import argparse
-import os
-import shlex
 import shutil
-import subprocess
 from dataclasses import dataclass
 from pathlib import Path
+
+from weaklink_platform.lab_runtime import InitResult, write_env_exports
 
 
 @dataclass(frozen=True)
@@ -45,28 +44,18 @@ def _copy_children(source: Path, destination: Path) -> None:
             shutil.copy2(child, target)
 
 
-def _run_lab_hook(lab_work: Path, app_root: Path, env_file: Path) -> str:
-    hook = lab_work / "lab-init.sh"
-    if not hook.exists() or not os.access(hook, os.X_OK):
-        return str(app_root)
-    env_file.unlink(missing_ok=True)
-    sentinel = "__WEAKLINK_WORKDIR__="
-    quoted_hook = shlex.quote(str(hook))
-    quoted_env_file = shlex.quote(str(env_file))
-    command = (
-        f"WORKDIR={shlex.quote(str(app_root))}\n"
-        f"source {quoted_hook} >&2\n"
-        f"if [ -f {quoted_env_file} ]; then\n"
-        f"  source {quoted_env_file}\n"
-        "fi\n"
-        f'printf "{sentinel}%s\\n" "${{WORKDIR:-/app}}"\n'
+def _run_lab_hook(lab_id: str, lab_work: Path, *, paths: WorkstationPaths) -> InitResult:
+    from weaklink_platform.lab_runtime import execute_lab_init
+
+    return execute_lab_init(
+        lab_id=lab_id,
+        lab_root=lab_work,
+        app_root=paths.app_root,
+        repos_root=paths.repos_root,
+        workspace_root=paths.workspace_root,
+        lab_src_link=paths.lab_src_link,
+        env_file=paths.env_file,
     )
-    result = subprocess.run(["bash", "-lc", command], capture_output=True, text=True, check=False)
-    for line in reversed(result.stdout.splitlines()):
-        if line.startswith(sentinel):
-            workdir = line.removeprefix(sentinel).strip()
-            return workdir or str(app_root)
-    return str(app_root)
 
 
 def initialize_lab(lab_id: str, *, paths: WorkstationPaths = WorkstationPaths()) -> int:
@@ -105,7 +94,8 @@ def initialize_lab(lab_id: str, *, paths: WorkstationPaths = WorkstationPaths())
         _copy_children(nested_app, paths.app_root)
         shutil.rmtree(nested_app)
 
-    workdir = _run_lab_hook(lab_work, paths.app_root, paths.env_file)
+    init_result = _run_lab_hook(lab_id, lab_work, paths=paths)
+    write_env_exports(paths.env_file, init_result.env)
 
     for pattern in ("Dockerfile.*", "build-packages.sh", "entrypoint.sh", "lab-init.sh", "packages"):
         for path in paths.app_root.glob(pattern):
@@ -115,7 +105,7 @@ def initialize_lab(lab_id: str, *, paths: WorkstationPaths = WorkstationPaths())
                 path.unlink()
 
     paths.current_lab_file.write_text(lab_id)
-    paths.workdir_file.write_text(workdir)
+    paths.workdir_file.write_text(str(init_result.workdir))
     print(f"Lab {lab_id} initialized.")
     return 0
 

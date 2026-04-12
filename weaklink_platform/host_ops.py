@@ -14,6 +14,7 @@ from urllib.request import urlopen
 
 from weaklink_platform.console import Style, dim, error, header, info, ok, warn
 from weaklink_platform.labs import count_lab_inventory, iter_labs
+from weaklink_platform.manifest import lint_labs
 from weaklink_platform.paths import HOST_PORT_FORWARD_DIR, REPO_ROOT, ensure_host_state_dir
 from weaklink_platform.subprocess_utils import capture, run
 
@@ -537,8 +538,9 @@ test -n "$workdir"
 test -d "$workdir"
 test -d '/home/labs/{lab.lab_id}'
 test -d /app
-test -f '/home/labs/{lab.lab_id}/verify.sh'
-bash -n '/home/labs/{lab.lab_id}/verify.sh'
+test -f '/home/labs/{lab.lab_id}/verify.sh' || test -f '/home/labs/{lab.lab_id}/verify.py'
+if test -f '/home/labs/{lab.lab_id}/verify.sh'; then bash -n '/home/labs/{lab.lab_id}/verify.sh'; fi
+if test -f '/home/labs/{lab.lab_id}/verify.py'; then python3 -m py_compile '/home/labs/{lab.lab_id}/verify.py'; fi
 """
         result = run(
             ["kubectl", "exec", workstation_pod, "--namespace", namespace, "--", "bash", "-lc", script],
@@ -572,6 +574,15 @@ bash -n '/home/labs/{lab.lab_id}/verify.sh'
     print("========================================")
     if failed:
         raise RuntimeError(f"{failed} lab(s) failed smoke testing.")
+
+
+def labs_lint() -> None:
+    errors = lint_labs()
+    if errors:
+        for message in errors:
+            error(message)
+        raise RuntimeError(f"Lab lint failed with {len(errors)} error(s).")
+    ok("Lab manifests and guide mappings look good.")
 
 
 def clean_images() -> None:

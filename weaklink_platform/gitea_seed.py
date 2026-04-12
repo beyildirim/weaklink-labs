@@ -1,0 +1,120 @@
+from __future__ import annotations
+
+import base64
+import json
+import shutil
+from pathlib import Path
+from urllib.error import HTTPError
+from urllib.request import Request, urlopen
+
+from weaklink_platform.subprocess_utils import run
+
+
+GITEA_URL = "http://gitea:3000"
+GITEA_USER = "weaklink"
+GITEA_PASS = "weaklink"
+
+
+def _auth_header(username: str = GITEA_USER, password: str = GITEA_PASS) -> dict[str, str]:
+    token = base64.b64encode(f"{username}:{password}".encode()).decode()
+    return {"Authorization": f"Basic {token}"}
+
+
+def _request_json(
+    method: str,
+    path: str,
+    payload: dict[str, object] | None = None,
+    *,
+    ok_statuses: tuple[int, ...] = (200, 201, 202, 204, 409, 422),
+) -> tuple[int, dict[str, object]]:
+    headers = {"Content-Type": "application/json"}
+    headers.update(_auth_header())
+    data = json.dumps(payload).encode() if payload is not None else None
+    request = Request(f"{GITEA_URL}{path}", data=data, method=method, headers=headers)
+    try:
+        with urlopen(request, timeout=15) as response:
+            body = response.read().decode()
+            return response.status, json.loads(body) if body else {}
+    except HTTPError as exc:
+        body = exc.read().decode()
+        if exc.code in ok_statuses:
+            return exc.code, json.loads(body) if body else {}
+        raise
+
+
+def gitea_repo_url(repo_name: str, *, owner: str = GITEA_USER) -> str:
+    return f"{GITEA_URL}/{owner}/{repo_name}.git"
+
+
+def reset_gitea_repo(
+    repo_name: str,
+    *,
+    delete_existing: bool = False,
+    auto_init: bool = False,
+    default_branch: str = "main",
+) -> None:
+    if delete_existing:
+        _request_json("DELETE", f"/api/v1/repos/{GITEA_USER}/{repo_name}", ok_statuses=(204, 404))
+    payload = {"name": repo_name, "auto_init": auto_init, "default_branch": default_branch}
+    _request_json("POST", "/api/v1/user/repos", payload=payload)
+
+
+def create_gitea_user(
+    username: str,
+    password: str,
+    email: str,
+    *,
+    must_change_password: bool = False,
+) -> None:
+    payload = {
+        "username": username,
+        "password": password,
+        "email": email,
+        "must_change_password": must_change_password,
+    }
+    _request_json("POST", "/api/v1/admin/users", payload=payload)
+
+
+def set_repo_secret(repo_name: str, secret_name: str, value: str, *, owner: str = GITEA_USER) -> None:
+    payload = {"data": value}
+    _request_json("PUT", f"/api/v1/repos/{owner}/{repo_name}/actions/secrets/{secret_name}", payload=payload)
+
+
+def replace_dir_contents(destination: Path, source: Path) -> None:
+    if destination.exists():
+        shutil.rmtree(destination)
+    destination.mkdir(parents=True, exist_ok=True)
+    for child in source.iterdir():
+        target = destination / child.name
+        if child.is_dir():
+            shutil.copytree(child, target, dirs_exist_ok=True)
+        else:
+            shutil.copy2(child, target)
+
+
+def seed_git_repo_from_source(
+    *,
+    source_dir: Path,
+    repo_dir: Path,
+    repo_name: str,
+    commit_message: str,
+    branch: str = "main",
+    force_push: bool = False,
+) -> None:
+    replace_dir_contents(repo_dir, source_dir)
+    git_dir = repo_dir / ".git"
+    if git_dir.exists():
+        shutil.rmtree(git_dir)
+
+    run(["git", "init"], cwd=repo_dir)
+    run(["git", "checkout", "-B", branch], cwd=repo_dir)
+    run(["git", "add", "-A"], cwd=repo_dir)
+    run(["git", "commit", "-m", commit_message], cwd=repo_dir)
+    run(["git", "remote", "remove", "origin"], cwd=repo_dir, check=False)
+    run(["git", "remote", "add", "origin", gitea_repo_url(repo_name)], cwd=repo_dir)
+
+    push_command = ["git", "push", "-u"]
+    if force_push:
+        push_command.append("-f")
+    push_command.extend(["origin", branch])
+    run(push_command, cwd=repo_dir)

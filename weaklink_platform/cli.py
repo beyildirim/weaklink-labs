@@ -16,6 +16,7 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers.add_parser("logs")
     subparsers.add_parser("clean")
     subparsers.add_parser("clean-images")
+    subparsers.add_parser("labs-lint")
 
     build_parser = subparsers.add_parser("build-images")
     build_parser.add_argument("targets", nargs="*", choices=sorted(host_ops.IMAGE_SPECS))
@@ -51,6 +52,8 @@ def main(argv: list[str] | None = None) -> int:
         host_ops.clean_platform()
     elif args.command == "clean-images":
         host_ops.clean_images()
+    elif args.command == "labs-lint":
+        host_ops.labs_lint()
     elif args.command == "build-images":
         host_ops.build_images(args.targets or None)
     elif args.command == "docs-check":
