@@ -64,6 +64,13 @@ def test_shell_allowlist_matches_repo_policy() -> None:
     assert actual == EXPECTED_SHELL_FILES
 
 
+def test_every_lab_has_src_files() -> None:
+    for lab_manifest in sorted((REPO_ROOT / "labs").glob("tier-*/*/lab.yml")):
+        lab_dir = lab_manifest.parent
+        src_files = [path for path in (lab_dir / "src").rglob("*") if path.is_file()]
+        assert src_files, f"{lab_dir} has no files under src/"
+
+
 def test_docs_do_not_reference_removed_shell_entrypoints() -> None:
     doc_roots = [
         REPO_ROOT / "guide" / "docs",

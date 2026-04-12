@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from weaklink_platform.golden_labs import stage_golden_labs
 from weaklink_platform.workstation import WorkstationPaths, initialize_lab, reset_lab
 
 
@@ -75,3 +76,35 @@ def test_initialize_lab_without_hook_uses_default_workdir(tmp_path: Path) -> Non
 
     assert exit_code == 0
     assert paths.workdir_file.read_text() == str(paths.app_root)
+
+
+def test_stage_golden_labs_keeps_verify_only_labs(tmp_path: Path) -> None:
+    raw_root = tmp_path / "raw"
+    target_root = tmp_path / "target"
+    lab_dir = raw_root / "tier-4-artifact-integrity" / "4.3-signing-fundamentals"
+    lab_dir.mkdir(parents=True)
+    (lab_dir / "lab.yml").write_text(
+        "\n".join(
+            [
+                'id: "4.3"',
+                'title: "Signing Fundamentals"',
+                "tier: 4",
+                'module: "artifact-integrity"',
+                "prerequisites: [\"0.3\"]",
+                'difficulty: "beginner"',
+                'estimated_time: "30m"',
+                "tags: [\"cosign\"]",
+                'phase_understand: "Understand signing"',
+                'phase_break: "Break signing"',
+                'phase_defend: "Defend signing"',
+                "",
+            ]
+        )
+    )
+    (lab_dir / "verify.py").write_text("print('ok')\n")
+
+    stage_golden_labs(raw_root, target_root)
+
+    staged_lab = target_root / "4.3"
+    assert staged_lab.exists()
+    assert (staged_lab / "verify.py").read_text() == "print('ok')\n"

@@ -103,23 +103,11 @@ RUN mkdir -p /opt/labs && python3 - <<'PY'
 from pathlib import Path
 import shutil
 
-from weaklink_platform.manifest import load_lab_manifest
+from weaklink_platform.golden_labs import stage_golden_labs
 
 raw_root = Path("/opt/labs-raw")
 target_root = Path("/opt/labs")
-
-for lab_dir in sorted(raw_root.glob("tier-*/*")):
-    if not lab_dir.is_dir() or not (lab_dir / "lab.yml").exists():
-        continue
-    manifest = load_lab_manifest(lab_dir)
-    src_dir = lab_dir / "src"
-    if not src_dir.exists():
-        continue
-    target_dir = target_root / manifest.id
-    shutil.copytree(src_dir, target_dir, dirs_exist_ok=True)
-    source = lab_dir / "verify.py"
-    if source.exists():
-        shutil.copy2(source, target_dir / "verify.py")
+stage_golden_labs(raw_root, target_root)
 shutil.rmtree(raw_root)
 PY
 
