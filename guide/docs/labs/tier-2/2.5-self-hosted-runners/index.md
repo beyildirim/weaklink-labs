@@ -39,7 +39,8 @@ graph LR
 | Runner | `/runner` | Simulated self-hosted runner filesystem exposed inside the workstation |
 | Workstation | (your shell) | Development environment |
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [2.1 CI/CD Fundamentals](../2.1-cicd-fundamentals/index.md) — Understanding CI/CD basics including hosted vs. self-hosted runners
-    - **Next:** [2.7 Build Cache Poisoning](../2.7-build-cache-poisoning/index.md) — Build cache poisoning targets persistent state on shared runners
-    - **See also:** [2.4 Secret Exfiltration from CI](../2.4-secret-exfiltration/index.md) — Self-hosted runners expose more secrets than cloud runners
+> **Related Labs**
+>
+> - **Prerequisite:** [2.1 CI/CD Fundamentals](../2.1-cicd-fundamentals/index.md) — Understanding CI/CD basics including hosted vs. self-hosted runners
+> - **Next:** [2.7 Build Cache Poisoning](../2.7-build-cache-poisoning/index.md) — Build cache poisoning targets persistent state on shared runners
+> - **See also:** [2.4 Secret Exfiltration from CI](../2.4-secret-exfiltration/index.md) — Self-hosted runners expose more secrets than cloud runners

@@ -38,8 +38,9 @@ graph LR
 | Attacker Registry | `attacker-registry:5000` | Staging area for crafting malicious images |
 | Workstation | Pod with docker CLI, crane, cosign, jq | Your working environment |
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [3.1 Container Image Internals](../3.1-image-internals/index.md) — Understanding image layers is essential before injecting into them
-    - **Next:** [3.6 Multi-Stage Build Leaks](../3.6-multistage-leaks/index.md) — Multi-stage leaks show how layer content bleeds between build stages
-    - **See also:** [3.3 Base Image Poisoning](../3.3-base-image-poisoning/index.md) — Both attacks modify image content, but at different levels
-    - **See also:** [2.7 Build Cache Poisoning](../../tier-2/2.7-build-cache-poisoning/index.md) — Build cache poisoning applies a similar persistence approach to CI
+> **Related Labs**
+>
+> - **Prerequisite:** [3.1 Container Image Internals](../3.1-image-internals/index.md) — Understanding image layers is essential before injecting into them
+> - **Next:** [3.6 Multi-Stage Build Leaks](../3.6-multistage-leaks/index.md) — Multi-stage leaks show how layer content bleeds between build stages
+> - **See also:** [3.3 Base Image Poisoning](../3.3-base-image-poisoning/index.md) — Both attacks modify image content, but at different levels
+> - **See also:** [2.7 Build Cache Poisoning](../../tier-2/2.7-build-cache-poisoning/index.md) — Build cache poisoning applies a similar persistence approach to CI

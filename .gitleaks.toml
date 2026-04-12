@@ -1,0 +1,23 @@
+title = "WeakLink Labs gitleaks config"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Intentional training secrets in lab guides and seeded setup scripts"
+paths = [
+  '''(^|/)guide/docs/labs/tier-0/0\.1-version-control/break\.md$''',
+  '''(^|/)guide/docs/labs/tier-0/0\.1-version-control/defend\.md$''',
+  '''(^|/)guide/docs/labs/tier-2/2\.1-cicd-fundamentals/break\.md$''',
+  '''(^|/)guide/docs/labs/tier-2/2\.2-direct-ppe/understand\.md$''',
+  '''(^|/)labs/tier-0-foundations/0\.1-version-control/README\.md$''',
+  '''(^|/)labs/tier-0-foundations/0\.1-version-control/hints/hint-2\.md$''',
+  '''(^|/)labs/tier-2-build-cicd/2\.1-cicd-fundamentals/src/scripts/setup-repo\.sh$''',
+  '''(^|/)labs/tier-2-build-cicd/2\.2-direct-ppe/src/scripts/setup-repo\.sh$''',
+  '''(^|/)labs/tier-2-build-cicd/2\.3-indirect-ppe/src/scripts/setup-repo\.sh$''',
+  '''(^|/)labs/tier-2-build-cicd/2\.4-secret-exfiltration/src/scripts/setup-repo\.sh$''',
+  '''(^|/)labs/tier-2-build-cicd/2\.5-self-hosted-runners/src/scripts/setup-repo\.sh$''',
+  '''(^|/)labs/tier-2-build-cicd/2\.6-actions-injection/src/scripts/setup-repo\.sh$''',
+  '''(^|/)labs/tier-2-build-cicd/2\.7-build-cache-poisoning/src/scripts/setup-repo\.sh$''',
+  '''(^|/)labs/tier-2-build-cicd/2\.8-workflow-run-attacks/src/scripts/setup-repo\.sh$''',
+]

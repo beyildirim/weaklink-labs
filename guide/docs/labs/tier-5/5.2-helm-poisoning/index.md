@@ -38,8 +38,9 @@ graph LR
 | Poisoned Chart | `/app/metrics-aggregator/` | Helm chart with a hidden post-install hook |
 | Policies | `/app/policies/` | Directory for Kyverno/OPA policies (initially empty) |
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [5.1 How Helm Charts Resolve Dependencies](../5.1-helm-resolution/index.md) — Understanding Helm resolution before poisoning it
-    - **Next:** [5.5 Kubernetes Admission Controller Bypass](../5.5-admission-controller-bypass/index.md) — Admission controllers are the primary defense against poisoned charts
-    - **See also:** [1.2 Dependency Confusion](../../tier-1/1.2-dependency-confusion/index.md) — Dependency confusion applies the same pattern to package registries
-    - **See also:** [3.3 Base Image Poisoning](../../tier-3/3.3-base-image-poisoning/index.md) — Base image poisoning applies the same pattern to container images
+> **Related Labs**
+>
+> - **Prerequisite:** [5.1 How Helm Charts Resolve Dependencies](../5.1-helm-resolution/index.md) — Understanding Helm resolution before poisoning it
+> - **Next:** [5.5 Kubernetes Admission Controller Bypass](../5.5-admission-controller-bypass/index.md) — Admission controllers are the primary defense against poisoned charts
+> - **See also:** [1.2 Dependency Confusion](../../tier-1/1.2-dependency-confusion/index.md) — Dependency confusion applies the same pattern to package registries
+> - **See also:** [3.3 Base Image Poisoning](../../tier-3/3.3-base-image-poisoning/index.md) — Base image poisoning applies the same pattern to container images

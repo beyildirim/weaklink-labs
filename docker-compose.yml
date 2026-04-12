@@ -2,6 +2,7 @@
 # Quick start: docker compose up -d
 # Guide: http://localhost:8000 | Terminal: http://localhost:7681
 # Set WEAKLINK_IMAGE_TAG=<release-tag> to pin GHCR images.
+# Local training stack only. These services are intentionally not internet-hardened.
 
 services:
   guide:
@@ -23,26 +24,26 @@ services:
     restart: unless-stopped
 
   pypi-private:
-    image: pypiserver/pypiserver:latest
+    image: pypiserver/pypiserver:v2.4.1
     command: run -P . -a . --server wsgiref
     volumes:
       - pypi-private-data:/data/packages
 
   pypi-public:
-    image: pypiserver/pypiserver:latest
+    image: pypiserver/pypiserver:v2.4.1
     command: run -P . -a . --server wsgiref
     volumes:
       - pypi-public-data:/data/packages
 
   verdaccio:
-    image: verdaccio/verdaccio:5
+    image: verdaccio/verdaccio:5.33.0
     environment:
       VERDACCIO_PORT: "4873"
     volumes:
       - verdaccio-data:/verdaccio/storage
 
   gitea:
-    image: gitea/gitea:1.22
+    image: gitea/gitea:1.22.6
     ports:
       - "3000:3000"
       - "2222:2222"
@@ -56,7 +57,7 @@ services:
       - gitea-data:/data
 
   registry:
-    image: registry:2
+    image: registry:2.8.3
     volumes:
       - registry-data:/var/lib/registry
 

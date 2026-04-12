@@ -36,7 +36,8 @@ graph LR
 | Attacker Registry | `attacker-registry:5000` | Simulated public registry with malicious `myapp:latest` |
 | Workstation | Pod with docker CLI, crane, kubectl | Your working environment |
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [3.1 Container Image Internals](../3.1-image-internals/index.md) — Image internals cover how registries store and serve images
-    - **Next:** [3.5 Layer Injection](../3.5-layer-injection/index.md) — Layer injection combines registry access with image manipulation
-    - **See also:** [1.2 Dependency Confusion](../../tier-1/1.2-dependency-confusion/index.md) — Dependency confusion applies the same concept to package registries
+> **Related Labs**
+>
+> - **Prerequisite:** [3.1 Container Image Internals](../3.1-image-internals/index.md) — Image internals cover how registries store and serve images
+> - **Next:** [3.5 Layer Injection](../3.5-layer-injection/index.md) — Layer injection combines registry access with image manipulation
+> - **See also:** [1.2 Dependency Confusion](../../tier-1/1.2-dependency-confusion/index.md) — Dependency confusion applies the same concept to package registries

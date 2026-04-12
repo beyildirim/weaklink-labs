@@ -38,7 +38,8 @@ graph LR
 | Gitea | `gitea:3000` | Git server hosting `wl-webapp` repository |
 | Workstation | (your shell) | Development environment with git, python, curl |
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [0.4 How CI/CD Works](../../tier-0/0.4-how-cicd-works/index.md) — Covers the basics of how CI/CD pipelines work
-    - **Next:** [2.2 Direct Poisoned Pipeline Execution](../2.2-direct-ppe/index.md) — Direct poisoned pipeline execution is the first CI/CD attack
-    - **See also:** [2.4 Secret Exfiltration from CI](../2.4-secret-exfiltration/index.md) — CI environments often contain secrets worth stealing
+> **Related Labs**
+>
+> - **Prerequisite:** [0.4 How CI/CD Works](../../tier-0/0.4-how-cicd-works/index.md) — Covers the basics of how CI/CD pipelines work
+> - **Next:** [2.2 Direct Poisoned Pipeline Execution](../2.2-direct-ppe/index.md) — Direct poisoned pipeline execution is the first CI/CD attack
+> - **See also:** [2.4 Secret Exfiltration from CI](../2.4-secret-exfiltration/index.md) — CI environments often contain secrets worth stealing

@@ -19,7 +19,7 @@
 ### Step 1: The timeline
 
 ```bash
-cat /app/analysis/timeline.txt
+cat /app/timeline/attack-timeline.md
 ```
 
 | Date | Event |
@@ -35,15 +35,31 @@ cat /app/analysis/timeline.txt
 ### Step 2: The social engineering
 
 ```bash
-cat /app/analysis/mailing-list-excerpts.txt
+cat /app/indicators/iocs.txt
 ```
 
-Multiple sock puppet accounts ("Jigar Kumar", "Dennis Ens") complained about Collin's responsiveness, creating the appearance of community demand for a co-maintainer.
+The IOC notes are short, but they capture the signals that mattered: vulnerable versions `5.6.0` and `5.6.1`, release-tarball tampering, and the suspicious test files used to hide payload data.
 
 ### Step 3: Trust building
 
+Jia Tan's initial contributions were genuine: test fixes, documentation, minor bugs. Over 18 months, they built a commit history that made the eventual backdoor commit unremarkable.
+
+### Step 4: Start your analysis document
+
+Create the file the lab verifier expects and capture the social-engineering side of the case:
+
 ```bash
-cat /app/xz-sources/early-commits.log
+cat > /app/analysis.md <<'EOF'
+# xz-utils Case Study Analysis
+
+## Social engineering timeline
+Jia Tan spent roughly two years building trust before the xz-utils backdoor was discovered.
+The case is a maintainer burnout story as much as it is a technical compromise:
+an overworked maintainer faced sustained pressure to hand over more responsibility.
+
+## Discovery
+Andres Freund noticed unusual SSH latency and traced it back to a malicious liblzma path.
+EOF
 ```
 
-Jia Tan's initial contributions were genuine: test fixes, documentation, minor bugs. Over 18 months, they built a commit history that made the eventual backdoor commit unremarkable.
+You will add the build-system and defense details in the next phases.

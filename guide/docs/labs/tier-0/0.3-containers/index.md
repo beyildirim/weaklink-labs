@@ -36,8 +36,9 @@ graph LR
 |----------------|----------------------|
 | Local Registry | `registry:5000`      |
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [0.2 How Package Managers Work](../0.2-package-managers/index.md) — Container images bundle application code and its dependencies
-    - **Next:** [3.1 Container Image Internals](../../tier-3/3.1-image-internals/index.md) — Deep dive into how container images are structured internally
-    - **Next:** [0.5 Artifacts & Registries](../0.5-artifacts-registries/index.md) — Registries store container images alongside other artifacts
-    - **See also:** [3.3 Base Image Poisoning](../../tier-3/3.3-base-image-poisoning/index.md) — What happens when someone poisons the base image you build on
+> **Related Labs**
+>
+> - **Prerequisite:** [0.2 How Package Managers Work](../0.2-package-managers/index.md) — Container images bundle application code and its dependencies
+> - **Next:** [3.1 Container Image Internals](../../tier-3/3.1-image-internals/index.md) — Deep dive into how container images are structured internally
+> - **Next:** [0.5 Artifacts & Registries](../0.5-artifacts-registries/index.md) — Registries store container images alongside other artifacts
+> - **See also:** [3.3 Base Image Poisoning](../../tier-3/3.3-base-image-poisoning/index.md) — What happens when someone poisons the base image you build on

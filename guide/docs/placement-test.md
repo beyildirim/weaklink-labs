@@ -12,5 +12,4 @@ Already familiar with Git, pip, and Docker? Take the placement test to skip Tier
 
 <div id="placement-quiz"></div>
 
-!!! tip "Prefer the terminal?"
-    Use the browser version of the placement test. The learner path does not depend on CLI helpers.
+> Tip: Use the browser version of the placement test. The learner path does not depend on CLI helpers.

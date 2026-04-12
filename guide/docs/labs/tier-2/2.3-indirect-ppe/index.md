@@ -38,8 +38,9 @@ graph LR
 | Gitea | `gitea:3000` | Git server hosting `wl-webapp` with Makefile-based CI |
 | Workstation | (your shell) | Development environment |
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [2.2 Direct Poisoned Pipeline Execution](../2.2-direct-ppe/index.md) — Direct PPE covers the foundational pipeline poisoning technique
-    - **Next:** [2.4 Secret Exfiltration from CI](../2.4-secret-exfiltration/index.md) — After pipeline access, exfiltrating secrets is the next step
-    - **See also:** [6.5 Case Study: xz-utils (CVE-2024-3094)](../../tier-6/6.5-case-study-xz-utils/index.md) — xz-utils used indirect build system manipulation over two years
-    - **See also:** [2.8 Workflow Run & Cross-Workflow Attacks](../2.8-workflow-run-attacks/index.md) — Workflow run attacks chain indirect triggers across workflows
+> **Related Labs**
+>
+> - **Prerequisite:** [2.2 Direct Poisoned Pipeline Execution](../2.2-direct-ppe/index.md) — Direct PPE covers the foundational pipeline poisoning technique
+> - **Next:** [2.4 Secret Exfiltration from CI](../2.4-secret-exfiltration/index.md) — After pipeline access, exfiltrating secrets is the next step
+> - **See also:** [6.5 Case Study: xz-utils (CVE-2024-3094)](../../tier-6/6.5-case-study-xz-utils/index.md) — xz-utils used indirect build system manipulation over two years
+> - **See also:** [2.8 Workflow Run & Cross-Workflow Attacks](../2.8-workflow-run-attacks/index.md) — Workflow run attacks chain indirect triggers across workflows

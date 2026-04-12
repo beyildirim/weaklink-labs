@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">WeakLink Labs Overview</title>
+  <desc id="desc">A simple overview of the WeakLink Labs browser guide, terminal, and local training services.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f7f4ec"/>
+      <stop offset="100%" stop-color="#e8eef6"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f3f6fb"/>
+    </linearGradient>
+    <style>
+      .title { font: 700 42px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #132238; }
+      .subtitle { font: 400 22px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #37506f; }
+      .label { font: 700 22px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #17324d; }
+      .copy { font: 400 18px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #33516f; }
+      .small { font: 600 16px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #52708f; letter-spacing: 0.08em; }
+      .chip { font: 700 16px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #7a4200; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="36" y="36" width="1128" height="558" rx="28" fill="#fdfcf8" stroke="#d9dee6"/>
+
+  <text x="78" y="116" class="small">WEAKLINK LABS</text>
+  <text x="78" y="168" class="title">Browser-first supply chain labs</text>
+  <text x="78" y="205" class="subtitle">Start locally, open the guide, use the built-in terminal, then break and defend real software delivery paths.</text>
+
+  <rect x="78" y="252" width="314" height="248" rx="22" fill="url(#panel)" stroke="#d9dee6"/>
+  <rect x="108" y="282" width="254" height="24" rx="12" fill="#dce9f7"/>
+  <rect x="108" y="326" width="214" height="16" rx="8" fill="#e8edf4"/>
+  <rect x="108" y="356" width="236" height="16" rx="8" fill="#e8edf4"/>
+  <rect x="108" y="402" width="114" height="36" rx="18" fill="#ffcb7d"/>
+  <text x="108" y="474" class="label">Guide</text>
+  <text x="108" y="502" class="copy">`http://localhost:8000`</text>
+
+  <rect x="442" y="252" width="314" height="248" rx="22" fill="#132238"/>
+  <rect x="470" y="280" width="258" height="178" rx="14" fill="#1b314d" stroke="#38536f"/>
+  <text x="490" y="324" class="copy" fill="#dce6f2">$ make start</text>
+  <text x="490" y="360" class="copy" fill="#dce6f2">$ lab-init 1.2</text>
+  <text x="490" y="396" class="copy" fill="#dce6f2">$ pip install -r requirements.txt</text>
+  <text x="490" y="432" class="copy" fill="#ffcb7d">compromise marker created</text>
+  <text x="472" y="474" class="label" fill="#f5f8fc">Terminal</text>
+  <text x="472" y="502" class="copy" fill="#dce6f2">`http://localhost:7681`</text>
+
+  <rect x="806" y="252" width="314" height="248" rx="22" fill="url(#panel)" stroke="#d9dee6"/>
+  <rect x="836" y="286" width="122" height="44" rx="22" fill="#ffe3bf"/>
+  <rect x="976" y="286" width="114" height="44" rx="22" fill="#dce9f7"/>
+  <rect x="836" y="350" width="254" height="18" rx="9" fill="#e8edf4"/>
+  <rect x="836" y="384" width="240" height="18" rx="9" fill="#e8edf4"/>
+  <rect x="836" y="418" width="196" height="18" rx="9" fill="#e8edf4"/>
+  <text x="836" y="474" class="label">Local Services</text>
+  <text x="836" y="502" class="copy">Gitea, PyPI, Verdaccio, registry, SBOM and signing labs</text>
+
+  <path d="M392 376 C416 376, 418 376, 442 376" fill="none" stroke="#6f86a0" stroke-width="4" stroke-linecap="round"/>
+  <polygon points="432,366 452,376 432,386" fill="#6f86a0"/>
+  <path d="M756 376 C780 376, 782 376, 806 376" fill="none" stroke="#6f86a0" stroke-width="4" stroke-linecap="round"/>
+  <polygon points="796,366 816,376 796,386" fill="#6f86a0"/>
+
+  <rect x="78" y="532" width="168" height="34" rx="17" fill="#ffe3bf"/>
+  <text x="100" y="554" class="chip">Core path: Tiers 0-5</text>
+  <rect x="266" y="532" width="236" height="34" rx="17" fill="#dce9f7"/>
+  <text x="288" y="554" class="chip" fill="#234b75">Advanced branch: Tiers 6-7</text>
+</svg>

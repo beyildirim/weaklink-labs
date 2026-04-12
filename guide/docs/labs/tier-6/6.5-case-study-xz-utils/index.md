@@ -35,7 +35,8 @@ graph LR
 
 | Component | Path | Description |
 |-----------|------|-------------|
-| Source Snapshots | `/app/xz-sources/` | xz-utils source at key points in the attack timeline |
-| Build Scripts | `/app/xz-build/` | Reproductions of the malicious build system modifications |
-| Analysis Tools | `/app/analysis/` | Scripts for examining the backdoor mechanism |
-| Backdoor Samples | `/app/backdoor/` | Extracted and annotated backdoor components |
+| Attack Timeline | `/app/timeline/attack-timeline.md` | Chronology of the maintainer takeover and release timeline |
+| Detection Notes | `/app/indicators/iocs.txt` | IOC-style notes for the affected versions and release artifacts |
+| Learner Outputs | `/app/analysis.md`, `/app/detect_xz_backdoor.sh`, `/app/check_reproducible.sh` | Files you create during the case study |
+
+This case-study lab is lighter on seeded infrastructure than the core attack path. The main outputs are your own analysis notes plus two small helper scripts checked by the lab verifier.

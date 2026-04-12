@@ -12,6 +12,24 @@ The main goal is to help you understand how software supply chains work, where t
 
 ---
 
+## Safety and Scope
+
+> **Local-Only Training Stack**
+>
+> WeakLink Labs is designed for local use or Codespaces. It is **not** hardened for public Internet exposure, shared multi-user hosting, or connection to real production systems.
+>
+> The labs intentionally include malicious packages, poisoned workflows, fake secrets, weak credentials, and vulnerable defaults. Keep the environment isolated and do not point it at real registries, clusters, cloud accounts, or signing keys.
+### Training defaults to expect
+
+- **Permissive local services** so labs can seed content quickly and repeatably
+- **Weak or seeded credentials** for local-only exercises
+- **Docker socket access in the workstation** to support container-focused labs
+- **Intentionally malicious artifacts** that are safe only inside the isolated training environment
+
+If you find an actual repository or platform security flaw outside the intended lab design, report it using the guidance in the repository root `SECURITY.md`.
+
+---
+
 ## Choose Your Setup Path
 
 WeakLink Labs supports two local paths plus Codespaces. Use `make` as the host-side interface.
@@ -83,22 +101,23 @@ Labs run inside your Docker Compose or Kubernetes environment. The intended lear
 2. Open the guide in your browser.
 3. Use the built-in terminal for the lab.
 
-!!! warning "Two Terminals, Two Purposes"
-    After startup, most of your work happens in the browser terminal.
+> **Two Terminals, Two Purposes**
+>
+> After startup, most of your work happens in the browser terminal.
+>
+> 1. **The browser terminal** at [localhost:7681](http://localhost:7681) is your **lab workstation**. This is where you run lab commands (clone repos, install packages, execute attacks and defenses).
+> 2. **Your own Mac/Linux terminal** is only for starting or stopping the platform.
+>
+> When a lab says "run this command", it means inside the browser terminal unless it explicitly says otherwise.
 
-    1. **The browser terminal** at [localhost:7681](http://localhost:7681) is your **lab workstation**. This is where you run lab commands (clone repos, install packages, execute attacks and defenses).
-    2. **Your own Mac/Linux terminal** is only for starting or stopping the platform.
-
-    When a lab says "run this command", it means inside the browser terminal unless it explicitly says otherwise.
-
-!!! info "Address Rules"
-    The docs use two kinds of addresses:
-
-    1. **`localhost:*` addresses** are for your host browser. Examples: the guide at [http://localhost:8000](http://localhost:8000), the workstation terminal at [http://localhost:7681](http://localhost:7681), and Gitea at [http://localhost:3000](http://localhost:3000).
-    2. **Service names** like `gitea:3000`, `pypi-private:8080`, `verdaccio:4873`, and `registry:5000` are for commands you run *inside the workstation terminal*.
-
-    If a lab tells you to open a page in your browser, it should use a `localhost` URL. If it tells you to run `curl`, `pip`, `npm`, or `docker` commands, those usually target service names from inside the workstation.
-
+> **Address Rules**
+>
+> The docs use two kinds of addresses:
+>
+> 1. **`localhost:*` addresses** are for your host browser. Examples: the guide at [http://localhost:8000](http://localhost:8000), the workstation terminal at [http://localhost:7681](http://localhost:7681), and Gitea at [http://localhost:3000](http://localhost:3000).
+> 2. **Service names** like `gitea:3000`, `pypi-private:8080`, `verdaccio:4873`, and `registry:5000` are for commands you run *inside the workstation terminal*.
+>
+> If a lab tells you to open a page in your browser, it should use a `localhost` URL. If it tells you to run `curl`, `pip`, `npm`, or `docker` commands, those usually target service names from inside the workstation.
 ### Workstation Terminal
 
 The workstation terminal is available at [http://localhost:7681](http://localhost:7681). Lab pages also open it in the split terminal panel so you can work without leaving the guide.
@@ -157,7 +176,7 @@ Each lab initializes automatically when you open it in the guide. You do not nee
 
 Most attack-focused labs use the same progression:
 
-<div class="phase-flow" markdown>
+<div class="phase-flow">
   <span class="phase-step understand">1. Understand</span>
   <span class="arrow">&rarr;</span>
   <span class="phase-step break">2. Break</span>

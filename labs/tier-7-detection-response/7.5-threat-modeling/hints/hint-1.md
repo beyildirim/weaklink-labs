@@ -29,6 +29,8 @@ Production Environment
 
 Each `[TRUST BOUNDARY]` is where you apply STRIDE.
 
+Save the output as `/app/work/supply-chain-map.md`. The lab verifier looks for that exact file name.
+
 ## What Counts as a Trust Boundary?
 
 A trust boundary exists wherever **data or code crosses from one trust domain to another**. Examples:

@@ -11,12 +11,21 @@
 
 WeakLink Labs is a browser-first training platform for software supply chain security. It brings up a local workstation plus the surrounding systems attackers actually target: Git hosting, private and public package registries, an OCI registry, CI/CD-style repos, container images, SBOMs, signatures, and attestations. Learners run real attacks in isolated infrastructure, then apply the controls that stop them.
 
+![WeakLink Labs overview](docs/assets/github-overview.svg)
+
 <p align="center">
   <a href="guide/docs/getting-started.md"><strong>Getting Started</strong></a> ·
   <a href="guide/docs/index.md"><strong>Browse Labs</strong></a> ·
   <a href="guide/docs/placement-test.md"><strong>Placement Test</strong></a> ·
+  <a href="SECURITY.md"><strong>Security</strong></a> ·
   <a href="CONTRIBUTING.md"><strong>Contributing</strong></a>
 </p>
+
+## In 2 Minutes
+
+- Start the platform with `make start` or `make compose-up`.
+- Open the guide at `http://localhost:8000` and the browser terminal at `http://localhost:7681`.
+- Follow the mainline through Tiers `0-5`; treat Tiers `6-7` as advanced branches with more case-study and response-oriented content.
 
 ## At a Glance
 
@@ -27,6 +36,14 @@ WeakLink Labs is a browser-first training platform for software supply chain sec
 - **Published images include supply chain metadata**: signing, SBOMs, and provenance-related attestations.
 
 > Main path: run `make start`, open `http://localhost:8000`, and do the lab work in the browser terminal at `http://localhost:7681`.
+
+## Safety and Scope
+
+- **Local training stack only.** WeakLink Labs is designed for local use on your machine or in a Codespace. It is not hardened for public Internet exposure or multi-tenant hosting.
+- **The labs include intentionally malicious content.** Expect trojanized packages, poisoned workflows, fake secrets, weak credentials, and vulnerable configurations used for training.
+- **Do not connect real infrastructure or credentials.** Keep the environment isolated from real registries, clusters, cloud accounts, signing keys, and production secrets.
+- **Some defaults are intentionally permissive.** Local services and seeded credentials trade security for repeatable lab setup. That is part of the training environment, not a deployment recommendation.
+- **Report actual repo or platform security issues privately.** See [SECURITY.md](SECURITY.md) for reporting guidance and scope.
 
 ## Choose a Setup Path
 

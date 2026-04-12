@@ -37,7 +37,8 @@ graph LR
 | Registry | `registry:5000` | Contains images with and without provenance attestations |
 | Kubernetes | `kind-cluster` | Local cluster for deployment testing |
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [4.3 Signing Fundamentals](../4.3-signing-fundamentals/index.md) — Signing fundamentals underpin attestation and provenance
-    - **Next:** [4.6 Attestation Forgery](../4.6-attestation-forgery/index.md) — Attestation forgery attacks the provenance chain built here
-    - **See also:** [2.1 CI/CD Fundamentals](../../tier-2/2.1-cicd-fundamentals/index.md) — CI/CD pipelines generate the build provenance attested here
+> **Related Labs**
+>
+> - **Prerequisite:** [4.3 Signing Fundamentals](../4.3-signing-fundamentals/index.md) — Signing fundamentals underpin attestation and provenance
+> - **Next:** [4.6 Attestation Forgery](../4.6-attestation-forgery/index.md) — Attestation forgery attacks the provenance chain built here
+> - **See also:** [2.1 CI/CD Fundamentals](../../tier-2/2.1-cicd-fundamentals/index.md) — CI/CD pipelines generate the build provenance attested here

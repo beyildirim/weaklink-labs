@@ -1,12 +1,8 @@
-<div class="hero" markdown>
-
-# WeakLink Labs
-
+<div class="hero">
+<h1>WeakLink Labs</h1>
 <p class="tagline">You're only as strong as your weakest link.</p>
 <p class="subtitle">Hands-on supply chain security training for people who need to understand how software supply chains work, break, and get defended.</p>
-
-[Get Started](getting-started.md){ .cta-button }
-
+<p><a href="getting-started.md">Get Started</a></p>
 </div>
 
 ---
@@ -15,7 +11,7 @@
 
 WeakLink Labs is a self-contained training environment for learning **software supply chain security** by doing. Most attack-focused labs follow a simple pattern:
 
-<div class="phase-flow" markdown>
+<div class="phase-flow">
   <span class="phase-step understand">1. Understand</span>
   <span class="arrow">&rarr;</span>
   <span class="phase-step break">2. Break</span>
@@ -48,6 +44,10 @@ You do not learn supply chain security by memorizing terms. You learn by seeing 
 
 The recommended mainline is **Tier 0 through Tier 5**. That path stays closest to the browser-first, hands-on supply chain learning model. **Tier 6 and Tier 7** are better treated as optional advanced branches: case studies, incident response, and threat modeling.
 
+> **Local-Only Training Environment**
+>
+> WeakLink Labs is built for local use on your machine or in a Codespace. It is not hardened for public Internet exposure or shared multi-user hosting, and the labs intentionally include malicious packages, weak defaults, and vulnerable configurations for training.
+
 ---
 
 ## Training Tiers
@@ -56,85 +56,61 @@ The recommended mainline is **Tier 0 through Tier 5**. That path stays closest t
 
 **Advanced branches:** Tier `6` and Tier `7`
 
-<div class="tier-grid" markdown>
+<div class="tier-grid">
 
-<div class="tier-card" markdown>
+<div class="tier-card">
 <span class="tier-number">TIER 0</span>
-
-### [Foundations](labs/tier-0/0.1-version-control/index.md)
-
-Version control, package managers, and containers. How the building blocks work, and where the cracks are.
-
+<h3><a href="labs/tier-0/0.1-version-control/index.md">Foundations</a></h3>
+<p>Version control, package managers, and containers. How the building blocks work, and where the cracks are.</p>
 <div class="lab-count">5 labs &middot; ~2 hours</div>
 </div>
 
-<div class="tier-card" markdown>
+<div class="tier-card">
 <span class="tier-number">TIER 1</span>
-
-### [Package Security](labs/tier-1/1.1-dependency-resolution/index.md)
-
-Dependency confusion, typosquatting, lockfile injection, manifest confusion, and phantom dependencies.
-
+<h3><a href="labs/tier-1/1.1-dependency-resolution/index.md">Package Security</a></h3>
+<p>Dependency confusion, typosquatting, lockfile injection, manifest confusion, and phantom dependencies.</p>
 <div class="lab-count">6 labs &middot; ~3 hours</div>
 </div>
 
-<div class="tier-card" markdown>
+<div class="tier-card">
 <span class="tier-number">TIER 2</span>
-
-### [Build & CI/CD](labs/tier-2/2.1-cicd-fundamentals/index.md)
-
-Poisoned Pipeline Execution, secret exfiltration, GitHub Actions injection, runner attacks, and build cache poisoning.
-
+<h3><a href="labs/tier-2/2.1-cicd-fundamentals/index.md">Build &amp; CI/CD</a></h3>
+<p>Poisoned Pipeline Execution, secret exfiltration, GitHub Actions injection, runner attacks, and build cache poisoning.</p>
 <div class="lab-count">8 labs &middot; ~5 hours</div>
 </div>
 
-<div class="tier-card" markdown>
+<div class="tier-card">
 <span class="tier-number">TIER 3</span>
-
-### [Container Security](labs/tier-3/3.1-image-internals/index.md)
-
-Tag mutability, base image poisoning, registry confusion, layer injection, and multi-stage build leaks.
-
+<h3><a href="labs/tier-3/3.1-image-internals/index.md">Container Security</a></h3>
+<p>Tag mutability, base image poisoning, registry confusion, layer injection, and multi-stage build leaks.</p>
 <div class="lab-count">6 labs &middot; ~3 hours</div>
 </div>
 
-<div class="tier-card" markdown>
+<div class="tier-card">
 <span class="tier-number">TIER 4</span>
-
-### [SBOM & Signing](labs/tier-4/4.1-sbom-contents/index.md)
-
-SBOMs, signing with Sigstore and GPG, SLSA provenance, attestation forgery, and SBOM tampering.
-
+<h3><a href="labs/tier-4/4.1-sbom-contents/index.md">SBOM &amp; Signing</a></h3>
+<p>SBOMs, signing with Sigstore and GPG, SLSA provenance, attestation forgery, and SBOM tampering.</p>
 <div class="lab-count">7 labs &middot; ~4 hours</div>
 </div>
 
-<div class="tier-card" markdown>
+<div class="tier-card">
 <span class="tier-number">TIER 5</span>
-
-### [IaC Supply Chain](labs/tier-5/5.1-helm-resolution/index.md)
-
-Helm poisoning, Terraform module attacks, Ansible Galaxy, and admission controller bypass.
-
+<h3><a href="labs/tier-5/5.1-helm-resolution/index.md">IaC Supply Chain</a></h3>
+<p>Helm poisoning, Terraform module attacks, Ansible Galaxy, and admission controller bypass.</p>
 <div class="lab-count">5 labs &middot; ~3 hours</div>
 </div>
 
-<div class="tier-card" markdown>
+<div class="tier-card">
 <span class="tier-number">TIER 6</span>
-
-### [Case Studies & Frontier Attacks](labs/tier-6/6.1-ml-model-supply-chain/index.md)
-
-AI/ML supply chain, firmware attacks, and major case studies. Advanced branch, not the default next step for every learner.
-
+<h3><a href="labs/tier-6/6.1-ml-model-supply-chain/index.md">Case Studies &amp; Frontier Attacks</a></h3>
+<p>AI/ML supply chain, firmware attacks, and major case studies. Advanced branch, not the default next step for every learner.</p>
 <div class="lab-count">10 labs &middot; ~6 hours</div>
 </div>
 
-<div class="tier-card" markdown>
+<div class="tier-card">
 <span class="tier-number">TIER 7</span>
-
-### [Response & Threat Modeling](labs/tier-7/7.2-incident-triage/index.md)
-
-Incident triage, IR playbooks, and threat modeling. Advanced branch for SOC and response-oriented learners.
-
+<h3><a href="labs/tier-7/7.2-incident-triage/index.md">Response &amp; Threat Modeling</a></h3>
+<p>Incident triage, IR playbooks, and threat modeling. Advanced branch for SOC and response-oriented learners.</p>
 <div class="lab-count">3 labs &middot; ~2 hours</div>
 </div>
 
@@ -142,8 +118,4 @@ Incident triage, IR playbooks, and threat modeling. Advanced branch for SOC and 
 
 ---
 
-<div style="text-align: center; margin: 2rem 0;" markdown>
-
-[Get Started](getting-started.md){ .cta-button }
-
-</div>
+<p align="center"><a href="getting-started.md">Get Started</a></p>

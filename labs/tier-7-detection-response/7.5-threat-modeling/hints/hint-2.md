@@ -38,3 +38,8 @@ Low           Low    Low      Med     High
 Map each threat to this matrix, then sort by risk score (Critical > High > Medium > Low).
 
 For gap analysis: check which threats are **already mitigated** by controls you built in Tiers 1-6 (version pinning, lockfile verification, signing, registry configuration). The unmitigated threats are your gaps.
+
+Save the outputs as:
+
+- `/app/work/threat-model.md`
+- `/app/work/risk-register.md`

@@ -142,5 +142,9 @@ LESSONS LEARNED (schedule within 5 business days)
 
 ---
 
-???+ success "Checkpoint"
-    You should have a complete playbook covering Preparation, Detection, Containment, Eradication, Recovery, and Lessons Learned. Walk through the Lab 7.2 scenario mentally and verify every step is covered.
+<details open>
+<summary>Checkpoint</summary>
+
+You should have a complete playbook covering Preparation, Detection, Containment, Eradication, Recovery, and Lessons Learned. Walk through the Lab 7.2 scenario mentally and verify every step is covered.
+
+</details>

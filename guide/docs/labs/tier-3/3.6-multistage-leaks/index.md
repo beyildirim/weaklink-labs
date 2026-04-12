@@ -36,8 +36,9 @@ graph LR
 | Workstation | `weaklink-ws` | Has docker CLI, dive, crane, and jq |
 | Registry | `registry:5000` | Local registry with pre-built images |
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [3.1 Container Image Internals](../3.1-image-internals/index.md) — Image internals including multi-stage build mechanics
-    - **See also:** [2.4 Secret Exfiltration from CI](../../tier-2/2.4-secret-exfiltration/index.md) — Both involve secrets leaking from build environments
-    - **See also:** [3.5 Layer Injection](../3.5-layer-injection/index.md) — Layer injection targets the same layer structure that leaks here
-    - **See also:** [4.2 SBOM Gaps in Practice](../../tier-4/4.2-sbom-gaps/index.md) — SBOM gaps miss dependencies only present in intermediate stages
+> **Related Labs**
+>
+> - **Prerequisite:** [3.1 Container Image Internals](../3.1-image-internals/index.md) — Image internals including multi-stage build mechanics
+> - **See also:** [2.4 Secret Exfiltration from CI](../../tier-2/2.4-secret-exfiltration/index.md) — Both involve secrets leaking from build environments
+> - **See also:** [3.5 Layer Injection](../3.5-layer-injection/index.md) — Layer injection targets the same layer structure that leaks here
+> - **See also:** [4.2 SBOM Gaps in Practice](../../tier-4/4.2-sbom-gaps/index.md) — SBOM gaps miss dependencies only present in intermediate stages

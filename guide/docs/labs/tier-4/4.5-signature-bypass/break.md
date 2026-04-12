@@ -58,10 +58,11 @@ cosign verify --key /app/cosign.pub registry:5000/weaklink-app:attacker-signed
 
 That is the bypass: a system that checks only “is there a valid signature?” can accept a malicious artifact if it does not pin the trusted key or signer identity tightly enough.
 
-!!! info "Related Variants"
-    Two other signature failure classes exist, but they are not the mainline attack in this lab:
-
-    - **No enforcement:** an unsigned artifact runs because verification never happens. That is already covered in Lab 4.3.
-    - **Replay or rollback:** an old valid signature is reused against a new artifact. Digest-bound signatures like cosign reduce this risk.
+> **Related Variants**
+>
+> Two other signature failure classes exist, but they are not the mainline attack in this lab:
+>
+> - **No enforcement:** an unsigned artifact runs because verification never happens. That is already covered in Lab 4.3.
+> - **Replay or rollback:** an old valid signature is reused against a new artifact. Digest-bound signatures like cosign reduce this risk.
 
 > **Checkpoint:** You should have one malicious image, `registry:5000/weaklink-app:attacker-signed`, that verifies with `/app/attacker-cosign.pub` and fails with `/app/cosign.pub`.

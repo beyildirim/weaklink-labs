@@ -37,8 +37,9 @@ graph LR
 | OCI Registry | `registry:5000` | Local registry with `webapp:1.0.0` |
 | Kubernetes | minikube cluster | Running deployment that pulls from the registry |
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [3.1 Container Image Internals](../3.1-image-internals/index.md) — Understanding layers and digests is essential before exploiting tags
-    - **Next:** [3.3 Base Image Poisoning](../3.3-base-image-poisoning/index.md) — Base image poisoning is a natural escalation from tag manipulation
-    - **See also:** [5.2 Helm Chart Poisoning](../../tier-5/5.2-helm-poisoning/index.md) — Helm chart poisoning uses similar mutable reference attacks
-    - **See also:** [4.5 Signature Bypass Attacks](../../tier-4/4.5-signature-bypass/index.md) — Signature bypass can defeat tag-pinning defenses
+> **Related Labs**
+>
+> - **Prerequisite:** [3.1 Container Image Internals](../3.1-image-internals/index.md) — Understanding layers and digests is essential before exploiting tags
+> - **Next:** [3.3 Base Image Poisoning](../3.3-base-image-poisoning/index.md) — Base image poisoning is a natural escalation from tag manipulation
+> - **See also:** [5.2 Helm Chart Poisoning](../../tier-5/5.2-helm-poisoning/index.md) — Helm chart poisoning uses similar mutable reference attacks
+> - **See also:** [4.5 Signature Bypass Attacks](../../tier-4/4.5-signature-bypass/index.md) — Signature bypass can defeat tag-pinning defenses

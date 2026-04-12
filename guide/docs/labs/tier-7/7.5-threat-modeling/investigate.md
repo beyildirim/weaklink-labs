@@ -71,7 +71,43 @@
 | TB-6 | Artifact publish | Docker images, tags |
 | TB-7 | Deployment sync | Container images, manifests |
 
+## Step 4: Save the map for verification
+
+```bash
+mkdir -p /app/work
+
+cat > /app/work/supply-chain-map.md <<'EOF'
+# Supply Chain Map
+
+## Trust boundaries
+
+- Trust boundary TB-1: Developer push -> source repository
+- Trust boundary TB-2: Source repository -> CI trigger
+- Trust boundary TB-3: CI runner -> Python dependency fetch
+- Trust boundary TB-4: CI runner -> secret injection
+- Trust boundary TB-5: CI runner -> Node.js dependency fetch
+- Trust boundary TB-6: CI runner -> artifact publish
+- Trust boundary TB-7: Artifact registry -> deployment sync
+
+## Boundary catalog
+
+| ID | Trust Boundary | Data Crossing |
+|----|---------------|---------------|
+| TB-1 | Developer push | Source code, commits, signatures |
+| TB-2 | CI trigger | Workflow definition, trigger event |
+| TB-3 | Python dependency fetch | Python packages (.tar.gz, .whl) |
+| TB-4 | Secret injection | API keys, tokens, credentials |
+| TB-5 | Node.js dependency fetch | npm packages (.tgz) |
+| TB-6 | Artifact publish | Docker images, tags |
+| TB-7 | Deployment sync | Container images, manifests |
+EOF
+```
+
 ---
 
-???+ success "Checkpoint"
-    You should have 7 trust boundaries mapped. For each, you should be able to name what data crosses and in which direction. This map is the input to STRIDE analysis.
+<details open>
+<summary>Checkpoint</summary>
+
+You should have 7 trust boundaries mapped in `/app/work/supply-chain-map.md`. For each, you should be able to name what data crosses and in which direction. This map is the input to STRIDE analysis.
+
+</details>

@@ -20,9 +20,9 @@
 
 `workflow_run` lets one workflow start after another completes. The triggered workflow **always runs on the default branch** with **write permissions**, regardless of what triggered the first workflow. A PR from a fork runs with read-only permissions, but the `workflow_run` workflow runs on `main` with full write access, secrets, and the GitHub token. Combining this with artifact passing creates a privilege escalation: the PR workflow uploads an artifact (PR author controls it), and the `workflow_run` workflow downloads and processes it with elevated privileges. This affected `actions/runner`, `microsoft/TypeScript`, and many others.
 
-!!! note "Platform Scope"
-    Gitea Actions does not support `workflow_run`. In this lab, the Break phase is a guided artifact-trust simulation: you will inspect the vulnerable workflow pair, manually construct the malicious artifact a PR build would produce, and then harden the deploy workflow that would be vulnerable on GitHub Actions.
-
+> **Platform Scope**
+>
+> Gitea Actions does not support `workflow_run`. In this lab, the Break phase is a guided artifact-trust simulation: you will inspect the vulnerable workflow pair, manually construct the malicious artifact a PR build would produce, and then harden the deploy workflow that would be vulnerable on GitHub Actions.
 ### Attack Flow
 
 ```mermaid
@@ -39,7 +39,8 @@ graph LR
 | Gitea | `gitea:3000` | Git server hosting `wl-webapp` with workflow_run triggers |
 | Workstation | (your shell) | Development environment |
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [2.2 Direct Poisoned Pipeline Execution](../2.2-direct-ppe/index.md) — Understanding PPE is essential for cross-workflow exploitation
-    - **Prerequisite:** [2.6 GitHub Actions Injection](../2.6-actions-injection/index.md) — Actions injection techniques combine with workflow_run triggers
-    - **See also:** [2.3 Indirect Poisoned Pipeline Execution](../2.3-indirect-ppe/index.md) — Indirect PPE uses similar indirection to trigger malicious execution
+> **Related Labs**
+>
+> - **Prerequisite:** [2.2 Direct Poisoned Pipeline Execution](../2.2-direct-ppe/index.md) — Understanding PPE is essential for cross-workflow exploitation
+> - **Prerequisite:** [2.6 GitHub Actions Injection](../2.6-actions-injection/index.md) — Actions injection techniques combine with workflow_run triggers
+> - **See also:** [2.3 Indirect Poisoned Pipeline Execution](../2.3-indirect-ppe/index.md) — Indirect PPE uses similar indirection to trigger malicious execution

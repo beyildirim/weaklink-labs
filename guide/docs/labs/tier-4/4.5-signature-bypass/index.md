@@ -36,9 +36,10 @@ graph LR
 | Registry | `registry:5000` | Contains signed, unsigned, and attacker-signed images |
 | Kubernetes | `kind-cluster` | Local cluster with optional policy controller |
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [4.3 Signing Fundamentals](../4.3-signing-fundamentals/index.md) — Understanding signatures before learning to bypass them
-    - **Next:** [4.6 Attestation Forgery](../4.6-attestation-forgery/index.md) — Attestation forgery extends bypass attacks to provenance
-    - **See also:** [4.7 SBOM Tampering](../4.7-sbom-tampering/index.md) — SBOM tampering bypasses integrity checks on metadata
-    - **See also:** [5.5 Kubernetes Admission Controller Bypass](../../tier-5/5.5-admission-controller-bypass/index.md) — Admission controller bypass defeats signature enforcement
-    - **Variant, not mainline here:** unsigned-image deployment is already covered in [4.3 Signing Fundamentals](../4.3-signing-fundamentals/index.md)
+> **Related Labs**
+>
+> - **Prerequisite:** [4.3 Signing Fundamentals](../4.3-signing-fundamentals/index.md) — Understanding signatures before learning to bypass them
+> - **Next:** [4.6 Attestation Forgery](../4.6-attestation-forgery/index.md) — Attestation forgery extends bypass attacks to provenance
+> - **See also:** [4.7 SBOM Tampering](../4.7-sbom-tampering/index.md) — SBOM tampering bypasses integrity checks on metadata
+> - **See also:** [5.5 Kubernetes Admission Controller Bypass](../../tier-5/5.5-admission-controller-bypass/index.md) — Admission controller bypass defeats signature enforcement
+> - **Variant, not mainline here:** unsigned-image deployment is already covered in [4.3 Signing Fundamentals](../4.3-signing-fundamentals/index.md)

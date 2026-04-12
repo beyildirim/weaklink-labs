@@ -34,8 +34,9 @@ graph LR
 
 This lab uses Gitea with **Gitea Actions** (fully compatible with GitHub Actions syntax). When you push code, Gitea checks `.gitea/workflows/` for YAML configs matching the event and spins up a **Runner** to execute the workflow steps.
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [0.1 How Version Control Works](../0.1-version-control/index.md) — CI/CD pipelines are triggered by version control events
-    - **Next:** [2.1 CI/CD Fundamentals](../../tier-2/2.1-cicd-fundamentals/index.md) — Deeper look at CI/CD security fundamentals
-    - **See also:** [2.2 Direct Poisoned Pipeline Execution](../../tier-2/2.2-direct-ppe/index.md) — How attackers poison the pipeline itself
-    - **See also:** [0.5 Artifacts & Registries](../0.5-artifacts-registries/index.md) — CI/CD pipelines push artifacts to registries
+> **Related Labs**
+>
+> - **Prerequisite:** [0.1 How Version Control Works](../0.1-version-control/index.md) — CI/CD pipelines are triggered by version control events
+> - **Next:** [2.1 CI/CD Fundamentals](../../tier-2/2.1-cicd-fundamentals/index.md) — Deeper look at CI/CD security fundamentals
+> - **See also:** [2.2 Direct Poisoned Pipeline Execution](../../tier-2/2.2-direct-ppe/index.md) — How attackers poison the pipeline itself
+> - **See also:** [0.5 Artifacts & Registries](../0.5-artifacts-registries/index.md) — CI/CD pipelines push artifacts to registries

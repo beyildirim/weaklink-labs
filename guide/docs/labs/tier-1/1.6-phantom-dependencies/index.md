@@ -42,8 +42,9 @@ The workspace contains:
 - `wl-framework@1.0.0` on the registry (depends on `debug@4.3.4`)
 - `wl-framework@2.0.0` ready to publish (drops `debug` dependency)
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [1.1 How Dependency Resolution Works](../1.1-dependency-resolution/index.md) — Dependency resolution creates the tree where phantom deps hide
-    - **Next:** [4.1 What SBOMs Actually Contain](../../tier-4/4.1-sbom-contents/index.md) — SBOMs are a key defense for tracking actual vs. declared dependencies
-    - **See also:** [1.4 Lockfile Injection](../1.4-lockfile-injection/index.md) — Lockfile injection similarly exploits metadata inconsistencies
-    - **See also:** [6.8 Case Study: event-stream](../../tier-6/6.8-case-study-event-stream/index.md) — event-stream exploited a package that most consumers used implicitly
+> **Related Labs**
+>
+> - **Prerequisite:** [1.1 How Dependency Resolution Works](../1.1-dependency-resolution/index.md) — Dependency resolution creates the tree where phantom deps hide
+> - **Next:** [4.1 What SBOMs Actually Contain](../../tier-4/4.1-sbom-contents/index.md) — SBOMs are a key defense for tracking actual vs. declared dependencies
+> - **See also:** [1.4 Lockfile Injection](../1.4-lockfile-injection/index.md) — Lockfile injection similarly exploits metadata inconsistencies
+> - **See also:** [6.8 Case Study: event-stream](../../tier-6/6.8-case-study-event-stream/index.md) — event-stream exploited a package that most consumers used implicitly

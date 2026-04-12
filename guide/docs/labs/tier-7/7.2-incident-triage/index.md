@@ -34,7 +34,8 @@ graph LR
     D --> E[Escalate and<br>contain]
 ```
 
-!!! tip "Related Labs"
-    - **Next:** [7.3 Incident Response Playbook](../7.3-ir-playbook/index.md) — IR playbooks formalize the triage process into response procedures
-    - **See also:** [6.7 Case Study: Codecov Bash Uploader](../../tier-6/6.7-case-study-codecov/index.md) — Codecov is a real-world triage scenario for CI supply chain breaches
-    - **See also:** [6.10 Case Study: Equifax Breach](../../tier-6/6.10-case-study-equifax/index.md) — Equifax shows consequences of poor incident triage
+> **Related Labs**
+>
+> - **Next:** [7.3 Incident Response Playbook](../7.3-ir-playbook/index.md) — IR playbooks formalize the triage process into response procedures
+> - **See also:** [6.7 Case Study: Codecov Bash Uploader](../../tier-6/6.7-case-study-codecov/index.md) — Codecov is a real-world triage scenario for CI supply chain breaches
+> - **See also:** [6.10 Case Study: Equifax Breach](../../tier-6/6.10-case-study-equifax/index.md) — Equifax shows consequences of poor incident triage

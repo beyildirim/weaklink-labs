@@ -37,8 +37,9 @@ graph LR
 | Workstation | `weaklink-ws` | Has syft, grype, cosign, jq, and a Python application |
 | Registry | `registry:5000` | Local registry with images and attached SBOMs |
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [4.1 What SBOMs Actually Contain](../4.1-sbom-contents/index.md) — Understanding SBOM contents before tampering with them
-    - **Prerequisite:** [4.3 Signing Fundamentals](../4.3-signing-fundamentals/index.md) — Signing is the primary defense against SBOM tampering
-    - **See also:** [4.2 SBOM Gaps in Practice](../4.2-sbom-gaps/index.md) — SBOM gaps and tampering both undermine dependency visibility
-    - **See also:** [1.4 Lockfile Injection](../../tier-1/1.4-lockfile-injection/index.md) — Lockfile injection is a similar metadata integrity attack
+> **Related Labs**
+>
+> - **Prerequisite:** [4.1 What SBOMs Actually Contain](../4.1-sbom-contents/index.md) — Understanding SBOM contents before tampering with them
+> - **Prerequisite:** [4.3 Signing Fundamentals](../4.3-signing-fundamentals/index.md) — Signing is the primary defense against SBOM tampering
+> - **See also:** [4.2 SBOM Gaps in Practice](../4.2-sbom-gaps/index.md) — SBOM gaps and tampering both undermine dependency visibility
+> - **See also:** [1.4 Lockfile Injection](../../tier-1/1.4-lockfile-injection/index.md) — Lockfile injection is a similar metadata integrity attack

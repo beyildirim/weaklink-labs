@@ -38,7 +38,8 @@ graph LR
 | Data Registry | `data-registry:8080` | Simulated dataset hosting service |
 | Workstation | `workstation` | Python ML environment with scikit-learn and data analysis tools |
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [6.1 AI/ML Model Supply Chain](../6.1-ml-model-supply-chain/index.md) — ML model supply chain context is essential for dataset attacks
-    - **See also:** [3.3 Base Image Poisoning](../../tier-3/3.3-base-image-poisoning/index.md) — Base image poisoning parallels training data poisoning
-    - **See also:** [2.7 Build Cache Poisoning](../../tier-2/2.7-build-cache-poisoning/index.md) — Build cache poisoning applies similar persistence to CI caches
+> **Related Labs**
+>
+> - **Prerequisite:** [6.1 AI/ML Model Supply Chain](../6.1-ml-model-supply-chain/index.md) — ML model supply chain context is essential for dataset attacks
+> - **See also:** [3.3 Base Image Poisoning](../../tier-3/3.3-base-image-poisoning/index.md) — Base image poisoning parallels training data poisoning
+> - **See also:** [2.7 Build Cache Poisoning](../../tier-2/2.7-build-cache-poisoning/index.md) — Build cache poisoning applies similar persistence to CI caches

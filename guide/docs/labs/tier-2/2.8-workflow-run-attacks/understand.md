@@ -51,5 +51,6 @@ Fork PR (untrusted)
             -> Executes it = RCE with secrets
 ```
 
-!!! note "Gitea limitation"
-    Gitea Actions does not support the `workflow_run` trigger. In this lab, you will manually construct the malicious artifact an untrusted PR build would upload, then compare it to the vulnerable `deploy.yml` workflow and harden that workflow for the GitHub Actions case.
+> **Gitea limitation**
+>
+> Gitea Actions does not support the `workflow_run` trigger. In this lab, you will manually construct the malicious artifact an untrusted PR build would upload, then compare it to the vulnerable `deploy.yml` workflow and harden that workflow for the GitHub Actions case.

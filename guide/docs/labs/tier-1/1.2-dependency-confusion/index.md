@@ -40,8 +40,9 @@ graph LR
 | Public PyPI | `pypi-public:8080` | Simulated public PyPI with attacker's `wl-auth==99.0.0` |
 
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [1.1 How Dependency Resolution Works](../1.1-dependency-resolution/index.md) — Understanding resolution is essential before exploiting it
-    - **Next:** [1.3 Typosquatting](../1.3-typosquatting/index.md) — Another package namespace attack using name similarity
-    - **See also:** [3.4 Registry Confusion](../../tier-3/3.4-registry-confusion/index.md) — Registry confusion applies the same concept to container images
-    - **See also:** [6.8 Case Study: event-stream](../../tier-6/6.8-case-study-event-stream/index.md) — event-stream used a similar trust exploitation vector
+> **Related Labs**
+>
+> - **Prerequisite:** [1.1 How Dependency Resolution Works](../1.1-dependency-resolution/index.md) — Understanding resolution is essential before exploiting it
+> - **Next:** [1.3 Typosquatting](../1.3-typosquatting/index.md) — Another package namespace attack using name similarity
+> - **See also:** [3.4 Registry Confusion](../../tier-3/3.4-registry-confusion/index.md) — Registry confusion applies the same concept to container images
+> - **See also:** [6.8 Case Study: event-stream](../../tier-6/6.8-case-study-event-stream/index.md) — event-stream used a similar trust exploitation vector

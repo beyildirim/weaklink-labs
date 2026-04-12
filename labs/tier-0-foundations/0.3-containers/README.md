@@ -320,10 +320,10 @@ Exit the workspace container:
 exit
 ```
 
-Run the verification script:
+Run the lab verifier from the repo root:
 
 ```bash
-bash verify.sh
+./cli/weaklink verify 0.3
 ```
 
 ---

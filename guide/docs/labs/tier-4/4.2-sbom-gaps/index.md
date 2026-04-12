@@ -37,8 +37,9 @@ graph LR
 | Workstation | `weaklink-ws` | Has syft, trivy, cdxgen, grype installed |
 | Registry | `registry:5000` | Contains `weaklink-app:vulnerable` with a vendored libxml2 |
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [4.1 What SBOMs Actually Contain](../4.1-sbom-contents/index.md) — Understanding SBOM contents before exploring their gaps
-    - **Next:** [4.7 SBOM Tampering](../4.7-sbom-tampering/index.md) — SBOM tampering exploits the trust placed in incomplete SBOMs
-    - **See also:** [1.6 Phantom Dependencies](../../tier-1/1.6-phantom-dependencies/index.md) — Phantom dependencies are a primary source of SBOM gaps
-    - **See also:** [3.6 Multi-Stage Build Leaks](../../tier-3/3.6-multistage-leaks/index.md) — Multi-stage leaks create dependencies invisible to SBOM tools
+> **Related Labs**
+>
+> - **Prerequisite:** [4.1 What SBOMs Actually Contain](../4.1-sbom-contents/index.md) — Understanding SBOM contents before exploring their gaps
+> - **Next:** [4.7 SBOM Tampering](../4.7-sbom-tampering/index.md) — SBOM tampering exploits the trust placed in incomplete SBOMs
+> - **See also:** [1.6 Phantom Dependencies](../../tier-1/1.6-phantom-dependencies/index.md) — Phantom dependencies are a primary source of SBOM gaps
+> - **See also:** [3.6 Multi-Stage Build Leaks](../../tier-3/3.6-multistage-leaks/index.md) — Multi-stage leaks create dependencies invisible to SBOM tools

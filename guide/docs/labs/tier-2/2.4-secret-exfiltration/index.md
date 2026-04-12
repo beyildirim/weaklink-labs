@@ -39,7 +39,8 @@ graph TD
 | Gitea | `gitea:3000` | Git server hosting `wl-webapp` with multiple CI secrets |
 | Workstation | (your shell) | Development environment |
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [2.1 CI/CD Fundamentals](../2.1-cicd-fundamentals/index.md) — Understanding CI environments is essential before exfiltrating their secrets
-    - **Next:** [2.5 Self-Hosted Runner Attacks](../2.5-self-hosted-runners/index.md) — Self-hosted runners expand the attack surface for secret access
-    - **See also:** [6.7 Case Study: Codecov Bash Uploader](../../tier-6/6.7-case-study-codecov/index.md) — Codecov exfiltrated CI secrets at massive scale
+> **Related Labs**
+>
+> - **Prerequisite:** [2.1 CI/CD Fundamentals](../2.1-cicd-fundamentals/index.md) — Understanding CI environments is essential before exfiltrating their secrets
+> - **Next:** [2.5 Self-Hosted Runner Attacks](../2.5-self-hosted-runners/index.md) — Self-hosted runners expand the attack surface for secret access
+> - **See also:** [6.7 Case Study: Codecov Bash Uploader](../../tier-6/6.7-case-study-codecov/index.md) — Codecov exfiltrated CI secrets at massive scale

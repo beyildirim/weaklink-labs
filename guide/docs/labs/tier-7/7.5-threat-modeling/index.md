@@ -30,7 +30,18 @@ graph LR
     D --> E[Plan<br>mitigations]
 ```
 
-!!! tip "Related Labs"
-    - **Prerequisite:** [7.3 Incident Response Playbook](../7.3-ir-playbook/index.md) — Response planning clarifies which trust boundaries matter most
-    - **See also:** [6.4 Multi-Vector Chained Attack](../../tier-6/6.4-multi-vector-attack/index.md) — Multi-vector attacks show why comprehensive threat modeling matters
-    - **See also:** [7.3 Incident Response Playbook](../7.3-ir-playbook/index.md) — IR playbooks address the threats identified through modeling
+## Deliverables
+
+This lab is verified from three files under `/app/work/`:
+
+- `supply-chain-map.md`
+- `threat-model.md`
+- `risk-register.md`
+
+Create those exact files as you work through the phases. The lab verifier reads them directly.
+
+> **Related Labs**
+>
+> - **Prerequisite:** [7.3 Incident Response Playbook](../7.3-ir-playbook/index.md) — Response planning clarifies which trust boundaries matter most
+> - **See also:** [6.4 Multi-Vector Chained Attack](../../tier-6/6.4-multi-vector-attack/index.md) — Multi-vector attacks show why comprehensive threat modeling matters
+> - **See also:** [7.3 Incident Response Playbook](../7.3-ir-playbook/index.md) — IR playbooks address the threats identified through modeling

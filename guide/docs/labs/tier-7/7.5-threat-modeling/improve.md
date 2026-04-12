@@ -38,6 +38,23 @@
 | **Quarter 2** | Enforce commit signing | Unsigned commits | Medium |
 | **Quarter 2** | Migrate CI to OIDC credentials | Secret exfiltration risk | High |
 
+## Save the risk register
+
+```bash
+mkdir -p /app/work
+
+cat > /app/work/risk-register.md <<'EOF'
+# Risk Register
+
+| Threat | Boundary | Likelihood | Impact | Existing control | Gap | Mitigation |
+|--------|----------|------------|--------|------------------|-----|------------|
+| Dependency confusion | TB-3 | Medium | Critical | Version pinning (partial) | Missing private-only index config | Fix pip config to use `--index-url` only |
+| Secret exfiltration via malicious package | TB-4 | Medium | Critical | None | Missing least-privilege secret scope | Scope CI secrets and move to OIDC where possible |
+| Over-privileged CI secrets | TB-4 | High | Critical | None | Excessive secret access | Restrict secrets per workflow and environment |
+| Typosquatting | TB-3 / TB-5 | Medium | High | None | No behavioral package review | Add allowlists, lockfiles, and dependency review |
+| Tampered lockfile | TB-1 | Medium | High | PR review (partial) | Missing automated validation | Add lockfile diff and integrity checks in CI |
+EOF
+```
 
 ## What You Learned
 

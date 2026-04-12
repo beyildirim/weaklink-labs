@@ -46,7 +46,8 @@ kubectl get pods --all-namespaces -o wide | grep privileged-miner
 
 One privileged workload is enough. Once a supposedly protected cluster has even one exempt namespace, the policy guarantee is gone.
 
-!!! info "Related Variants"
-    Other admission-controller gaps exist, including uncovered CRDs and post-admission mutations. They matter, but they are not the mainline attack in this lab.
+> **Related Variants**
+>
+> Other admission-controller gaps exist, including uncovered CRDs and post-admission mutations. They matter, but they are not the mainline attack in this lab.
 
 > **Checkpoint:** You should have one privileged pod, `privileged-miner`, running in the exempt `monitoring` namespace.

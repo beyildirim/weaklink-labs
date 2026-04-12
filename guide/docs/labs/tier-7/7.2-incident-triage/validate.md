@@ -69,21 +69,25 @@ Based on your blast radius assessment, fill in the containment actions. Think ab
 | P1 | ? | ? |
 | P2 | ? | ? |
 
-??? tip "Solution"
-    **Containment actions (expected):**
+<details>
+<summary>Solution</summary>
 
-    | Priority | Action | Owner |
-    |----------|--------|-------|
-    | P0 | Rotate ALL exposed AWS keys immediately | Platform team |
-    | P0 | Rotate Stripe secret key | Payment team |
-    | P0 | Revoke GH_TOKEN and issue new token with reduced scope | Security team |
-    | P0 | Rotate JWT signing key (will invalidate all sessions) | Auth team |
-    | P1 | Quarantine affected container images in registry | Platform team |
-    | P1 | Roll back api-service to last known-good version (v2.14.2) | SRE team |
-    | P1 | Block attacker C2 at firewall | Network team |
-    | P1 | Remove `internal-utils@99.0.0` from pip cache on all runners | Platform team |
-    | P2 | Fix pip configuration: replace `--extra-index-url` with `--index-url` | DevOps team |
-    | P2 | Scan AWS CloudTrail for unauthorized API calls using the stolen keys | Security team |
+**Containment actions (expected):**
+
+| Priority | Action | Owner |
+|----------|--------|-------|
+| P0 | Rotate ALL exposed AWS keys immediately | Platform team |
+| P0 | Rotate Stripe secret key | Payment team |
+| P0 | Revoke GH_TOKEN and issue new token with reduced scope | Security team |
+| P0 | Rotate JWT signing key (will invalidate all sessions) | Auth team |
+| P1 | Quarantine affected container images in registry | Platform team |
+| P1 | Roll back api-service to last known-good version (v2.14.2) | SRE team |
+| P1 | Block attacker C2 at firewall | Network team |
+| P1 | Remove `internal-utils@99.0.0` from pip cache on all runners | Platform team |
+| P2 | Fix pip configuration: replace `--extra-index-url` with `--index-url` | DevOps team |
+| P2 | Scan AWS CloudTrail for unauthorized API calls using the stolen keys | Security team |
+
+</details>
 
 ## Step 4: Check for secondary compromise
 

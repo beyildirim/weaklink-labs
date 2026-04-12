@@ -38,6 +38,51 @@ For each trust boundary, ask the six STRIDE questions: Can an attacker **S**poof
 
 **Gaps:** Using `--extra-index-url`, no hash verification, no behavioral analysis.
 
+## Save your STRIDE analysis
+
+Write your verification artifact before filling in the remaining boundaries:
+
+```bash
+mkdir -p /app/work
+
+cat > /app/work/threat-model.md <<'EOF'
+# Threat Model
+
+## TB-1: Developer push
+- Spoofing: spoofed commit author
+- Tampering: tampered lockfile
+- Repudiation: unsigned commits
+- Information disclosure: credential leak in commit
+Likelihood: Medium
+Impact: High
+
+## TB-3: Python dependency fetch
+- Spoofing: dependency confusion
+- Spoofing: typosquatting
+- Tampering: compromised maintainer or release artifact
+- Elevation of privilege: malicious setup.py during install
+Likelihood: Medium
+Impact: Critical
+
+## TB-4: Secret injection
+- Information disclosure: secret exfiltration via malicious dependency
+- Information disclosure: `pull_request_target` secret leak
+- Elevation of privilege: over-privileged CI secrets
+Likelihood: Medium
+Impact: Critical
+
+## TB-6: Artifact publish
+- Tampering: tag mutability
+- Repudiation: missing provenance
+Likelihood: Medium
+Impact: High
+
+## STRIDE summary
+Spoofing, tampering, repudiation, information disclosure, denial of service, and elevation of privilege
+all apply somewhere in the supply chain. Tampering and spoofing dominate most software supply chain attacks.
+EOF
+```
+
 ## Your turn: TB-4 (Secret injection)
 
 Apply STRIDE to the secret injection boundary. Secrets (API keys, tokens, credentials) are injected into CI runner environments during builds. Think about:
@@ -53,14 +98,18 @@ Apply STRIDE to the secret injection boundary. Secrets (API keys, tokens, creden
 
 **Gaps:** ?
 
-??? tip "Solution"
-    | Threat | STRIDE | Likelihood | Impact |
-    |--------|--------|:----------:|:------:|
-    | Over-privileged secrets | E | High | Critical |
-    | Secret exfiltration via malicious dep | I | Medium | Critical |
-    | `pull_request_target` secret leak | I | Medium | Critical |
+<details>
+<summary>Solution</summary>
 
-    **Gaps:** No least-privilege secret scoping, no OIDC-based short-lived credentials.
+| Threat | STRIDE | Likelihood | Impact |
+|--------|--------|:----------:|:------:|
+| Over-privileged secrets | E | High | Critical |
+| Secret exfiltration via malicious dep | I | Medium | Critical |
+| `pull_request_target` secret leak | I | Medium | Critical |
+
+**Gaps:** No least-privilege secret scoping, no OIDC-based short-lived credentials.
+
+</details>
 
 ## Your turn: TB-6 (Artifact publish)
 
@@ -75,13 +124,17 @@ Apply STRIDE to the artifact publish boundary. Docker images are pushed to ghcr.
 
 **Gaps:** ?
 
-??? tip "Solution"
-    | Threat | STRIDE | Likelihood | Impact |
-    |--------|--------|:----------:|:------:|
-    | Tag mutability | T | Medium | Critical |
-    | Missing provenance | R | High | High |
+<details>
+<summary>Solution</summary>
 
-    **Gaps:** No image signing (cosign), no SLSA provenance, tags not immutable.
+| Threat | STRIDE | Likelihood | Impact |
+|--------|--------|:----------:|:------:|
+| Tag mutability | T | Medium | Critical |
+| Missing provenance | R | High | High |
+
+**Gaps:** No image signing (cosign), no SLSA provenance, tags not immutable.
+
+</details>
 
 ## Build the full STRIDE summary
 
@@ -100,16 +153,20 @@ Using the worked examples above and your own analysis of TB-4 and TB-6, fill in 
 
 Which STRIDE category dominates? What does that tell you about supply chain attacks?
 
-??? tip "Solution"
-    | Trust Boundary | S | T | R | I | D | E | Total |
-    |---------------|:-:|:-:|:-:|:-:|:-:|:-:|:-----:|
-    | TB-1: Developer push | 1 | 1 | 1 | 1 | 0 | 0 | 4 |
-    | TB-2: CI trigger | 0 | 1 | 0 | 0 | 1 | 1 | 3 |
-    | TB-3: Python deps | 2 | 1 | 0 | 0 | 0 | 1 | 4 |
-    | TB-4: Secret injection | 0 | 0 | 0 | 2 | 0 | 1 | 3 |
-    | TB-5: Node.js deps | 2 | 1 | 0 | 0 | 0 | 1 | 4 |
-    | TB-6: Artifact publish | 0 | 2 | 1 | 0 | 0 | 0 | 3 |
-    | TB-7: Deployment sync | 1 | 1 | 0 | 0 | 1 | 0 | 3 |
-    | **Total** | **6** | **7** | **2** | **3** | **2** | **4** | **24** |
+<details>
+<summary>Solution</summary>
 
-    Tampering (T) and Spoofing (S) dominate. This matches reality: most real-world supply chain attacks involve impersonating a trusted source or modifying a trusted artifact.
+| Trust Boundary | S | T | R | I | D | E | Total |
+|---------------|:-:|:-:|:-:|:-:|:-:|:-:|:-----:|
+| TB-1: Developer push | 1 | 1 | 1 | 1 | 0 | 0 | 4 |
+| TB-2: CI trigger | 0 | 1 | 0 | 0 | 1 | 1 | 3 |
+| TB-3: Python deps | 2 | 1 | 0 | 0 | 0 | 1 | 4 |
+| TB-4: Secret injection | 0 | 0 | 0 | 2 | 0 | 1 | 3 |
+| TB-5: Node.js deps | 2 | 1 | 0 | 0 | 0 | 1 | 4 |
+| TB-6: Artifact publish | 0 | 2 | 1 | 0 | 0 | 0 | 3 |
+| TB-7: Deployment sync | 1 | 1 | 0 | 0 | 1 | 0 | 3 |
+| **Total** | **6** | **7** | **2** | **3** | **2** | **4** | **24** |
+
+Tampering (T) and Spoofing (S) dominate. This matches reality: most real-world supply chain attacks involve impersonating a trusted source or modifying a trusted artifact.
+
+</details>
