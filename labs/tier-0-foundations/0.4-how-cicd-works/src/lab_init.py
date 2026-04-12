@@ -5,16 +5,17 @@ from weaklink_platform.lab_runtime import InitContext, InitResult, main_init
 
 
 def run(context: InitContext) -> InitResult:
-    repo_name = "ci-demo"
+    repo_name = 'ci-demo'
+    worktree = context.workspace_root / repo_name
     reset_gitea_repo(repo_name, delete_existing=True)
     seed_git_repo_from_source(
-        source_dir=context.lab_root / "repo",
-        repo_dir=context.repos_root / repo_name,
+        source_dir=context.lab_root / 'repo',
+        repo_dir=worktree,
         repo_name=repo_name,
-        commit_message="Initial CI pipeline setup",
+        commit_message='Initial CI pipeline setup',
     )
     return InitResult(workdir=context.default_workdir)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     raise SystemExit(main_init(run))

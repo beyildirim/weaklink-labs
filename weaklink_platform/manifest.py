@@ -230,8 +230,8 @@ def lint_labs(
             if not guide_index.exists():
                 errors.append(f"{lab_dir}: missing guide index at {guide_index}")
 
-            if not (lab_dir / "verify.sh").exists() and not (lab_dir / "verify.py").exists():
-                errors.append(f"{lab_dir}: missing verify.sh or verify.py")
+            if not (lab_dir / "verify.py").exists():
+                errors.append(f"{lab_dir}: missing verify.py")
 
             if not (lab_dir / "src").exists():
                 errors.append(f"{lab_dir}: missing src/ directory")

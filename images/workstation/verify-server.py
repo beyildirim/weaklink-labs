@@ -80,7 +80,6 @@ class VerifyHandler(BaseHTTPRequestHandler):
             self.send_error(400)
             return
         lab_dir = resolve_lab_path(lab_id)
-        verify_script = lab_dir / "verify.sh" if lab_dir else None
         if not lab_dir or not lab_dir.exists():
             self._respond({"passed": False, "checks": [], "error": f"No verifier for lab {lab_id}"})
             return

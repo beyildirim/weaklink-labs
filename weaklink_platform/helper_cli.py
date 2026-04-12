@@ -89,7 +89,7 @@ def cmd_shell(_: argparse.Namespace) -> int:
 def cmd_verify(args: argparse.Namespace) -> int:
     _check_cluster()
     lab = _require_lab(args.lab_id)
-    if not (lab.lab_dir / "verify.sh").exists() and not (lab.lab_dir / "verify.py").exists():
+    if not (lab.lab_dir / "verify.py").exists():
         print(colorize(f"No verification script for lab {lab.lab_id}.", Style.YELLOW))
         return 1
     pod = _get_workstation_pod()

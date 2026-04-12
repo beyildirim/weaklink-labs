@@ -24,8 +24,7 @@ Every lab lives under `labs/tier-N-topic/N.X-lab-name/`:
 ```
 labs/tier-1-package-security/1.2-dependency-confusion/
 ├── lab.yml              # Metadata (required)
-├── verify.sh            # Completion check (required fallback)
-├── verify.py            # Preferred Python verifier for platform-owned checks
+├── verify.py            # Completion check (required)
 ├── hints/               # Progressive hints
 │   ├── hint-1.md
 │   ├── hint-2.md
@@ -44,7 +43,7 @@ Each lab also has a corresponding guide section under `guide/docs/labs/tier-N/N.
 mkdir -p labs/tier-N-topic/N.X-lab-name/{src,hints,solution}
 ```
 
-Create the required files: `lab.yml`, one verifier entrypoint (`verify.py` preferred, `verify.sh` supported), and `hints/hint-1.md` through `hint-3.md`.
+Create the required files: `lab.yml`, `verify.py`, and `hints/hint-1.md` through `hint-3.md`.
 
 ### 2. Write lab.yml
 
@@ -65,16 +64,14 @@ phase_detect: "What the learner detects in phase 4"
 
 ### 3. Write verification
 
-- Prefer `verify.py` for platform-owned validation logic
-- Keep `verify.sh` when the shell is part of the lesson or you need compatibility with older labs
-- Either verifier must return exit code 0 on success and non-zero on failure
+- Use `verify.py` for lab verification logic
+- The verifier must return exit code 0 on success and non-zero on failure
 - Print clear messages about what passed and what failed
 - Check the **defense**, not just the attack (the user should have fixed the issue)
 
 ### 4. Optional lab initialization hook
 
-- Prefer `src/lab_init.py` for behind-the-scenes setup logic
-- Keep `src/lab-init.sh` when you need compatibility or the setup is intentionally shell-based
+- Use `src/lab_init.py` for behind-the-scenes setup logic
 - Learner-visible scripts under `src/scripts/` should stay in the language that teaches the lesson best
 
 ### 5. Add the lab guide page

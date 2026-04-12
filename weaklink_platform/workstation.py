@@ -97,7 +97,7 @@ def initialize_lab(lab_id: str, *, paths: WorkstationPaths = WorkstationPaths())
     init_result = _run_lab_hook(lab_id, lab_work, paths=paths)
     write_env_exports(paths.env_file, init_result.env)
 
-    for pattern in ("Dockerfile.*", "build-packages.sh", "entrypoint.sh", "lab-init.sh", "packages"):
+    for pattern in ("Dockerfile.*", "build-packages.sh", "entrypoint.sh", "lab_init.py", "verify.py", "packages"):
         for path in paths.app_root.glob(pattern):
             if path.is_dir():
                 shutil.rmtree(path)

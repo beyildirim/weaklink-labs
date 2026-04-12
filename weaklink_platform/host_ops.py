@@ -517,7 +517,7 @@ def smoke_test(namespace: str = NAMESPACE, workstation_selector: str = "app.kube
 
     lab_count, verify_count, guide_count = count_lab_inventory()
     print(
-        f"Content inventory: {lab_count} lab manifests, {verify_count} verify scripts, {guide_count} guide index pages"
+        f"Content inventory: {lab_count} lab manifests, {verify_count} Python verifiers, {guide_count} guide index pages"
     )
     if lab_count != verify_count or lab_count != guide_count:
         raise RuntimeError("Lab content counts do not match.")
@@ -538,9 +538,8 @@ test -n "$workdir"
 test -d "$workdir"
 test -d '/home/labs/{lab.lab_id}'
 test -d /app
-test -f '/home/labs/{lab.lab_id}/verify.sh' || test -f '/home/labs/{lab.lab_id}/verify.py'
-if test -f '/home/labs/{lab.lab_id}/verify.sh'; then bash -n '/home/labs/{lab.lab_id}/verify.sh'; fi
-if test -f '/home/labs/{lab.lab_id}/verify.py'; then python3 -m py_compile '/home/labs/{lab.lab_id}/verify.py'; fi
+test -f '/home/labs/{lab.lab_id}/verify.py'
+python3 -m py_compile '/home/labs/{lab.lab_id}/verify.py'
 """
         result = run(
             ["kubectl", "exec", workstation_pod, "--namespace", namespace, "--", "bash", "-lc", script],

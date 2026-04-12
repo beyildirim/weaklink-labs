@@ -24,15 +24,21 @@ def test_initialize_lab_copies_files_and_tracks_workdir(tmp_path: Path) -> None:
     (golden_lab / "app" / "hello.txt").write_text("hello\n")
     (golden_lab / "packages").mkdir()
     (golden_lab / "build-packages.sh").write_text("echo build\n")
-    hook = golden_lab / "lab-init.sh"
-    hook.write_text(
-        f"""#!/bin/bash
-mkdir -p "{paths.workspace_root / 'custom'}"
-echo 'export SECRET_API_KEY=\"test\"' > "{paths.env_file}"
-WORKDIR="{paths.workspace_root / 'custom'}"
+    (golden_lab / "lab_init.py").write_text(
+        """
+from weaklink_platform.lab_runtime import InitContext, InitResult, main_init
+
+
+def run(context: InitContext) -> InitResult:
+    target = context.workspace_root / "custom"
+    target.mkdir(parents=True, exist_ok=True)
+    return InitResult(workdir=target, env={"SECRET_API_KEY": "test"})
+
+
+if __name__ == "__main__":
+    raise SystemExit(main_init(run))
 """
     )
-    hook.chmod(0o755)
 
     exit_code = initialize_lab("1.0", paths=paths)
 
@@ -60,57 +66,12 @@ def test_reset_lab_uses_current_lab_file_when_no_argument(tmp_path: Path) -> Non
     assert (paths.app_root / "note.txt").read_text() == "hi\n"
 
 
-def test_initialize_lab_tolerates_nonzero_hook_and_uses_env_workdir(tmp_path: Path) -> None:
+def test_initialize_lab_without_hook_uses_default_workdir(tmp_path: Path) -> None:
     paths = _make_paths(tmp_path)
     golden_lab = paths.golden_root / "2.1"
     golden_lab.mkdir(parents=True)
-    hook = golden_lab / "lab-init.sh"
-    hook.write_text(
-        f"""#!/bin/bash
-echo "[setup] creating repo"
-echo 'export WORKDIR="{paths.workspace_root / "repo"}"' > "{paths.env_file}"
-bash -lc 'exit 1'
-"""
-    )
-    hook.chmod(0o755)
 
     exit_code = initialize_lab("2.1", paths=paths)
 
     assert exit_code == 0
-    assert paths.workdir_file.read_text() == str(paths.workspace_root / "repo")
-
-
-def test_initialize_lab_prefers_python_hook_over_shell(tmp_path: Path) -> None:
-    paths = _make_paths(tmp_path)
-    golden_lab = paths.golden_root / "3.0"
-    golden_lab.mkdir(parents=True)
-    (golden_lab / "lab_init.py").write_text(
-        """
-from weaklink_platform.lab_runtime import InitContext, InitResult, main_init
-
-
-def run(context: InitContext) -> InitResult:
-    return InitResult(
-        workdir=context.workspace_root / "python-hook",
-        env={"FROM_PYTHON": "yes"},
-    )
-
-
-if __name__ == "__main__":
-    raise SystemExit(main_init(run))
-"""
-    )
-    hook = golden_lab / "lab-init.sh"
-    hook.write_text(
-        f"""#!/bin/bash
-echo 'export FROM_SHELL=yes' > "{paths.env_file}"
-WORKDIR="{paths.workspace_root / 'shell-hook'}"
-"""
-    )
-    hook.chmod(0o755)
-
-    exit_code = initialize_lab("3.0", paths=paths)
-
-    assert exit_code == 0
-    assert paths.workdir_file.read_text() == str(paths.workspace_root / "python-hook")
-    assert "FROM_PYTHON" in paths.env_file.read_text()
+    assert paths.workdir_file.read_text() == str(paths.app_root)

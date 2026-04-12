@@ -6,7 +6,7 @@ from weaklink_platform.lab_runtime import execute_lab_verifier
 from weaklink_platform.manifest import lint_labs, load_lab_manifest
 
 
-def test_execute_lab_verifier_prefers_python_verifier(tmp_path: Path) -> None:
+def test_execute_lab_verifier_uses_python_verifier(tmp_path: Path) -> None:
     lab_dir = tmp_path / "9.9"
     lab_dir.mkdir()
     (lab_dir / "verify.py").write_text(
@@ -22,12 +22,21 @@ if __name__ == "__main__":
     raise SystemExit(main_verify(run))
 """
     )
-    (lab_dir / "verify.sh").write_text("#!/bin/bash\nexit 1\n")
-
     result = execute_lab_verifier("9.9", lab_dir=lab_dir)
 
     assert result.passed is True
     assert result.checks[0].message == "verified 9.9"
+
+
+def test_execute_lab_verifier_rejects_shell_only_lab(tmp_path: Path) -> None:
+    lab_dir = tmp_path / "9.8"
+    lab_dir.mkdir()
+    (lab_dir / "verify.sh").write_text("#!/bin/bash\nexit 0\n")
+
+    result = execute_lab_verifier("9.8", lab_dir=lab_dir)
+
+    assert result.passed is False
+    assert result.error == "No verify.py for lab 9.8"
 
 
 def test_load_lab_manifest_supports_response_phase_shape() -> None:

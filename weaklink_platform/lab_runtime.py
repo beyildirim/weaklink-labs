@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import os
 import shlex
@@ -8,6 +9,8 @@ import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, Sequence
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
 
 CURRENT_LAB_FILE = Path("/tmp/.weaklink-current-lab")
@@ -78,6 +81,86 @@ class VerificationResult:
 
 InitHook = Callable[[InitContext], InitResult]
 Verifier = Callable[[VerificationContext], VerificationResult]
+
+
+def pass_check(message: str) -> VerificationCheck:
+    return VerificationCheck(status="pass", message=message)
+
+
+def fail_check(message: str) -> VerificationCheck:
+    return VerificationCheck(status="fail", message=message)
+
+
+def info_check(message: str) -> VerificationCheck:
+    return VerificationCheck(status="info", message=message)
+
+
+def result_from_checks(
+    checks: Sequence[VerificationCheck],
+    *,
+    error: str | None = None,
+) -> VerificationResult:
+    return VerificationResult(
+        passed=all(check.status != "fail" for check in checks),
+        checks=tuple(checks),
+        error=error,
+    )
+
+
+def run_command(
+    args: Sequence[str],
+    *,
+    cwd: Path | None = None,
+    env: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess[str]:
+    merged_env = os.environ.copy()
+    if env:
+        merged_env.update(env)
+    return subprocess.run(
+        list(args),
+        cwd=str(cwd) if cwd else None,
+        env=merged_env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
+def http_get(
+    url: str,
+    *,
+    auth: tuple[str, str] | None = None,
+    timeout: float = 3.0,
+) -> str:
+    headers: dict[str, str] = {}
+    if auth:
+        token = base64.b64encode(f"{auth[0]}:{auth[1]}".encode()).decode()
+        headers["Authorization"] = f"Basic {token}"
+    request = Request(url, headers=headers)
+    with urlopen(request, timeout=timeout) as response:
+        return response.read().decode()
+
+
+def http_get_json(
+    url: str,
+    *,
+    auth: tuple[str, str] | None = None,
+    timeout: float = 3.0,
+) -> object:
+    return json.loads(http_get(url, auth=auth, timeout=timeout))
+
+
+def http_ok(
+    url: str,
+    *,
+    auth: tuple[str, str] | None = None,
+    timeout: float = 3.0,
+) -> bool:
+    try:
+        http_get(url, auth=auth, timeout=timeout)
+        return True
+    except (HTTPError, URLError, TimeoutError, ValueError):
+        return False
 
 
 def _path_from_env(name: str, default: Path) -> Path:
@@ -209,24 +292,8 @@ def run_command_checks(
     return VerificationResult(passed=not failed, checks=tuple(results))
 
 
-def parse_shell_verifier_output(stdout: str) -> tuple[VerificationCheck, ...]:
-    checks: list[VerificationCheck] = []
-    for raw_line in stdout.splitlines():
-        line = raw_line.strip()
-        if not line:
-            continue
-        upper = line.upper()
-        if "PASS" in upper or "✓" in line or "✅" in line:
-            checks.append(VerificationCheck(status="pass", message=line))
-        elif "FAIL" in upper or "✗" in line or "❌" in line:
-            checks.append(VerificationCheck(status="fail", message=line))
-        else:
-            checks.append(VerificationCheck(status="info", message=line))
-    return tuple(checks)
-
-
 def verifier_exists(lab_dir: Path) -> bool:
-    return (lab_dir / "verify.py").exists() or (lab_dir / "verify.sh").exists()
+    return (lab_dir / "verify.py").exists()
 
 
 def _init_env(
@@ -255,49 +322,6 @@ def _init_env(
     return _with_package_pythonpath(env)
 
 
-def _resolve_init_hook(lab_root: Path, name: str) -> Path | None:
-    candidates = (
-        lab_root / "src" / name,
-        lab_root / name,
-    )
-    for candidate in candidates:
-        if candidate.exists():
-            return candidate
-    return None
-
-
-def _execute_shell_init(hook: Path | None, *, app_root: Path, env_file: Path, env: dict[str, str]) -> InitResult:
-    if hook is None or not hook.exists():
-        return InitResult(workdir=app_root)
-
-    env_file.unlink(missing_ok=True)
-    sentinel = "__WEAKLINK_WORKDIR__="
-    quoted_hook = shlex.quote(str(hook))
-    quoted_env_file = shlex.quote(str(env_file))
-    command = (
-        f"WORKDIR={shlex.quote(str(app_root))}\n"
-        f"source {quoted_hook} >&2\n"
-        f"if [ -f {quoted_env_file} ]; then\n"
-        f"  source {quoted_env_file}\n"
-        "fi\n"
-        f'printf "{sentinel}%s\\n" "${{WORKDIR:-/app}}"\n'
-    )
-    completed = subprocess.run(
-        ["bash", "-lc", command],
-        capture_output=True,
-        text=True,
-        check=False,
-        env=env,
-    )
-    workdir = app_root
-    for line in reversed(completed.stdout.splitlines()):
-        if line.startswith(sentinel):
-            value = line.removeprefix(sentinel).strip()
-            workdir = Path(value) if value else app_root
-            break
-    return InitResult(workdir=workdir, env=read_env_exports(env_file))
-
-
 def execute_lab_init(
     *,
     lab_id: str,
@@ -318,34 +342,29 @@ def execute_lab_init(
         env_file=env_file,
     )
 
-    python_hook = _resolve_init_hook(lab_root, "lab_init.py")
-    if python_hook is not None:
-        env_file.unlink(missing_ok=True)
-        completed = subprocess.run(
-            ["python3", str(python_hook), "--json"],
-            capture_output=True,
-            text=True,
-            check=False,
-            env=env,
-        )
-        stdout = completed.stdout.strip()
-        if stdout:
-            try:
-                payload = json.loads(stdout.splitlines()[-1])
-                workdir = payload.get("workdir") or str(app_root)
-                raw_env = payload.get("env") or {}
-                parsed_env = {str(name): str(value) for name, value in dict(raw_env).items()}
-                return InitResult(workdir=Path(str(workdir)), env=parsed_env)
-            except (json.JSONDecodeError, TypeError, ValueError):
-                pass
-        return InitResult(workdir=app_root, env=read_env_exports(env_file))
+    python_hook = lab_root / "lab_init.py"
+    if not python_hook.exists():
+        return InitResult(workdir=app_root)
 
-    return _execute_shell_init(
-        _resolve_init_hook(lab_root, "lab-init.sh"),
-        app_root=app_root,
-        env_file=env_file,
+    env_file.unlink(missing_ok=True)
+    completed = subprocess.run(
+        ["python3", str(python_hook), "--json"],
+        capture_output=True,
+        text=True,
+        check=False,
         env=env,
     )
+    stdout = completed.stdout.strip()
+    if stdout:
+        try:
+            payload = json.loads(stdout.splitlines()[-1])
+            workdir = payload.get("workdir") or str(app_root)
+            raw_env = payload.get("env") or {}
+            parsed_env = {str(name): str(value) for name, value in dict(raw_env).items()}
+            return InitResult(workdir=Path(str(workdir)), env=parsed_env)
+        except (json.JSONDecodeError, TypeError, ValueError):
+            pass
+    return InitResult(workdir=app_root, env=read_env_exports(env_file))
 
 
 def _verifier_env(lab_id: str, lab_dir: Path) -> dict[str, str]:
@@ -371,7 +390,6 @@ def execute_lab_verifier(
     env = _verifier_env(lab_id, resolved_lab_dir)
 
     python_verifier = resolved_lab_dir / "verify.py"
-    shell_verifier = resolved_lab_dir / "verify.sh"
 
     try:
         if python_verifier.exists():
@@ -397,21 +415,6 @@ def execute_lab_verifier(
                 checks=checks,
                 error=str(payload["error"]) if payload.get("error") else None,
             )
-
-        if shell_verifier.exists():
-            completed = subprocess.run(
-                ["bash", str(shell_verifier)],
-                capture_output=True,
-                text=True,
-                timeout=timeout,
-                env=env,
-                check=False,
-            )
-            return VerificationResult(
-                passed=completed.returncode == 0,
-                checks=parse_shell_verifier_output(completed.stdout),
-                error=completed.stderr.strip() if completed.returncode != 0 and completed.stderr.strip() else None,
-            )
     except subprocess.TimeoutExpired:
         return VerificationResult(False, (), error="Verification timed out")
     except json.JSONDecodeError as exc:
@@ -419,7 +422,7 @@ def execute_lab_verifier(
     except Exception as exc:  # pragma: no cover - defensive runtime path
         return VerificationResult(False, (), error=str(exc))
 
-    return VerificationResult(False, (), error=f"No verify.py or verify.sh for lab {lab_id}")
+    return VerificationResult(False, (), error=f"No verify.py for lab {lab_id}")
 
 
 def main(argv: list[str] | None = None) -> int:

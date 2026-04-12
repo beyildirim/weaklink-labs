@@ -117,10 +117,9 @@ for lab_dir in sorted(raw_root.glob("tier-*/*")):
         continue
     target_dir = target_root / manifest.id
     shutil.copytree(src_dir, target_dir, dirs_exist_ok=True)
-    for entrypoint in ("verify.sh", "verify.py"):
-        source = lab_dir / entrypoint
-        if source.exists():
-            shutil.copy2(source, target_dir / entrypoint)
+    source = lab_dir / "verify.py"
+    if source.exists():
+        shutil.copy2(source, target_dir / "verify.py")
 shutil.rmtree(raw_root)
 PY
 
