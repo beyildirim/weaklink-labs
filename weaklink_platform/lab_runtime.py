@@ -395,13 +395,13 @@ def execute_lab_verifier(
     timeout: int = 30,
 ) -> VerificationResult:
     try:
+        resolved_labs_root = labs_root.resolve(strict=False)
         if lab_dir is not None:
             resolved_lab_dir = lab_dir.resolve(strict=False)
         else:
-            resolved_labs_root = labs_root.resolve(strict=False)
             safe_lab_id = _validated_lab_id(lab_id)
             resolved_lab_dir = (resolved_labs_root / safe_lab_id).resolve(strict=False)
-            resolved_lab_dir.relative_to(resolved_labs_root)
+        resolved_lab_dir.relative_to(resolved_labs_root)
         python_verifier = (resolved_lab_dir / "verify.py").resolve(strict=False)
         python_verifier.relative_to(resolved_lab_dir)
     except ValueError:
