@@ -396,11 +396,13 @@ def execute_lab_verifier(
 ) -> VerificationResult:
     try:
         resolved_labs_root = labs_root.resolve(strict=False)
+        safe_lab_id = _validated_lab_id(lab_id)
+        expected_lab_dir = (resolved_labs_root / safe_lab_id).resolve(strict=False)
         if lab_dir is not None:
-            resolved_lab_dir = lab_dir.resolve(strict=False)
-        else:
-            safe_lab_id = _validated_lab_id(lab_id)
-            resolved_lab_dir = (resolved_labs_root / safe_lab_id).resolve(strict=False)
+            provided_lab_dir = lab_dir.resolve(strict=False)
+            if provided_lab_dir != expected_lab_dir:
+                raise ValueError(f"Lab directory does not match lab id: {lab_id}")
+        resolved_lab_dir = expected_lab_dir
         resolved_lab_dir.relative_to(resolved_labs_root)
         python_verifier = (resolved_lab_dir / "verify.py").resolve(strict=False)
         python_verifier.relative_to(resolved_lab_dir)
