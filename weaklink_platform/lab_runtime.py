@@ -4,6 +4,7 @@ import argparse
 import base64
 import json
 import os
+import re
 import shlex
 import subprocess
 from dataclasses import dataclass, field
@@ -19,6 +20,7 @@ DEFAULT_APP_ROOT = Path("/app")
 DEFAULT_REPOS_ROOT = Path("/repos")
 DEFAULT_WORKSPACE_ROOT = Path("/workspace")
 DEFAULT_LABS_ROOT = Path("/opt/labs")
+LAB_ID_PATTERN = re.compile(r"\d+\.\d+")
 
 
 def _package_root() -> Path:
@@ -226,6 +228,12 @@ def read_env_exports(path: Path) -> dict[str, str]:
     return env
 
 
+def _validated_lab_id(lab_id: str) -> str:
+    if not LAB_ID_PATTERN.fullmatch(lab_id):
+        raise ValueError(f"Invalid lab id: {lab_id}")
+    return lab_id
+
+
 def main_init(callback: InitHook, argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("--json", action="store_true")
@@ -386,10 +394,22 @@ def execute_lab_verifier(
     labs_root: Path = DEFAULT_LABS_ROOT,
     timeout: int = 30,
 ) -> VerificationResult:
-    resolved_lab_dir = lab_dir or (labs_root / lab_id)
-    env = _verifier_env(lab_id, resolved_lab_dir)
+    try:
+        resolved_labs_root = labs_root.resolve(strict=False)
+        safe_lab_id = _validated_lab_id(lab_id)
+        expected_lab_dir = (resolved_labs_root / safe_lab_id).resolve(strict=False)
+        if lab_dir is not None:
+            provided_lab_dir = lab_dir.resolve(strict=False)
+            if provided_lab_dir != expected_lab_dir:
+                raise ValueError(f"Lab directory does not match lab id: {lab_id}")
+        resolved_lab_dir = expected_lab_dir
+        resolved_lab_dir.relative_to(resolved_labs_root)
+        python_verifier = (resolved_lab_dir / "verify.py").resolve(strict=False)
+        python_verifier.relative_to(resolved_lab_dir)
+    except ValueError:
+        return VerificationResult(False, (), error=f"Invalid lab path for lab {lab_id}")
 
-    python_verifier = resolved_lab_dir / "verify.py"
+    env = _verifier_env(lab_id, resolved_lab_dir)
 
     try:
         if python_verifier.exists():
