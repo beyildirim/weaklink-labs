@@ -4,6 +4,7 @@ import argparse
 import base64
 import json
 import os
+import re
 import shlex
 import subprocess
 from dataclasses import dataclass, field
@@ -19,6 +20,7 @@ DEFAULT_APP_ROOT = Path("/app")
 DEFAULT_REPOS_ROOT = Path("/repos")
 DEFAULT_WORKSPACE_ROOT = Path("/workspace")
 DEFAULT_LABS_ROOT = Path("/opt/labs")
+LAB_ID_PATTERN = re.compile(r"\d+\.\d+")
 
 
 def _package_root() -> Path:
@@ -226,11 +228,10 @@ def read_env_exports(path: Path) -> dict[str, str]:
     return env
 
 
-def _resolve_descendant(root: Path, child: str | Path) -> Path:
-    resolved_root = root.resolve(strict=False)
-    resolved_child = (resolved_root / child).resolve(strict=False)
-    resolved_child.relative_to(resolved_root)
-    return resolved_child
+def _validated_lab_id(lab_id: str) -> str:
+    if not LAB_ID_PATTERN.fullmatch(lab_id):
+        raise ValueError(f"Invalid lab id: {lab_id}")
+    return lab_id
 
 
 def main_init(callback: InitHook, argv: list[str] | None = None) -> int:
@@ -395,10 +396,14 @@ def execute_lab_verifier(
 ) -> VerificationResult:
     try:
         if lab_dir is not None:
-            resolved_lab_dir = _resolve_descendant(lab_dir.parent, lab_dir.name)
+            resolved_lab_dir = lab_dir.resolve(strict=False)
         else:
-            resolved_lab_dir = _resolve_descendant(labs_root, lab_id)
-        python_verifier = _resolve_descendant(resolved_lab_dir, "verify.py")
+            resolved_labs_root = labs_root.resolve(strict=False)
+            safe_lab_id = _validated_lab_id(lab_id)
+            resolved_lab_dir = (resolved_labs_root / safe_lab_id).resolve(strict=False)
+            resolved_lab_dir.relative_to(resolved_labs_root)
+        python_verifier = (resolved_lab_dir / "verify.py").resolve(strict=False)
+        python_verifier.relative_to(resolved_lab_dir)
     except ValueError:
         return VerificationResult(False, (), error=f"Invalid lab path for lab {lab_id}")
 
