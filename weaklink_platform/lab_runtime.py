@@ -226,6 +226,13 @@ def read_env_exports(path: Path) -> dict[str, str]:
     return env
 
 
+def _resolve_descendant(root: Path, child: str | Path) -> Path:
+    resolved_root = root.resolve(strict=False)
+    resolved_child = (resolved_root / child).resolve(strict=False)
+    resolved_child.relative_to(resolved_root)
+    return resolved_child
+
+
 def main_init(callback: InitHook, argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("--json", action="store_true")
@@ -386,10 +393,16 @@ def execute_lab_verifier(
     labs_root: Path = DEFAULT_LABS_ROOT,
     timeout: int = 30,
 ) -> VerificationResult:
-    resolved_lab_dir = lab_dir or (labs_root / lab_id)
-    env = _verifier_env(lab_id, resolved_lab_dir)
+    try:
+        if lab_dir is not None:
+            resolved_lab_dir = _resolve_descendant(lab_dir.parent, lab_dir.name)
+        else:
+            resolved_lab_dir = _resolve_descendant(labs_root, lab_id)
+        python_verifier = _resolve_descendant(resolved_lab_dir, "verify.py")
+    except ValueError:
+        return VerificationResult(False, (), error=f"Invalid lab path for lab {lab_id}")
 
-    python_verifier = resolved_lab_dir / "verify.py"
+    env = _verifier_env(lab_id, resolved_lab_dir)
 
     try:
         if python_verifier.exists():

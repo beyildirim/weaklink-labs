@@ -39,6 +39,16 @@ def test_execute_lab_verifier_rejects_shell_only_lab(tmp_path: Path) -> None:
     assert result.error == "No verify.py for lab 9.8"
 
 
+def test_execute_lab_verifier_rejects_lab_path_escape(tmp_path: Path) -> None:
+    labs_root = tmp_path / "labs"
+    labs_root.mkdir()
+
+    result = execute_lab_verifier("../escape", labs_root=labs_root)
+
+    assert result.passed is False
+    assert result.error == "Invalid lab path for lab ../escape"
+
+
 def test_load_lab_manifest_supports_response_phase_shape() -> None:
     manifest = load_lab_manifest(
         Path("labs/tier-7-detection-response/7.5-threat-modeling")
