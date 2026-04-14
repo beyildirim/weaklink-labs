@@ -6,7 +6,7 @@ ENV SITE_URL=${SITE_URL}
 COPY . /docs/
 RUN mkdocs build --strict
 
-FROM cgr.dev/chainguard/python@sha256:d827d0d1fe441f5f6d2e8b8efe2dad181a9dd5b6e34c22798e7b809349f5d520
+FROM gcr.io/distroless/python3-debian12:nonroot@sha256:7d1042ce588ab97019fe95c24ffca7bc5a82ccdac572511d5e09bda4435c89c5
 
 COPY --from=builder /docs/site /site
 WORKDIR /site
